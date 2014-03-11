@@ -1,0 +1,36 @@
+{
+    "manifest_version": 2,
+    "name": "Point+",
+    "version": "1.0",
+    "author": "Alexey Skobkin",
+    "homepage_url": "https://bitbucket.org/skobkin/chrome_point_plus",
+    "description": "Some new features for point.im",
+    "options_page": "options.html",
+    "page_action": {
+        "default_icon": "images/icon38.png",
+        "default_title": "Point+",
+        "default_popup": "options.html"
+    },
+    "icons": {
+        "128": "images/icon128.png"
+    },
+    "content_scripts": [
+        {
+            "matches": ["http://*.point.im/*"],
+            "js": ["js/jquery-1.10.1.min.js", "js/jquery.fancybox.pack.js", "js/jquery.fancybox-media.js", "js/point-plus.js"],
+            "css": ["css/jquery.fancybox.css"],
+            "run_at": "document_end"
+        }
+    ],
+    "web_accessible_resources": [
+        "images/*"
+    ],
+    "background": {
+        "scripts": ["js/background.js"]
+    },
+    "permissions": [
+        "http://*.point.im/*",
+        "storage",
+        "tabs"
+    ]
+}
