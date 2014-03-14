@@ -1,9 +1,14 @@
 $(document).ready(function() {
     // Loading options
-    chrome.storage.sync.get(['option_ctrl_enter', 'option_fancybox'], function(options) {
-        // Fix the classes and init fancybox
-        if (options.option_fancybox == true) {
-            $('.postimg').addClass('fancybox-media').fancybox({
+    chrome.storage.sync.get(['option_fancybox_images', 'option_fancybox_videos', 'option_fancybox_posts', 'option_ctrl_enter'], function(options) {
+        // Fancybox
+        // Images
+        if (options.option_fancybox_images == true) {
+            $('.postimg:not(.video)').fancybox();
+        }
+        // Videos
+        if (options.option_fancybox_videos == true) {
+            $('.postimg.video').addClass('fancybox-media').fancybox({
                 helpers: {
                     media: {
                         youtube: {
@@ -13,6 +18,12 @@ $(document).ready(function() {
                         }
                     }
                 }
+            });
+        }
+        // Posts
+        if (options.option_fancybox_posts == true) {
+            $('.post-id a').attr('data-fancybox-type', 'iframe').fancybox({
+                maxWidth: 780
             });
         }
 
@@ -26,6 +37,7 @@ $(document).ready(function() {
                 }
             });
         }
+        
     });
 
     // Showing page action
