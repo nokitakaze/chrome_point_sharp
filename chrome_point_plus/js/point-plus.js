@@ -34,11 +34,18 @@ $(document).ready(function() {
         // Hotkeys
         // Send by CTRL+Enter
         if (options.option_ctrl_enter == true) {
+            // Reply
             $('.reply-form textarea').keydown(function(e) {
-                //e.preventDefault();
                 if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
                     e.preventDefault();
                     $(this).parent('.reply-form').submit();
+                }
+            });
+            // New post
+            $('#new-post-form #text-input,#new-post-form #tags-input').keydown(function(e) {
+                if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
+                    e.preventDefault();
+                    $(this).parent('#new-post-form').submit();
                 }
             });
         }
