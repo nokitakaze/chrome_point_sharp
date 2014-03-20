@@ -4,7 +4,11 @@ $(document).ready(function() {
         // Fancybox
         // Images
         if (options.option_fancybox_images == true) {
-            // TODO: group images to the galeries
+            // Linking images in posts to the galleries
+            $('.post-content .text').each(function(idxPost){
+                $(this).find('a.postimg:not(.youtube)').attr('rel', 'post' + idxPost);
+            });
+            // Init fancybox
             $('.postimg:not(.youtube)').fancybox();
         }
         // Videos
