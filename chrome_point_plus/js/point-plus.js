@@ -5,11 +5,11 @@ $(document).ready(function() {
         // Images
         if (options.option_fancybox_images == true) {
             // TODO: group images to the galeries
-            $('.postimg:not(.video)').fancybox();
+            $('.postimg:not(.youtube)').fancybox();
         }
         // Videos
         if (options.option_fancybox_videos == true) {
-            $('.postimg.video').addClass('fancybox-media').fancybox({
+            $('.postimg.youtube').addClass('fancybox-media').fancybox({
                 helpers: {
                     media: {
                         youtube: {
@@ -49,12 +49,12 @@ $(document).ready(function() {
         // Image resizing
         if (options.option_images_load_original == true) {
             // Setting new image source
-            $('.postimg:not(.video) img').each(function(){
+            $('.postimg:not(.youtube) img').each(function(){
                 console.log($(this).parent('.postimg').attr('href'));
                 $(this).attr('src', $(this).parent('.postimg').attr('href'));
             });
             // Resizing
-            $('.postimg:not(.video), .postimg:not(.video) img').css({
+            $('.postimg:not(.youtube), .postimg:not(.youtube) img').css({
                 'width': 'auto',
                 'height': 'auto',
                 'max-width': '100%',
