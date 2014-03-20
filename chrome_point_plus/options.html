@@ -1,45 +1,69 @@
 <html>
-    <head><title>Point Plus options</title></head>
-
-    <body style="width: 400px;">
-        <h2>Point+ options</h2>
-
-        <h4>Fancybox pop-up</h4>
-        <p>
-            <label><input type="checkbox" id="option-fancybox-images">Use for images</label>
-        </p>
-        <p>
-            <label><input type="checkbox" id="option-fancybox-videos">Use for videos (YouTube, ...)</label>
-        </p>
-        <p>
-            <label><input type="checkbox" id="option-fancybox-posts">Use for post links (including comments)</label>
-        </p>
-        <h4>Hotkeys</h4>
-        <p>
-            <label><input type="checkbox" id="option-ctrl-enter">Send post and comments by CTRL+Enter</label>
-        </p>
-        <h4>Look and feel</h4>
-        <p>
-            <label><input type="checkbox" id="option-layout-fluid">Fluid layout</label>
-        </p>
-        <p>
-            <label><input type="checkbox" id="option-images-load-original">Load original images instead of thumbnails
-        </p>
-        <p>
-            <label><input type="checkbox" id="option-visual-editor-post">Show visual editor for posts
-        </p>
-        <p>
-            <label><input type="checkbox" id="option-search-with-google">Use Google search in header
-        </p>
-        <br>
-        <div id="status"></div>
-        <button id="save">Save</button>
+    <head>
+        <title>Point Plus options</title>
         
-        <p>
-            <a href="https://bitbucket.org/skobkin/chrome_point_plus/issues?status=new&status=open" target="_blank">Send bug report</a>
-        </p>
+        <link rel="stylesheet" href="css/point-plus.css" type="text/css"/>
+        <script src="js/jquery-1.10.1.min.js"></script>
+        <script src="js/jquery.idTabs.min.js"></script>
+    </head>
+
+    <body class="options">
+        <div class="tabs usual">
+            <ul class="idTabs">
+                <li><a href="#popups">Pop-ups</a></li>
+                <li><a href="#look-and-feel">Look &amp; Feel</a></li>
+                <li><a href="#other">Other</a></li>
+                <li><a href="#feedback">Feedback</a></li>
+            </ul>
+            
+            <div id="tabs-content">
+                <div id="popups">
+                    <p>
+                        <label><input type="checkbox" id="option-fancybox-images">Use for images</label>
+                    </p>
+                    <p>
+                        <label><input type="checkbox" id="option-fancybox-videos">Use for videos (YouTube, ...)</label>
+                    </p>
+                    <p>
+                        <label><input type="checkbox" id="option-fancybox-posts">Use for post links (including comments)</label>
+                    </p>
+                </div>
+
+                <div id="look-and-feel">
+                    <p>
+                        <label><input type="checkbox" id="option-layout-fluid">Fluid layout</label>
+                    </p>
+                    <p>
+                        <label><input type="checkbox" id="option-images-load-original">Load original images instead of thumbnails
+                    </p>
+                    <p>
+                        <label><input type="checkbox" id="option-visual-editor-post">Show visual editor for posts
+                    </p>
+                    <p>
+                        <label><input type="checkbox" id="option-search-with-google">Use Google search in header
+                    </p>
+                </div>
+
+                <div id="other">
+                    <p>
+                        <label><input type="checkbox" id="option-ctrl-enter">Send post and comments by CTRL+Enter</label>
+                    </p>
+                </div>
+
+                <div id="feedback">
+                    <p>
+                        If you find an error do not hesitate to <a href="https://bitbucket.org/skobkin/chrome_point_plus/issues?status=new&status=open" target="_blank">send me a bug report</a>.
+                    </p>
+                </div>
+            </div>
+            
+            
+            <div id="panel">
+                <div id="status"></div>
+                <button id="save" class="button">Save</button>
+            </div>
+        </div>
+       
+        <script src="js/options.js"></script>
     </body>
-
-    <script src="js/options.js"></script>
-
 </html>
