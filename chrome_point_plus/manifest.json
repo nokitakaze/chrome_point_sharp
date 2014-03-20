@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Point+",
-    "version": "1.2",
+    "version": "1.3",
     "author": "Alexey Skobkin",
     "homepage_url": "https://bitbucket.org/skobkin/chrome_point_plus",
     "description": "Some new features for point.im",
