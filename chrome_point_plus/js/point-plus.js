@@ -74,12 +74,23 @@ $(document).ready(function() {
                 'max-height': '100%'
             });
         }
-        // WYSIWYG editor
+        // Visual editor
         if (options.option_visual_editor_post == true) {
             // Add classes
             $('#new-post-form #text-input, .post-content #text-input').addClass('markitup').css('height', '20em');
             // Init
             $('.markitup').markItUp(mySettings);
+            
+            // Send by CTRL+Enter
+            if (options.option_ctrl_enter == true) {
+                // New post
+                $('#new-post-form #text-input, .post-content #text-input').on('keydown.point_plus', function(e) {
+                    if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
+                        e.preventDefault();
+                        $(this).parents('#new-post-form,#post-edit-form').submit();
+                    }
+                });
+            }
         }
         // Google search
         if (options.option_search_with_google == true) {
