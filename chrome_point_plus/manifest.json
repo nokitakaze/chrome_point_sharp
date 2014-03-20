@@ -24,20 +24,31 @@
     },
     "content_scripts": [
         {
-            "matches": ["http://*.point.im/*"],
-            "js": ["js/jquery-1.10.1.min.js", "js/jquery.fancybox.pack.js", "js/jquery.fancybox-media.js", "js/point-plus.js"],
-            "css": ["css/jquery.fancybox.css"],
+            "matches": ["http://*.point.im/*", "https://*.point.im/*"],
+            "js": [
+                    "js/jquery-1.10.1.min.js",
+                    "js/jquery.fancybox.pack.js", "js/jquery.fancybox-media.js",
+                    "js/markitup/jquery.markitup.js", "js/markitup/sets/markdown/set.js",
+                    "js/point-plus.js"
+                    ],
+            "css": [
+                    "css/jquery.fancybox.css",
+                    "css/markitup/skins/markitup/style.css", "css/markitup/sets/markdown/style.css",
+                    "css/point-plus.css"
+                    ],
             "run_at": "document_end"
         }
     ],
     "web_accessible_resources": [
-        "images/*"
+        "images/*",
+        "includes/*"
     ],
     "background": {
         "scripts": ["js/background.js"]
     },
     "permissions": [
         "http://*.point.im/*",
+        "https://*.point.im/*",
         "storage",
         "tabs"
     ]

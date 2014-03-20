@@ -1,6 +1,7 @@
 $(document).ready(function() {
     // Loading options
-    chrome.storage.sync.get(['option_fancybox_images', 'option_fancybox_videos', 'option_fancybox_posts', 'option_ctrl_enter', 'option_fluid_layout', 'option_images_load_original'], function(options) {
+    chrome.storage.sync.get(['option_fancybox_images', 'option_fancybox_videos', 'option_fancybox_posts', 'option_ctrl_enter', 'option_fluid_layout', 
+        'option_images_load_original', 'option_visual_editor_post', 'option_search_with_google'], function(options) {
         // Fancybox
         // Images
         if (options.option_fancybox_images == true) {
@@ -52,10 +53,11 @@ $(document).ready(function() {
         // Look and feel
         // Fluid #main layout
         if (options.option_fluid_layout == true) {
-            $('#main').css({
+            $('#main, #header, #subheader, #footer').css({
                 'width': '95%',
                 'max-width': '95%'
             });
+            // TODO: fix #main #left-menu #top-link position
         }
         // Image resizing
         if (options.option_images_load_original == true) {
@@ -70,6 +72,22 @@ $(document).ready(function() {
                 'height': 'auto',
                 'max-width': '100%',
                 'max-height': '100%'
+            });
+        }
+        // WYSIWYG editor
+        if (options.option_visual_editor_post == true) {
+            // Add classes
+            $('#new-post-form #text-input, .post-content #text-input').addClass('markitup').css('height', '20em');
+            // Init
+            $('.markitup').markItUp(mySettings);
+        }
+        // Google search
+        if (options.option_search_with_google == true) {
+            $('#search-form input[type="text"]').attr('placeholder', 'Google').keydown(function(e) {
+                if (e.keyCode == 10 || e.keyCode == 13) {
+                    e.preventDefault();
+                    document.location.href = '//www.google.ru/search?q=site%3Apoint.im+' + $(this).val();
+                }
             });
         }
     });

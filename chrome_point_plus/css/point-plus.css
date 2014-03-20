@@ -1,0 +1,9 @@
+/* MarkItUp margin fix */
+div#markItUpText-input {
+    margin-top: 30px;
+}
+
+/* MarkItUp override */
+.markItUp  {
+    width:770px;
+}
