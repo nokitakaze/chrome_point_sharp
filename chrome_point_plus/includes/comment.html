@@ -1,0 +1,37 @@
+<div class="info">
+    <a href="#"><img class="avatar" src="#author-avatar" alt=""/></a>
+    <div class="created">
+
+    </div>
+</div>
+<div class="post-content">
+    <div class="author">
+        <a href="#" class="user"><!-- %author% --></a>
+    </div>
+    <div class="text">
+        <!-- <p>Comment text</p> -->
+    </div>
+    <div class="clearfix">
+        <div class="post-id">
+            <a href="#"><!-- #%post-id%/%comment-id% --></a>
+        </div>
+        <div class="action-labels">
+            <label class="reply-label">ответить</label>
+            <label class="more-label">ещё &#9662;</label>
+        </div>
+    </div>
+    <input type="checkbox" class="action-cb" name="action-radio"/>
+    <div class="action-buttons">
+        <a class="bookmark" href="#">в закладки</a>
+    </div>
+    <!-- Reply form -->
+    <input type="radio" class="reply-radio" name="reply-radio"/>
+    <form class="reply-form" action="#" method="post">
+        <textarea name="text"></textarea>
+        <input type="hidden" name="comment_id" value="">
+        <input type="hidden" name="csrf_token" value="">
+        <div class="clearfix">
+            <input type="submit" value="Ответить"/>
+        </div>
+    </form>
+</div>

@@ -17,6 +17,9 @@ function save_options() {
     var checkbox_visual_editor_post = document.getElementById('option-visual-editor-post');
     // Google search
     var checkbox_search_with_google = document.getElementById('option-search-with-google');
+    // WebSocket
+    // Comments
+    var checkbox_ws_comments = document.getElementById('option-ws-comments');
     
     // Saving parameters
     chrome.storage.sync.set({
@@ -27,7 +30,8 @@ function save_options() {
         'option_fluid_layout': checkbox_layout_fluid.checked,
         'option_images_load_original': checkbox_images_load_original.checked,
         'option_visual_editor_post': checkbox_visual_editor_post.checked,
-        'option_search_with_google': checkbox_search_with_google.checked
+        'option_search_with_google': checkbox_search_with_google.checked,
+        'option_ws_comments': checkbox_ws_comments.checked
     }, function() {
         // Update status to let user know options were saved.
         var status = document.getElementById('status');
@@ -42,7 +46,7 @@ function save_options() {
 function restore_options() {
     // Loading options
     chrome.storage.sync.get(['option_fancybox_images', 'option_fancybox_videos', 'option_fancybox_posts', 'option_ctrl_enter', 'option_images_load_original', 
-        'option_fluid_layout', 'option_visual_editor_post', 'option_search_with_google'], function(options) {
+        'option_fluid_layout', 'option_visual_editor_post', 'option_search_with_google', 'option_ws_comments'], function(options) {
         // CTRL+Enter
         if (options.option_ctrl_enter == true) {
             document.getElementById('option-ctrl-enter').checked = true;
@@ -75,6 +79,11 @@ function restore_options() {
         // Google search
         if (options.option_search_with_google == true) {
             document.getElementById('option-search-with-google').checked = true;
+        }
+        // WebSocket
+        // Comments
+        if (options.option_ws_comments == true) {
+            document.getElementById('option-ws-comments').checked = true;
         }
     });
 }
