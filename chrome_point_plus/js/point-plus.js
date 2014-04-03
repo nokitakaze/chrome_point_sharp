@@ -153,11 +153,11 @@ $(document).ready(function() {
                                         var date = new Date();
 
                                         // Data for template
-                                        var userLink = location.protocol + '//' + wsMessage.author + '.point.im/';
+                                        var userLink = '//' + wsMessage.author + '.point.im/';
                                         var postAuthorLink = $('#top-post .info a').attr('href');
                                         var postLink = postAuthorLink + wsMessage.post_id;
-                                        var userAvatar = location.protocol + '//point.im/avatar/' + wsMessage.author;
-                                        var commentLink = location.protocol + '//point.im/' + wsMessage.post_id + '#' + wsMessage.comment_id;
+                                        var userAvatar = '//point.im/avatar/' + wsMessage.author;
+                                        var commentLink = '//point.im/' + wsMessage.post_id + '#' + wsMessage.comment_id;
                                         var csRfToken = $('.reply-form input[name="csrf_token"').val();
 
                                         // Filling template
