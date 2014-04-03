@@ -11,28 +11,28 @@ div#markItUpText-input {
 
 /* Point+ */
 /* Options page */
-body.options {
+.pp-options {
     width: 450px;
     height: 450px;
     background: #EEE;
 }
 
 /* Tabs style */
-.usual {
+.pp-options .usual {
     width:450px;
     margin: 5px;
 }
 
-.usual ul {
+.pp-options .usual ul {
     padding: 0 0 10px 0;
     margin: 0 0 18px 0;
 }
 
-.usual li { 
+.pp-options .usual li { 
     list-style: none; 
     float: left; 
 }
-.usual ul a {
+.pp-options .usual ul a {
     display: block;
     padding: 6px 10px;
     text-decoration: none!important;
@@ -43,30 +43,30 @@ body.options {
     background: #C8C8C8;
     border-radius: 15px 15px 0 0;
 }
-.usual ul a:hover {
+.pp-options .usual ul a:hover {
     color: #FFF;
     background: #BBB;
 }
-.usual ul a.selected {
+.pp-options .usual ul a.selected {
     margin-bottom: 0;
     color: #FFF;
     background: #A5A5A5;
     cursor: default;
 }
-.usual div#tabs-content {
+.pp-options .usual div#tabs-content {
     margin: 0 5px 0 0;
     padding: 5px;
     background-color: #A5A5A5;
     border-radius: 0 15px 0 0;
     
 }
-.usual #panel {
+.pp-options .usual #panel {
     background: #B5B5B5;
     margin: 0 5px 0 0;
     padding: 10px;
     border-radius: 0 0 15px 15px;
 }
-.usual #panel button.button {
+.pp-options .usual #panel button.button {
     background-color: #C8C8C8;
     border-radius:15px;
     border:1px solid #dcdcdc;
@@ -80,24 +80,52 @@ body.options {
     text-decoration:none;
     text-shadow:0px 1px 0px #ffffff;
 }
-.usual #panel button.button:hover{
+.pp-options .usual #panel button.button:hover{
     background-color:#BBB;
 }
-.usual #panel button.button:active {
+.pp-options .usual #panel button.button:active {
 	position:relative;
 	top:1px;
 }
-.usual div#tabs-content div {
+/*
+.pp-options .usual div#tabs-content div {
     padding: 3px 0 0 0;
     margin-top: -15px;
     clear: left;
     font: 10pt Georgia;
     color: #FFF;
 }
-.usual div#tabs-content div p {
-    padding: 5px 0 0 15px;
-}
-.usual div a {
+*/
+
+.pp-options .usual div a {
     color: #000;
     font-weight: bold;
 }
+
+.pp-options .tab-content {
+    padding: 5px 0 0 5px;
+}
+
+.pp-options .option {
+    display: block;
+    margin: 5px 0 5px 15px;
+}
+
+.pp-options .option label {
+    font: 10pt Georgia;
+    color: #FFF;
+}
+
+.pp-options .tab-content .text {
+    margin-left: 15px;
+}
+
+/* Disables subcheckboxes if parent disabled */
+.pp-options .option input[type="checkbox"]:not(:checked) ~.option {
+    display: none;
+}
+
+.pp-options .option input[type="checkbox"]:not(:checked) ~.option label {
+    color: #BBB;
+}
+

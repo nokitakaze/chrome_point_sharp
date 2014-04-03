@@ -3,8 +3,7 @@ $(document).ready(function() {
     console.group('point-plus');
     
     // Loading options
-    chrome.storage.sync.get(['option_fancybox_images', 'option_fancybox_videos', 'option_fancybox_posts', 'option_ctrl_enter', 'option_fluid_layout', 
-        'option_images_load_original', 'option_visual_editor_post', 'option_search_with_google', 'option_ws_comments'], function(options) {
+    chrome.storage.sync.get(ppOptions, function(options) {
         // Fancybox
         // Images
         if (options.option_fancybox_images == true) {
@@ -109,9 +108,14 @@ $(document).ready(function() {
         if (options.option_ws_comments == true) {
             // If we are in the post page
             if ($('#top-post').length > 0) {
-                // WS test
+                
+                // Comments view mode
+                treeSwitch = $('#tree-switch a.active').attr('href');
+                                
+                // WS connection
                 console.log('Starting WebSocket connection');
-                ws = new WebSocket('wss://point.im/ws'); 
+                ws = new WebSocket('wss://point.im/ws');
+                // Message handler
                 ws.onmessage = function(evt) {
                     try {
                         // ping :)

@@ -7,68 +7,104 @@
         <script src="js/jquery.idTabs.min.js"></script>
     </head>
 
-    <body class="options">
+    <body class="pp-options">
         <div class="tabs usual">
             <ul class="idTabs">
-                <li><a href="#popups">Pop-ups</a></li>
-                <li><a href="#look-and-feel">Look &amp; Feel</a></li>
+                <li><a href="#media">Media</a></li>
                 <li><a href="#other">Other</a></li>
+                <li><a href="#websocket">WebSockets</a></li>
                 <li><a href="#feedback">Feedback</a></li>
             </ul>
             
             <div id="tabs-content">
-                <div id="popups">
-                    <p>
-                        <label><input type="checkbox" id="option-fancybox-images">Use for images</label>
-                    </p>
-                    <p>
-                        <label><input type="checkbox" id="option-fancybox-videos">Use for videos (YouTube, ...)</label>
-                    </p>
-                    <p>
-                        <label><input type="checkbox" id="option-fancybox-posts">Use for post links (including comments)</label>
-                    </p>
+                <div class="tab-content" id="popups">
+ 
                 </div>
 
-                <div id="look-and-feel">
-                    <p>
-                        <label><input type="checkbox" id="option-layout-fluid">Fluid layout</label>
-                    </p>
-                    <p>
-                        <label><input type="checkbox" id="option-images-load-original">Load original images instead of thumbnails
-                    </p>
-                    <p>
-                        <label><input type="checkbox" id="option-visual-editor-post">Show visual editor for posts
-                    </p>
-                    <p>
-                        <label><input type="checkbox" id="option-search-with-google">Use Google search in header
-                    </p>
+                <div class="tab-content" id="media">
+                    <div class="option">
+                        <input type="checkbox" id="option-fancybox"><label for="option-fancybox">Enable Fancybox</label>
+                        
+                        <div class="option">
+                                 <input type="checkbox" id="option-fancybox-images"><label for="option-fancybox-images">Use for images</label>
+                         </div>
+
+                         <div class="option">
+                                <input type="checkbox" id="option-fancybox-videos"><label for="option-fancybox-videos">Use for videos (YouTube, ...)</label>
+                         </div>
+
+                         <div class="option">
+                                <input type="checkbox" id="option-fancybox-posts"><label for="option-fancybox-posts">Use for post links (including comments)</label>
+                         </div>
+                    </div>
+                    
+                    <div class="option">
+                            <input type="checkbox" id="option-images-load-original"><label for="option-images-load-original">Load original images instead of thumbnails
+                    </div>
                 </div>
 
-                <div id="other">
-                    <p>
-                        <label><input type="checkbox" id="option-ctrl-enter">Send post and comments by CTRL+Enter</label>
-                    </p>
-                    <p>
-                        <label><input type="checkbox" id="option-ws-comments">Retrieve comments automatically (WebSocket)</label>
-                    </p>
+                <div class="tab-content" id="other">
+                    <div class="option">
+                            <input type="checkbox" id="option-ctrl-enter"><label for="option-ctrl-enter">Send post and comments by CTRL+Enter</label>
+                    </div>
+                    
+                    <div class="option">
+                            <input type="checkbox" id="option-layout-fluid"><label for="option-layout-fluid">Fluid layout</label>
+                    </div>
+                    
+                    <div class="option">
+                            <input type="checkbox" id="option-visual-editor-post"><label for="option-visual-editor-post">Show visual editor for posts
+                    </div>
+
+                    <div class="option">
+                            <input type="checkbox" id="option-search-with-google"><label for="option-search-with-google">Use Google search in header
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="websocket">
+                    <div class="option">
+                        <input type="checkbox" id="option-ws"><label for="option-ws">Enable WebSockets</label>
+
+                        <div class="option">
+                            <input type="checkbox" id="option-ws-comments"><label for="option-ws-comments">Process comments</label>
+                            
+                            <div class="option">
+                                <input type="checkbox" id="option-ws-comments-color-fadeout"><label for="option-ws-comments-color-fadeout">Fade out highlight in 10 sec</label>
+                            </div>
+                        </div>
+                        
+                        <div class="option">
+                            <input type="checkbox" id="option-ws-feeds" disabled><label for="option-ws-feeds">Process feeds</label>
+                            
+                            <div class="option">
+                                <input type="checkbox" id="option-ws-feeds-subscriptions"><label for="option-ws-feeds-subscriptions">Subscriptions feed</label>
+                            </div>
+                            
+                            <div class="option">
+                                <input type="checkbox" id="option-ws-feeds-blogs"><label for="option-ws-feeds-blogs">User blog pages (only when subscribed)</label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div id="feedback">
-                    <p>
-                        If you find an error do not hesitate to <a href="https://bitbucket.org/skobkin/chrome_point_plus/issues?status=new&status=open" target="_blank">send me a bug report</a>.
-                    </p>
-                    <p>
-                        You can make a donation in the following ways:
-                    </p>
-                    <p>
-                        Yandex.Money: 41001539215836
-                    </p>
-                    <p>
-                        Novacoin: 4d1ctdZtKkv3kxGdAXjfNEjfFvtDVdbf65
-                    </p>
-                    <p>
-                        <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WW33X5J5WFSP4" target="_blank">PayPal</a>
-                    </p>
+                <div class="tab-content" id="feedback">
+                    <div class="text">
+                        <p>
+                            If you find an error do not hesitate to <a href="https://bitbucket.org/skobkin/chrome_point_plus/issues?status=new&status=open" target="_blank">send me a bug report</a>.
+                        </p>
+                        <p>
+                            You can make a donation in the following ways:
+                        </p>
+                        <p>
+                            Yandex.Money: 41001539215836
+                        </p>
+                        <p>
+                            Novacoin: 4d1ctdZtKkv3kxGdAXjfNEjfFvtDVdbf65
+                        </p>
+                        <p>
+                            <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WW33X5J5WFSP4" target="_blank">PayPal</a>
+                        </p>
+                    </div>
                 </div>
             </div>
             
