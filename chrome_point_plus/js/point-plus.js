@@ -325,14 +325,6 @@ function escapeHtml(text) {
             .replace(/\n/g, "<br>");
 }
 
-function getVersion() { 
-    var xhr = new XMLHttpRequest(); 
-    xhr.open('GET', chrome.extension.getURL('manifest.json'), false); 
-    xhr.send(null); 
-    var manifest = JSON.parse(xhr.responseText); 
-    return manifest.version; 
-} 
-
 // Monts for Date.getMonth()
 var months = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',

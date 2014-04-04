@@ -37,6 +37,18 @@
                     <div class="option">
                         <input type="checkbox" id="option-images-load-original"><label for="option-images-load-original">Load original images instead of thumbnails
                     </div>
+                    
+                    <div class="option">
+                        <input type="checkbox" id="option-embedding"><label for="option-embedding">Enable embedding</label>
+                        
+                        <div class="option">
+                            <input type="checkbox" id="option-embedding-soundcloud"><label for="option-embedding-soundcloud">Soundcloud</label>
+                        </div>
+                        
+                        <div class="option">
+                            <input type="checkbox" id="option-embedding-youtube" disabled><label for="option-embedding-youtube">YouTube</label>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="tab-content" id="other">
@@ -107,7 +119,14 @@
             
             <div id="panel">
                 <div id="status"></div>
-                <button id="save" class="button">Save</button>
+                
+                <div class="left">
+                    <button id="save" class="button">Save</button>
+                </div>
+                
+                <div class="right">
+                    <div id="pp-version"></div>
+                </div>
             </div>
         </div>
        

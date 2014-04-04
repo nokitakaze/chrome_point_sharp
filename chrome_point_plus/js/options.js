@@ -147,7 +147,21 @@ function pp_restore_options() {
         if (options.option_ws_feeds_blogs == true) {
             document.getElementById('option-ws-feeds-blogs').checked = true;
         }
+        
+        // Showing version
+        document.getElementById('pp-version').innerHTML = 'Point+ ' + getVersion() + ' by <a href="http://skobkin-ru.point.im/" target="_blank">@skobkin-ru</a>';
     });
+    
+
 }
 document.addEventListener('DOMContentLoaded', pp_restore_options);
 document.querySelector('#save').addEventListener('click', pp_save_options);
+
+// Getting version from manifest.json
+function getVersion() { 
+    var xhr = new XMLHttpRequest(); 
+    xhr.open('GET', chrome.extension.getURL('manifest.json'), false); 
+    xhr.send(null); 
+    var manifest = JSON.parse(xhr.responseText); 
+    return manifest.version; 
+} 
