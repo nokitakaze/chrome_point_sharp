@@ -2,6 +2,8 @@ $(document).ready(function() {
     // Grouping console log
     console.group('point-plus');
 
+    console.info('Point+ %s', getVersion());
+
     // Loading options
     chrome.storage.sync.get(ppOptions, function(options) {
         // Options debug
@@ -44,14 +46,15 @@ $(document).ready(function() {
         // Send by CTRL+Enter
         if (options.option_ctrl_enter == true) {
             // Reply
-            $('.reply-form textarea').keydown(function(e) {
+            // Delegated event for all comments
+            $('.content-wrap #comments').on('keydown.point_plus', '.reply-form textarea', function(e) {
                 if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
                     e.preventDefault();
                     $(this).parent('.reply-form').submit();
                 }
             });
             // New post
-            $('#new-post-form #text-input,#new-post-form #tags-input').keydown(function(e) {
+            $('#new-post-form #text-input,#new-post-form #tags-input').on('keydown.point_plus', function(e) {
                 if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
                     e.preventDefault();
                     $(this).parent('#new-post-form').submit();
@@ -321,6 +324,14 @@ function escapeHtml(text) {
             .replace(/'/g, "&#039;")
             .replace(/\n/g, "<br>");
 }
+
+function getVersion() { 
+    var xhr = new XMLHttpRequest(); 
+    xhr.open('GET', chrome.extension.getURL('manifest.json'), false); 
+    xhr.send(null); 
+    var manifest = JSON.parse(xhr.responseText); 
+    return manifest.version; 
+} 
 
 // Monts for Date.getMonth()
 var months = [
