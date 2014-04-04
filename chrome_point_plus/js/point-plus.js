@@ -264,6 +264,18 @@ $(document).ready(function() {
                                             $commentTemplate.children('.pp-highlight').fadeOut(20000);
                                         }
                                         
+                                        // Desktop notifications
+                                        if (options.option_ws_comments_notifications == true) {
+                                            console.log('Showing desktop notification');
+                                            chrome.extension.sendMessage({
+                                                type: 'showNotification',
+                                                notificationId: wsMessage.post_id + '_' + wsMessage.comment_id,
+                                                avatarUrl: ((location.protocol == 'http:') ? 'http:' : 'https:') + userAvatar + '/80',
+                                                title: '@' + wsMessage.author + ' commented #' + wsMessage.post_id + '(/' + wsMessage.comment_id + ')',
+                                                text: wsMessage.text
+                                            });
+                                        }
+                                        
                                         console.groupEnd();
                                     });
                                     
@@ -308,7 +320,6 @@ $(document).ready(function() {
                 ;
             };
         }
-
     });
 
     // Showing page action

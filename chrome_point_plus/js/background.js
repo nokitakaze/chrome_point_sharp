@@ -3,4 +3,17 @@ chrome.extension.onMessage.addListener(function(message, sender) {
         var tab = sender.tab;
         chrome.pageAction.show(tab.id);
     }
+    
+    if (message && message.type === 'showNotification') {
+        console.log(chrome.notifications.create(
+            message.notificationId, {   
+                type: 'basic', 
+                iconUrl: message.avatarUrl, 
+                title: message.title, 
+                message: message.text,
+                priority: 0
+            },
+            function() { /* Error checking goes here */} 
+        )); 
+    }
 });

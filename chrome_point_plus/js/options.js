@@ -14,7 +14,7 @@ var ppOptions = [
     // WebSocket
     'option_ws', 
         // Comments
-        'option_ws_comments', 'option_ws_comments_color_fadeout',
+        'option_ws_comments', 'option_ws_comments_color_fadeout', 'option_ws_comments_notifications',
         // Feeds
         'option_ws_feeds', 'option_ws_feeds_subscriptions', 'option_ws_feeds_blogs'
 ];
@@ -47,6 +47,8 @@ function pp_save_options() {
     var option_ws_comments = document.getElementById('option-ws-comments');
     // Fade out highlight comments
     var option_ws_comments_color_fadeout = document.getElementById('option-ws-comments-color-fadeout');
+    // Comments desktop notifications
+    var option_ws_comments_notifications = document.getElementById('option-ws-comments-notifications');
     // Feeds
     var option_ws_feeds = document.getElementById('option-ws-feeds');
     // Subscriptions
@@ -68,6 +70,7 @@ function pp_save_options() {
         'option_ws': option_ws.checked,
             'option_ws_comments': option_ws_comments.checked,
                 'option_ws_comments_color_fadeout': option_ws_comments_color_fadeout.checked,
+                'option_ws_comments_notifications': option_ws_comments_notifications.checked,
             'option_ws_feeds': option_ws_feeds.checked,
                 'option_ws_feeds_subscriptions': option_ws_feeds_subscriptions.checked,
                 'option_ws_feeds_blogs': option_ws_feeds_blogs.checked
@@ -134,6 +137,14 @@ function pp_restore_options() {
         // Fade out highlight comments
         if (options.option_ws_comments_color_fadeout == true) {
             document.getElementById('option-ws-comments-color-fadeout').checked = true;
+        }
+        // Comments desktop notifications
+        // Disabling for Opera
+        if (/OPR/.test(navigator.userAgent)) {
+            document.getElementById('option-ws-comments-notifications').setAttribute('disabled', 'disabled');
+        }
+        if (options.option_ws_comments_notifications == true) {
+            document.getElementById('option-ws-comments-notifications').checked = true;
         }
         // Feeds
         if (options.option_ws_feeds == true) {
