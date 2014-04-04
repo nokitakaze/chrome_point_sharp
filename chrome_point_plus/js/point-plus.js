@@ -228,7 +228,7 @@ $(document).ready(function() {
                                         // If list mode or not addressed to other comment
                                         if ((treeSwitch == '?tree=0') || (wsMessage.to_comment_id == null)) {
                                             // List mode
-                                            $('.content-wrap #comments #post-reply').before($commentTemplate.hide().fadeIn(2000).css('background-color', '#FFFFBB'));
+                                            $('.content-wrap #comments #post-reply').before($commentTemplate.hide().fadeIn(2000));
                                         } else {
                                             // Tree mode
                                             // Search parent comment
@@ -240,20 +240,26 @@ $(document).ready(function() {
                                                 // If child comment already exist
                                                 if ($parentCommentChildren.length > 0) {
                                                     console.log('Child comments found. Appending...');
-                                                    $parentCommentChildren.append($commentTemplate.hide().fadeIn(2000).css('background-color', '#FFFFBB'));
+                                                    $parentCommentChildren.append($commentTemplate.hide().fadeIn(2000));
                                                 } else {
                                                     console.log('No child comments found. Creating...');
-                                                    $parentComment.after($('<div>').addClass('comments').append($commentTemplate.hide().fadeIn(2000).css('background-color', '#FFFFBB')));
+                                                    $parentComment.after($('<div>').addClass('comments').append($commentTemplate.hide().fadeIn(2000)));
                                                 }
                                             } else {
                                                 console.log('Parent comment not found');
                                                 // FIXME: Double code
-                                                $('.content-wrap #comments #post-reply').before($commentTemplate.hide().fadeIn(2000).css('background-color', '#FFFFBB'));
+                                                $('.content-wrap #comments #post-reply').before($commentTemplate.hide().fadeIn(2000));
                                             }
                                         }
 
                                         // Adding anchor
                                         $commentTemplate.before($anchor);
+                                        
+                                        // Fading out highlight if needed
+                                        if (options.option_ws_comments_color_fadeout == true) {
+                                            console.log('Fading out the highlight');
+                                            $commentTemplate.children('.pp-highlight').fadeOut(20000);
+                                        }
                                         
                                         console.groupEnd();
                                     });
