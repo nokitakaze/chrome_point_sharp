@@ -319,6 +319,10 @@ $(document).ready(function() {
                 }
                 ;
             };
+        }        
+        // Font size
+        if ((options.option_enlarge_font == true) && (options.option_enlarge_font_size !== undefined)) {
+            $('body').css('font-size', (options.option_enlarge_font_size / 100) + 'em');
         }
     });
 

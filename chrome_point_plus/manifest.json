@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Point+",
-    "version": "1.7",
+    "version": "1.8",
     "author": "Alexey Skobkin",
     "homepage_url": "https://bitbucket.org/skobkin/chrome_point_plus",
     "description": "More features for point.im",
@@ -52,6 +52,7 @@
         "http://*.point.im/*",
         "https://*.point.im/*",
         "storage",
-        "notifications"
+        "notifications",
+        "tabs"
     ]
 }

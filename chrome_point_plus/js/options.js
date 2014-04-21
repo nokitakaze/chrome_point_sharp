@@ -16,7 +16,9 @@ var ppOptions = [
         // Comments
         'option_ws_comments', 'option_ws_comments_color_fadeout', 'option_ws_comments_notifications',
         // Feeds
-        'option_ws_feeds', 'option_ws_feeds_subscriptions', 'option_ws_feeds_blogs'
+        'option_ws_feeds', 'option_ws_feeds_subscriptions', 'option_ws_feeds_blogs',
+    // Font size
+    'option_enlarge_font', 'option_enlarge_font_size'
 ];
 
 // Saves options to localStorage.
@@ -55,6 +57,10 @@ function pp_save_options() {
     var option_ws_feeds_subscriptions = document.getElementById('option-ws-feeds-subscriptions');
     // Blogs
     var option_ws_feeds_blogs = document.getElementById('option-ws-feeds-blogs');
+    // Font size
+    var option_enlarge_font = document.getElementById('option-enlarge-font');
+    // Size ratio
+    var option_enlarge_font_size = document.querySelector('input[name="pp-font-size"]:checked');
     
     // Saving parameters
     chrome.storage.sync.set({
@@ -73,7 +79,9 @@ function pp_save_options() {
                 'option_ws_comments_notifications': option_ws_comments_notifications.checked,
             'option_ws_feeds': option_ws_feeds.checked,
                 'option_ws_feeds_subscriptions': option_ws_feeds_subscriptions.checked,
-                'option_ws_feeds_blogs': option_ws_feeds_blogs.checked
+                'option_ws_feeds_blogs': option_ws_feeds_blogs.checked,
+        'option_enlarge_font': option_enlarge_font.checked,
+            'option_enlarge_font_size': option_enlarge_font_size.value
     }, function() {
         // Update status to let user know options were saved.
         var status = document.getElementById('status');
@@ -157,6 +165,14 @@ function pp_restore_options() {
         // Blogs
         if (options.option_ws_feeds_blogs == true) {
             document.getElementById('option-ws-feeds-blogs').checked = true;
+        }
+        // Font size
+        if (options.option_enlarge_font == true) {
+            document.getElementById('option-enlarge-font').checked = true;
+        }
+        // Size ratio
+        if (options.option_enlarge_font_size !== undefined) {
+            document.getElementById('option-enlarge-font-' + options.option_enlarge_font_size).checked = true;
         }
         
         // Showing version
