@@ -324,6 +324,14 @@ $(document).ready(function() {
         if ((options.option_enlarge_font == true) && (options.option_enlarge_font_size !== undefined)) {
             $('body').css('font-size', (options.option_enlarge_font_size / 100) + 'em');
         }
+        // @ before username
+        if (options.option_at_before_username == true) {
+            chrome.extension.sendMessage({
+                type: 'injectCSSFile',
+                file: 'css/modules/at_before_username.css'
+            });
+        }
+
     });
 
     // Showing page action

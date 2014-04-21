@@ -18,7 +18,9 @@ var ppOptions = [
         // Feeds
         'option_ws_feeds', 'option_ws_feeds_subscriptions', 'option_ws_feeds_blogs',
     // Font size
-    'option_enlarge_font', 'option_enlarge_font_size'
+    'option_enlarge_font', 'option_enlarge_font_size',
+    // @ before username
+    'option_at_before_username'
 ];
 
 // Saves options to localStorage.
@@ -61,6 +63,8 @@ function pp_save_options() {
     var option_enlarge_font = document.getElementById('option-enlarge-font');
     // Size ratio
     var option_enlarge_font_size = document.querySelector('input[name="pp-font-size"]:checked');
+    // @ before username
+    var option_at_before_username = document.getElementById('option-at-before-username');
     
     // Saving parameters
     chrome.storage.sync.set({
@@ -81,7 +85,8 @@ function pp_save_options() {
                 'option_ws_feeds_subscriptions': option_ws_feeds_subscriptions.checked,
                 'option_ws_feeds_blogs': option_ws_feeds_blogs.checked,
         'option_enlarge_font': option_enlarge_font.checked,
-            'option_enlarge_font_size': option_enlarge_font_size.value
+            'option_enlarge_font_size': option_enlarge_font_size.value,
+        'option_at_before_username': option_at_before_username.checked
     }, function() {
         // Update status to let user know options were saved.
         var status = document.getElementById('status');
@@ -173,6 +178,10 @@ function pp_restore_options() {
         // Size ratio
         if (options.option_enlarge_font_size !== undefined) {
             document.getElementById('option-enlarge-font-' + options.option_enlarge_font_size).checked = true;
+        }
+        // @ before username
+        if (options.option_at_before_username == true) {
+            document.getElementById('option-at-before-username').checked = true;
         }
         
         // Showing version
