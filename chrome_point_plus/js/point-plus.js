@@ -332,6 +332,24 @@ $(document).ready(function() {
             });
         }
 
+        // Load pictures from Booru, Tumblr and some other sites
+        if (options.option_images_load_booru == true){
+            load_all_booru_images();
+        }
+        // Parse webm-links and create video instead
+        if (options.option_videos_parse_webm == true){
+            parse_webm();
+        }
+        // Hightlight post with new comments
+        if (options.option_other_hightlight_post_comments == true){
+            mark_unread_post();
+        }
+        // Show recommendation count and unique commentators count
+        if (options.option_other_show_recommendation_count == true){
+            set_posts_count_label();
+        }
+
+
     });
 
     // Showing page action
@@ -353,3 +371,171 @@ var months = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
 ];
+
+
+/* Nokita's functions */
+// Картинки с бурятников
+var booru_picture_count = 0;
+function load_all_booru_images() {
+    $('a').each(function (num, obj) {
+        if ($(obj).hasClass('booru_pic')) {
+            return;
+        }
+
+        var href = obj.href;
+        var n = null;
+
+        if (n = href.match(new RegExp('^https?://danbooru\\.donmai\\.us/posts/([0-9]+)', 'i'))) {
+            var image = create_image('danbooru', n[1]);
+            obj.parentElement.insertBefore(image, obj);
+            booru_picture_count++;
+        } else if (n = href.match(new RegExp('^https?\\://(www\\.)?gelbooru\\.com\\/index\\.php\\?page\\=post&s\\=view&id=([0-9]+)', 'i'))) {
+            var image = create_image('gelbooru', n[2]);
+            obj.parentElement.insertBefore(image, obj);
+            booru_picture_count++;
+        } else if (n = href.match(new RegExp('^https?\\://(www\\.)?safebooru\\.org\\/index\\.php\\?page\\=post&s\\=view&id=([0-9]+)', 'i'))) {
+            var image = create_image('safebooru', n[2]);
+            obj.parentElement.insertBefore(image, obj);
+            booru_picture_count++;
+        } else if (n = href.match(new RegExp('^https?\\://(www\\.)?([a-z0-9-]+\\.)?deviantart\\.com\\/art/[0-9a-z-]+?\\-([0-9]+)(\\?.+)?$', 'i'))) {
+            var image = create_image('deviantart', n[3]);
+            obj.parentElement.insertBefore(image, obj);
+            booru_picture_count++;
+        } else if (n = href.match(new RegExp('^https?\\://(www\\.)?e621\\.net\\/post\\/show\\/([0-9]+)\\/', 'i'))) {
+            var image = create_image('e621', n[2]);
+            obj.parentElement.insertBefore(image, obj);
+            booru_picture_count++;
+        } else if (n = href.match(new RegExp('^https?\\://derpiboo\\.ru\\/([0-9]+)', 'i'))) {
+            var image = create_image('derpibooru', n[1]);
+            obj.parentElement.insertBefore(image, obj);
+            booru_picture_count++;
+        } else if (n = href.match(new RegExp('^https?\\://([0-9a-z-]+)\\.tumblr\\.com\\/post\\/([0-9]+)', 'i'))) {
+            var image = create_image('tumblr', n[2], {'username': n[1]});
+            obj.parentElement.insertBefore(image, obj);
+            booru_picture_count++;
+            /*
+             }else if (n=href.match(new RegExp('^https?\\://(www\\.)?konachan\\.net\\/post\\/show\\/([0-9]+)\\/', 'i'))){
+             var image=create_image('konachannet', n[2]);
+             obj.parentElement.insertBefore(image, obj);
+             booru_picture_count++;
+             }else if (n=href.match(new RegExp('^https?\\://(www\\.)?konachan\\.com\\/post\\/show\\/([0-9]+)\\/', 'i'))){
+             var image=create_image('konachancom', n[2]);
+             obj.parentElement.insertBefore(image, obj);
+             booru_picture_count++;
+             */
+        } else if (n = href.match(new RegExp('^https?://(www\\.)?pixiv\\.net\\/member_illust\\.php\\?mode\\=medium\\&illust_id\\=([0-9]+)', 'i'))) {
+            var image = create_image('pixiv', n[2]);
+            obj.parentElement.insertBefore(image, obj);
+            booru_picture_count++;
+        } else if (n = href.match(new RegExp('^http\\:\\/\\/anime\\-pictures\\.net\\/pictures\\/view_post\\/([0-9]+)', 'i'))) {
+            var image = create_image('animepicturesnet', n[1]);
+            obj.parentElement.insertBefore(image, obj);
+            booru_picture_count++;
+        } else if (false) {
+
+
+        }
+
+    });
+
+}
+
+function create_image(domain, id, additional) {
+    var a = document.createElement('a');
+    a.href = 'https://api.kanaria.ru/point/get_booru_picture.php?domain=' + domain + '&id=' + id;
+    if (typeof(additional) != 'undefined') {
+        for (var index in additional) {
+            a.href += '&add_' + encodeURIComponent(index) + '=' + encodeURIComponent(additional[index]);
+        }
+    }
+    a.id = 'booru_pic_' + booru_picture_count;
+    $(a).addClass('booru_pic').addClass('booru-' + domain + '-' + id);
+    a.title = domain + ' image #' + id;
+    a.target = '_blank';
+
+    var image = document.createElement('img');
+    image.alt = a.title;
+    image.src = a.href;
+    a.appendChild(image);
+
+    return a;
+}
+
+/* point */
+// Эта часть написана @RainbowSpike
+function mark_unread_post() {
+    // @todo Проверить работает ли
+    var divs = $(".post"); // массив постов
+    for (var i = 0; i < divs.length; i++) { // обыск постов
+        var spans = $(divs[i]).find(".unread"); // поиск метки непрочитанных комментов
+        if (spans.length > 0) { // если в посте есть непрочитанные комменты...
+            $(divs[i]).css({//...залить пост зеленоватым и скруглить
+                'background-color': '#EEFFEE',
+                'border-radius': '10px'
+            });
+        }
+    }
+
+}
+
+// Webm
+function parse_webm() {
+    $('a').each(function (num, obj) {
+        if ($(obj).hasClass('booru_pic')) {
+            return;
+        }
+
+        var href = obj.href;
+        var n = null;
+
+        if (n = href.match(new RegExp('\\.webm(\\?.+)?$', 'i'))) {
+            var player = document.createElement('video');
+            // @todo Там может быть не vp8+vorbis
+            $(player).html('<source src="' + href + '" type=\'video/webm; codecs="vp8, vorbis"\' />').attr('controls', 'controls').css({
+                'display': 'block',
+                'max-width': '95%'
+            }).addClass('parsed-webm-link');
+
+            obj.parentElement.insertBefore(player, obj);
+        }
+    });
+}
+
+// Плашки у постов
+function set_posts_count_label() {
+    var ids = [];
+    $('div.post').each(function (num, obj) {
+        var t = $(obj).attr('data-comment-id');
+        if (typeof(t) !== 'undefined') {
+            return;
+        }
+        var id = $(obj).attr('data-id');
+        ids.push(id);
+    });
+
+    $ajax({
+        'url': 'https://api.kanaria.ru/point/get_post_info.php?list=' + urlencode(ids.join(',')),
+        'success': function (a) {
+            var answer = JSON.parse(a);
+
+            $('div.post').each(function (num, obj) {
+                var id = $(obj).attr('data-id');
+                var postid = $(obj).find('.post-id a')[0];
+                var t = $(obj).attr('data-comment-id');
+                if (typeof(t) !== 'undefined') {
+                    return;
+                }
+
+                var e1 = document.createElement('span');
+                $(e1).addClass('authors_unique_count').html(answer.list[id].count_comment_unique).attr('title', 'Количество комментаторов');
+                postid.appendChild(e1);
+
+                var e2 = document.createElement('span');
+                $(e2).addClass('recomendation_count').html('~' + answer.list[id].count_recommendation).attr('title', 'Количество рекомендаций. Работает криво, спасибо @arts\'у за это');
+                postid.appendChild(e2);
+            });
+        }
+
+    })
+
+}
