@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Point+",
-    "version": "1.8",
+    "version": "1.8.1",
     "author": "Alexey Skobkin",
     "homepage_url": "https://bitbucket.org/skobkin/chrome_point_plus",
     "description": "More features for point.im",
@@ -29,6 +29,7 @@
                     "js/jquery-1.10.1.min.js",
                     "js/jquery.fancybox.pack.js", "js/jquery.fancybox-media.js",
                     "js/markitup/jquery.markitup.js", "js/markitup/sets/markdown/set.js",
+					"js/bquery_ajax.js",
                     "js/options.js",
                     "js/point-plus.js"
                     ],

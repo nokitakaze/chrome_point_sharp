@@ -155,3 +155,28 @@ div#markItUpText-input {
     margin-top: 6px;
     text-align: right;
 }
+
+/* Auto-loaded Booru pictures */
+.booru_pic{
+ display: block;
+}
+
+.booru_pic img{
+ border: none;
+ max-width:  60%;
+ max-height: 300px;
+}
+
+/* Labels in post */
+.post .post-id a .authors_unique_count, .post .post-id a .recomendation_count{
+ padding: 0 .5em;
+ font-weight: normal;
+ color: #35587c;
+ background: #f2f2eb;
+}
+
+.post .post-id a .recomendation_count{
+ margin-left: 0.2em;
+ background: #f2eceb;
+}
+
