@@ -36,9 +36,22 @@ $(document).ready(function() {
             }
             // Posts
             if (options.option_fancybox_posts == true) {
-                $('.post-id a').attr('data-fancybox-type', 'iframe').fancybox({
+                // Excluding some sort of piece-of-shit makeup
+                $('.post-id a').not('#comments .post-id a, #top-post .post-id a').attr('data-fancybox-type', 'iframe').fancybox({
                     maxWidth: 780
                 });
+            }
+        }
+        
+        // Embedding
+        if (options.option_embedding == true) {
+            // Load pictures from Booru, Tumblr and some other sites
+            if (options.option_images_load_booru == true){
+                load_all_booru_images();
+            }
+            // Parse webm-links and create video instead
+            if (options.option_videos_parse_webm == true){
+                parse_webm();
             }
         }
 
@@ -332,14 +345,6 @@ $(document).ready(function() {
             });
         }
 
-        // Load pictures from Booru, Tumblr and some other sites
-        if (options.option_images_load_booru == true){
-            load_all_booru_images();
-        }
-        // Parse webm-links and create video instead
-        if (options.option_videos_parse_webm == true){
-            parse_webm();
-        }
         // Hightlight post with new comments
         if (options.option_other_hightlight_post_comments == true){
             mark_unread_post();
