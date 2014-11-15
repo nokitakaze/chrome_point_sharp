@@ -1,10 +1,22 @@
 var ppOptions = [
     // Fancybox
-    'option_fancybox', 'option_fancybox_images', 'option_fancybox_videos', 'option_fancybox_posts',
+    'option_fancybox',
+        // Open images in Fancybox
+        'option_fancybox_images',
+        // Open videos in Fancybox
+        'option_fancybox_videos',
+        // Open posts in Fancybox
+        'option_fancybox_posts',
     // CTRL+Enter
     'option_ctrl_enter',
     // Load original images
-    'option_images_load_original', 
+    'option_images_load_original',
+    // Embedding
+    'option_embedding',
+        // Load images from Gelbooru, Danbooru, etc
+        'option_images_load_booru',
+        // Wrap WEBM videos into the <video> tag
+        'option_videos_parse_webm',
     // Fluid layout
     'option_fluid_layout', 
     // Visual editor for posts
@@ -21,13 +33,9 @@ var ppOptions = [
     'option_enlarge_font', 'option_enlarge_font_size',
     // @ before username
     'option_at_before_username',
-    //
-    'option_images_load_booru',
-    //
-    'option_videos_parse_webm',
-    //
+    // Highlight posts with new comments
     'option_other_hightlight_post_comments',
-    //
+    // Show recommendations and unique comments count
     'option_other_show_recommendation_count',
 ];
 
@@ -48,6 +56,8 @@ function pp_save_options() {
     var option_fluid_layout = document.getElementById('option-layout-fluid');
     // Load original images
     var option_images_load_original = document.getElementById('option-images-load-original');
+    // Embedding
+    var option_embedding = document.getElementById('option-embedding');
     // Visual editor for posts
     var option_visual_editor_post = document.getElementById('option-visual-editor-post');
     // Google search
@@ -83,6 +93,7 @@ function pp_save_options() {
             'option_fancybox_posts': option_fancybox_posts.checked,
         'option_fluid_layout': option_fluid_layout.checked,
         'option_images_load_original': option_images_load_original.checked,
+        'option_embedding': option_embedding.checked,
         'option_visual_editor_post': option_visual_editor_post.checked,
         'option_search_with_google': checkbox_search_with_google.checked,
         'option_ws': option_ws.checked,
@@ -143,6 +154,10 @@ function pp_restore_options() {
         // Load original images
         if (options.option_images_load_original == true) {
             document.getElementById('option-images-load-original').checked = true;
+        }
+        // Embedding
+        if (options.option_embedding == true) {
+            document.getElementById('option-embedding').checked = true;
         }
         // Visual editor for posts
         if (options.option_visual_editor_post == true) {
