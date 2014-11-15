@@ -210,7 +210,7 @@ function pp_restore_options() {
 
         // Showing version
         document.getElementById('pp-version').innerHTML = 'Point+ ' + getVersion() 
-                + ' by <a href="https://skobkin-ru.point.im/" target="_blank">@skobkin-ru</a>\n\
+                + ' by <a href="https://skobkin-ru.point.im/" target="_blank">@skobkin-ru</a><br>\n\
                      & <a href="https://nokitakaze.point.im/" target="_blank">@NokitaKaze</a>';
     });
     
