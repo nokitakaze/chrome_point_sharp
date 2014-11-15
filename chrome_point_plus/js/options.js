@@ -7,6 +7,8 @@ var ppOptions = [
         'option_fancybox_videos',
         // Open posts in Fancybox
         'option_fancybox_posts',
+        // Bind all images from fancybox to one flow
+        'option_fancybox_bind_images_to_one_flow',
     // CTRL+Enter
     'option_ctrl_enter',
     // Load original images
@@ -47,6 +49,7 @@ function pp_save_options() {
     ppOptions.option_fancybox_images = document.getElementById('option-fancybox-images').checked;
     ppOptions.option_fancybox_videos = document.getElementById('option-fancybox-videos').checked;
     ppOptions.option_fancybox_posts = document.getElementById('option-fancybox-posts').checked;
+    ppOptions.option_fancybox_bind_images_to_one_flow = document.getElementById('option-fancybox-bind-images-to-one-flow').checked;
     ppOptions.option_fluid_layout = document.getElementById('option-fluid-layout').checked;
     ppOptions.option_images_load_original = document.getElementById('option-images-load-original').checked;
     ppOptions.option_embedding = document.getElementById('option-embedding').checked;
@@ -66,7 +69,8 @@ function pp_save_options() {
     ppOptions.option_at_before_username = document.getElementById('option-at-before-username').checked;
     ppOptions.option_other_hightlight_post_comments = document.getElementById('option-other-hightlight-post-comments').checked;
     ppOptions.option_other_show_recommendation_count = document.getElementById('option-other-show-recommendation-count').checked;
-    
+
+
     // Saving parameters
     chrome.storage.sync.set(ppOptions, function() {
         // Update status to let user know options were saved.
