@@ -8,17 +8,40 @@ $(document).ready(function() {
     chrome.storage.sync.get(ppOptions, function(options) {
         // Options debug
         console.debug('Options loaded: %O', options);
-        
+
+        // Embedding
+        if (options.option_embedding == true) {
+            // Load pictures from Booru, Tumblr and some other sites
+            if (options.option_images_load_booru == true){
+                load_all_booru_images();
+            }
+            // Parse webm-links and create video instead
+            if (options.option_videos_parse_webm == true){
+                parse_webm();
+            }
+        }
+
         // Fancybox
         if (options.option_fancybox == true) {
+            if (options.option_fancybox_bind_images_to_one_flow==true){
+                // Linking images in posts to the galleries
+                $('.post-content .text').each(function () {
+                    $(this).find('a.postimg:not(.youtube)').attr('rel', 'one_flow_gallery');
+                });
+            }
+
             // Images
             if (options.option_fancybox_images == true) {
-                // Linking images in posts to the galleries
-                $('.post-content .text').each(function(idxPost) {
-                    $(this).find('a.postimg:not(.youtube)').attr('rel', 'post' + idxPost);
-                });
+                if (options.option_fancybox_bind_images_to_one_flow!==true) {
+                    // Linking images in posts to the galleries
+                    $('.post-content .text').each(function (idxPost) {
+                        $(this).find('a.postimg:not(.youtube)').attr('rel', 'post' + idxPost);
+                    });
+                }
                 // Init fancybox
-                $('.postimg:not(.youtube)').fancybox();
+                $('.postimg:not(.youtube)').fancybox({
+                    type: 'image'
+                });
             }
             // Videos
             if (options.option_fancybox_videos == true) {
@@ -43,18 +66,6 @@ $(document).ready(function() {
             }
         }
         
-        // Embedding
-        if (options.option_embedding == true) {
-            // Load pictures from Booru, Tumblr and some other sites
-            if (options.option_images_load_booru == true){
-                load_all_booru_images();
-            }
-            // Parse webm-links and create video instead
-            if (options.option_videos_parse_webm == true){
-                parse_webm();
-            }
-        }
-
         // Hotkeys
         // Send by CTRL+Enter
         if (options.option_ctrl_enter == true) {
@@ -453,10 +464,11 @@ function create_image(domain, id, additional) {
             a.href += '&add_' + encodeURIComponent(index) + '=' + encodeURIComponent(additional[index]);
         }
     }
-    a.id = 'booru_pic_' + booru_picture_count;
-    $(a).addClass('booru_pic').addClass('booru-' + domain + '-' + id);
-    a.title = domain + ' image #' + id;
-    a.target = '_blank';
+    $(a).addClass('booru_pic').addClass('booru-' + domain + '-' + id).addClass('postimg').attr({
+        'id': 'booru_pic_' + booru_picture_count,
+        'title': domain + ' image #' + id,
+        'target': '_blank'
+    });
 
     var image = document.createElement('img');
     image.alt = a.title;
