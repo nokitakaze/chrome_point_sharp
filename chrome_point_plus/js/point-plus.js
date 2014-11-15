@@ -36,7 +36,8 @@ $(document).ready(function() {
             }
             // Posts
             if (options.option_fancybox_posts == true) {
-                $('.post-id a').attr('data-fancybox-type', 'iframe').fancybox({
+                // Excluding some sort of piece-of-shit makeup
+                $('.post-id a').not('#comments .post-id a, #top-post .post-id a').attr('data-fancybox-type', 'iframe').fancybox({
                     maxWidth: 780
                 });
             }
