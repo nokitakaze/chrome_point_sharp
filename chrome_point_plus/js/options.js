@@ -19,6 +19,8 @@ var ppOptions = [
         'option_images_load_booru',
         // Wrap WEBM videos into the <video> tag
         'option_videos_parse_webm',
+        // Pleer.com
+        'option_embedding_pleercom',
     // Fluid layout
     'option_fluid_layout', 
     // Visual editor for posts
@@ -55,6 +57,7 @@ function pp_save_options() {
     ppOptions.option_embedding = document.getElementById('option-embedding').checked;
     ppOptions.option_images_load_booru = document.getElementById('option-images-load-booru').checked;
     ppOptions.option_videos_parse_webm = document.getElementById('option-videos-parse-webm').checked;
+    ppOptions.option_embedding_pleercom = document.getElementById('option-embedding-pleercom').checked;
     ppOptions.option_visual_editor_post = document.getElementById('option-visual-editor-post').checked;
     ppOptions.checkbox_search_with_google = document.getElementById('option-search-with-google').checked;
     ppOptions.option_ws = document.getElementById('option-ws').checked;

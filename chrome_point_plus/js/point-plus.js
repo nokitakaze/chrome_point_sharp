@@ -19,6 +19,10 @@ $(document).ready(function() {
             if (options.option_videos_parse_webm == true){
                 parse_webm();
             }
+            // Parse webm-links and create video instead
+            if (options.option_embedding_pleercom == true){
+                parse_pleercom_links();
+            }
         }
 
         // Fancybox
@@ -554,5 +558,24 @@ function set_posts_count_label() {
         }
 
     })
+
+}
+
+function parse_pleercom_links(){
+    $('a').each(function (num, obj) {
+        var href = obj.href;
+        var n = null;
+
+        if (n = href.match(new RegExp('^https?:\\/\\/pleer\\.com\\/tracks\\/([0-9a-z]+)', 'i'))) {
+            var player = document.createElement('audio');
+            $(player).attr({
+                'src':'https://api.kanaria.ru/point/get_pleer_file.php?id='+n[1],
+                'controls':'controls'
+            }).addClass('embeded_audio');
+
+            obj.parentElement.insertBefore(player, obj);
+        }
+    });
+
 
 }

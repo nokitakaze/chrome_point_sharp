@@ -181,3 +181,7 @@ div#markItUpText-input {
     background: #f2eceb;
 }
 
+/* Embeded audio */
+audio.embeded_audio{
+    display: block;
+}
