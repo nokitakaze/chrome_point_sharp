@@ -47,7 +47,7 @@ function pp_save_options() {
     ppOptions.option_fancybox_images = document.getElementById('option-fancybox-images').checked;
     ppOptions.option_fancybox_videos = document.getElementById('option-fancybox-videos').checked;
     ppOptions.option_fancybox_posts = document.getElementById('option-fancybox-posts').checked;
-    ppOptions.option_fluid_layout = document.getElementById('option-layout-fluid').checked;
+    ppOptions.option_fluid_layout = document.getElementById('option-fluid-layout').checked;
     ppOptions.option_images_load_original = document.getElementById('option-images-load-original').checked;
     ppOptions.option_embedding = document.getElementById('option-embedding').checked;
     ppOptions.option_images_load_booru = document.getElementById('option-images-load-booru').checked;
@@ -82,106 +82,24 @@ function pp_save_options() {
 function pp_restore_options() {
     // Loading options
     chrome.storage.sync.get(ppOptions, function(options) {
-        // CTRL+Enter
-        if (options.option_ctrl_enter == true) {
-            document.getElementById('option-ctrl-enter').checked = true;
-        }
-        // Fancybox
-        //
-        if (options.option_fancybox == true) {
-            document.getElementById('option-fancybox').checked = true;
-        }
-        // Images
-        if (options.option_fancybox_images == true) {
-            document.getElementById('option-fancybox-images').checked = true;
-        }
-        // Videos
-        if (options.option_fancybox_videos == true) {
-            document.getElementById('option-fancybox-videos').checked = true;
-        }
-        // Posts
-        if (options.option_fancybox_posts == true) {
-            document.getElementById('option-fancybox-posts').checked = true;
-        }
-        // Fluid layout
-        if (options.option_fluid_layout == true) {
-            document.getElementById('option-layout-fluid').checked = true;
-        }
-        // Load original images
-        if (options.option_images_load_original == true) {
-            document.getElementById('option-images-load-original').checked = true;
-        }
-        // Embedding
-        if (options.option_embedding == true) {
-            document.getElementById('option-embedding').checked = true;
-        }
-        // Load images from Gelbooru, Danbooru, etc
-        if (options.option_images_load_booru == true) {
-            document.getElementById('option-images-load-booru').checked = true;
-        }
-        // Wrap WEBM videos into the <video> tag
-        if (options.option_videos_parse_webm == true) {
-            document.getElementById('option-videos-parse-webm').checked = true;
-        }
-        // Visual editor for posts
-        if (options.option_visual_editor_post == true) {
-            document.getElementById('option-visual-editor-post').checked = true;
-        }
-        // Google search
-        if (options.option_search_with_google == true) {
-            document.getElementById('option-search-with-google').checked = true;
-        }
-        // WebSocket
-        //
-        if (options.option_ws == true) {
-            document.getElementById('option-ws').checked = true;
-        }
-        // Comments
-        if (options.option_ws_comments == true) {
-            document.getElementById('option-ws-comments').checked = true;
-        }
-        // Fade out highlight comments
-        if (options.option_ws_comments_color_fadeout == true) {
-            document.getElementById('option-ws-comments-color-fadeout').checked = true;
-        }
-        // Comments desktop notifications
-        if (options.option_ws_comments_notifications == true) {
-            document.getElementById('option-ws-comments-notifications').checked = true;
-        }
-        // Feeds
-        if (options.option_ws_feeds == true) {
-            document.getElementById('option-ws-feeds').checked = true;
-        }
-        // Subscriptions
-        if (options.option_ws_feeds_subscriptions == true) {
-            document.getElementById('option-ws-feeds-subscriptions').checked = true;
-        }
-        // Blogs
-        if (options.option_ws_feeds_blogs == true) {
-            document.getElementById('option-ws-feeds-blogs').checked = true;
-        }
-        // Font size
-        if (options.option_enlarge_font == true) {
-            document.getElementById('option-enlarge-font').checked = true;
-        }
-        // Size ratio
-        if (options.option_enlarge_font_size !== undefined) {
-            document.getElementById('option-enlarge-font-' + options.option_enlarge_font_size).checked = true;
-        }
-        // @ before username
-        if (options.option_at_before_username == true) {
-            document.getElementById('option-at-before-username').checked = true;
-        }
-        // Highlight posts with new comments
-        if (options.option_other_hightlight_post_comments == true) {
-            document.getElementById('option-other-hightlight-post-comments').checked = true;
-        }
-        // Show recommendations and unique comments count
-        if (options.option_other_show_recommendation_count == true) {
-            document.getElementById('option-other-show-recommendation-count').checked = true;
-        }
-
-
+        // Setting options in DOM
+        $.each(options, function(key, value) {
+            var optionId = null;
+            
+            // Detecting option type
+            if (typeof(value) == 'boolean') {
+                // Checkbox
+                optionId = '#' + key.replace(/_/g, '-');
+                if (value === true) {
+                    $(optionId).first().prop('checked', true);
+                }
+            } else if (typeof(value) == 'number') {
+                // Radio select
+                optionId = '#' + key.replace(/_/g, '-') + '-' + value;
+                $(optionId).first().prop('checked', true);
+            }
+        });
+        
         // Showing version
         document.getElementById('pp-version').innerHTML = 'Point+ ' + getVersion() 
                 + ' by <a href="https://skobkin-ru.point.im/" target="_blank">@skobkin-ru</a><br>\n\
