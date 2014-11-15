@@ -166,10 +166,6 @@ function pp_restore_options() {
             document.getElementById('option-ws-comments-color-fadeout').checked = true;
         }
         // Comments desktop notifications
-        // Disabling for Opera
-        if (/OPR/.test(navigator.userAgent)) {
-            document.getElementById('option-ws-comments-notifications').setAttribute('disabled', 'disabled');
-        }
         if (options.option_ws_comments_notifications == true) {
             document.getElementById('option-ws-comments-notifications').checked = true;
         }
@@ -213,7 +209,9 @@ function pp_restore_options() {
 
 
         // Showing version
-        document.getElementById('pp-version').innerHTML = 'Point+ ' + getVersion() + ' by <a href="http://skobkin-ru.point.im/" target="_blank">@skobkin-ru</a>';
+        document.getElementById('pp-version').innerHTML = 'Point+ ' + getVersion() 
+                + ' by <a href="https://skobkin-ru.point.im/" target="_blank">@skobkin-ru</a>\n\
+                     & <a href="https://nokitakaze.point.im/" target="_blank">@NokitaKaze</a>';
     });
     
 
