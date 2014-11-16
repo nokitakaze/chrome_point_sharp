@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Point+",
-    "version": "1.10.2",
+    "version": "1.11.0",
     "author": "Alexey Skobkin",
     "homepage_url": "https://bitbucket.org/skobkin/chrome_point_plus",
     "description": "More features for point.im",
@@ -53,6 +53,9 @@
         "http://*.point.im/*",
         "https://*.point.im/*",
         "https://pleer.com/*",
+        "http://player.soundcloud.com/*",
+        "https://player.soundcloud.com/*",
+        "https://api.kanaria.ru/point/*",
         "storage",
         "notifications",
         "tabs"

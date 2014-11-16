@@ -34,10 +34,10 @@ $(document).ready(function() {
 
                     $player = $('<div class="pp-soundcloud">\
                                     <object height="81" width="100%" id="pp-soundcloud-' + index + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">\
-                                      <param name="movie" value="http://player.soundcloud.com/player.swf?url=' + encodeURIComponent($(this).prop('href'))
+                                      <param name="movie" value="//player.soundcloud.com/player.swf?url=' + encodeURIComponent($(this).prop('href'))
                     + '&enable_api=true&object_id=pp-soundcloud-' + index + '">\
                                       <param name="allowscriptaccess" value="always">\
-                                      <embed allowscriptaccess="always" height="81" src="http://player.soundcloud.com/player.swf?url='
+                                      <embed allowscriptaccess="always" height="81" src="//player.soundcloud.com/player.swf?url='
                     + encodeURIComponent($(this).prop('href')) + '&enable_api=true&object_id=pp-soundcloud-' + index
                     + '" type="application/x-shockwave-flash" width="100%" name="pp-soundcloud-' + index + '"></embed>\
                                     </object>\
