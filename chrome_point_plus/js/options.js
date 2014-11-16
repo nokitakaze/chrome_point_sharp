@@ -19,6 +19,9 @@ var ppOptions = [
         'option_images_load_booru',
         // Wrap WEBM videos into the <video> tag
         'option_videos_parse_webm',
+        // SoundCloud
+        'option_embedding_soundcloud',
+            'option_embedding_soundcloud_orig_link',
     // Fluid layout
     'option_fluid_layout', 
     // Visual editor for posts
@@ -44,38 +47,39 @@ var ppOptions = [
 // Saves options to localStorage.
 function pp_save_options() {
     ppOptions = {};
-    ppOptions.option_ctrl_enter = document.getElementById('option-ctrl-enter').checked;
-    ppOptions.option_fancybox = document.getElementById('option-fancybox').checked;
-    ppOptions.option_fancybox_images = document.getElementById('option-fancybox-images').checked;
-    ppOptions.option_fancybox_videos = document.getElementById('option-fancybox-videos').checked;
-    ppOptions.option_fancybox_posts = document.getElementById('option-fancybox-posts').checked;
-    ppOptions.option_fancybox_bind_images_to_one_flow = document.getElementById('option-fancybox-bind-images-to-one-flow').checked;
-    ppOptions.option_fluid_layout = document.getElementById('option-fluid-layout').checked;
-    ppOptions.option_images_load_original = document.getElementById('option-images-load-original').checked;
-    ppOptions.option_embedding = document.getElementById('option-embedding').checked;
-    ppOptions.option_images_load_booru = document.getElementById('option-images-load-booru').checked;
-    ppOptions.option_videos_parse_webm = document.getElementById('option-videos-parse-webm').checked;
-    ppOptions.option_visual_editor_post = document.getElementById('option-visual-editor-post').checked;
-    ppOptions.checkbox_search_with_google = document.getElementById('option-search-with-google').checked;
-    ppOptions.option_ws = document.getElementById('option-ws').checked;
-    ppOptions.option_ws_comments = document.getElementById('option-ws-comments').checked;
-    ppOptions.option_ws_comments_color_fadeout = document.getElementById('option-ws-comments-color-fadeout').checked;
-    ppOptions.option_ws_comments_notifications = document.getElementById('option-ws-comments-notifications').checked;
-    ppOptions.option_ws_feeds = document.getElementById('option-ws-feeds').checked;
-    ppOptions.option_ws_feeds_subscriptions = document.getElementById('option-ws-feeds-subscriptions').checked;
-    ppOptions.option_ws_feeds_blogs = document.getElementById('option-ws-feeds-blogs').checked;
-    ppOptions.option_enlarge_font = document.getElementById('option-enlarge-font').checked;
+    ppOptions.option_ctrl_enter = $('#option-ctrl-enter').prop('checked');
+    ppOptions.option_fancybox = $('#option-fancybox').prop('checked');
+    ppOptions.option_fancybox_images = $('#option-fancybox-images').prop('checked');
+    ppOptions.option_fancybox_videos = $('#option-fancybox-videos').prop('checked');
+    ppOptions.option_fancybox_posts = $('#option-fancybox-posts').prop('checked');
+    ppOptions.option_fancybox_bind_images_to_one_flow = $('#option-fancybox-bind-images-to-one-flow').prop('checked');
+    ppOptions.option_fluid_layout = $('#option-fluid-layout').prop('checked');
+    ppOptions.option_images_load_original = $('#option-images-load-original').prop('checked');
+    ppOptions.option_embedding = $('#option-embedding').prop('checked');
+    ppOptions.option_images_load_booru = $('#option-images-load-booru').prop('checked');
+    ppOptions.option_videos_parse_webm = $('#option-videos-parse-webm').prop('checked');
+    ppOptions.option_embedding_soundcloud = $('#option-embedding-soundcloud').prop('checked');
+    ppOptions.option_embedding_soundcloud_orig_link = $('#option-embedding-soundcloud-orig-link').prop('checked');
+    ppOptions.option_visual_editor_post = $('#option-visual-editor-post').prop('checked');
+    ppOptions.checkbox_search_with_google = $('#option-search-with-google').prop('checked');
+    ppOptions.option_ws = $('#option-ws').prop('checked');
+    ppOptions.option_ws_comments = $('#option-ws-comments').prop('checked');
+    ppOptions.option_ws_comments_color_fadeout = $('#option-ws-comments-color-fadeout').prop('checked');
+    ppOptions.option_ws_comments_notifications = $('#option-ws-comments-notifications').prop('checked');
+    ppOptions.option_ws_feeds = $('#option-ws-feeds').prop('checked');
+    ppOptions.option_ws_feeds_subscriptions = $('#option-ws-feeds-subscriptions').prop('checked');
+    ppOptions.option_ws_feeds_blogs = $('#option-ws-feeds-blogs').prop('checked');
+    ppOptions.option_enlarge_font = $('#option-enlarge-font').prop('checked');
     ppOptions.option_enlarge_font_size = document.querySelector('input[name="pp-font-size"]:checked').value;
-    ppOptions.option_at_before_username = document.getElementById('option-at-before-username').checked;
-    ppOptions.option_other_hightlight_post_comments = document.getElementById('option-other-hightlight-post-comments').checked;
-    ppOptions.option_other_show_recommendation_count = document.getElementById('option-other-show-recommendation-count').checked;
+    ppOptions.option_at_before_username = $('#option-at-before-username').prop('checked');
+    ppOptions.option_other_hightlight_post_comments = $('#option-other-hightlight-post-comments').prop('checked');
+    ppOptions.option_other_show_recommendation_count = $('#option-other-show-recommendation-count').prop('checked');
 
 
     // Saving parameters
     chrome.storage.sync.set(ppOptions, function() {
         // Update status to let user know options were saved.
-        var status = document.getElementById('status');
-        status.innerHTML = 'Options Saved.';
+        $('#status').html('Options Saved.');
         setTimeout(function() {
             window.close();
         }, 1500);
@@ -105,9 +109,10 @@ function pp_restore_options() {
         });
         
         // Showing version
-        document.getElementById('pp-version').innerHTML = 'Point+ ' + getVersion() 
+        $('#pp-version').html('Point+ ' + getVersion() 
                 + ' by <a href="https://skobkin-ru.point.im/" target="_blank">@skobkin-ru</a><br>\n\
-                     & <a href="https://nokitakaze.point.im/" target="_blank">@NokitaKaze</a>';
+                     & <a href="https://nokitakaze.point.im/" target="_blank">@NokitaKaze</a>'
+        );
     });
     
 

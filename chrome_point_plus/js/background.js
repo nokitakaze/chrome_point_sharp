@@ -22,8 +22,12 @@ chrome.extension.onMessage.addListener(function(message, sender) {
                 )); 
                 break;
                 
-            case 'injectJS':
-                
+            case 'injectJSFile':
+                console.log('Injecting JS: %s', message.file);
+                chrome.tabs.executeScript(null, {
+                    file: message.file
+                    //,runAt: 'document_end'
+                });
                 break;
                 
             case 'injectCSSFile':

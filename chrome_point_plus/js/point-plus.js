@@ -19,6 +19,39 @@ $(document).ready(function() {
             if (options.option_videos_parse_webm == true){
                 parse_webm();
             }
+            // Soundcloud
+            if (options.option_embedding_soundcloud == true) {
+                // Injecting JS API
+                chrome.extension.sendMessage({
+                    type: 'injectJSFile',
+                    file: 'js/soundcloud/soundcloud.player.api.js'
+                });
+                
+                // Processing links 
+                $('.post .text-content a[href*="\\:\\/\\/soundcloud\\.com\\/"]').each(function(index) {
+                    console.log($(this));
+                    
+                    $player = $('<div class="pp-soundcloud">\
+                                    <object height="81" width="100%" id="pp-soundcloud-' + index + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">\
+                                      <param name="movie" value="http://player.soundcloud.com/player.swf?url=' + encodeURIComponent($(this).prop('href')) 
+                                            + '&enable_api=true&object_id=pp-soundcloud-' + index + '"></param>\
+                                      <param name="allowscriptaccess" value="always"></param>\
+                                      <embed allowscriptaccess="always" height="81" src="http://player.soundcloud.com/player.swf?url=' 
+                                            + encodeURIComponent($(this).prop('href')) + '&enable_api=true&object_id=pp-soundcloud-' + index 
+                                            + '" type="application/x-shockwave-flash" width="100%" name="pp-soundcloud-' + index + '"></embed>\
+                                    </object>\
+                                </div>');
+                    
+                    // Replace or prepend
+                    if (options.option_embedding_soundcloud_orig_link == true) {
+                        // Before
+                        $(this).before($player);
+                    } else {
+                        // Replace
+                        $(this).replaceWith($player);
+                    }
+                });
+            }
         }
 
         // Fancybox
