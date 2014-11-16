@@ -28,7 +28,7 @@ $(document).ready(function() {
                 });
                 
                 // Processing links 
-                $('.post .text-content a[href*="\\:\\/\\/soundcloud\\.com\\/"]').each(function(index) {
+                $('.post .post-content a[href*="\\:\\/\\/soundcloud\\.com\\/"]').each(function(index) {
                     console.log($(this));
                     
                     $player = $('<div class="pp-soundcloud">\
