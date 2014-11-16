@@ -647,7 +647,9 @@ function create_pleercom_ajax(id){
         'url':'https://pleer.com/site_api/files/get_url',
         'type':'post',
         'postdata':'action=download&id='+id,
+        'dont_set_content_type':true,
         'pleer_id':id,
+        'headers':[['Accept','*'],['Content-Type','application/x-www-form-urlencoded; charset=UTF-8']],
         'success': function (a) {
             var answer = JSON.parse(a);
             var player = document.createElement('audio');

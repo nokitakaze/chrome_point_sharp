@@ -4,7 +4,10 @@ function $ajax_prot(settings){
  if (settings['async']   !==undefined){this.async   =settings['async'];}
  if (settings['type']    !==undefined){this.type    =settings['type'];}
  if (settings['postdata']!==undefined){this.postdata=settings['postdata'];}
- 
+ if (settings['dont_set_content_type']!==undefined){
+     this.dont_set_content_type=settings['dont_set_content_type'];
+ }
+
  this.xhr=new XMLHttpRequest();
  this.xhr.parent  =this;
  this.xhr.settings=settings;
@@ -12,7 +15,9 @@ function $ajax_prot(settings){
  this.xhr.error   =settings['error'];
  this.xhr.onreadystatechange=this.change;
  this.xhr.open(this.type, this.url, this.async);
- if (this.type=='POST'){this.xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');}
+ if ((this.type=='POST')&& !this.dont_set_content_type){
+  this.xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+ }
  if (settings.headers!==undefined){
   for (var i=0;i<settings.headers.length;i++){
    this.xhr.setRequestHeader(settings.headers[i][0], settings.headers[i][1]);
@@ -22,12 +27,13 @@ function $ajax_prot(settings){
 }
 
 $ajax_prot.prototype={
- version: '0.0.4a',
+ version: '0.0.5a',
  url:     '',
  type:    'GET',
  async:   true,
  postdata:null,
  xhr:     null,
+ dont_set_content_type: false,
  change:function(){
   if (this.readyState!==4){return;}
   if (this.status==200){

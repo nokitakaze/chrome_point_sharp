@@ -52,6 +52,7 @@
     "permissions": [
         "http://*.point.im/*",
         "https://*.point.im/*",
+        "https://pleer.com/*",
         "storage",
         "notifications",
         "tabs"
