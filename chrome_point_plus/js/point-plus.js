@@ -35,7 +35,7 @@ $(document).ready(function() {
                     $player = $('<div class="pp-soundcloud">\
                                     <object height="81" width="100%" id="pp-soundcloud-' + index + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">\
                                       <param name="movie" value="http://player.soundcloud.com/player.swf?url=' + encodeURIComponent($(this).prop('href'))
-                    + '&enable_api=true&object_id=pp-soundcloud-' + index + '"></param>\
+                    + '&enable_api=true&object_id=pp-soundcloud-' + index + '">\
                                       <param name="allowscriptaccess" value="always">\
                                       <embed allowscriptaccess="always" height="81" src="http://player.soundcloud.com/player.swf?url='
                     + encodeURIComponent($(this).prop('href')) + '&enable_api=true&object_id=pp-soundcloud-' + index
@@ -520,7 +520,6 @@ function create_image(domain, id, additional) {
 /* point */
 // Эта часть написана @RainbowSpike
 function mark_unread_post() {
-    // @todo Проверить работает ли
     var divs = $(".post"); // массив постов
     for (var i = 0; i < divs.length; i++) { // обыск постов
         var spans = $(divs[i]).find(".unread"); // поиск метки непрочитанных комментов
@@ -583,6 +582,7 @@ function set_posts_count_label() {
                 }
 
                 var e1 = document.createElement('span');
+                if (typeof(answer.list[id])=='undefined'){return;}
                 $(e1).addClass('authors_unique_count').html(answer.list[id].count_comment_unique).attr('title', 'Количество комментаторов');
                 postid.appendChild(e1);
 
@@ -596,7 +596,17 @@ function set_posts_count_label() {
 
 }
 
-function parse_pleercom_links() {
+function parse_pleercom_links(){
+    chrome.storage.sync.get(ppOptions, function(options) {
+        if (options.option_embedding_pleercom_nokita_server){
+            parse_pleercom_links_nokita();
+        }else{
+            parse_pleercom_links_ajax();
+        }
+    });
+}
+
+function parse_pleercom_links_nokita() {
     $('a').each(function (num, obj) {
         var href = obj.href;
         var n = null;
@@ -607,11 +617,53 @@ function parse_pleercom_links() {
                 'src': 'https://api.kanaria.ru/point/get_pleer_file.php?id=' + n[1],
                 'controls': 'controls',
                 'preload': 'none'
-            }).addClass('embeded_audio');
+            });
 
-            obj.parentElement.insertBefore(player, obj);
+            var player_div=document.createElement('div');
+            $(player_div).addClass('embeded_audio').addClass('embeded_audio_'+n[1]);
+            player_div.appendChild(player);
+
+            obj.parentElement.insertBefore(player_div, obj);
         }
     });
+}
 
+function parse_pleercom_links_ajax(){
+    $('a').each(function (num, obj) {
+        var href = obj.href;
+        var n = null;
+
+        if (n = href.match(new RegExp('^https?:\\/\\/pleer\\.com\\/tracks\\/([0-9a-z]+)', 'i'))) {
+            var player_div=document.createElement('div');
+            $(player_div).addClass('embeded_audio').addClass('embeded_audio_'+n[1]);
+            obj.parentElement.insertBefore(player_div, obj);
+            create_pleercom_ajax(n[1]);
+        }
+    });
+}
+
+function create_pleercom_ajax(id){
+    $ajax({
+        'url':'https://pleer.com/site_api/files/get_url',
+        'type':'post',
+        'postdata':'action=download&id='+id,
+        'pleer_id':id,
+        'success': function (a) {
+            var answer = JSON.parse(a);
+            var player = document.createElement('audio');
+            // @todo Проверять существование track_link
+            $(player).attr({
+                'src': answer.track_link,
+                'controls': 'controls',
+                'preload': 'auto'
+            });
+            $('.embeded_audio_'+this.settings.pleer_id)[0].appendChild(player);
+        },
+        'error':function(){
+            console.log('Can not get url');
+            setTimeout(new Function('create_pleercom_ajax("'+this.settings.pleer_id+'");'), 1000);
+        }
+
+    });
 
 }
