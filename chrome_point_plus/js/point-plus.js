@@ -570,7 +570,8 @@ function parse_pleercom_links(){
             var player = document.createElement('audio');
             $(player).attr({
                 'src':'https://api.kanaria.ru/point/get_pleer_file.php?id='+n[1],
-                'controls':'controls'
+                'controls':'controls',
+                'preload':'none'
             }).addClass('embeded_audio');
 
             obj.parentElement.insertBefore(player, obj);
