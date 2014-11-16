@@ -22,6 +22,9 @@ var ppOptions = [
         // SoundCloud
         'option_embedding_soundcloud',
             'option_embedding_soundcloud_orig_link',
+        // Pleer.com
+        'option_embedding_pleercom',
+            'option_embedding_pleercom_nokita_server',
     // Fluid layout
     'option_fluid_layout', 
     // Visual editor for posts
@@ -60,6 +63,8 @@ function pp_save_options() {
     ppOptions.option_videos_parse_webm = $('#option-videos-parse-webm').prop('checked');
     ppOptions.option_embedding_soundcloud = $('#option-embedding-soundcloud').prop('checked');
     ppOptions.option_embedding_soundcloud_orig_link = $('#option-embedding-soundcloud-orig-link').prop('checked');
+    ppOptions.option_embedding_pleercom = $('#option-embedding-pleercom').prop('checked');
+    ppOptions.option_embedding_pleercom_nokita_server = $('#option-embedding-pleercom-nokita-server').prop('checked');
     ppOptions.option_visual_editor_post = $('#option-visual-editor-post').prop('checked');
     ppOptions.checkbox_search_with_google = $('#option-search-with-google').prop('checked');
     ppOptions.option_ws = $('#option-ws').prop('checked');
@@ -74,7 +79,6 @@ function pp_save_options() {
     ppOptions.option_at_before_username = $('#option-at-before-username').prop('checked');
     ppOptions.option_other_hightlight_post_comments = $('#option-other-hightlight-post-comments').prop('checked');
     ppOptions.option_other_show_recommendation_count = $('#option-other-show-recommendation-count').prop('checked');
-
 
     // Saving parameters
     chrome.storage.sync.set(ppOptions, function() {
@@ -97,8 +101,8 @@ function pp_restore_options() {
             // Detecting option type
             if (typeof(value) == 'boolean') {
                 // Checkbox
-                optionId = '#' + key.replace(/_/g, '-');
                 if (value === true) {
+                    optionId = '#' + key.replace(/_/g, '-');
                     $(optionId).first().prop('checked', true);
                 }
             } else if (typeof(value) == 'number') {
