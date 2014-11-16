@@ -1,0 +1,121 @@
+{
+    "ext_description": {
+        "message": "More features for point.im"
+    },
+    "ext_author": {
+        "message": "Alexey Skobkin"
+    },
+    "ext_page_action_title": {
+        "message": "Point+ settings"
+    },
+    
+    
+    "options_buttons_save": {
+        "message": "Save"
+    },
+    
+    
+    "options_tabs_media": {
+        "message": "Media"
+    },
+    "options_tabs_other": {
+        "message": "Other"
+    },
+    "options_tabs_websocket": {
+        "message": "WebSockets"
+    },
+    "options_tabs_feedback": {
+        "message": "Feedback"
+    },
+    
+    
+    "option_fancybox": {
+        "message": "Enable Fancybox &#9660;"
+    },
+    "option_fancybox_images": {
+        "message": "Use for images"
+    },
+    "option_fancybox_videos": {
+        "message": "Use for videos (YouTube, etc)"
+    },
+    "option_fancybox_posts": {
+        "message": "Use for post links"
+    },
+    "option_fancybox_bind_images_to_one_flow": {
+        "message": "Bind all images from fancybox to one flow"
+    },
+    "option_images_load_original": {
+        "message": "Load original images instead of thumbnails"
+    },
+    "option_embedding": {
+        "message": "Enable embedding &#9660;"
+    },
+    "option_images_load_booru": {
+        "message": "Load pictures from Booru, Tumblr and some other sites"
+    },
+    "option_videos_parse_webm": {
+        "message": "Parse webm-links and create video instead"
+    },
+    "option_embedding_soundcloud": {
+        "message": "Soundcloud &#9660;"
+    },
+    "option_embedding_soundcloud_orig_link": {
+        "message": "Leave original link"
+    },
+    "option_embedding_pleercom": {
+        "message": "Pleer.com &#9660;"
+    },
+    "option_embedding_pleercom_nokita_server": {
+        "message": "Use Nokita's server instead of AJAX to get mp3 link"
+    },
+    "option_ctrl_enter": {
+        "message": "Send post and comments by CTRL+Enter (deprecated)"
+    },
+    "option_fluid_layout": {
+        "message": "Fluid layout"
+    },
+    "option_visual_editor_post": {
+        "message": "Show visual editor for posts"
+    },
+    "option_search_with_google": {
+        "message": "Use Google search in header"
+    },
+    "option_ws": {
+        "message": "Enable WebSockets &#9660;"
+    },
+    "option_ws_comments": {
+        "message": "Process comments &#9660;"
+    },
+    "option_ws_comments_color_fadeout": {
+        "message": "Fade out highlight in 20 sec"
+    },
+    "option_ws_comments_notifications": {
+        "message": "Show desktop notifications"
+    },
+    "option_ws_feeds": {
+        "message": "Process feeds &#9660;"
+    },
+    "option_ws_feeds_subscriptions": {
+        "message": "Subscriptions feed"
+    },
+    "option_ws_feeds_blogs": {
+        "message": "User blog pages (only when subscribed)"
+    },
+    "option_enlarge_font": {
+        "message": "Enlarge font size &#9660;"
+    },
+    "option_at_before_username": {
+        "message": "&#64; before username"
+    },
+    "option_other_hightlight_post_comments": {
+        "message": "Hightlight post with new comments (using @NokitaKaze server)"
+    },
+    "option_other_show_recommendation_count": {
+        "message": "Show recommendation count and unique commentators count (using @NokitaKaze server)"
+    },
+    
+    
+    "options_feedback_text": {
+        "message": "<p>If you find an error do not hesitate to <a href=\"https:\/\/bitbucket.org\/skobkin\/chrome_point_plus\/issues?status=new&status=open\" target=\"_blank\">send me a bug report<\/a>.<\/p><p>Also you can make a donation in the following ways:<\/p><p><iframe frameborder=\"0\" allowtransparency=\"true\" scrolling=\"no\" src=\"https:\/\/money.yandex.ru\/embed\/small.xml?account=41001539215836&quickpay=small&yamoney-payment-type=on&button-text=04&button-size=s&button-color=black&targets=Point%2B&default-sum=150&successURL=https%3A%2F%2Fbitbucket.org%2Fskobkin%2Fchrome_point_plus\" width=\"158\" height=\"31\"><\/p><p><\/iframe><\/p><p><iframe frameborder=\"0\" allowtransparency=\"true\" scrolling=\"no\" src=\"https:\/\/money.yandex.ru\/embed\/small.xml?account=41001539215836&quickpay=small&any-card-payment-type=on&button-text=04&button-size=s&button-color=black&targets=Point%2B&default-sum=150&successURL=https%3A%2F%2Fbitbucket.org%2Fskobkin%2Fchrome_point_plus\" width=\"158\" height=\"31\"><\/iframe><\/p><p><form action=\"https:\/\/www.paypal.com\/cgi-bin\/webscr\" method=\"post\" target=\"_top\"><input type=\"hidden\" name=\"cmd\" value=\"_s-xclick\"><input type=\"hidden\" name=\"hosted_button_id\" value=\"RCW5V6UFXYTRE\"><input type=\"image\" src=\"https:\/\/www.paypalobjects.com\/ru_RU\/RU\/i\/btn\/btn_donateCC_LG.gif\" border=\"0\" name=\"submit\" alt=\"PayPal — более безопасный и легкий способ оплаты через Интернет!\"><img alt=\"\" border=\"0\" src=\"https:\/\/www.paypalobjects.com\/en_US\/i\/scr\/pixel.gif\" width=\"1\" height=\"1\"><\/form><\/p>"
+    }
+}

@@ -334,7 +334,7 @@ $(document).ready(function() {
                                                 type: 'showNotification',
                                                 notificationId: wsMessage.post_id + '_' + wsMessage.comment_id,
                                                 avatarUrl: ((location.protocol == 'http:') ? 'http:' : 'https:') + userAvatar + '/80',
-                                                title: '@' + wsMessage.author + ' commented #' + wsMessage.post_id + '(/' + wsMessage.comment_id + ')',
+                                                title: '@' + wsMessage.author + ' &#8594; #' + wsMessage.post_id + '(/' + wsMessage.comment_id + ')',
                                                 text: wsMessage.text
                                             });
                                         }

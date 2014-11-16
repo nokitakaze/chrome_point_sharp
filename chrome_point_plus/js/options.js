@@ -9,8 +9,6 @@ var ppOptions = [
         'option_fancybox_posts',
         // Bind all images from fancybox to one flow
         'option_fancybox_bind_images_to_one_flow',
-    // CTRL+Enter
-    'option_ctrl_enter',
     // Load original images
     'option_images_load_original',
     // Embedding
@@ -25,6 +23,8 @@ var ppOptions = [
         // Pleer.com
         'option_embedding_pleercom',
             'option_embedding_pleercom_nokita_server',
+    // CTRL+Enter
+    'option_ctrl_enter',
     // Fluid layout
     'option_fluid_layout', 
     // Visual editor for posts
