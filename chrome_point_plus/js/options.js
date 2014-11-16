@@ -22,6 +22,8 @@ var ppOptions = [
         // SoundCloud
         'option_embedding_soundcloud',
             'option_embedding_soundcloud_orig_link',
+        // Pleer.com
+        'option_embedding_pleercom',
     // Fluid layout
     'option_fluid_layout', 
     // Visual editor for posts
@@ -60,6 +62,7 @@ function pp_save_options() {
     ppOptions.option_videos_parse_webm = $('#option-videos-parse-webm').prop('checked');
     ppOptions.option_embedding_soundcloud = $('#option-embedding-soundcloud').prop('checked');
     ppOptions.option_embedding_soundcloud_orig_link = $('#option-embedding-soundcloud-orig-link').prop('checked');
+    ppOptions.option_embedding_pleercom = $('option-embedding-pleercom').prop('checked');
     ppOptions.option_visual_editor_post = $('#option-visual-editor-post').prop('checked');
     ppOptions.checkbox_search_with_google = $('#option-search-with-google').prop('checked');
     ppOptions.option_ws = $('#option-ws').prop('checked');

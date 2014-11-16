@@ -12,13 +12,14 @@ $(document).ready(function() {
         // Embedding
         if (options.option_embedding == true) {
             // Load pictures from Booru, Tumblr and some other sites
-            if (options.option_images_load_booru == true){
+            if (options.option_images_load_booru == true) {
                 load_all_booru_images();
             }
             // Parse webm-links and create video instead
-            if (options.option_videos_parse_webm == true){
+            if (options.option_videos_parse_webm == true) {
                 parse_webm();
             }
+
             // Soundcloud
             if (options.option_embedding_soundcloud == true) {
                 // Injecting JS API
@@ -26,22 +27,22 @@ $(document).ready(function() {
                     type: 'injectJSFile',
                     file: 'js/soundcloud/soundcloud.player.api.js'
                 });
-                
+
                 // Processing links 
-                $('.post .post-content a[href*="\\:\\/\\/soundcloud\\.com\\/"]').each(function(index) {
+                $('.post .post-content a[href*="\\:\\/\\/soundcloud\\.com\\/"]').each(function (index) {
                     console.log($(this));
-                    
+
                     $player = $('<div class="pp-soundcloud">\
                                     <object height="81" width="100%" id="pp-soundcloud-' + index + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">\
-                                      <param name="movie" value="http://player.soundcloud.com/player.swf?url=' + encodeURIComponent($(this).prop('href')) 
-                                            + '&enable_api=true&object_id=pp-soundcloud-' + index + '"></param>\
-                                      <param name="allowscriptaccess" value="always"></param>\
-                                      <embed allowscriptaccess="always" height="81" src="http://player.soundcloud.com/player.swf?url=' 
-                                            + encodeURIComponent($(this).prop('href')) + '&enable_api=true&object_id=pp-soundcloud-' + index 
-                                            + '" type="application/x-shockwave-flash" width="100%" name="pp-soundcloud-' + index + '"></embed>\
+                                      <param name="movie" value="http://player.soundcloud.com/player.swf?url=' + encodeURIComponent($(this).prop('href'))
+                    + '&enable_api=true&object_id=pp-soundcloud-' + index + '"></param>\
+                                      <param name="allowscriptaccess" value="always">\
+                                      <embed allowscriptaccess="always" height="81" src="http://player.soundcloud.com/player.swf?url='
+                    + encodeURIComponent($(this).prop('href')) + '&enable_api=true&object_id=pp-soundcloud-' + index
+                    + '" type="application/x-shockwave-flash" width="100%" name="pp-soundcloud-' + index + '"></embed>\
                                     </object>\
                                 </div>');
-                    
+
                     // Replace or prepend
                     if (options.option_embedding_soundcloud_orig_link == true) {
                         // Before
@@ -51,6 +52,11 @@ $(document).ready(function() {
                         $(this).replaceWith($player);
                     }
                 });
+
+            }
+            // Parse webm-links and create video instead
+            if (options.option_embedding_pleercom == true) {
+                parse_pleercom_links();
             }
         }
 
@@ -587,5 +593,25 @@ function set_posts_count_label() {
         }
 
     })
+
+}
+
+function parse_pleercom_links() {
+    $('a').each(function (num, obj) {
+        var href = obj.href;
+        var n = null;
+
+        if (n = href.match(new RegExp('^https?:\\/\\/pleer\\.com\\/tracks\\/([0-9a-z]+)', 'i'))) {
+            var player = document.createElement('audio');
+            $(player).attr({
+                'src': 'https://api.kanaria.ru/point/get_pleer_file.php?id=' + n[1],
+                'controls': 'controls',
+                'preload': 'none'
+            }).addClass('embeded_audio');
+
+            obj.parentElement.insertBefore(player, obj);
+        }
+    });
+
 
 }
