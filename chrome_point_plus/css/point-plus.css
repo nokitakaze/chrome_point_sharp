@@ -151,6 +151,10 @@ div#markItUpText-input {
     float: right;
 }
 
+.pp-options #status {
+    display: block;
+}
+
 .pp-options #pp-version {
     margin-top: 6px;
     text-align: right;

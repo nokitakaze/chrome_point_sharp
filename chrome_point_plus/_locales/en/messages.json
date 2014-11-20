@@ -10,8 +10,8 @@
     },
     
     
-    "options_buttons_save": {
-        "message": "Save"
+    "options_text_saved": {
+        "message": "Reload page to apply changes."
     },
     
     
@@ -67,6 +67,15 @@
     },
     "option_embedding_pleercom_nokita_server": {
         "message": "Use Nokita's server instead of AJAX to get mp3 link"
+    },
+    "option_nsfw": {
+        "message": "NSFW content filtering"
+    },
+    "option_nsfw_blur": {
+        "message": "Blurring"
+    },
+    "option_nsfw_blur_comments": {
+        "message": "Blur comments too"
     },
     "option_ctrl_enter": {
         "message": "Send post and comments by CTRL+Enter (deprecated)"

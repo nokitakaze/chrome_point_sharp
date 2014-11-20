@@ -10,8 +10,8 @@
     },
     
     
-    "options_buttons_save": {
-        "message": "Сохранить"
+    "options_text_saved": {
+        "message": "Для применения изменений перезагрузите страницу."
     },
     
     
@@ -67,6 +67,15 @@
     },
     "option_embedding_pleercom_nokita_server": {
         "message": "Использовать сервер @NokitaKaze вместо AJAX-запроса для получения mp3"
+    },
+    "option_nsfw": {
+        "message": "Фильтрация NSFW-контента"
+    },
+    "option_nsfw_blur": {
+        "message": "Размытие небезопасных постов"
+    },
+    "option_nsfw_blur_comments": {
+        "message": "Размытие комментариев"
     },
     "option_ctrl_enter": {
         "message": "Отправлять текст по CTRL+Enter (устарело)"

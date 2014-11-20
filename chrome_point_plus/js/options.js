@@ -23,6 +23,12 @@ var ppOptions = [
         // Pleer.com
         'option_embedding_pleercom',
             'option_embedding_pleercom_nokita_server',
+    // NSFW filtering
+    'option_nsfw',
+        // Blured pictures
+        'option_nsfw_blur',
+            // Blur comments too
+            'option_nsfw_blur_comments',
     // CTRL+Enter
     'option_ctrl_enter',
     // Fluid layout
@@ -65,6 +71,9 @@ function pp_save_options() {
     ppOptions.option_embedding_soundcloud_orig_link = $('#option-embedding-soundcloud-orig-link').prop('checked');
     ppOptions.option_embedding_pleercom = $('#option-embedding-pleercom').prop('checked');
     ppOptions.option_embedding_pleercom_nokita_server = $('#option-embedding-pleercom-nokita-server').prop('checked');
+    ppOptions.option_nsfw = $('#option-nsfw').prop('checked');
+    ppOptions.option_nsfw_blur = $('#option-nsfw-blur').prop('checked');
+    ppOptions.option_nsfw_blur_comments = $('#option-nsfw-blur-comments').prop('checked');
     ppOptions.option_visual_editor_post = $('#option-visual-editor-post').prop('checked');
     ppOptions.checkbox_search_with_google = $('#option-search-with-google').prop('checked');
     ppOptions.option_ws = $('#option-ws').prop('checked');
@@ -83,10 +92,7 @@ function pp_save_options() {
     // Saving parameters
     chrome.storage.sync.set(ppOptions, function() {
         // Update status to let user know options were saved.
-        $('#status').html('Options Saved.');
-        setTimeout(function() {
-            window.close();
-        }, 1500);
+        $('#status').html(chrome.i18n.getMessage('options_text_saved'));
     });
 }
 
@@ -126,6 +132,14 @@ var point_plus_options_save_button = document.querySelector('#save');
 if (point_plus_options_save_button !== null) {
     point_plus_options_save_button.addEventListener('click', pp_save_options);
 }
+
+// Binding event listeners
+$(function() {
+    // Delegating events
+    $('#tabs-content').on('click', 'input', function() {
+        pp_save_options();
+    });
+});
 
 // Getting version from manifest.json
 function getVersion() { 
