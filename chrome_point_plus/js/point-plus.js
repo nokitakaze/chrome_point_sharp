@@ -105,6 +105,30 @@ $(document).ready(function() {
             }
         }
         
+        // NSFW Filtering
+        if (options.option_nsfw == true) {
+            // Blurred posts
+            if (options.option_nsfw_blur == true) {
+                console.log('Bluring NSFW posts');
+                
+                $('.post').each(function() {
+                    $(this).find('a.tag').each(function() {
+                        if ($(this).html().toLowerCase() == 'nsfw') {
+                            console.log('NSFW tag found!');
+                            
+                            $(this).wrapInner('<b></b>');
+                            $(this).parent().siblings('.text').css('-webkit-filter', 'blur(30px)');
+                            
+                            // Blurred comments
+                            if (options.option_nsfw_blur_comments == true) {
+                                $('#comments').css('-webkit-filter', 'blur(30px)');
+                            }
+                        }
+                    });
+                });
+            }
+        }
+        
         // Hotkeys
         // Send by CTRL+Enter
         if (options.option_ctrl_enter == true) {
@@ -334,7 +358,7 @@ $(document).ready(function() {
                                                 type: 'showNotification',
                                                 notificationId: wsMessage.post_id + '_' + wsMessage.comment_id,
                                                 avatarUrl: ((location.protocol == 'http:') ? 'http:' : 'https:') + userAvatar + '/80',
-                                                title: '@' + wsMessage.author + ' commented #' + wsMessage.post_id + '(/' + wsMessage.comment_id + ')',
+                                                title: '@' + wsMessage.author + ' &#8594; #' + wsMessage.post_id + '(/' + wsMessage.comment_id + ')',
                                                 text: wsMessage.text
                                             });
                                         }

@@ -1,17 +1,18 @@
 {
     "manifest_version": 2,
     "name": "Point+",
-    "version": "1.11.0",
-    "author": "Alexey Skobkin",
+    "version": "1.13.0",
+    "default_locale": "ru",
+    "author": "__MSG_ext_author__",
     "homepage_url": "https://bitbucket.org/skobkin/chrome_point_plus",
-    "description": "More features for point.im",
+    "description": "__MSG_ext_description__",
     "options_page": "options.html",
     "page_action": {
         "default_icon": {
             "19": "images/icon19.png",
             "38": "images/icon38.png"
         },
-        "default_title": "Point+",
+        "default_title": "__MSG_ext_page_action_title__",
         "default_popup": "options.html"
     },
     "icons": {
