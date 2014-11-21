@@ -72,7 +72,7 @@ $(document).ready(function () {
             if (options.option_fancybox_bind_images_to_one_flow == true) {
                 // Linking images in posts to the galleries
                 $('.post-content .text').each(function () {
-                    $(this).find('a.postimg:not(.youtube)').attr('rel', 'one_flow_gallery');
+                    $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'one_flow_gallery');
                 });
             }
 
@@ -81,7 +81,7 @@ $(document).ready(function () {
                 if (options.option_fancybox_bind_images_to_one_flow !== true) {
                     // Linking images in posts to the galleries
                     $('.post-content .text').each(function (idxPost) {
-                        $(this).find('a.postimg:not(.youtube)').attr('rel', 'post' + idxPost);
+                        $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'post' + idxPost);
                     });
                 }
                 // Init fancybox
@@ -89,6 +89,44 @@ $(document).ready(function () {
                     type: 'image'
                 });
             }
+            // Правим хинт в FancyBox
+            $('.post').each(function(){
+                var all_post_images=$(this).find('.postimg');
+                if (all_post_images.length==0){return;}
+
+                var tags = $(this).find('div.tags a.tag');
+                var hint_text = '';// Текст для хинта в FancyBox
+                // Сначала теги
+                for (var i = 0; i < tags.length; i++) {
+                    var tag_name = $(tags[i]).html().toLowerCase();
+                    hint_text+=' '+tag_name;
+                }
+
+                // Потом текст
+                var textcontent=$(this).find('.text-content');
+                if (textcontent.length>0){
+                    textcontent=textcontent[0];
+                    for(var i=0;i<textcontent.childNodes.length;i++){
+                        var current_child_node=textcontent.childNodes[i];
+                        if((current_child_node.nodeName!=='P')&&(current_child_node.nodeName!=='#text')){continue;}
+                        var a=$(current_child_node).find('a.postimg');
+                        if (a.length>0){continue;}
+
+                        var tmp_str=current_child_node.textContent.replace(/(\n(\r)?)/g, ' ');
+                        tmp_str    =tmp_str.replace("\t", " ");
+                        hint_text+=' '+tmp_str;
+                    }
+                }
+
+                // Режем
+                hint_text=hint_text.replace(new RegExp(' {2,}'), ' ').replace(new RegExp(' +$'), '').substr(1);
+                if (hint_text.length>140){
+                    hint_text=hint_text.substr(0,140-3)+'...';
+                }
+
+                all_post_images.attr('data-fancybox-title', hint_text);
+            });
+
             // Videos
             if (options.option_fancybox_videos == true) {
                 $('.postimg.youtube').addClass('fancybox-media').fancybox({
@@ -114,6 +152,8 @@ $(document).ready(function () {
 
         // NSFW Filtering
         if (options.option_nsfw == true) {
+            $('.post-tag-nsfw,.post-tag-сиськи').find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'hidden-images');
+
             if (options.option_nsfw_hide_posts == true) {
                 if ($('#comments').length==0) {
                     // @hint Поведение "галка нажата, а внутри постов НЕ блюрится, даже если нажаты все три галки" - не баг
@@ -127,7 +167,9 @@ $(document).ready(function () {
                     $('.post').addClass('hide-nsfw');
 
                     // Blurred comments
-                    if (options.option_nsfw_blur_comments == true) {
+                    if ((options.option_nsfw_blur_comments == true) && (
+                            ($('.post').hasClass('post-tag-nsfw'))) || ($('.post').hasClass('post-tag-сиськи'))
+                    ) {
                         $('#comments').addClass('hide-nsfw');
                     }
                 }
@@ -623,6 +665,8 @@ function video_extension_to_mime(extension) {
 // Плашки у постов
 function set_posts_count_label() {
     var ids = [];
+    $('.post .post-id a .cn').addClass('changed_background');
+
     $('div.post').each(function (num, obj) {
         var t = $(obj).attr('data-comment-id');
         if (typeof(t) !== 'undefined') {
