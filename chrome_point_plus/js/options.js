@@ -17,6 +17,7 @@ var ppOptions = [
         'option_images_load_booru',
         // Wrap WEBM videos into the <video> tag
         'option_videos_parse_webm',
+            'option_videos_parse_all_videos',
         // SoundCloud
         'option_embedding_soundcloud',
             'option_embedding_soundcloud_orig_link',
@@ -25,6 +26,7 @@ var ppOptions = [
             'option_embedding_pleercom_nokita_server',
     // NSFW filtering
     'option_nsfw',
+        'option_nsfw_hide_posts',
         // Blured pictures
         'option_nsfw_blur',
             // Blur comments too
@@ -51,6 +53,8 @@ var ppOptions = [
     'option_other_hightlight_post_comments',
     // Show recommendations and unique comments count
     'option_other_show_recommendation_count',
+    // Scrolling posts with `space` key
+    'option_other_scroll_space_key',
 ];
 
 // Saves options to localStorage.
@@ -67,11 +71,13 @@ function pp_save_options() {
     ppOptions.option_embedding = $('#option-embedding').prop('checked');
     ppOptions.option_images_load_booru = $('#option-images-load-booru').prop('checked');
     ppOptions.option_videos_parse_webm = $('#option-videos-parse-webm').prop('checked');
+    ppOptions.option_videos_parse_all_videos = $('#option-videos-parse-all-videos').prop('checked');
     ppOptions.option_embedding_soundcloud = $('#option-embedding-soundcloud').prop('checked');
     ppOptions.option_embedding_soundcloud_orig_link = $('#option-embedding-soundcloud-orig-link').prop('checked');
     ppOptions.option_embedding_pleercom = $('#option-embedding-pleercom').prop('checked');
     ppOptions.option_embedding_pleercom_nokita_server = $('#option-embedding-pleercom-nokita-server').prop('checked');
     ppOptions.option_nsfw = $('#option-nsfw').prop('checked');
+    ppOptions.option_nsfw_hide_posts = $('#option-nsfw-hide-posts').prop('checked');
     ppOptions.option_nsfw_blur = $('#option-nsfw-blur').prop('checked');
     ppOptions.option_nsfw_blur_comments = $('#option-nsfw-blur-comments').prop('checked');
     ppOptions.option_visual_editor_post = $('#option-visual-editor-post').prop('checked');
@@ -88,6 +94,8 @@ function pp_save_options() {
     ppOptions.option_at_before_username = $('#option-at-before-username').prop('checked');
     ppOptions.option_other_hightlight_post_comments = $('#option-other-hightlight-post-comments').prop('checked');
     ppOptions.option_other_show_recommendation_count = $('#option-other-show-recommendation-count').prop('checked');
+    ppOptions.option_other_scroll_space_key = $('#option-other-scroll-space-key').prop('checked');
+
 
     // Saving parameters
     chrome.storage.sync.set(ppOptions, function() {
