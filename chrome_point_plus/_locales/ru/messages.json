@@ -75,13 +75,19 @@
         "message": "Фильтрация NSFW-контента"
     },
     "option_nsfw_hide_posts":{
-        "message": "Скрывать NSFW-посты полностью"
+        "message": "Скрывать NSFW-посты из ленты сообщений"
     },
-    "option_nsfw_blur": {
-        "message": "Размытие небезопасных постов"
+    "option_nsfw_blur_posts_images": {
+        "message": "Размытие картинок в небезопасных постах"
     },
-    "option_nsfw_blur_comments": {
-        "message": "Размытие комментариев"
+    "option_nsfw_blur_posts_entire": {
+        "message": "Размытие небезопасных постов полностью"
+    },
+    "option_nsfw_blur_comments_images": {
+        "message": "Размытие картинок в каментариях небезопасных постов"
+    },
+    "option_nsfw_blur_comments_entire": {
+        "message": "Размытие ВСЕХ комментариев в небезопасных постах"
     },
     "option_ctrl_enter": {
         "message": "Отправлять текст по CTRL+Enter (устарело)"

@@ -28,9 +28,11 @@ var ppOptions = [
     'option_nsfw',
         'option_nsfw_hide_posts',
         // Blured pictures
-        'option_nsfw_blur',
-            // Blur comments too
-            'option_nsfw_blur_comments',
+        'option_nsfw_blur_posts_images',
+        'option_nsfw_blur_posts_entire',
+        // Blur comments too
+        'option_nsfw_blur_comments_images',
+        'option_nsfw_blur_comments_entire',
     // CTRL+Enter
     'option_ctrl_enter',
     // Fluid layout
@@ -78,8 +80,10 @@ function pp_save_options() {
     ppOptions.option_embedding_pleercom_nokita_server = $('#option-embedding-pleercom-nokita-server').prop('checked');
     ppOptions.option_nsfw = $('#option-nsfw').prop('checked');
     ppOptions.option_nsfw_hide_posts = $('#option-nsfw-hide-posts').prop('checked');
-    ppOptions.option_nsfw_blur = $('#option-nsfw-blur').prop('checked');
-    ppOptions.option_nsfw_blur_comments = $('#option-nsfw-blur-comments').prop('checked');
+    ppOptions.option_nsfw_blur_posts_images = $('#option-nsfw-blur-posts-images').prop('checked');
+    ppOptions.option_nsfw_blur_posts_entire = $('#option-nsfw-blur-posts-entire').prop('checked');
+    ppOptions.option_nsfw_blur_comments_images = $('#option-nsfw-blur-comments-images').prop('checked');
+    ppOptions.option_nsfw_blur_comments_entire = $('#option-nsfw-blur-comments-entire').prop('checked');
     ppOptions.option_visual_editor_post = $('#option-visual-editor-post').prop('checked');
     ppOptions.checkbox_search_with_google = $('#option-search-with-google').prop('checked');
     ppOptions.option_ws = $('#option-ws').prop('checked');

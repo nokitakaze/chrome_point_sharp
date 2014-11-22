@@ -1,8 +1,21 @@
 $(document).ready(function () {
     // Grouping console log
     console.group('point-plus');
-
     console.info('Point+ %s', getVersion());
+
+    // Проверяем, загрузились ли мы
+    var point_plus_debug=$('.point-plus-debug');
+    if (point_plus_debug.length>0){
+        console.info('Point+ already loaded, version: %s', point_plus_debug.attr('data-point-plus-version'));
+        return;
+    }
+    point_plus_debug=null;
+    var new_div=document.createElement('div');
+    document.body.appendChild(new_div);
+    $(new_div).attr({
+        'data-point-plus-version':getVersion()
+    }).addClass('point-plus-debug').html('Point+ v'+getVersion()+' loading...');
+    new_div=null;
 
     // Loading options
     chrome.storage.sync.get(ppOptions, function (options) {
@@ -10,7 +23,6 @@ $(document).ready(function () {
         console.debug('Options loaded: %O', options);
 
         create_tag_system();
-
 
         // Embedding
         if (options.option_embedding == true) {
@@ -90,38 +102,44 @@ $(document).ready(function () {
                 });
             }
             // Правим хинт в FancyBox
-            $('.post').each(function(){
-                var all_post_images=$(this).find('.postimg');
-                if (all_post_images.length==0){return;}
+            $('.post').each(function () {
+                var all_post_images = $(this).find('.postimg');
+                if (all_post_images.length == 0) {
+                    return;
+                }
 
                 var tags = $(this).find('div.tags a.tag');
                 var hint_text = '';// Текст для хинта в FancyBox
                 // Сначала теги
                 for (var i = 0; i < tags.length; i++) {
                     var tag_name = $(tags[i]).html().toLowerCase();
-                    hint_text+=' '+tag_name;
+                    hint_text += ' ' + tag_name;
                 }
 
                 // Потом текст
-                var textcontent=$(this).find('.text-content');
-                if (textcontent.length>0){
-                    textcontent=textcontent[0];
-                    for(var i=0;i<textcontent.childNodes.length;i++){
-                        var current_child_node=textcontent.childNodes[i];
-                        if((current_child_node.nodeName!=='P')&&(current_child_node.nodeName!=='#text')){continue;}
-                        var a=$(current_child_node).find('a.postimg');
-                        if (a.length>0){continue;}
+                var textcontent = $(this).find('.text-content');
+                if (textcontent.length > 0) {
+                    textcontent = textcontent[0];
+                    for (var i = 0; i < textcontent.childNodes.length; i++) {
+                        var current_child_node = textcontent.childNodes[i];
+                        if ((current_child_node.nodeName !== 'P') && (current_child_node.nodeName !== '#text')) {
+                            continue;
+                        }
+                        var a = $(current_child_node).find('a.postimg');
+                        if (a.length > 0) {
+                            continue;
+                        }
 
-                        var tmp_str=current_child_node.textContent.replace(/(\n(\r)?)/g, ' ');
-                        tmp_str    =tmp_str.replace("\t", " ");
-                        hint_text+=' '+tmp_str;
+                        var tmp_str = current_child_node.textContent.replace(/(\n(\r)?)/g, ' ');
+                        tmp_str = tmp_str.replace("\t", " ");
+                        hint_text += ' ' + tmp_str;
                     }
                 }
 
                 // Режем
-                hint_text=hint_text.replace(new RegExp(' {2,}'), ' ').replace(new RegExp(' +$'), '').substr(1);
-                if (hint_text.length>140){
-                    hint_text=hint_text.substr(0,140-3)+'...';
+                hint_text = hint_text.replace(new RegExp(' {2,}'), ' ').replace(new RegExp(' +$'), '').substr(1);
+                if (hint_text.length > 140) {
+                    hint_text = hint_text.substr(0, 140 - 3) + '...';
                 }
 
                 all_post_images.attr('data-fancybox-title', hint_text);
@@ -155,23 +173,30 @@ $(document).ready(function () {
             $('.post-tag-nsfw,.post-tag-сиськи').find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'hidden-images');
 
             if (options.option_nsfw_hide_posts == true) {
-                if ($('#comments').length==0) {
-                    // @hint Поведение "галка нажата, а внутри постов НЕ блюрится, даже если нажаты все три галки" - не баг
-                    console.log('Hide NSFW posts');
+                if ($('#comments').length == 0) {
+                    console.log('Hide NSFW posts in feed');
                     $('.post').addClass('hide-nsfw-posts');
                 }
             } else {
                 // Blurred posts
-                if (options.option_nsfw_blur == true) {
+                if (options.option_nsfw_blur_posts_entire == true) {
                     console.log('Bluring NSFW posts');
-                    $('.post').addClass('hide-nsfw');
+                    $('.post').addClass('blur-nsfw-entire');
+                } else if (options.option_nsfw_blur_posts_images == true) {
+                    console.log('Bluring images in NSFW posts');
+                    $('.post').addClass('blur-nsfw-images');
+                }
+            }
 
-                    // Blurred comments
-                    if ((options.option_nsfw_blur_comments == true) && (
-                            ($('.post').hasClass('post-tag-nsfw'))) || ($('.post').hasClass('post-tag-сиськи'))
-                    ) {
-                        $('#comments').addClass('hide-nsfw');
-                    }
+            // Blurred comments
+            if ($('.post').hasClass('post-tag-nsfw') || $('.post').hasClass('post-tag-сиськи')) {
+                if (options.option_nsfw_blur_comments_entire == true) {
+                    console.log('Bluring comments');
+                    $('#comments').addClass('blur-nsfw-entire');
+                } else if (options.option_nsfw_blur_comments_images == true) {
+                    // @hint Никита Ветров официально складывает с себя все претензии, если у кого-то от этого говна упадёт драйвер видео-карты
+                    console.log('Bluring images in comments');
+                    $('#comments').addClass('blur-nsfw-images');
                 }
             }
         }
@@ -474,11 +499,12 @@ $(document).ready(function () {
         if (options.option_other_show_recommendation_count == true) {
             set_posts_count_label();
         }
-
+        // `Space` key scroll handler
         if (options.option_other_scroll_space_key == true){
             set_space_key_skip_handler();
         }
 
+        $('.point-plus-debug').fadeOut(500);
     });
 
     // Showing page action
@@ -502,7 +528,6 @@ var months = [
 ];
 
 
-/* Nokita's functions */
 // Картинки с бурятников
 var booru_picture_count = 0;
 function load_all_booru_images() {
@@ -591,7 +616,7 @@ function create_image(domain, id, additional) {
     return a;
 }
 
-/* point */
+// Помечаем непрочитанные посты более видимо чем каким-то баджем
 // Эта часть написана @RainbowSpike
 function mark_unread_post() {
     var divs = $(".post"); // массив постов
@@ -639,7 +664,7 @@ function parse_all_videos() {
         var href = obj.href;
         var n = null;
 
-        if (n = href.match(new RegExp('\\.(webm|avi|mp4)(\\?.+)?$', 'i'))) {
+        if (n = href.match(new RegExp('\\.(webm|avi|mp4|mpg|mpeg)(\\?.+)?$', 'i'))) {
             var player = document.createElement('video');
             var mime = video_extension_to_mime(n[1]);
             $(player).html('<source src="' + href + '" type=\'' + mime + '"\' />').attr('controls', 'controls').css({
@@ -655,12 +680,13 @@ function parse_all_videos() {
 function video_extension_to_mime(extension) {
     switch(extension){
         case 'webm':return 'video/webm; codecs="vp8, vorbis';
-        case 'avi' :return 'video/avi;';// @hint Хотя сомнительно
+        case 'avi' :return 'video/avi;';
         case 'mp4' :return 'video/mp4;';
+        case 'mpg' :return 'video/mp4;';
+        case 'mpeg':return 'video/mp4;';
     }
 
 }
-
 
 // Плашки у постов
 function set_posts_count_label() {
@@ -697,7 +723,7 @@ function set_posts_count_label() {
                 postid.appendChild(e1);
 
                 var e2 = document.createElement('span');
-                $(e2).addClass('recomendation_count').html('~' + answer.list[id].count_recommendation).attr('title', 'Количество рекомендаций. Работает криво, спасибо @arts\'у за это');
+                $(e2).addClass('recommendation_count').html('~' + answer.list[id].count_recommendation).attr('title', 'Количество рекомендаций. Работает криво, спасибо @arts\'у за это');
                 postid.appendChild(e2);
             });
         }
@@ -813,17 +839,52 @@ function set_space_key_skip_handler(){
     });
 }
 
-function space_key_event(){
-    var scroll_current  =$('body').scrollTop();
-    var scroll_step_size=0;
-    var scroll_real     =Math.max(scroll_current-scroll_step_size,0);
+}
 
-    var posts=$('.post');
-    for(var i=0;i<posts.length;i++){
-        var this_top_px=$(posts[i]).offset().top;
-        if (this_top_px>scroll_real){
+// Проставляем теги у постов
+function create_tag_system() {
+    $('.post').each(function () {
+        var tags = $(this).find('div.tags a.tag');
+        for (var i = 0; i < tags.length; i++) {
+            var tag_name = $(tags[i]).html().toLowerCase();
+            $(this).addClass('post-tag-' + tag_name);
+        }
+    });
+}
+
+// Скролл по пробелу
+function set_space_key_skip_handler() {
+    if ($('#comments').length > 0) {
+        return;
+    }
+
+    // @todo Свериться с Best-practice биндинга функций. Мб там on или bind
+    $(document.body).keydown(function (e) {
+        // @todo Я хотел по отпусканию кнопки, но там уже скролл срабатывает
+        // проверяем фокус
+        if ($(':focus').length > 0) {
+            return;
+        }
+
+        var k = event.keyCode;
+        if (k == 32) {
+            space_key_event();
+            return false;
+        }
+    });
+}
+
+function space_key_event() {
+    var scroll_current = $('body').scrollTop();
+    var scroll_step_size = 0;
+    var scroll_real = Math.max(scroll_current - scroll_step_size, 0);
+
+    var posts = $('.post');
+    for (var i = 0; i < posts.length; i++) {
+        var this_top_px = $(posts[i]).offset().top;
+        if (this_top_px > scroll_real) {
             $('body').animate({
-                'scrollTop':this_top_px
+                'scrollTop': this_top_px
             }, 200);
             return;
         }
