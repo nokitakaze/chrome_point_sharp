@@ -839,8 +839,6 @@ function set_space_key_skip_handler(){
     });
 }
 
-}
-
 // Проставляем теги у постов
 function create_tag_system() {
     $('.post').each(function () {
