@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Point+",
-    "version": "1.13.0",
+    "version": "1.14.2",
     "default_locale": "ru",
     "author": "__MSG_ext_author__",
     "homepage_url": "https://bitbucket.org/skobkin/chrome_point_plus",
