@@ -17,7 +17,7 @@ $(document).ready(function() {
     document.body.appendChild(new_div);
     $(new_div).attr({
         'data-point-plus-version':getVersion()
-    }).addClass('point-plus-debug').html('Point+ v' + getVersion() + ' loading...');
+    }).addClass('point-plus-debug').html('Point+ v' + getVersion() + ' loading...').hide();
     new_div = null;
 
     // Loading options
