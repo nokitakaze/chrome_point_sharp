@@ -1,15 +1,15 @@
-$(document).ready(function () {
+$(document).ready(function() {
     // Grouping console log
     console.group('point-plus');
     console.info('Point+ %s', getVersion());
 
     // Проверяем, загрузились ли мы
     var point_plus_debug=$('.point-plus-debug');
-    if (point_plus_debug.length>0){
+    if (point_plus_debug.length > 0){
         console.info('Point+ already loaded, version: %s', point_plus_debug.attr('data-point-plus-version'));
         return;
     }
-    point_plus_debug=null;
+    point_plus_debug = null;
     var new_div=document.createElement('div');
     document.body.appendChild(new_div);
     $(new_div).attr({
@@ -54,11 +54,11 @@ $(document).ready(function () {
                     $player = $('<div class="pp-soundcloud">\
                                     <object height="81" width="100%" id="pp-soundcloud-' + index + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">\
                                       <param name="movie" value="//player.soundcloud.com/player.swf?url=' + encodeURIComponent($(this).prop('href'))
-                    + '&enable_api=true&object_id=pp-soundcloud-' + index + '">\
+                                    + '&enable_api=true&object_id=pp-soundcloud-' + index + '">\
                                       <param name="allowscriptaccess" value="always">\
                                       <embed allowscriptaccess="always" height="81" src="//player.soundcloud.com/player.swf?url='
-                    + encodeURIComponent($(this).prop('href')) + '&enable_api=true&object_id=pp-soundcloud-' + index
-                    + '" type="application/x-shockwave-flash" width="100%" name="pp-soundcloud-' + index + '"></embed>\
+                                    + encodeURIComponent($(this).prop('href')) + '&enable_api=true&object_id=pp-soundcloud-' + index
+                                    + '" type="application/x-shockwave-flash" width="100%" name="pp-soundcloud-' + index + '"></embed>\
                                     </object>\
                                 </div>');
 
@@ -232,7 +232,7 @@ $(document).ready(function () {
         // Image resizing
         if (options.option_images_load_original == true) {
             // Setting new image source
-            $('.postimg:not(.youtube) img').each(function () {
+            $('.postimg:not(.youtube) img').each(function() {
                 console.log($(this).parent('.postimg').attr('href'));
                 $(this).attr('src', $(this).parent('.postimg').attr('href'));
             });
@@ -254,7 +254,7 @@ $(document).ready(function () {
             // Send by CTRL+Enter
             if (options.option_ctrl_enter == true) {
                 // New post
-                $('#new-post-form #text-input, .post-content #text-input').on('keydown.point_plus', function (e) {
+                $('#new-post-form #text-input, .post-content #text-input').on('keydown.point_plus', function(e) {
                     if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
                         e.preventDefault();
                         $(this).parents('#new-post-form,#post-edit-form').submit();
@@ -264,7 +264,7 @@ $(document).ready(function () {
         }
         // Google search
         if (options.option_search_with_google == true) {
-            $('#search-form input[type="text"]').attr('placeholder', 'Google').keydown(function (e) {
+            $('#search-form input[type="text"]').attr('placeholder', 'Google').keydown(function(e) {
                 if (e.keyCode == 10 || e.keyCode == 13) {
                     e.preventDefault();
                     document.location.href = '//www.google.ru/search?q=site%3Apoint.im+' + $(this).val();
@@ -290,7 +290,7 @@ $(document).ready(function () {
             };
 
             // Message handler
-            ws.onmessage = function (evt) {
+            ws.onmessage = function(evt) {
                 try {
                     // ping :)
                     if (evt.data == 'ping') {
@@ -337,7 +337,7 @@ $(document).ready(function () {
                                     });
 
                                     // Loading HTML template
-                                    $commentTemplate.load(chrome.extension.getURL('includes/comment.html'), function () {
+                                    $commentTemplate.load(chrome.extension.getURL('includes/comment.html'), function() {
                                         // Load complete
                                         console.info('comment.html loaded');
 
@@ -508,7 +508,9 @@ $(document).ready(function () {
     });
 
     // Showing page action
-    chrome.extension.sendMessage({type: 'showPageAction'});
+    chrome.extension.sendMessage({
+        type: 'showPageAction'
+    });
 });
 
 function escapeHtml(text) {
@@ -531,7 +533,7 @@ var months = [
 // Картинки с бурятников
 var booru_picture_count = 0;
 function load_all_booru_images() {
-    $('a').each(function (num, obj) {
+    $('a').each(function(num, obj) {
         if ($(obj).hasClass('booru_pic')) {
             return;
         }
@@ -568,11 +570,11 @@ function load_all_booru_images() {
             obj.parentElement.insertBefore(image, obj);
             booru_picture_count++;
             /*
-             }else if (n=href.match(new RegExp('^https?\\://(www\\.)?konachan\\.net\\/post\\/show\\/([0-9]+)\\/', 'i'))){
-             var image=create_image('konachannet', n[2]);
+             } else if (n = href.match(new RegExp('^https?\\://(www\\.)?konachan\\.net\\/post\\/show\\/([0-9]+)\\/', 'i'))) {
+             var image = create_image('konachannet', n[2]);
              obj.parentElement.insertBefore(image, obj);
              booru_picture_count++;
-             }else if (n=href.match(new RegExp('^https?\\://(www\\.)?konachan\\.com\\/post\\/show\\/([0-9]+)\\/', 'i'))){
+             } else if (n = href.match(new RegExp('^https?\\://(www\\.)?konachan\\.com\\/post\\/show\\/([0-9]+)\\/', 'i'))) {
              var image=create_image('konachancom', n[2]);
              obj.parentElement.insertBefore(image, obj);
              booru_picture_count++;
@@ -634,7 +636,7 @@ function mark_unread_post() {
 
 // Webm
 function parse_webm() {
-    $('a').each(function (num, obj) {
+    $('a').each(function(num, obj) {
         if ($(obj).hasClass('booru_pic')) {
             return;
         }
@@ -656,7 +658,7 @@ function parse_webm() {
 }
 
 function parse_all_videos() {
-    $('a').each(function (num, obj) {
+    $('a').each(function(num, obj) {
         if ($(obj).hasClass('booru_pic')) {
             return;
         }
@@ -678,7 +680,7 @@ function parse_all_videos() {
 }
 
 function video_extension_to_mime(extension) {
-    switch(extension){
+    switch (extension) {
         case 'webm':return 'video/webm; codecs="vp8, vorbis';
         case 'avi' :return 'video/avi;';
         case 'mp4' :return 'video/mp4;';
@@ -693,7 +695,7 @@ function set_posts_count_label() {
     var ids = [];
     $('.post .post-id a .cn').addClass('changed_background');
 
-    $('div.post').each(function (num, obj) {
+    $('div.post').each(function(num, obj) {
         var t = $(obj).attr('data-comment-id');
         if (typeof(t) !== 'undefined') {
             return;
@@ -704,10 +706,10 @@ function set_posts_count_label() {
 
     $ajax({
         'url': 'https://api.kanaria.ru/point/get_post_info.php?list=' + urlencode(ids.join(',')),
-        'success': function (a) {
+        'success': function(a) {
             var answer = JSON.parse(a);
 
-            $('div.post').each(function (num, obj) {
+            $('div.post').each(function(num, obj) {
                 var id = $(obj).attr('data-id');
                 var postid = $(obj).find('.post-id a')[0];
                 var t = $(obj).attr('data-comment-id');
@@ -733,7 +735,7 @@ function set_posts_count_label() {
 }
 
 function parse_pleercom_links() {
-    chrome.storage.sync.get(ppOptions, function (options) {
+    chrome.storage.sync.get(ppOptions, function(options) {
         if (options.option_embedding_pleercom_nokita_server) {
             parse_pleercom_links_nokita();
         } else {
@@ -743,7 +745,7 @@ function parse_pleercom_links() {
 }
 
 function parse_pleercom_links_nokita() {
-    $('a').each(function (num, obj) {
+    $('a').each(function(num, obj) {
         var href = obj.href;
         var n = null;
 
@@ -765,7 +767,7 @@ function parse_pleercom_links_nokita() {
 }
 
 function parse_pleercom_links_ajax() {
-    $('a').each(function (num, obj) {
+    $('a').each(function(num, obj) {
         var href = obj.href;
         var n = null;
 
@@ -786,7 +788,7 @@ function create_pleercom_ajax(id) {
         'dont_set_content_type': true,
         'pleer_id': id,
         'headers': [['Accept', '*'], ['Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8']],
-        'success': function (a) {
+        'success': function(a) {
             var answer = JSON.parse(a);
             var player = document.createElement('audio');
             // @todo Проверять существование track_link
@@ -797,7 +799,7 @@ function create_pleercom_ajax(id) {
             });
             $('.embeded_audio_' + this.settings.pleer_id)[0].appendChild(player);
         },
-        'error': function () {
+        'error': function() {
             console.log('Can not get url');
             setTimeout(new Function('create_pleercom_ajax("' + this.settings.pleer_id + '");'), 1000);
         }
@@ -808,40 +810,7 @@ function create_pleercom_ajax(id) {
 
 // Проставляем теги у постов
 function create_tag_system() {
-    $('.post').each(function () {
-        var tags = $(this).find('div.tags a.tag');
-        for (var i = 0; i < tags.length; i++) {
-            var tag_name = $(tags[i]).html().toLowerCase();
-            $(this).addClass('post-tag-' + tag_name);
-        }
-    });
-}
-
-// Скролл по пробелу
-function set_space_key_skip_handler(){
-    if ($('#comments').length>0){
-        return;
-    }
-
-    // @todo Свериться с Best-practice биндинга функций. Мб там on или bind
-    $(document.body).keydown(function(e){
-        // @todo Я хотел по отпусканию кнопки, но там уже скролл срабатывает
-        // проверяем фокус
-        if ($(':focus').length>0) {
-            return;
-        }
-
-        var k=event.keyCode;
-        if (k==32){
-            space_key_event();
-            return false;
-        }
-    });
-}
-
-// Проставляем теги у постов
-function create_tag_system() {
-    $('.post').each(function () {
+    $('.post').each(function() {
         var tags = $(this).find('div.tags a.tag');
         for (var i = 0; i < tags.length; i++) {
             var tag_name = $(tags[i]).html().toLowerCase();
@@ -857,7 +826,40 @@ function set_space_key_skip_handler() {
     }
 
     // @todo Свериться с Best-practice биндинга функций. Мб там on или bind
-    $(document.body).keydown(function (e) {
+    $(document.body).keydown(function(e) {
+        // @todo Я хотел по отпусканию кнопки, но там уже скролл срабатывает
+        // проверяем фокус
+        if ($(':focus').length > 0) {
+            return;
+        }
+
+        var k = event.keyCode;
+        if (k == 32){
+            space_key_event();
+            return false;
+        }
+    });
+}
+
+// Проставляем теги у постов
+function create_tag_system() {
+    $('.post').each(function() {
+        var tags = $(this).find('div.tags a.tag');
+        for (var i = 0; i < tags.length; i++) {
+            var tag_name = $(tags[i]).html().toLowerCase();
+            $(this).addClass('post-tag-' + tag_name);
+        }
+    });
+}
+
+// Скролл по пробелу
+function set_space_key_skip_handler() {
+    if ($('#comments').length > 0) {
+        return;
+    }
+
+    // @todo Свериться с Best-practice биндинга функций. Мб там on или bind
+    $(document.body).keydown(function(e) {
         // @todo Я хотел по отпусканию кнопки, но там уже скролл срабатывает
         // проверяем фокус
         if ($(':focus').length > 0) {
