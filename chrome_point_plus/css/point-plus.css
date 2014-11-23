@@ -115,12 +115,12 @@ div#markItUpText-input {
     padding: 5px 0 0 5px;
 }
 
-.pp-options .option {
+.pp-options .option-node {
     display: block;
     margin: 5px 0 5px 15px;
 }
 
-.pp-options .option label {
+.pp-options .option-node label {
     font: 10pt Georgia;
     color: #FFF;
 }
@@ -130,11 +130,11 @@ div#markItUpText-input {
 }
 
 /* Disables subcheckboxes if parent disabled */
-.pp-options .option input[type="checkbox"]:not(:checked) ~.option {
+.pp-options .option-node input[type="checkbox"]:not(:checked) ~.option-node {
     display: none;
 }
 
-.pp-options .option input[type="checkbox"]:not(:checked) ~.option label {
+.pp-options .option-node input[type="checkbox"]:not(:checked) ~.option-node label {
     color: #BBB;
 }
 
