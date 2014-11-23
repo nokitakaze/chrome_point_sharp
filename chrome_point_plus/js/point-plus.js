@@ -1,13 +1,28 @@
-$(document).ready(function() {
+$(document).ready(function () {
     // Grouping console log
     console.group('point-plus');
-
     console.info('Point+ %s', getVersion());
 
+    // Проверяем, загрузились ли мы
+    var point_plus_debug=$('.point-plus-debug');
+    if (point_plus_debug.length>0){
+        console.info('Point+ already loaded, version: %s', point_plus_debug.attr('data-point-plus-version'));
+        return;
+    }
+    point_plus_debug=null;
+    var new_div=document.createElement('div');
+    document.body.appendChild(new_div);
+    $(new_div).attr({
+        'data-point-plus-version':getVersion()
+    }).addClass('point-plus-debug').html('Point+ v'+getVersion()+' loading...');
+    new_div=null;
+
     // Loading options
-    chrome.storage.sync.get(ppOptions, function(options) {
+    chrome.storage.sync.get(ppOptions, function (options) {
         // Options debug
         console.debug('Options loaded: %O', options);
+
+        create_tag_system();
 
         // Embedding
         if (options.option_embedding == true) {
@@ -17,7 +32,11 @@ $(document).ready(function() {
             }
             // Parse webm-links and create video instead
             if (options.option_videos_parse_webm == true) {
-                parse_webm();
+                if (options.option_videos_parse_all_videos == true) {
+                    parse_all_videos();
+                } else {
+                    parse_webm();
+                }
             }
 
             // Soundcloud
@@ -62,19 +81,19 @@ $(document).ready(function() {
 
         // Fancybox
         if (options.option_fancybox == true) {
-            if (options.option_fancybox_bind_images_to_one_flow==true){
+            if (options.option_fancybox_bind_images_to_one_flow == true) {
                 // Linking images in posts to the galleries
                 $('.post-content .text').each(function () {
-                    $(this).find('a.postimg:not(.youtube)').attr('rel', 'one_flow_gallery');
+                    $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'one_flow_gallery');
                 });
             }
 
             // Images
             if (options.option_fancybox_images == true) {
-                if (options.option_fancybox_bind_images_to_one_flow!==true) {
+                if (options.option_fancybox_bind_images_to_one_flow !== true) {
                     // Linking images in posts to the galleries
                     $('.post-content .text').each(function (idxPost) {
-                        $(this).find('a.postimg:not(.youtube)').attr('rel', 'post' + idxPost);
+                        $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'post' + idxPost);
                     });
                 }
                 // Init fancybox
@@ -82,6 +101,50 @@ $(document).ready(function() {
                     type: 'image'
                 });
             }
+            // Правим хинт в FancyBox
+            $('.post').each(function () {
+                var all_post_images = $(this).find('.postimg');
+                if (all_post_images.length == 0) {
+                    return;
+                }
+
+                var tags = $(this).find('div.tags a.tag');
+                var hint_text = '';// Текст для хинта в FancyBox
+                // Сначала теги
+                for (var i = 0; i < tags.length; i++) {
+                    var tag_name = $(tags[i]).html().toLowerCase();
+                    hint_text += ' ' + tag_name;
+                }
+
+                // Потом текст
+                var textcontent = $(this).find('.text-content');
+                if (textcontent.length > 0) {
+                    textcontent = textcontent[0];
+                    for (var i = 0; i < textcontent.childNodes.length; i++) {
+                        var current_child_node = textcontent.childNodes[i];
+                        if ((current_child_node.nodeName !== 'P') && (current_child_node.nodeName !== '#text')) {
+                            continue;
+                        }
+                        var a = $(current_child_node).find('a.postimg');
+                        if (a.length > 0) {
+                            continue;
+                        }
+
+                        var tmp_str = current_child_node.textContent.replace(/(\n(\r)?)/g, ' ');
+                        tmp_str = tmp_str.replace("\t", " ");
+                        hint_text += ' ' + tmp_str;
+                    }
+                }
+
+                // Режем
+                hint_text = hint_text.replace(new RegExp(' {2,}'), ' ').replace(new RegExp(' +$'), '').substr(1);
+                if (hint_text.length > 140) {
+                    hint_text = hint_text.substr(0, 140 - 3) + '...';
+                }
+
+                all_post_images.attr('data-fancybox-title', hint_text);
+            });
+
             // Videos
             if (options.option_fancybox_videos == true) {
                 $('.postimg.youtube').addClass('fancybox-media').fancybox({
@@ -104,44 +167,53 @@ $(document).ready(function() {
                 });
             }
         }
-        
+
         // NSFW Filtering
         if (options.option_nsfw == true) {
-            // Blurred posts
-            if (options.option_nsfw_blur == true) {
-                console.log('Bluring NSFW posts');
-                
-                $('.post').each(function() {
-                    $(this).find('a.tag').each(function() {
-                        if ($(this).html().toLowerCase() == 'nsfw') {
-                            console.log('NSFW tag found!');
-                            
-                            $(this).wrapInner('<b></b>');
-                            $(this).parent().siblings('.text').css('-webkit-filter', 'blur(30px)');
-                            
-                            // Blurred comments
-                            if (options.option_nsfw_blur_comments == true) {
-                                $('#comments').css('-webkit-filter', 'blur(30px)');
-                            }
-                        }
-                    });
-                });
+            $('.post-tag-nsfw,.post-tag-сиськи').find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'hidden-images');
+
+            if (options.option_nsfw_hide_posts == true) {
+                if ($('#comments').length == 0) {
+                    console.log('Hide NSFW posts in feed');
+                    $('.post').addClass('hide-nsfw-posts');
+                }
+            } else {
+                // Blurred posts
+                if (options.option_nsfw_blur_posts_entire == true) {
+                    console.log('Bluring NSFW posts');
+                    $('.post').addClass('blur-nsfw-entire');
+                } else if (options.option_nsfw_blur_posts_images == true) {
+                    console.log('Bluring images in NSFW posts');
+                    $('.post').addClass('blur-nsfw-images');
+                }
+            }
+
+            // Blurred comments
+            if ($('.post').hasClass('post-tag-nsfw') || $('.post').hasClass('post-tag-сиськи')) {
+                if (options.option_nsfw_blur_comments_entire == true) {
+                    console.log('Bluring comments');
+                    $('#comments').addClass('blur-nsfw-entire');
+                } else if (options.option_nsfw_blur_comments_images == true) {
+                    // @hint Никита Ветров официально складывает с себя все претензии, если у кого-то от этого говна упадёт драйвер видео-карты
+                    console.log('Bluring images in comments');
+                    $('#comments').addClass('blur-nsfw-images');
+                }
             }
         }
-        
+
         // Hotkeys
         // Send by CTRL+Enter
         if (options.option_ctrl_enter == true) {
             // Reply
             // Delegated event for all comments
-            $('.content-wrap #comments').on('keydown.point_plus', '.reply-form textarea', function(e) {
+            $('.content-wrap #comments').on('keydown.point_plus', '.reply-form textarea', function (e) {
                 if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
                     e.preventDefault();
                     $(this).parent('.reply-form').submit();
                 }
             });
             // New post
-            $('#new-post-form #text-input,#new-post-form #tags-input').on('keydown.point_plus', function(e) {
+            $('#new-post-form #text-input,#new-post-form #tags-input').on('keydown.point_plus', function (e) {
                 if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
                     e.preventDefault();
                     $(this).parent('#new-post-form').submit();
@@ -160,7 +232,7 @@ $(document).ready(function() {
         // Image resizing
         if (options.option_images_load_original == true) {
             // Setting new image source
-            $('.postimg:not(.youtube) img').each(function() {
+            $('.postimg:not(.youtube) img').each(function () {
                 console.log($(this).parent('.postimg').attr('href'));
                 $(this).attr('src', $(this).parent('.postimg').attr('href'));
             });
@@ -182,7 +254,7 @@ $(document).ready(function() {
             // Send by CTRL+Enter
             if (options.option_ctrl_enter == true) {
                 // New post
-                $('#new-post-form #text-input, .post-content #text-input').on('keydown.point_plus', function(e) {
+                $('#new-post-form #text-input, .post-content #text-input').on('keydown.point_plus', function (e) {
                     if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
                         e.preventDefault();
                         $(this).parents('#new-post-form,#post-edit-form').submit();
@@ -192,7 +264,7 @@ $(document).ready(function() {
         }
         // Google search
         if (options.option_search_with_google == true) {
-            $('#search-form input[type="text"]').attr('placeholder', 'Google').keydown(function(e) {
+            $('#search-form input[type="text"]').attr('placeholder', 'Google').keydown(function (e) {
                 if (e.keyCode == 10 || e.keyCode == 13) {
                     e.preventDefault();
                     document.location.href = '//www.google.ru/search?q=site%3Apoint.im+' + $(this).val();
@@ -204,21 +276,21 @@ $(document).ready(function() {
             // SSL or plain
             ws = new WebSocket(((location.protocol == 'https:') ? 'wss' : 'ws') + '://point.im/ws');
             console.log('WebSocket created: %O', ws);
-            
+
             // Detecting post id if presented
             var postId = $('#top-post').attr('data-id');
             console.debug('Current post id detected as #%s', postId);
             // Detecting view mode
             treeSwitch = $('#tree-switch a.active').attr('href');
             console.debug('Comments view mode: %s', treeSwitch);
-            
+
             // Error handler
-            ws.onerror = function(err) {
+            ws.onerror = function (err) {
                 console.error('WebSocket error: %O', err);
             };
-            
+
             // Message handler
-            ws.onmessage = function(evt) {
+            ws.onmessage = function (evt) {
                 try {
                     // ping :)
                     if (evt.data == 'ping') {
@@ -246,14 +318,14 @@ $(document).ready(function() {
                                         console.groupEnd();
                                         break;
                                     }
-                                    
+
                                     // Check we are in specified post
                                     if (wsMessage.post_id != postId) {
                                         console.log('The comment is for #%s but current page is for #%s', wsMessage.post_id, postId);
                                         console.groupEnd();
                                         break;
                                     }
-                                    
+
                                     var $anchor = $('<a>').attr('name', wsMessage.comment_id);
 
                                     // Initializing comment element
@@ -265,7 +337,7 @@ $(document).ready(function() {
                                     });
 
                                     // Loading HTML template
-                                    $commentTemplate.load(chrome.extension.getURL('includes/comment.html'), function() {
+                                    $commentTemplate.load(chrome.extension.getURL('includes/comment.html'), function () {
                                         // Load complete
                                         console.info('comment.html loaded');
 
@@ -284,11 +356,11 @@ $(document).ready(function() {
                                         console.info('Changing data in the comment element');
                                         // Date and time
                                         $commentTemplate.find('.info .created')
-                                                .append($('<span>').html(((date.getDate().toString.length < 2) ? ('0' + date.getDate().toString()) : (date.getDate().toString())) + '&nbsp;' + months[date.getMonth()]))
-                                                // Crutchy fix
-                                                .append($('<br>'))
-                                                ///Crutchy fix
-                                                .append($('<span>').html(date.getHours() + ':' + ((date.getMinutes().toString().length < 2) ? ('0' + date.getMinutes().toString()) : (date.getMinutes().toString()))));
+                                            .append($('<span>').html(((date.getDate().toString.length < 2) ? ('0' + date.getDate().toString()) : (date.getDate().toString())) + '&nbsp;' + months[date.getMonth()]))
+                                            // Crutchy fix
+                                            .append($('<br>'))
+                                            ///Crutchy fix
+                                            .append($('<span>').html(date.getHours() + ':' + ((date.getMinutes().toString().length < 2) ? ('0' + date.getMinutes().toString()) : (date.getMinutes().toString()))));
                                         // Comment text
                                         $commentTemplate.find('.text').append($('<p>').html(escapeHtml(wsMessage.text)));
                                         // Author
@@ -297,8 +369,8 @@ $(document).ready(function() {
                                         $commentTemplate.find('.info a').attr('href', userLink).children('img.avatar').attr('src', userAvatar + '/24');
                                         // Post and comment ID's link
                                         $commentTemplate.find('.clearfix .post-id a').attr('href', commentLink).html('#' + wsMessage.post_id + '/' + wsMessage.comment_id)
-                                                // Adding answer label
-                                                .after((wsMessage.to_comment_id !== null) ? (' в ответ на <a href="#' + wsMessage.to_comment_id + '">/' + wsMessage.to_comment_id + '</a>') : (''));
+                                            // Adding answer label
+                                            .after((wsMessage.to_comment_id !== null) ? (' в ответ на <a href="#' + wsMessage.to_comment_id + '">/' + wsMessage.to_comment_id + '</a>') : (''));
                                         // Setting action labels and other attributes
                                         $commentTemplate.find('.action-labels .reply-label').attr('for', 'reply-' + wsMessage.post_id + '_' + wsMessage.comment_id);
                                         $commentTemplate.find('.action-labels .more-label').attr('for', 'action-' + wsMessage.post_id + '_' + wsMessage.comment_id);
@@ -344,13 +416,13 @@ $(document).ready(function() {
 
                                         // Adding anchor
                                         $commentTemplate.before($anchor);
-                                        
+
                                         // Fading out highlight if needed
                                         if (options.option_ws_comments_color_fadeout == true) {
                                             console.log('Fading out the highlight');
                                             $commentTemplate.children('.pp-highlight').fadeOut(20000);
                                         }
-                                        
+
                                         // Desktop notifications
                                         if (options.option_ws_comments_notifications == true) {
                                             console.log('Showing desktop notification');
@@ -362,38 +434,38 @@ $(document).ready(function() {
                                                 text: wsMessage.text
                                             });
                                         }
-                                        
+
                                         console.groupEnd();
                                     });
-                                    
+
                                     break;
 
-                                    // Posts
-                                    case 'post':
-                                        console.group('ws-post #%s', wsMessage.post_id);
-                                        
-                                        console.debug(wsMessage);
-                                        
-                                        console.groupEnd();
-                                        break;
-                                        
-                                    // Recommendation
-                                    case 'ok':
-                                        console.group('ws-recommendation #%s/%s', wsMessage.post_id, wsMessage.comment_id);
-                                        
-                                        console.debug(wsMessage);
-                                        
-                                        console.groupEnd();
-                                        break;
-                                        
-                                    default:
-                                        console.group('ws-other');
-                                        
-                                        console.log(wsMessage);
-                                        
-                                        console.groupEnd();
-                                        break;
-                                        
+                                // Posts
+                                case 'post':
+                                    console.group('ws-post #%s', wsMessage.post_id);
+
+                                    console.debug(wsMessage);
+
+                                    console.groupEnd();
+                                    break;
+
+                                // Recommendation
+                                case 'ok':
+                                    console.group('ws-recommendation #%s/%s', wsMessage.post_id, wsMessage.comment_id);
+
+                                    console.debug(wsMessage);
+
+                                    console.groupEnd();
+                                    break;
+
+                                default:
+                                    console.group('ws-other');
+
+                                    console.log(wsMessage);
+
+                                    console.groupEnd();
+                                    break;
+
                             }
                         }
 
@@ -406,7 +478,7 @@ $(document).ready(function() {
                 }
                 ;
             };
-        }        
+        }
         // Font size
         if ((options.option_enlarge_font == true) && (options.option_enlarge_font_size !== undefined)) {
             $('body').css('font-size', (options.option_enlarge_font_size / 100) + 'em');
@@ -420,15 +492,19 @@ $(document).ready(function() {
         }
 
         // Hightlight post with new comments
-        if (options.option_other_hightlight_post_comments == true){
+        if (options.option_other_hightlight_post_comments == true) {
             mark_unread_post();
         }
         // Show recommendation count and unique commentators count
-        if (options.option_other_show_recommendation_count == true){
+        if (options.option_other_show_recommendation_count == true) {
             set_posts_count_label();
         }
+        // `Space` key scroll handler
+        if (options.option_other_scroll_space_key == true){
+            set_space_key_skip_handler();
+        }
 
-
+        $('.point-plus-debug').fadeOut(500);
     });
 
     // Showing page action
@@ -437,12 +513,12 @@ $(document).ready(function() {
 
 function escapeHtml(text) {
     return text
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            //.replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;")
-            .replace(/\n/g, "<br>");
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        //.replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;")
+        .replace(/\n/g, "<br>");
 }
 
 // Monts for Date.getMonth()
@@ -452,7 +528,6 @@ var months = [
 ];
 
 
-/* Nokita's functions */
 // Картинки с бурятников
 var booru_picture_count = 0;
 function load_all_booru_images() {
@@ -541,7 +616,7 @@ function create_image(domain, id, additional) {
     return a;
 }
 
-/* point */
+// Помечаем непрочитанные посты более видимо чем каким-то баджем
 // Эта часть написана @RainbowSpike
 function mark_unread_post() {
     var divs = $(".post"); // массив постов
@@ -580,9 +655,44 @@ function parse_webm() {
     });
 }
 
+function parse_all_videos() {
+    $('a').each(function (num, obj) {
+        if ($(obj).hasClass('booru_pic')) {
+            return;
+        }
+
+        var href = obj.href;
+        var n = null;
+
+        if (n = href.match(new RegExp('\\.(webm|avi|mp4|mpg|mpeg)(\\?.+)?$', 'i'))) {
+            var player = document.createElement('video');
+            var mime = video_extension_to_mime(n[1]);
+            $(player).html('<source src="' + href + '" type=\'' + mime + '"\' />').attr('controls', 'controls').css({
+                'display': 'block',
+                'max-width': '95%'
+            }).addClass('parsed-webm-link');
+
+            obj.parentElement.insertBefore(player, obj);
+        }
+    });
+}
+
+function video_extension_to_mime(extension) {
+    switch(extension){
+        case 'webm':return 'video/webm; codecs="vp8, vorbis';
+        case 'avi' :return 'video/avi;';
+        case 'mp4' :return 'video/mp4;';
+        case 'mpg' :return 'video/mp4;';
+        case 'mpeg':return 'video/mp4;';
+    }
+
+}
+
 // Плашки у постов
 function set_posts_count_label() {
     var ids = [];
+    $('.post .post-id a .cn').addClass('changed_background');
+
     $('div.post').each(function (num, obj) {
         var t = $(obj).attr('data-comment-id');
         if (typeof(t) !== 'undefined') {
@@ -606,12 +716,14 @@ function set_posts_count_label() {
                 }
 
                 var e1 = document.createElement('span');
-                if (typeof(answer.list[id])=='undefined'){return;}
+                if (typeof(answer.list[id]) == 'undefined') {
+                    return;
+                }
                 $(e1).addClass('authors_unique_count').html(answer.list[id].count_comment_unique).attr('title', 'Количество комментаторов');
                 postid.appendChild(e1);
 
                 var e2 = document.createElement('span');
-                $(e2).addClass('recomendation_count').html('~' + answer.list[id].count_recommendation).attr('title', 'Количество рекомендаций. Работает криво, спасибо @arts\'у за это');
+                $(e2).addClass('recommendation_count').html('~' + answer.list[id].count_recommendation).attr('title', 'Количество рекомендаций. Работает криво, спасибо @arts\'у за это');
                 postid.appendChild(e2);
             });
         }
@@ -620,11 +732,11 @@ function set_posts_count_label() {
 
 }
 
-function parse_pleercom_links(){
-    chrome.storage.sync.get(ppOptions, function(options) {
-        if (options.option_embedding_pleercom_nokita_server){
+function parse_pleercom_links() {
+    chrome.storage.sync.get(ppOptions, function (options) {
+        if (options.option_embedding_pleercom_nokita_server) {
             parse_pleercom_links_nokita();
-        }else{
+        } else {
             parse_pleercom_links_ajax();
         }
     });
@@ -643,8 +755,8 @@ function parse_pleercom_links_nokita() {
                 'preload': 'none'
             });
 
-            var player_div=document.createElement('div');
-            $(player_div).addClass('embeded_audio').addClass('embeded_audio_'+n[1]);
+            var player_div = document.createElement('div');
+            $(player_div).addClass('embeded_audio').addClass('embeded_audio_' + n[1]);
             player_div.appendChild(player);
 
             obj.parentElement.insertBefore(player_div, obj);
@@ -652,28 +764,28 @@ function parse_pleercom_links_nokita() {
     });
 }
 
-function parse_pleercom_links_ajax(){
+function parse_pleercom_links_ajax() {
     $('a').each(function (num, obj) {
         var href = obj.href;
         var n = null;
 
         if (n = href.match(new RegExp('^https?:\\/\\/pleer\\.com\\/tracks\\/([0-9a-z]+)', 'i'))) {
-            var player_div=document.createElement('div');
-            $(player_div).addClass('embeded_audio').addClass('embeded_audio_'+n[1]);
+            var player_div = document.createElement('div');
+            $(player_div).addClass('embeded_audio').addClass('embeded_audio_' + n[1]);
             obj.parentElement.insertBefore(player_div, obj);
             create_pleercom_ajax(n[1]);
         }
     });
 }
 
-function create_pleercom_ajax(id){
+function create_pleercom_ajax(id) {
     $ajax({
-        'url':'https://pleer.com/site_api/files/get_url',
-        'type':'post',
-        'postdata':'action=download&id='+id,
-        'dont_set_content_type':true,
-        'pleer_id':id,
-        'headers':[['Accept','*'],['Content-Type','application/x-www-form-urlencoded; charset=UTF-8']],
+        'url': 'https://pleer.com/site_api/files/get_url',
+        'type': 'post',
+        'postdata': 'action=download&id=' + id,
+        'dont_set_content_type': true,
+        'pleer_id': id,
+        'headers': [['Accept', '*'], ['Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8']],
         'success': function (a) {
             var answer = JSON.parse(a);
             var player = document.createElement('audio');
@@ -683,13 +795,96 @@ function create_pleercom_ajax(id){
                 'controls': 'controls',
                 'preload': 'auto'
             });
-            $('.embeded_audio_'+this.settings.pleer_id)[0].appendChild(player);
+            $('.embeded_audio_' + this.settings.pleer_id)[0].appendChild(player);
         },
-        'error':function(){
+        'error': function () {
             console.log('Can not get url');
-            setTimeout(new Function('create_pleercom_ajax("'+this.settings.pleer_id+'");'), 1000);
+            setTimeout(new Function('create_pleercom_ajax("' + this.settings.pleer_id + '");'), 1000);
         }
 
     });
 
+}
+
+// Проставляем теги у постов
+function create_tag_system() {
+    $('.post').each(function () {
+        var tags = $(this).find('div.tags a.tag');
+        for (var i = 0; i < tags.length; i++) {
+            var tag_name = $(tags[i]).html().toLowerCase();
+            $(this).addClass('post-tag-' + tag_name);
+        }
+    });
+}
+
+// Скролл по пробелу
+function set_space_key_skip_handler(){
+    if ($('#comments').length>0){
+        return;
+    }
+
+    // @todo Свериться с Best-practice биндинга функций. Мб там on или bind
+    $(document.body).keydown(function(e){
+        // @todo Я хотел по отпусканию кнопки, но там уже скролл срабатывает
+        // проверяем фокус
+        if ($(':focus').length>0) {
+            return;
+        }
+
+        var k=event.keyCode;
+        if (k==32){
+            space_key_event();
+            return false;
+        }
+    });
+}
+
+// Проставляем теги у постов
+function create_tag_system() {
+    $('.post').each(function () {
+        var tags = $(this).find('div.tags a.tag');
+        for (var i = 0; i < tags.length; i++) {
+            var tag_name = $(tags[i]).html().toLowerCase();
+            $(this).addClass('post-tag-' + tag_name);
+        }
+    });
+}
+
+// Скролл по пробелу
+function set_space_key_skip_handler() {
+    if ($('#comments').length > 0) {
+        return;
+    }
+
+    // @todo Свериться с Best-practice биндинга функций. Мб там on или bind
+    $(document.body).keydown(function (e) {
+        // @todo Я хотел по отпусканию кнопки, но там уже скролл срабатывает
+        // проверяем фокус
+        if ($(':focus').length > 0) {
+            return;
+        }
+
+        var k = event.keyCode;
+        if (k == 32) {
+            space_key_event();
+            return false;
+        }
+    });
+}
+
+function space_key_event() {
+    var scroll_current = $('body').scrollTop();
+    var scroll_step_size = 0;
+    var scroll_real = Math.max(scroll_current - scroll_step_size, 0);
+
+    var posts = $('.post');
+    for (var i = 0; i < posts.length; i++) {
+        var this_top_px = $(posts[i]).offset().top;
+        if (this_top_px > scroll_real) {
+            $('body').animate({
+                'scrollTop': this_top_px
+            }, 200);
+            return;
+        }
+    }
 }

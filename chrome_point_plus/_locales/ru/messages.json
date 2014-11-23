@@ -56,6 +56,9 @@
     "option_videos_parse_webm": {
         "message": "Оборачивать ссылки на webm в тег &#60;video&#62;"
     },
+    "option_videos_parse_all_videos": {
+        "message": "Оборачивать ссылки на всё видео в тег &#60;video&#62;"
+    },
     "option_embedding_soundcloud": {
         "message": "Soundcloud &#9660;"
     },
@@ -71,11 +74,20 @@
     "option_nsfw": {
         "message": "Фильтрация NSFW-контента"
     },
-    "option_nsfw_blur": {
-        "message": "Размытие небезопасных постов"
+    "option_nsfw_hide_posts":{
+        "message": "Скрывать NSFW-посты из ленты сообщений"
     },
-    "option_nsfw_blur_comments": {
-        "message": "Размытие комментариев"
+    "option_nsfw_blur_posts_images": {
+        "message": "Размытие картинок в небезопасных постах"
+    },
+    "option_nsfw_blur_posts_entire": {
+        "message": "Размытие небезопасных постов полностью"
+    },
+    "option_nsfw_blur_comments_images": {
+        "message": "Размытие картинок в каментариях небезопасных постов"
+    },
+    "option_nsfw_blur_comments_entire": {
+        "message": "Размытие ВСЕХ комментариев в небезопасных постах"
     },
     "option_ctrl_enter": {
         "message": "Отправлять текст по CTRL+Enter (устарело)"
@@ -122,8 +134,12 @@
     "option_other_show_recommendation_count": {
         "message": "Показывать количество рекомендаций и уникальных комментаторов в посте (используя сервер @NokitaKaze)"
     },
-    
-    
+
+    "option_other_scroll_space_key":{
+        "message": "Скроллинг постов пробелом"
+    },
+
+
     "options_feedback_text": {
         "message": "<p>Нашли ошибку? Не стесняйтесь <a href=\"https:\/\/bitbucket.org\/skobkin\/chrome_point_plus\/issues?status=new&status=open\" target=\"_blank\">сообщить о ней<\/a>.<\/p><p>Также вы можете сделать пожертвование автору:<\/p><p><iframe frameborder=\"0\" allowtransparency=\"true\" scrolling=\"no\" src=\"https:\/\/money.yandex.ru\/embed\/small.xml?account=41001539215836&quickpay=small&yamoney-payment-type=on&button-text=04&button-size=s&button-color=black&targets=Point%2B&default-sum=150&successURL=https%3A%2F%2Fbitbucket.org%2Fskobkin%2Fchrome_point_plus\" width=\"158\" height=\"31\"><\/iframe><\/p><p><iframe frameborder=\"0\" allowtransparency=\"true\" scrolling=\"no\" src=\"https:\/\/money.yandex.ru\/embed\/small.xml?account=41001539215836&quickpay=small&any-card-payment-type=on&button-text=04&button-size=s&button-color=black&targets=Point%2B&default-sum=150&successURL=https%3A%2F%2Fbitbucket.org%2Fskobkin%2Fchrome_point_plus\" width=\"158\" height=\"31\"><\/iframe><\/p><p><form action=\"https:\/\/www.paypal.com\/cgi-bin\/webscr\" method=\"post\" target=\"_top\"><input type=\"hidden\" name=\"cmd\" value=\"_s-xclick\"><input type=\"hidden\" name=\"hosted_button_id\" value=\"WW33X5J5WFSP4\"><input type=\"image\" src=\"https:\/\/www.paypalobjects.com\/ru_RU\/RU\/i\/btn\/btn_donateCC_LG.gif\" border=\"0\" name=\"submit\" alt=\"PayPal — более безопасный и легкий способ оплаты через Интернет!\"><img alt=\"\" border=\"0\" src=\"https:\/\/www.paypalobjects.com\/en_US\/i\/scr\/pixel.gif\" width=\"1\" height=\"1\"><\/form><\/p>"
     }
