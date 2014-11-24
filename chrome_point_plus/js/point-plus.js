@@ -16,7 +16,7 @@ $(document).ready(function() {
     var new_div = document.createElement('div');
     $(new_div).attr({
         'data-point-plus-version': getVersion()
-    }).addClass('point-plus-debug').html('Point+ v' + getVersion() + ' loading...');
+    }).addClass('point-plus-debug').text('Point+ v' + getVersion() + ' loading...');
     var obj = $('#user-menu-cb')[0];
     obj.parentElement.insertBefore(new_div, obj);
     new_div = null;
@@ -732,11 +732,11 @@ function set_posts_count_label() {
                 if (typeof(answer.list[id]) == 'undefined') {
                     return;
                 }
-                $(e1).addClass('authors_unique_count').html(answer.list[id].count_comment_unique).attr('title', 'Количество комментаторов');
+                $(e1).addClass('authors_unique_count').text(answer.list[id].count_comment_unique).attr('title', 'Количество комментаторов');
                 postid.appendChild(e1);
 
                 var e2 = document.createElement('span');
-                $(e2).addClass('recommendation_count').html('~' + answer.list[id].count_recommendation).attr('title', 'Количество рекомендаций. Работает криво, спасибо @arts\'у за это');
+                $(e2).addClass('recommendation_count').text('~' + answer.list[id].count_recommendation).attr('title', 'Количество рекомендаций. Работает криво, спасибо @arts\'у за это');
                 postid.appendChild(e2);
             });
         }
@@ -930,7 +930,7 @@ function draft_save_check() {
         return;
     }
     // @todo i18n
-    $('.draft_save_status').html('Сохраняем черновик...').show();
+    $('.draft_save_status').text('Сохраняем черновик...').show();
 
     // Сохраняем
     draft_last_text=current_text;
@@ -938,7 +938,7 @@ function draft_save_check() {
     chrome.storage.sync.set({'point_draft_text': draft_last_text}, function() {
         // Notify that we saved.
         draft_save_busy=false;
-        $('.draft_save_status').html('Черновик сохранён...');
+        $('.draft_save_status').text('Черновик сохранён...');
         setTimeout(function(){
             $('.draft_save_status').fadeOut(500);
         }, 1000);
