@@ -1,38 +1,43 @@
-$(document).ready(function () {
+$(document).ready(function() {
     // Grouping console log
     console.group('point-plus');
     console.info('Point+ %s', getVersion());
 
     // Проверяем, загрузились ли мы
-    var point_plus_debug=$('.point-plus-debug');
-    if (point_plus_debug.length>0){
+    // @todo: Убрать это говно и нормально пилить расширение не принося пользователям костыли
+    // Хочешь детект? Делай невидимый элемент где-нибудь в подвале. И айдишник, а не класс. Их искать быстрее.
+    // Хочешь показать пользователю обработку - делай индикатор и встраивай в интерфейс сайта.
+    var point_plus_debug = $('.point-plus-debug');
+    if (point_plus_debug.length > 0){
         console.info('Point+ already loaded, version: %s', point_plus_debug.attr('data-point-plus-version'));
         return;
     }
-    point_plus_debug=null;
-    var new_div=document.createElement('div');
+    point_plus_debug = null;
+    var new_div = document.createElement('div');
     document.body.appendChild(new_div);
     $(new_div).attr({
         'data-point-plus-version':getVersion()
-    }).addClass('point-plus-debug').html('Point+ v'+getVersion()+' loading...');
-    new_div=null;
+    }).addClass('point-plus-debug').html('Point+ v' + getVersion() + ' loading...').hide();
+    new_div = null;
 
     // Loading options
-    chrome.storage.sync.get(ppOptions, function (options) {
+    chrome.storage.sync.get('options', function(options_data) {
+        var options = options_data.options;
+        
         // Options debug
         console.debug('Options loaded: %O', options);
 
         create_tag_system();
 
         // Embedding
-        if (options.option_embedding == true) {
+        if (options.option_embedding.value == true) {
             // Load pictures from Booru, Tumblr and some other sites
-            if (options.option_images_load_booru == true) {
+            if (options.option_images_load_booru.value == true) {
                 load_all_booru_images();
             }
             // Parse webm-links and create video instead
-            if (options.option_videos_parse_webm == true) {
-                if (options.option_videos_parse_all_videos == true) {
+            if (options.option_videos_parse_webm.value == true) {
+                if (options.option_videos_parse_all_videos.value == true) {
                     parse_all_videos();
                 } else {
                     parse_webm();
@@ -40,7 +45,7 @@ $(document).ready(function () {
             }
 
             // Soundcloud
-            if (options.option_embedding_soundcloud == true) {
+            if (options.option_embedding_soundcloud.value == true) {
                 // Injecting JS API
                 chrome.extension.sendMessage({
                     type: 'injectJSFile',
@@ -48,22 +53,22 @@ $(document).ready(function () {
                 });
 
                 // Processing links 
-                $('.post .post-content a[href*="\\:\\/\\/soundcloud\\.com\\/"]').each(function (index) {
+                $('.post .post-content a[href*="\\:\\/\\/soundcloud\\.com\\/"]').each(function(index) {
                     console.log($(this));
 
                     $player = $('<div class="pp-soundcloud">\
                                     <object height="81" width="100%" id="pp-soundcloud-' + index + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">\
                                       <param name="movie" value="//player.soundcloud.com/player.swf?url=' + encodeURIComponent($(this).prop('href'))
-                    + '&enable_api=true&object_id=pp-soundcloud-' + index + '">\
+                                    + '&enable_api=true&object_id=pp-soundcloud-' + index + '">\
                                       <param name="allowscriptaccess" value="always">\
                                       <embed allowscriptaccess="always" height="81" src="//player.soundcloud.com/player.swf?url='
-                    + encodeURIComponent($(this).prop('href')) + '&enable_api=true&object_id=pp-soundcloud-' + index
-                    + '" type="application/x-shockwave-flash" width="100%" name="pp-soundcloud-' + index + '"></embed>\
+                                    + encodeURIComponent($(this).prop('href')) + '&enable_api=true&object_id=pp-soundcloud-' + index
+                                    + '" type="application/x-shockwave-flash" width="100%" name="pp-soundcloud-' + index + '"></embed>\
                                     </object>\
                                 </div>');
 
                     // Replace or prepend
-                    if (options.option_embedding_soundcloud_orig_link == true) {
+                    if (options.option_embedding_soundcloud_orig_link.value == true) {
                         // Before
                         $(this).before($player);
                     } else {
@@ -74,25 +79,25 @@ $(document).ready(function () {
 
             }
             // Parse webm-links and create video instead
-            if (options.option_embedding_pleercom == true) {
+            if (options.option_embedding_pleercom.value == true) {
                 parse_pleercom_links();
             }
         }
 
         // Fancybox
-        if (options.option_fancybox == true) {
-            if (options.option_fancybox_bind_images_to_one_flow == true) {
+        if (options.option_fancybox.value == true) {
+            if (options.option_fancybox_bind_images_to_one_flow.value == true) {
                 // Linking images in posts to the galleries
-                $('.post-content .text').each(function () {
+                $('.post-content .text').each(function() {
                     $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'one_flow_gallery');
                 });
             }
 
             // Images
-            if (options.option_fancybox_images == true) {
-                if (options.option_fancybox_bind_images_to_one_flow !== true) {
+            if (options.option_fancybox_images.value == true) {
+                if (options.option_fancybox_bind_images_to_one_flow.value !== true) {
                     // Linking images in posts to the galleries
-                    $('.post-content .text').each(function (idxPost) {
+                    $('.post-content .text').each(function(idxPost) {
                         $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'post' + idxPost);
                     });
                 }
@@ -102,7 +107,7 @@ $(document).ready(function () {
                 });
             }
             // Правим хинт в FancyBox
-            $('.post').each(function () {
+            $('.post').each(function() {
                 var all_post_images = $(this).find('.postimg');
                 if (all_post_images.length == 0) {
                     return;
@@ -146,7 +151,7 @@ $(document).ready(function () {
             });
 
             // Videos
-            if (options.option_fancybox_videos == true) {
+            if (options.option_fancybox_videos.value == true) {
                 $('.postimg.youtube').addClass('fancybox-media').fancybox({
                     helpers: {
                         media: {
@@ -160,7 +165,7 @@ $(document).ready(function () {
                 });
             }
             // Posts
-            if (options.option_fancybox_posts == true) {
+            if (options.option_fancybox_posts.value == true) {
                 // Excluding some sort of piece-of-shit makeup
                 $('.post-id a').not('#comments .post-id a, #top-post .post-id a').attr('data-fancybox-type', 'iframe').fancybox({
                     maxWidth: 780
@@ -169,20 +174,20 @@ $(document).ready(function () {
         }
 
         // NSFW Filtering
-        if (options.option_nsfw == true) {
+        if (options.option_nsfw.value == true) {
             $('.post-tag-nsfw,.post-tag-сиськи').find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'hidden-images');
 
-            if (options.option_nsfw_hide_posts == true) {
+            if (options.option_nsfw_hide_posts.value == true) {
                 if ($('#comments').length == 0) {
                     console.log('Hide NSFW posts in feed');
                     $('.post').addClass('hide-nsfw-posts');
                 }
             } else {
                 // Blurred posts
-                if (options.option_nsfw_blur_posts_entire == true) {
+                if (options.option_nsfw_blur_posts_entire.value == true) {
                     console.log('Bluring NSFW posts');
                     $('.post').addClass('blur-nsfw-entire');
-                } else if (options.option_nsfw_blur_posts_images == true) {
+                } else if (options.option_nsfw_blur_posts_images.value == true) {
                     console.log('Bluring images in NSFW posts');
                     $('.post').addClass('blur-nsfw-images');
                 }
@@ -190,10 +195,10 @@ $(document).ready(function () {
 
             // Blurred comments
             if ($('.post').hasClass('post-tag-nsfw') || $('.post').hasClass('post-tag-сиськи')) {
-                if (options.option_nsfw_blur_comments_entire == true) {
+                if (options.option_nsfw_blur_comments_entire.value == true) {
                     console.log('Bluring comments');
                     $('#comments').addClass('blur-nsfw-entire');
-                } else if (options.option_nsfw_blur_comments_images == true) {
+                } else if (options.option_nsfw_blur_comments_images.value == true) {
                     // @hint Никита Ветров официально складывает с себя все претензии, если у кого-то от этого говна упадёт драйвер видео-карты
                     console.log('Bluring images in comments');
                     $('#comments').addClass('blur-nsfw-images');
@@ -203,17 +208,17 @@ $(document).ready(function () {
 
         // Hotkeys
         // Send by CTRL+Enter
-        if (options.option_ctrl_enter == true) {
+        if (options.option_ctrl_enter.value == true) {
             // Reply
             // Delegated event for all comments
-            $('.content-wrap #comments').on('keydown.point_plus', '.reply-form textarea', function (e) {
+            $('.content-wrap #comments').on('keydown.point_plus', '.reply-form textarea', function(e) {
                 if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
                     e.preventDefault();
                     $(this).parent('.reply-form').submit();
                 }
             });
             // New post
-            $('#new-post-form #text-input,#new-post-form #tags-input').on('keydown.point_plus', function (e) {
+            $('#new-post-form #text-input,#new-post-form #tags-input').on('keydown.point_plus', function(e) {
                 if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
                     e.preventDefault();
                     $(this).parent('#new-post-form').submit();
@@ -222,7 +227,7 @@ $(document).ready(function () {
         }
         // Look and feel
         // Fluid #main layout
-        if (options.option_fluid_layout == true) {
+        if (options.option_fluid_layout.value == true) {
             $('#main, #header, #subheader, #footer').css({
                 'width': '95%',
                 'max-width': '95%'
@@ -230,9 +235,9 @@ $(document).ready(function () {
             // TODO: fix #main #left-menu #top-link position
         }
         // Image resizing
-        if (options.option_images_load_original == true) {
+        if (options.option_images_load_original.value == true) {
             // Setting new image source
-            $('.postimg:not(.youtube) img').each(function () {
+            $('.postimg:not(.youtube) img').each(function() {
                 console.log($(this).parent('.postimg').attr('href'));
                 $(this).attr('src', $(this).parent('.postimg').attr('href'));
             });
@@ -245,16 +250,16 @@ $(document).ready(function () {
             });
         }
         // Visual editor
-        if (options.option_visual_editor_post == true) {
+        if (options.option_visual_editor_post.value == true) {
             // Add classes
             $('#new-post-form #text-input, .post-content #text-input').addClass('markitup').css('height', '20em');
             // Init
             $('.markitup').markItUp(mySettings);
 
             // Send by CTRL+Enter
-            if (options.option_ctrl_enter == true) {
+            if (options.option_ctrl_enter.value == true) {
                 // New post
-                $('#new-post-form #text-input, .post-content #text-input').on('keydown.point_plus', function (e) {
+                $('#new-post-form #text-input, .post-content #text-input').on('keydown.point_plus', function(e) {
                     if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
                         e.preventDefault();
                         $(this).parents('#new-post-form,#post-edit-form').submit();
@@ -263,8 +268,8 @@ $(document).ready(function () {
             }
         }
         // Google search
-        if (options.option_search_with_google == true) {
-            $('#search-form input[type="text"]').attr('placeholder', 'Google').keydown(function (e) {
+        if (options.option_search_with_google.value == true) {
+            $('#search-form input[type="text"]').attr('placeholder', 'Google').keydown(function(e) {
                 if (e.keyCode == 10 || e.keyCode == 13) {
                     e.preventDefault();
                     document.location.href = '//www.google.ru/search?q=site%3Apoint.im+' + $(this).val();
@@ -272,7 +277,7 @@ $(document).ready(function () {
             });
         }
         // WebSocket
-        if (options.option_ws == true) {
+        if (options.option_ws.value == true) {
             // SSL or plain
             ws = new WebSocket(((location.protocol == 'https:') ? 'wss' : 'ws') + '://point.im/ws');
             console.log('WebSocket created: %O', ws);
@@ -285,12 +290,12 @@ $(document).ready(function () {
             console.debug('Comments view mode: %s', treeSwitch);
 
             // Error handler
-            ws.onerror = function (err) {
+            ws.onerror = function(err) {
                 console.error('WebSocket error: %O', err);
             };
 
             // Message handler
-            ws.onmessage = function (evt) {
+            ws.onmessage = function(evt) {
                 try {
                     // ping :)
                     if (evt.data == 'ping') {
@@ -306,7 +311,7 @@ $(document).ready(function () {
                                     console.debug(wsMessage);
 
                                     // Check option
-                                    if (options.option_ws_comments != true) {
+                                    if (options.option_ws_comments.value != true) {
                                         console.log('Comments processing disabled');
                                         console.groupEnd();
                                         break;
@@ -337,7 +342,7 @@ $(document).ready(function () {
                                     });
 
                                     // Loading HTML template
-                                    $commentTemplate.load(chrome.extension.getURL('includes/comment.html'), function () {
+                                    $commentTemplate.load(chrome.extension.getURL('includes/comment.html'), function() {
                                         // Load complete
                                         console.info('comment.html loaded');
 
@@ -418,13 +423,13 @@ $(document).ready(function () {
                                         $commentTemplate.before($anchor);
 
                                         // Fading out highlight if needed
-                                        if (options.option_ws_comments_color_fadeout == true) {
+                                        if (options.option_ws_comments_color_fadeout.value == true) {
                                             console.log('Fading out the highlight');
                                             $commentTemplate.children('.pp-highlight').fadeOut(20000);
                                         }
 
                                         // Desktop notifications
-                                        if (options.option_ws_comments_notifications == true) {
+                                        if (options.option_ws_comments_notifications.value == true) {
                                             console.log('Showing desktop notification');
                                             chrome.extension.sendMessage({
                                                 type: 'showNotification',
@@ -480,11 +485,11 @@ $(document).ready(function () {
             };
         }
         // Font size
-        if ((options.option_enlarge_font == true) && (options.option_enlarge_font_size !== undefined)) {
-            $('body').css('font-size', (options.option_enlarge_font_size / 100) + 'em');
+        if ((options.option_enlarge_font.value == true) && (options.option_enlarge_font_size.value !== undefined)) {
+            $('body').css('font-size', (options.option_enlarge_font_size.value / 100) + 'em');
         }
         // @ before username
-        if (options.option_at_before_username == true) {
+        if (options.option_at_before_username.value == true) {
             chrome.extension.sendMessage({
                 type: 'injectCSSFile',
                 file: 'css/modules/at_before_username.css'
@@ -492,15 +497,15 @@ $(document).ready(function () {
         }
 
         // Hightlight post with new comments
-        if (options.option_other_hightlight_post_comments == true) {
+        if (options.option_other_hightlight_post_comments.value == true) {
             mark_unread_post();
         }
         // Show recommendation count and unique commentators count
-        if (options.option_other_show_recommendation_count == true) {
+        if (options.option_other_show_recommendation_count.value == true) {
             set_posts_count_label();
         }
         // `Space` key scroll handler
-        if (options.option_other_scroll_space_key == true){
+        if (options.option_other_scroll_space_key.value == true){
             set_space_key_skip_handler();
         }
 
@@ -508,7 +513,9 @@ $(document).ready(function () {
     });
 
     // Showing page action
-    chrome.extension.sendMessage({type: 'showPageAction'});
+    chrome.extension.sendMessage({
+        type: 'showPageAction'
+    });
 });
 
 function escapeHtml(text) {
@@ -531,7 +538,7 @@ var months = [
 // Картинки с бурятников
 var booru_picture_count = 0;
 function load_all_booru_images() {
-    $('a').each(function (num, obj) {
+    $('a').each(function(num, obj) {
         if ($(obj).hasClass('booru_pic')) {
             return;
         }
@@ -568,11 +575,11 @@ function load_all_booru_images() {
             obj.parentElement.insertBefore(image, obj);
             booru_picture_count++;
             /*
-             }else if (n=href.match(new RegExp('^https?\\://(www\\.)?konachan\\.net\\/post\\/show\\/([0-9]+)\\/', 'i'))){
-             var image=create_image('konachannet', n[2]);
+             } else if (n = href.match(new RegExp('^https?\\://(www\\.)?konachan\\.net\\/post\\/show\\/([0-9]+)\\/', 'i'))) {
+             var image = create_image('konachannet', n[2]);
              obj.parentElement.insertBefore(image, obj);
              booru_picture_count++;
-             }else if (n=href.match(new RegExp('^https?\\://(www\\.)?konachan\\.com\\/post\\/show\\/([0-9]+)\\/', 'i'))){
+             } else if (n = href.match(new RegExp('^https?\\://(www\\.)?konachan\\.com\\/post\\/show\\/([0-9]+)\\/', 'i'))) {
              var image=create_image('konachancom', n[2]);
              obj.parentElement.insertBefore(image, obj);
              booru_picture_count++;
@@ -634,7 +641,7 @@ function mark_unread_post() {
 
 // Webm
 function parse_webm() {
-    $('a').each(function (num, obj) {
+    $('a').each(function(num, obj) {
         if ($(obj).hasClass('booru_pic')) {
             return;
         }
@@ -656,7 +663,7 @@ function parse_webm() {
 }
 
 function parse_all_videos() {
-    $('a').each(function (num, obj) {
+    $('a').each(function(num, obj) {
         if ($(obj).hasClass('booru_pic')) {
             return;
         }
@@ -678,7 +685,7 @@ function parse_all_videos() {
 }
 
 function video_extension_to_mime(extension) {
-    switch(extension){
+    switch (extension) {
         case 'webm':return 'video/webm; codecs="vp8, vorbis';
         case 'avi' :return 'video/avi;';
         case 'mp4' :return 'video/mp4;';
@@ -693,7 +700,7 @@ function set_posts_count_label() {
     var ids = [];
     $('.post .post-id a .cn').addClass('changed_background');
 
-    $('div.post').each(function (num, obj) {
+    $('div.post').each(function(num, obj) {
         var t = $(obj).attr('data-comment-id');
         if (typeof(t) !== 'undefined') {
             return;
@@ -704,10 +711,10 @@ function set_posts_count_label() {
 
     $ajax({
         'url': 'https://api.kanaria.ru/point/get_post_info.php?list=' + urlencode(ids.join(',')),
-        'success': function (a) {
+        'success': function(a) {
             var answer = JSON.parse(a);
 
-            $('div.post').each(function (num, obj) {
+            $('div.post').each(function(num, obj) {
                 var id = $(obj).attr('data-id');
                 var postid = $(obj).find('.post-id a')[0];
                 var t = $(obj).attr('data-comment-id');
@@ -733,7 +740,7 @@ function set_posts_count_label() {
 }
 
 function parse_pleercom_links() {
-    chrome.storage.sync.get(ppOptions, function (options) {
+    chrome.storage.sync.get(ppOptions, function(options) {
         if (options.option_embedding_pleercom_nokita_server) {
             parse_pleercom_links_nokita();
         } else {
@@ -743,7 +750,7 @@ function parse_pleercom_links() {
 }
 
 function parse_pleercom_links_nokita() {
-    $('a').each(function (num, obj) {
+    $('a').each(function(num, obj) {
         var href = obj.href;
         var n = null;
 
@@ -765,7 +772,7 @@ function parse_pleercom_links_nokita() {
 }
 
 function parse_pleercom_links_ajax() {
-    $('a').each(function (num, obj) {
+    $('a').each(function(num, obj) {
         var href = obj.href;
         var n = null;
 
@@ -786,7 +793,7 @@ function create_pleercom_ajax(id) {
         'dont_set_content_type': true,
         'pleer_id': id,
         'headers': [['Accept', '*'], ['Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8']],
-        'success': function (a) {
+        'success': function(a) {
             var answer = JSON.parse(a);
             var player = document.createElement('audio');
             // @todo Проверять существование track_link
@@ -797,7 +804,7 @@ function create_pleercom_ajax(id) {
             });
             $('.embeded_audio_' + this.settings.pleer_id)[0].appendChild(player);
         },
-        'error': function () {
+        'error': function() {
             console.log('Can not get url');
             setTimeout(new Function('create_pleercom_ajax("' + this.settings.pleer_id + '");'), 1000);
         }
@@ -808,40 +815,7 @@ function create_pleercom_ajax(id) {
 
 // Проставляем теги у постов
 function create_tag_system() {
-    $('.post').each(function () {
-        var tags = $(this).find('div.tags a.tag');
-        for (var i = 0; i < tags.length; i++) {
-            var tag_name = $(tags[i]).html().toLowerCase();
-            $(this).addClass('post-tag-' + tag_name);
-        }
-    });
-}
-
-// Скролл по пробелу
-function set_space_key_skip_handler(){
-    if ($('#comments').length>0){
-        return;
-    }
-
-    // @todo Свериться с Best-practice биндинга функций. Мб там on или bind
-    $(document.body).keydown(function(e){
-        // @todo Я хотел по отпусканию кнопки, но там уже скролл срабатывает
-        // проверяем фокус
-        if ($(':focus').length>0) {
-            return;
-        }
-
-        var k=event.keyCode;
-        if (k==32){
-            space_key_event();
-            return false;
-        }
-    });
-}
-
-// Проставляем теги у постов
-function create_tag_system() {
-    $('.post').each(function () {
+    $('.post').each(function() {
         var tags = $(this).find('div.tags a.tag');
         for (var i = 0; i < tags.length; i++) {
             var tag_name = $(tags[i]).html().toLowerCase();
@@ -857,7 +831,40 @@ function set_space_key_skip_handler() {
     }
 
     // @todo Свериться с Best-practice биндинга функций. Мб там on или bind
-    $(document.body).keydown(function (e) {
+    $(document.body).keydown(function(e) {
+        // @todo Я хотел по отпусканию кнопки, но там уже скролл срабатывает
+        // проверяем фокус
+        if ($(':focus').length > 0) {
+            return;
+        }
+
+        var k = event.keyCode;
+        if (k == 32){
+            space_key_event();
+            return false;
+        }
+    });
+}
+
+// Проставляем теги у постов
+function create_tag_system() {
+    $('.post').each(function() {
+        var tags = $(this).find('div.tags a.tag');
+        for (var i = 0; i < tags.length; i++) {
+            var tag_name = $(tags[i]).html().toLowerCase();
+            $(this).addClass('post-tag-' + tag_name);
+        }
+    });
+}
+
+// Скролл по пробелу
+function set_space_key_skip_handler() {
+    if ($('#comments').length > 0) {
+        return;
+    }
+
+    // @todo Свериться с Best-practice биндинга функций. Мб там on или bind
+    $(document.body).keydown(function(e) {
         // @todo Я хотел по отпусканию кнопки, но там уже скролл срабатывает
         // проверяем фокус
         if ($(':focus').length > 0) {
