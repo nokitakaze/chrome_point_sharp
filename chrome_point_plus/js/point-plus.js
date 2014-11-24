@@ -287,6 +287,13 @@ $(document).ready(function() {
             // SSL or plain
             ws = new WebSocket(((location.protocol == 'https:') ? 'wss' : 'ws') + '://point.im/ws');
             console.log('WebSocket created: %O', ws);
+            
+            // @todo: унести в опцию
+            // Adding event listener for notification click
+            chrome.extension.sendMessage({
+                type: 'listenNotificationClicks',
+                protocol: getProtocol()
+            });
 
             // Detecting post id if presented
             var postId = $('#top-post').attr('data-id');
@@ -347,6 +354,7 @@ $(document).ready(function() {
                                         'data-to-comment-id': (wsMessage.to_comment_id != null) ? wsMessage.to_comment_id : ''
                                     });
 
+                                    // @todo: Вынести в отдельную функцию
                                     // Loading HTML template
                                     $commentTemplate.load(chrome.extension.getURL('includes/comment.html'), function() {
                                         // Load complete
@@ -354,7 +362,8 @@ $(document).ready(function() {
 
                                         // Date and time of comment
                                         var date = new Date();
-
+                                        
+                                        // @todo: унести наверх
                                         // Data for template
                                         var userLink = '//' + wsMessage.author + '.point.im/';
                                         var postAuthorLink = $('#top-post .info a').attr('href');
@@ -362,7 +371,7 @@ $(document).ready(function() {
                                         var userAvatar = '//point.im/avatar/' + wsMessage.author;
                                         var commentLink = '//point.im/' + wsMessage.post_id + '#' + wsMessage.comment_id;
                                         var csRfToken = $('.reply-form input[name="csrf_token"').val();
-
+                                        
                                         // Filling template
                                         console.info('Changing data in the comment element');
                                         // Date and time
@@ -439,9 +448,9 @@ $(document).ready(function() {
                                             console.log('Showing desktop notification');
                                             chrome.extension.sendMessage({
                                                 type: 'showNotification',
-                                                notificationId: wsMessage.post_id + '_' + wsMessage.comment_id,
-                                                avatarUrl: ((location.protocol == 'http:') ? 'http:' : 'https:') + userAvatar + '/80',
-                                                title: '@' + wsMessage.author + ' &#8594; #' + wsMessage.post_id + '(/' + wsMessage.comment_id + ')',
+                                                notificationId: 'comment_' + wsMessage.post_id + '#' + wsMessage.comment_id,
+                                                avatarUrl: getProtocol() + userAvatar + '/80',
+                                                title: '@' + wsMessage.author + ' #' + wsMessage.post_id + '(/' + wsMessage.comment_id + ')',
                                                 text: wsMessage.text
                                             });
                                         }
@@ -523,6 +532,10 @@ $(document).ready(function() {
         type: 'showPageAction'
     });
 });
+
+function getProtocol() {
+    return ((location.protocol == 'http:') ? 'http:' : 'https:')
+}
 
 function escapeHtml(text) {
     return text

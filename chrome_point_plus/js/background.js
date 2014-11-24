@@ -10,16 +10,38 @@ chrome.extension.onMessage.addListener(function(message, sender) {
                 break;
                 
             case 'showNotification':
-                console.log(chrome.notifications.create(
+                chrome.notifications.create(
                     message.notificationId, {   
                         type: 'basic', 
                         iconUrl: message.avatarUrl, 
                         title: message.title, 
                         message: message.text,
-                        priority: 0
+                        priority: 0,
+                        isClickable: true
                     },
                     function() { /* Error checking goes here */} 
-                )); 
+                );
+                
+                console.log('Showing notification %s', message.notificationId); 
+                break;
+                
+            case 'listenNotificationClicks':
+                // Adding notification click event listener
+                chrome.notifications.onClicked.addListener(function(notificationId) {
+                    // Detecting notification type
+                    if (notificationId.indexOf('comment_') === 0) {
+                        tab_url = message.protocol + '//' + 'point.im/' + notificationId.replace(/comment_/g, '');
+                    } else if (notificationId.indexOf('post_') === 0) {
+                        tab_url = message.protocol + '//' + 'point.im/' + notificationId.replace(/post_/g, '');
+                    }
+                    console.log('Notification %s clicked! Opening new tab: %s', notificationId, tab_url);
+                    
+                    if (tab_url !== undefined) {
+                        chrome.tabs.create({
+                            url: tab_url
+                        });
+                    }
+                });
                 break;
                 
             case 'injectJSFile':
