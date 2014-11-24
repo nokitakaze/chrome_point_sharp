@@ -215,18 +215,33 @@ div#markItUpText-input {
 
 /* point-plus-debug */
 .point-plus-debug{
-    position: absolute;
-    padding: 10px 20px;
-    top: 60px;
-    left: 20px;
-    border-radius: 3px;
-    border: 1px solid #333;/* @todo Сделать не такой галимый */
-    background-color: #ddd;/* @todo Аналогично */
-    z-index: 11;
+    float: right;
+    display: block;
+    color: rgba(255,255,255,.75);
+    padding: 10px 0px;
 }
 
 .post-tag-nsfw.hide-nsfw-posts,
 .post-tag-сиськи.hide-nsfw-posts{
     display: none;
 }
+
+/* Черновики */
+#new-post-form #text-input{
+    height: 30em !important;
+}
+
+#new-post-form .draft_save_status{
+    display: none;
+    padding: 3px 5px;
+    color: green;
+}
+
+
+
+
+
+
+
+
 
