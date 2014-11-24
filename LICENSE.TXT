@@ -1,6 +1,6 @@
-The MIT License (MIT)
+The MIT License (MIT), reference http://www.opensource.org/licenses/mit-license.php
 
-Copyright (c) 2014 Alexey Skobkin
+Copyright (c) 2014 Alexey Skobkin <skobkin-ru@ya.ru>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
