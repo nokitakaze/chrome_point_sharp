@@ -14,11 +14,17 @@ $(document).ready(function() {
     }
     point_plus_debug = null;
     var new_div = document.createElement('div');
-    document.body.appendChild(new_div);
     $(new_div).attr({
-        'data-point-plus-version':getVersion()
-    }).addClass('point-plus-debug').html('Point+ v' + getVersion() + ' loading...').hide();
+        'data-point-plus-version': getVersion()
+    }).addClass('point-plus-debug').text('Point+ v' + getVersion() + ' loading...');
+    var obj = $('#user-menu-cb')[0];
+    obj.parentElement.insertBefore(new_div, obj);
     new_div = null;
+    obj = null;
+
+    // Черновики. Ставим хандлер и восстанавливаем предыдущее состояние
+    draft_set_save_handler();
+    draft_restore();
 
     // Loading options
     chrome.storage.sync.get('options', function(options_data) {
@@ -726,11 +732,11 @@ function set_posts_count_label() {
                 if (typeof(answer.list[id]) == 'undefined') {
                     return;
                 }
-                $(e1).addClass('authors_unique_count').html(answer.list[id].count_comment_unique).attr('title', 'Количество комментаторов');
+                $(e1).addClass('authors_unique_count').text(answer.list[id].count_comment_unique).attr('title', 'Количество комментаторов');
                 postid.appendChild(e1);
 
                 var e2 = document.createElement('span');
-                $(e2).addClass('recommendation_count').html('~' + answer.list[id].count_recommendation).attr('title', 'Количество рекомендаций. Работает криво, спасибо @arts\'у за это');
+                $(e2).addClass('recommendation_count').text('~' + answer.list[id].count_recommendation).attr('title', 'Количество рекомендаций. Работает криво, спасибо @arts\'у за это');
                 postid.appendChild(e2);
             });
         }
@@ -894,4 +900,47 @@ function space_key_event() {
             return;
         }
     }
+}
+
+/* Автосохранение черновиков */
+var draft_last_text = '';// Последний зафиксированный текст
+function draft_restore() {
+    chrome.storage.sync.get('point_draft_text', function(items) {
+        $('#new-post-form #text-input').val(items.point_draft_text);
+        draft_last_text=items.point_draft_text;
+    });
+}
+
+function draft_set_save_handler() {
+    setInterval(draft_save_check, 5000);
+    $('#new-post-wrap .footnote').html($('#new-post-wrap .footnote').html() + '<div class="draft_save_status"></div>');
+}
+
+var draft_save_busy = false;
+function draft_save_check() {
+    if (draft_save_busy) {
+        return;
+    }
+    draft_save_busy = true;
+
+    // Видишь поиск id внутри id?.. ненавидишь меня?
+    var current_text = $('#new-post-form #text-input').val();
+    if (draft_last_text == current_text) {
+        draft_save_busy = false;
+        return;
+    }
+    // @todo i18n
+    $('.draft_save_status').text('Сохраняем черновик...').show();
+
+    // Сохраняем
+    draft_last_text=current_text;
+    // Save it using the Chrome extension storage API.
+    chrome.storage.sync.set({'point_draft_text': draft_last_text}, function() {
+        // Notify that we saved.
+        draft_save_busy=false;
+        $('.draft_save_status').text('Черновик сохранён...');
+        setTimeout(function(){
+            $('.draft_save_status').fadeOut(500);
+        }, 1000);
+    });
 }
