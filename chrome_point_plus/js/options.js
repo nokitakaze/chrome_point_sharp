@@ -1,6 +1,37 @@
 var ppOptions = {};
 
+// Initializing full options structure
 // Saves options to localStorage.
+function pp_init_options() {
+    $('.option-node').find('input').each(function(idx, $input) {
+        console.log($(this));
+        
+        // Using option types
+        if ($(this).hasClass('option-boolean')) {
+            ppOptions[$(this).prop('id').replace(/-/g, '_')] = {
+                'type': 'boolean',
+                'value': $(this).prop('checked')
+            };
+        } else if ($(this).hasClass('option-enum')) {
+            if ($(this).prop('checked')) {
+                ppOptions[$(this).prop('name').replace(/-/g, '_')] = {
+                    'type': 'enum',
+                    'value': $(this).val()
+                }
+            }
+        }
+    });
+    
+    console.log('Saving options: %O', ppOptions);
+
+    // Saving parameters
+    chrome.storage.sync.set({'options': ppOptions}, function() {
+        console.log('Default options initialized');
+    });
+}
+
+// Saves options to localStorage.
+// @todo: optimize it!
 function pp_save_options() {
     $('.option-node').find('input').each(function(idx, $input) {
         console.log($(this));
@@ -49,6 +80,13 @@ function pp_restore_options() {
     
     // Loading options
     chrome.storage.sync.get('options', function(options) {
+        // Initializing clean options
+        // @todo: rewrite for all options
+        if (options.option_embedding === undefined) {
+            console.warn('Clean options detected. Initializing...');
+            pp_init_options();
+        }
+        
         // Setting options in DOM
         $.each(options.options, function(key, data) {
             switch (data.type) {
