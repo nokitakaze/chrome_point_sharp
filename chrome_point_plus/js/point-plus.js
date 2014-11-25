@@ -721,7 +721,6 @@ function video_extension_to_mime(extension) {
         case 'mpg' :return 'video/mp4;';
         case 'mpeg':return 'video/mp4;';
     }
-
 }
 
 // Аудио
@@ -734,11 +733,14 @@ function parse_all_audios(){
         var href = obj.href;
         var n = null;
 
-        if (n = href.match(new RegExp('^https?:\\/\\/([a-z0-9.-]+)/[a-z0-9/.%-]+\\.(mp3|ogg|wav)(\\?.+)?$', 'i'))) {
+        if (n = href.match(new RegExp('^https?:\\/\\/([a-z0-9.-]+)\\/[a-z0-9_\\/.%-]+\\.(mp3|ogg|wav)(\\?.+)?$', 'i'))) {
             var domain = n[1];
             // Проверяем откуда мы грузимся
             if (domain.match(new RegExp('\\.vk\\.me$', 'i'))){
                 // Так то ж Контакт!
+                if (typeof(n[3])=='undefined'){
+                    return;
+                }
                 if (!n[3].match('extra\\=', 'i')){
                     return;
                 }
