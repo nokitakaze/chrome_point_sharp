@@ -1,7 +1,7 @@
 $(document).ready(function() {
     // Grouping console log
     console.group('point-plus');
-    console.info('Point+ %s', getVersion());
+    console.info('Point+ '+getVersion());
 
     // Проверяем, загрузились ли мы
     // @todo: Убрать это говно и нормально пилить расширение не принося пользователям костыли
@@ -9,7 +9,7 @@ $(document).ready(function() {
     // Хочешь показать пользователю обработку - делай индикатор и встраивай в интерфейс сайта.
     var point_plus_debug = $('.point-plus-debug');
     if (point_plus_debug.length > 0){
-        console.info('Point+ already loaded, version: %s', point_plus_debug.attr('data-point-plus-version'));
+        console.info('Point+ already loaded, version: '+point_plus_debug.attr('data-point-plus-version'));
         return;
     }
     point_plus_debug = null;
@@ -29,9 +29,10 @@ $(document).ready(function() {
     // Loading options
     chrome.storage.sync.get('options', function(options_data) {
         var options = options_data.options;
+        current_options = options_data.options;// Делаем локальную копию, чтобы не дёргать синк сотни и тысячи раз
         
         // Options debug
-        console.debug('Options loaded: %O', options);
+        console.debug('Options loaded: '+options);
 
         create_tag_system();
 
@@ -42,8 +43,8 @@ $(document).ready(function() {
                 load_all_booru_images();
             }
             // Parse webm-links and create video instead
-            if (options.option_videos_parse_webm.value == true) {
-                if (options.option_videos_parse_all_videos.value == true) {
+            if (options.option_videos_parse_links.value == true) {
+                if (options.option_videos_parse_links_type.value == "all") {
                     parse_all_videos();
                 } else {
                     parse_webm();
@@ -84,7 +85,8 @@ $(document).ready(function() {
                 });
 
             }
-            // Parse webm-links and create video instead
+
+            // Parse pleer.com links and create audio instead
             if (options.option_embedding_pleercom.value == true) {
                 parse_pleercom_links();
             }
@@ -553,11 +555,13 @@ var months = [
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
 ];
 
+// Копия опций
+var current_options;
 
 // Картинки с бурятников
 var booru_picture_count = 0;
 function load_all_booru_images() {
-    $('a').each(function(num, obj) {
+    $('.post-content a').each(function(num, obj) {
         if ($(obj).hasClass('booru_pic')) {
             return;
         }
@@ -660,7 +664,7 @@ function mark_unread_post() {
 
 // Webm
 function parse_webm() {
-    $('a').each(function(num, obj) {
+    $('.post-content a').each(function(num, obj) {
         if ($(obj).hasClass('booru_pic')) {
             return;
         }
@@ -677,12 +681,16 @@ function parse_webm() {
             }).addClass('parsed-webm-link');
 
             obj.parentElement.insertBefore(player, obj);
+
+            if (current_options.option_videos_parse_leave_links.value == false) {
+                $(obj).hide();
+            }
         }
     });
 }
 
 function parse_all_videos() {
-    $('a').each(function(num, obj) {
+    $('.post-content a').each(function(num, obj) {
         if ($(obj).hasClass('booru_pic')) {
             return;
         }
@@ -699,6 +707,10 @@ function parse_all_videos() {
             }).addClass('parsed-webm-link');
 
             obj.parentElement.insertBefore(player, obj);
+
+            if (current_options.option_videos_parse_leave_links.value == false) {
+                $(obj).hide();
+            }
         }
     });
 }
@@ -759,17 +771,15 @@ function set_posts_count_label() {
 }
 
 function parse_pleercom_links() {
-    chrome.storage.sync.get(ppOptions, function(options) {
-        if (options.option_embedding_pleercom_nokita_server) {
-            parse_pleercom_links_nokita();
-        } else {
-            parse_pleercom_links_ajax();
-        }
-    });
+    if (current_options.option_embedding_pleercom_nokita_server.value) {
+        parse_pleercom_links_nokita();
+    } else {
+        parse_pleercom_links_ajax();
+    }
 }
 
 function parse_pleercom_links_nokita() {
-    $('a').each(function(num, obj) {
+    $('.post-content a').each(function(num, obj) {
         var href = obj.href;
         var n = null;
 
@@ -791,7 +801,7 @@ function parse_pleercom_links_nokita() {
 }
 
 function parse_pleercom_links_ajax() {
-    $('a').each(function(num, obj) {
+    $('.post-content a').each(function(num, obj) {
         var href = obj.href;
         var n = null;
 
@@ -824,7 +834,7 @@ function create_pleercom_ajax(id) {
             $('.embeded_audio_' + this.settings.pleer_id)[0].appendChild(player);
         },
         'error': function() {
-            console.log('Can not get url');
+            console.log('Can not get pleer.com url');
             setTimeout(new Function('create_pleercom_ajax("' + this.settings.pleer_id + '");'), 1000);
         }
 

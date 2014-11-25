@@ -53,11 +53,17 @@
     "option_images_load_booru": {
         "message": "Загружать картинки с Booru, Tumblr и других сайтов"
     },
-    "option_videos_parse_webm": {
-        "message": "Оборачивать ссылки на webm в тег &#60;video&#62;"
+    "option_videos_parse_links": {
+        "message": "Превращать ссылки на видео в видео"
     },
-    "option_videos_parse_all_videos": {
-        "message": "Оборачивать ссылки на всё видео в тег &#60;video&#62;"
+    "option_videos_parse_webm": {
+        "message": "Только webm"
+    },
+    "option_videos_parse_all_links": {
+        "message": "Все ссылки на видео"
+    },
+    "option_videos_parse_leave_links": {
+        "message": "Оставлять ссылку на видео"
     },
     "option_embedding_soundcloud": {
         "message": "Soundcloud &#9660;"

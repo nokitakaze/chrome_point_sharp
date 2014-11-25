@@ -101,7 +101,7 @@ function pp_restore_options() {
                     break;
                     
                 default:
-                    console.warn('Invalid option "%s" type: %O', key, data);
+                    console.warn('Invalid option "'+key+'" type: '+data);
                     break;
             }
         });
