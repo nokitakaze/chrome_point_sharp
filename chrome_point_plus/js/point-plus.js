@@ -42,6 +42,7 @@ $(document).ready(function() {
             if (options.option_images_load_booru.value == true) {
                 load_all_booru_images();
             }
+
             // Parse webm-links and create video instead
             if (options.option_videos_parse_links.value == true) {
                 if (options.option_videos_parse_links_type.value == "all") {
@@ -49,6 +50,11 @@ $(document).ready(function() {
                 } else {
                     parse_webm();
                 }
+            }
+
+            // Parse audio links
+            if (options.option_audios_parse_links.value == true) {
+                parse_all_audios();
             }
 
             // Soundcloud
@@ -689,6 +695,7 @@ function parse_webm() {
     });
 }
 
+// Видео
 function parse_all_videos() {
     $('.post-content a').each(function(num, obj) {
         if ($(obj).hasClass('booru_pic')) {
@@ -701,7 +708,7 @@ function parse_all_videos() {
         if (n = href.match(new RegExp('\\.(webm|avi|mp4|mpg|mpeg)(\\?.+)?$', 'i'))) {
             var player = document.createElement('video');
             var mime = video_extension_to_mime(n[1]);
-            $(player).html('<source src="' + href + '" type=\'' + mime + '"\' />').attr('controls', 'controls').css({
+            $(player).html('<source src="' + href + '" type=\'' + mime + '\' />').attr('controls', 'controls').css({
                 'display': 'block',
                 'max-width': '95%'
             }).addClass('parsed-webm-link');
@@ -724,6 +731,50 @@ function video_extension_to_mime(extension) {
         case 'mpeg':return 'video/mp4;';
     }
 
+}
+
+// Аудио
+function parse_all_audios(){
+    $('.post-content a').each(function(num, obj) {
+        if ($(obj).hasClass('booru_pic')) {
+            return;
+        }
+
+        var href = obj.href;
+        var n = null;
+
+        if (n = href.match(new RegExp('^https?:\\/\\/([a-z0-9.-]+)/[a-z0-9/.%-]+\\.(mp3|ogg|wav)(\\?.+)?$', 'i'))) {
+            var domain = n[1];
+            // Проверяем откуда мы грузимся
+            if (domain.match(new RegExp('\\.vk\\.me$', 'i'))){
+                // Так то ж Контакт!
+                if (!n[3].match('extra\\=', 'i')){
+                    return;
+                }
+            }
+
+            var player = document.createElement('audio');
+            var mime = audio_extension_to_mime(n[2]);
+            $(player).html('<source src="' + href + '" type=\'' + mime + '\' />').attr('controls', 'controls').css({
+                'display': 'block',
+                'max-width': '350px'
+            }).addClass('parsed-audio-link');
+
+            obj.parentElement.insertBefore(player, obj);
+
+            if (current_options.option_audios_parse_leave_links.value == false) {
+                $(obj).hide();
+            }
+        }
+    });
+}
+
+function audio_extension_to_mime(extension) {
+    switch (extension) {
+        case 'mp3': return 'audio/mpeg';
+        case 'ogg': return 'audio/ogg; codecs=vorbis';
+        case 'wav': return 'audio/vnd.wave';
+    }
 }
 
 // Плашки у постов
@@ -808,6 +859,7 @@ function parse_pleercom_links_ajax() {
         if (n = href.match(new RegExp('^https?:\\/\\/pleer\\.com\\/tracks\\/([0-9a-z]+)', 'i'))) {
             var player_div = document.createElement('div');
             $(player_div).addClass('embeded_audio').addClass('embeded_audio_' + n[1]);
+            $(obj).addClass('pleercom_original_link_'+n[1]);
             obj.parentElement.insertBefore(player_div, obj);
             create_pleercom_ajax(n[1]);
         }
@@ -832,6 +884,10 @@ function create_pleercom_ajax(id) {
                 'preload': 'auto'
             });
             $('.embeded_audio_' + this.settings.pleer_id)[0].appendChild(player);
+
+            if (current_options.option_embedding_pleercom_orig_link.value == false){
+                $('.pleercom_original_link_'+this.settings.pleer_id).hide();
+            }
         },
         'error': function() {
             console.log('Can not get pleer.com url');

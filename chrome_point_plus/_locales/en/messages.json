@@ -53,6 +53,9 @@
     "option_images_load_booru": {
         "message": "Load pictures from Booru, Tumblr and some other sites"
     },
+    "option_audios_parse_links": {
+        "message": "Parse audio links and create audio instead"
+    },
     "option_videos_parse_links": {
         "message": "Parse video links and create video instead"
     },
@@ -63,7 +66,7 @@
         "message": "Parse all links"
     },
     "option_videos_parse_leave_links": {
-        "message": "Don't delete link itself"
+        "message": "Leave original link"
     },
     "option_embedding_soundcloud": {
         "message": "Soundcloud &#9660;"
@@ -135,7 +138,7 @@
         "message": "&#64; before username"
     },
     "option_other_hightlight_post_comments": {
-        "message": "Hightlight post with new comments (using @NokitaKaze server)"
+        "message": "Highlight post with new comments"
     },
     "option_other_show_recommendation_count": {
         "message": "Show recommendation count and unique commentators count (using @NokitaKaze server)"
