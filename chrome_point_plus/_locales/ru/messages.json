@@ -56,6 +56,9 @@
     "option_images_load_booru": {
         "message": "Загружать картинки с Booru, Tumblr и других сайтов"
     },
+    "option_audios_parse_links": {
+        "message": "Превращать ссылки на аудио в аудио"
+    },
     "option_videos_parse_links": {
         "message": "Превращать ссылки на видео в видео"
     },
@@ -138,7 +141,7 @@
         "message": "Пёс перед юзернеймом"
     },
     "option_other_hightlight_post_comments": {
-        "message": "Подсвечивать посты с новыми комментариями (используя сервер @NokitaKaze)"
+        "message": "Подсвечивать посты с новыми комментариями"
     },
     "option_other_show_recommendation_count": {
         "message": "Показывать количество рекомендаций и уникальных комментаторов в посте (используя сервер @NokitaKaze)"
