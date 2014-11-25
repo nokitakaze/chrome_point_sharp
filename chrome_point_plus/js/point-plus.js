@@ -32,8 +32,11 @@ $(document).ready(function() {
         current_options = options_data.options;// Делаем локальную копию, чтобы не дёргать синк сотни и тысячи раз
         
         // Options debug
-        console.debug('Options loaded: '+options);
-
+        try {
+            console.debug('Options loaded: %O', current_options);
+        }catch(e){
+            console.error("Я идиот, убейте меня кто-нибудь: %O", e);
+        }
         create_tag_system();
 
         // Embedding
@@ -95,6 +98,11 @@ $(document).ready(function() {
             // Parse pleer.com links and create audio instead
             if (options.option_embedding_pleercom.value == true) {
                 parse_pleercom_links();
+            }
+
+            // Parse coub.com links and create iframe instead
+            if (options.option_embedding_coubcom.value == true) {
+                parse_coub_links();
             }
         }
 
@@ -1023,5 +1031,34 @@ function draft_save_check() {
         setTimeout(function(){
             $('.draft_save_status').fadeOut(500);
         }, 1000);
+    });
+}
+
+
+// Парсим ссылки на coub
+function parse_coub_links() {
+    $('.post-content a').each(function(num, obj) {
+        var href = obj.href;
+        var n = null;
+
+        if (n = href.match(new RegExp('^https?:\\/\\/coub\\.com\\/view\\/([0-9a-z]+)', 'i'))) {
+            var player = document.createElement('iframe');
+            var parent_width = $(obj.parentElement).width();
+            $(player).attr({
+                'src': 'https://coub.com/embed/' + n[1] + '?muted=false&autostart=false&originalSize=false&hideTopBar=false&startWithHD=true',
+                'allowfullscreen': 'true'
+            }).css({
+                'max-width': '640px',
+                'border': 'none',
+                'width': Math.floor(parent_width * 0.9),
+                'height': Math.ceil(parent_width * 0.9 * 480 / 640)
+            }).addClass('embeded_video').addClass('embeded_video_' + n[1]);
+
+            obj.parentElement.insertBefore(player, obj);
+
+            if (current_options.option_embedding_coubcom_orig_link.value == false) {
+                $(obj).hide();
+            }
+        }
     });
 }

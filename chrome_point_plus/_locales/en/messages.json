@@ -80,6 +80,9 @@
     "option_embedding_pleercom_nokita_server": {
         "message": "Use Nokita's server instead of AJAX to get mp3 link"
     },
+    "option_embedding_coubcom": {
+        "message": "Coub.com &#9660;"
+    },
     "option_nsfw": {
         "message": "NSFW content filtering"
     },
