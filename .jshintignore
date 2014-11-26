@@ -1,0 +1,9 @@
+.git/**
+chrome_point_plus/js/bquery_ajax.js
+chrome_point_plus/js/markitup/sets/markdown/set.js
+chrome_point_plus/js/point-plus.js
+chrome_point_plus/vendor/**
+nbproject/**
+node_modules/**
+publish/**
+vendor/**
