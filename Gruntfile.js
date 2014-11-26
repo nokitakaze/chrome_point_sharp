@@ -22,8 +22,8 @@ vendorCopy.push({
     dest: 'chrome_point_plus/'
 });
 
+/* global module */
 module.exports = function(grunt) {
-
     // Настройки
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -46,7 +46,7 @@ module.exports = function(grunt) {
                 gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d',
                 globalReplace: true
             }
-        },
+        }
     });
 
     // Загрузить плагины
