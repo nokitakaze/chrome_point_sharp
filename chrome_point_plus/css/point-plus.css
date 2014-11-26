@@ -213,14 +213,6 @@ div#markItUpText-input {
     -webkit-filter: blur(30px);
 }
 
-/* point-plus-debug */
-.point-plus-debug{
-    float: right;
-    display: block;
-    color: rgba(255,255,255,.75);
-    padding: 10px 0px;
-}
-
 .post-tag-nsfw.hide-nsfw-posts,
 .post-tag-сиськи.hide-nsfw-posts{
     display: none;
@@ -237,11 +229,10 @@ div#markItUpText-input {
     color: green;
 }
 
-
-
-
-
-
-
-
-
+/* point-plus-debug */
+#point-plus-debug{
+    float: right;
+    display: block;
+    color: rgba(255,255,255,.75);
+    padding: 10px 0px;
+}
