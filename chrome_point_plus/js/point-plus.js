@@ -7,7 +7,6 @@ $(document).ready(function() {
     // Grouping console log
     console.group('point-plus');
     console.info('Point+ %s', getVersion());
-    
     // Проверяем, загрузились ли мы
     var point_plus_debug = $('#point-plus-debug');
     if (point_plus_debug.length > 0) {
@@ -97,6 +96,11 @@ $(document).ready(function() {
             // Parse coub.com links and create iframe instead
             if (options.option_embedding_coubcom.value == true) {
                 parse_coub_links(options);
+            }
+
+            // Parse coub.com links and create iframe instead
+            if (options.option_embedding_coubcom.value == true) {
+                parse_coub_links();
             }
         }
 
@@ -534,7 +538,17 @@ $(document).ready(function() {
             set_space_key_skip_handler();
         }
 
+        // option_other_links_preview
+        if (options.option_other_links_preview.value == true){
+            set_links_preview_handler();
+        }
+
         $('#point-plus-debug').fadeOut(1000);
+    });
+
+    // Showing page action
+    chrome.extension.sendMessage({
+        type: 'showPageAction'
     });
 });
 
@@ -681,6 +695,7 @@ function parse_webm(current_options) {
             }).addClass('parsed-webm-link');
 
             obj.parentElement.insertBefore(player, obj);
+            $(obj).addClass('no-links-preview');
 
             if (current_options.option_videos_parse_leave_links.value == false) {
                 $(obj).hide();
@@ -708,6 +723,7 @@ function parse_all_videos(current_options) {
             }).addClass('parsed-webm-link');
 
             obj.parentElement.insertBefore(player, obj);
+            $(obj).addClass('no-links-preview');
 
             if (current_options.option_videos_parse_leave_links.value == false) {
                 $(obj).hide();
@@ -757,6 +773,7 @@ function parse_all_audios(current_options){
             }).addClass('parsed-audio-link');
 
             obj.parentElement.insertBefore(player, obj);
+            $(obj).addClass('no-links-preview');
 
             if (current_options.option_audios_parse_leave_links.value == false) {
                 $(obj).hide();
@@ -843,6 +860,7 @@ function parse_pleercom_links_nokita() {
             player_div.appendChild(player);
 
             obj.parentElement.insertBefore(player_div, obj);
+            $(obj).addClass('no-links-preview');
         }
     });
 }
@@ -858,6 +876,7 @@ function parse_pleercom_links_ajax(current_options) {
             $(obj).addClass('pleercom_original_link_'+n[1]);
             obj.parentElement.insertBefore(player_div, obj);
             create_pleercom_ajax(n[1], current_options);
+            $(obj).addClass('no-links-preview');
         }
     });
 }
@@ -883,6 +902,7 @@ function create_pleercom_ajax(id, current_options) {
             $('.embeded_audio_' + this.settings.pleer_id)[0].appendChild(player);
 
             if (this.settings.current_options.option_embedding_pleercom_orig_link.value == false){
+                $(obj).addClass('no-links-preview');
                 $('.pleercom_original_link_'+this.settings.pleer_id).hide();
             }
         },
@@ -1043,6 +1063,7 @@ function parse_coub_links(current_options) {
 
             obj.parentElement.insertBefore(player, obj);
 
+            $(obj).addClass('no-links-preview');
             if (current_options.option_embedding_coubcom_orig_link.value == false) {
                 $(obj).hide();
             }
