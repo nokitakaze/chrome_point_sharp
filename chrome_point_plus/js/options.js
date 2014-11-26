@@ -103,26 +103,32 @@ function pp_restore_options() {
         }
     });
     
-    // Loading options
-    chrome.storage.sync.get('options', function(options) {
-        // Setting options in DOM
-        $.each(options.options, function(key, data) {
-            switch (data.type) {
-                case 'boolean':
-                    if (data.value) {
-                        $('#' + key.replace(/_/g, '-')).prop('checked', true);
+        // Loading options
+        chrome.storage.sync.get('options', function(options) {
+            
+            try {
+                // Setting options in DOM
+                $.each(options.options, function(key, data) {
+                    switch (data.type) {
+                        case 'boolean':
+                            if (data.value) {
+                                $('#' + key.replace(/_/g, '-')).prop('checked', true);
+                            }
+                            break;
+
+                        case 'enum':
+                            $('.option-node .option-enum[name="' + key.replace(/_/g, '-') + '"][value="' + data.value + '"]').prop('checked', true);
+                            break;
+
+                        default:
+                            console.warn('Invalid option "%s" type: %O', key, data);
+                            break;
                     }
-                    break;
-                    
-                case 'enum':
-                    $('.option-node .option-enum[name="' + key.replace(/_/g, '-') + '"][value="' + data.value + '"]').prop('checked', true);
-                    break;
-                    
-                default:
-                    console.warn('Invalid option "%s" type: %O', key, data);
-                    break;
+                });
+            } catch (ex) {
+                console.error('Error while loading extension options: %O', ex);
             }
-        });
+
         
         // Showing version
         $('#pp-version').html('Point+ ' + getVersion() 
