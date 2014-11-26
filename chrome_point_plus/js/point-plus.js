@@ -29,10 +29,8 @@ $(document).ready(function() {
 
         // Options debug
         try {
-            console.debug('Options loaded: %O', current_options);
-        }catch(e){
-            console.error("Я идиот, убейте меня кто-нибудь: %O", e);
-        }
+            console.debug('Options loaded: %O', options);
+        }catch(e){}
         create_tag_system();
 
         // Embedding
@@ -45,15 +43,15 @@ $(document).ready(function() {
             // Parse webm-links and create video instead
             if (options.option_videos_parse_links.value == true) {
                 if (options.option_videos_parse_links_type.value == "all") {
-                    parse_all_videos();
+                    parse_all_videos(options);
                 } else {
-                    parse_webm();
+                    parse_webm(options);
                 }
             }
 
             // Parse audio links
             if (options.option_audios_parse_links.value == true) {
-                parse_all_audios();
+                parse_all_audios(options);
             }
 
             // Soundcloud
@@ -93,12 +91,12 @@ $(document).ready(function() {
 
             // Parse pleer.com links and create audio instead
             if (options.option_embedding_pleercom.value == true) {
-                parse_pleercom_links();
+                parse_pleercom_links(options);
             }
 
             // Parse coub.com links and create iframe instead
             if (options.option_embedding_coubcom.value == true) {
-                parse_coub_links();
+                parse_coub_links(options);
             }
         }
 
@@ -200,15 +198,15 @@ $(document).ready(function() {
                     console.log('Hide NSFW posts in feed');
                     $('.post').addClass('hide-nsfw-posts');
                 }
-            } else {
-                // Blurred posts
-                if (options.option_nsfw_blur_posts_entire.value == true) {
-                    console.log('Bluring NSFW posts');
-                    $('.post').addClass('blur-nsfw-entire');
-                } else if (options.option_nsfw_blur_posts_images.value == true) {
-                    console.log('Bluring images in NSFW posts');
-                    $('.post').addClass('blur-nsfw-images');
-                }
+            }
+
+            // Blurred posts
+            if (options.option_nsfw_blur_posts_entire.value == true) {
+                console.log('Bluring NSFW posts');
+                $('.post').addClass('blur-nsfw-entire');
+            } else if (options.option_nsfw_blur_posts_images.value == true) {
+                console.log('Bluring images in NSFW posts');
+                $('.post').addClass('blur-nsfw-images');
             }
 
             // Blurred comments
@@ -560,9 +558,6 @@ var months = [
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
 ];
 
-// Копия опций
-var current_options;
-
 // Картинки с бурятников
 var booru_picture_count = 0;
 function load_all_booru_images() {
@@ -668,7 +663,7 @@ function mark_unread_post() {
 }
 
 // Webm
-function parse_webm() {
+function parse_webm(current_options) {
     $('.post-content a').each(function(num, obj) {
         if ($(obj).hasClass('booru_pic')) {
             return;
@@ -695,7 +690,7 @@ function parse_webm() {
 }
 
 // Видео
-function parse_all_videos() {
+function parse_all_videos(current_options) {
     $('.post-content a').each(function(num, obj) {
         if ($(obj).hasClass('booru_pic')) {
             return;
@@ -732,7 +727,7 @@ function video_extension_to_mime(extension) {
 }
 
 // Аудио
-function parse_all_audios(){
+function parse_all_audios(current_options){
     $('.post-content a').each(function(num, obj) {
         if ($(obj).hasClass('booru_pic')) {
             return;
@@ -822,11 +817,11 @@ function set_posts_count_label() {
 
 }
 
-function parse_pleercom_links() {
+function parse_pleercom_links(current_options) {
     if (current_options.option_embedding_pleercom_nokita_server.value) {
         parse_pleercom_links_nokita();
     } else {
-        parse_pleercom_links_ajax();
+        parse_pleercom_links_ajax(current_options);
     }
 }
 
@@ -852,7 +847,7 @@ function parse_pleercom_links_nokita() {
     });
 }
 
-function parse_pleercom_links_ajax() {
+function parse_pleercom_links_ajax(current_options) {
     $('.post-content a').each(function(num, obj) {
         var href = obj.href;
         var n = null;
@@ -862,18 +857,19 @@ function parse_pleercom_links_ajax() {
             $(player_div).addClass('embeded_audio').addClass('embeded_audio_' + n[1]);
             $(obj).addClass('pleercom_original_link_'+n[1]);
             obj.parentElement.insertBefore(player_div, obj);
-            create_pleercom_ajax(n[1]);
+            create_pleercom_ajax(n[1], current_options);
         }
     });
 }
 
-function create_pleercom_ajax(id) {
+function create_pleercom_ajax(id, current_options) {
     $ajax({
         'url': 'https://pleer.com/site_api/files/get_url',
         'type': 'post',
         'postdata': 'action=download&id=' + id,
         'dont_set_content_type': true,
         'pleer_id': id,
+        'current_options':current_options,
         'headers': [['Accept', '*'], ['Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8']],
         'success': function(a) {
             var answer = JSON.parse(a);
@@ -886,7 +882,7 @@ function create_pleercom_ajax(id) {
             });
             $('.embeded_audio_' + this.settings.pleer_id)[0].appendChild(player);
 
-            if (current_options.option_embedding_pleercom_orig_link.value == false){
+            if (this.settings.current_options.option_embedding_pleercom_orig_link.value == false){
                 $('.pleercom_original_link_'+this.settings.pleer_id).hide();
             }
         },
@@ -1027,7 +1023,7 @@ function draft_save_check() {
 
 
 // Парсим ссылки на coub
-function parse_coub_links() {
+function parse_coub_links(current_options) {
     $('.post-content a').each(function(num, obj) {
         var href = obj.href;
         var n = null;
