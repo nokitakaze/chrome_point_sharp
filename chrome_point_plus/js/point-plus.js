@@ -59,6 +59,7 @@ $(document).ready(function() {
                 $('.post .post-content a[href*="\\:\\/\\/soundcloud\\.com\\/"]').each(function(index) {
                     console.log($(this));
 
+                    // @todo: вынести в отдельный шаблон
                     $player = $('<div class="pp-soundcloud">\
                                     <object height="81" width="100%" id="pp-soundcloud-' + index + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">\
                                       <param name="movie" value="//player.soundcloud.com/player.swf?url=' + encodeURIComponent($(this).prop('href'))
@@ -908,17 +909,17 @@ function space_key_event() {
 }
 
 /* Автосохранение черновиков */
-var draft_last_text = '';// Последний зафиксированный текст
+var draft_last_text = ''; // Последний зафиксированный текст
 function draft_restore() {
-    chrome.storage.sync.get('point_draft_text', function(items) {
+    chrome.storage.local.get('point_draft_text', function(items) {
         $('#new-post-form #text-input').val(items.point_draft_text);
-        draft_last_text=items.point_draft_text;
+        draft_last_text = items.point_draft_text;
     });
 }
 
 function draft_set_save_handler() {
     setInterval(draft_save_check, 5000);
-    $('#new-post-wrap .footnote').html($('#new-post-wrap .footnote').html() + '<div class="draft_save_status"></div>');
+    $('#new-post-wrap .footnote').append($('<div id="draft-save-status">'));
 }
 
 var draft_save_busy = false;
@@ -928,24 +929,23 @@ function draft_save_check() {
     }
     draft_save_busy = true;
 
-    // Видишь поиск id внутри id?.. ненавидишь меня?
     var current_text = $('#new-post-form #text-input').val();
     if (draft_last_text == current_text) {
         draft_save_busy = false;
         return;
     }
     // @todo i18n
-    $('.draft_save_status').text('Сохраняем черновик...').show();
+    $('#draft-save-status').text('Сохраняем черновик...').show();
 
     // Сохраняем
-    draft_last_text=current_text;
+    draft_last_text = current_text;
     // Save it using the Chrome extension storage API.
-    chrome.storage.sync.set({'point_draft_text': draft_last_text}, function() {
+    chrome.storage.local.set({'point_draft_text': draft_last_text}, function() {
         // Notify that we saved.
-        draft_save_busy=false;
-        $('.draft_save_status').text('Черновик сохранён...');
-        setTimeout(function(){
-            $('.draft_save_status').fadeOut(500);
+        draft_save_busy = false;
+        $('#draft-save-status').text('Черновик сохранён...');
+        setTimeout(function() {
+            $('#draft-save-status').fadeOut(1000);
         }, 1000);
     });
 }
