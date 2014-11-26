@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Point+",
-    "version": "1.18.0",
+    "version": "1.19.0",
     "default_locale": "ru",
     "author": "__MSG_ext_author__",
     "homepage_url": "https://bitbucket.org/skobkin/chrome_point_plus",
@@ -32,6 +32,7 @@
                     "js/markitup/jquery.markitup.js", "js/markitup/sets/markdown/set.js",
                     "js/bquery_ajax.js",
                     "js/options.js",
+                    "js/links_preview.js",
                     "js/point-plus.js"
                     ],
             "css": [

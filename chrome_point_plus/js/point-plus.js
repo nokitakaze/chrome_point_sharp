@@ -540,6 +540,11 @@ $(document).ready(function() {
             set_space_key_skip_handler();
         }
 
+        // option_other_links_preview
+        if (options.option_other_links_preview.value == true){
+            set_links_preview_handler();
+        }
+
         $('.point-plus-debug').fadeOut(500);
     });
 
@@ -695,6 +700,7 @@ function parse_webm() {
             }).addClass('parsed-webm-link');
 
             obj.parentElement.insertBefore(player, obj);
+            $(obj).addClass('no-links-preview');
 
             if (current_options.option_videos_parse_leave_links.value == false) {
                 $(obj).hide();
@@ -722,6 +728,7 @@ function parse_all_videos() {
             }).addClass('parsed-webm-link');
 
             obj.parentElement.insertBefore(player, obj);
+            $(obj).addClass('no-links-preview');
 
             if (current_options.option_videos_parse_leave_links.value == false) {
                 $(obj).hide();
@@ -771,6 +778,7 @@ function parse_all_audios(){
             }).addClass('parsed-audio-link');
 
             obj.parentElement.insertBefore(player, obj);
+            $(obj).addClass('no-links-preview');
 
             if (current_options.option_audios_parse_leave_links.value == false) {
                 $(obj).hide();
@@ -857,6 +865,7 @@ function parse_pleercom_links_nokita() {
             player_div.appendChild(player);
 
             obj.parentElement.insertBefore(player_div, obj);
+            $(obj).addClass('no-links-preview');
         }
     });
 }
@@ -872,6 +881,7 @@ function parse_pleercom_links_ajax() {
             $(obj).addClass('pleercom_original_link_'+n[1]);
             obj.parentElement.insertBefore(player_div, obj);
             create_pleercom_ajax(n[1]);
+            $(obj).addClass('no-links-preview');
         }
     });
 }
@@ -895,6 +905,7 @@ function create_pleercom_ajax(id) {
             });
             $('.embeded_audio_' + this.settings.pleer_id)[0].appendChild(player);
 
+            $(obj).addClass('no-links-preview');
             if (current_options.option_embedding_pleercom_orig_link.value == false){
                 $('.pleercom_original_link_'+this.settings.pleer_id).hide();
             }
@@ -1056,6 +1067,7 @@ function parse_coub_links() {
 
             obj.parentElement.insertBefore(player, obj);
 
+            $(obj).addClass('no-links-preview');
             if (current_options.option_embedding_coubcom_orig_link.value == false) {
                 $(obj).hide();
             }
