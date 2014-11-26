@@ -56,11 +56,20 @@
     "option_images_load_booru": {
         "message": "Load pictures from Booru, Tumblr and some other sites"
     },
-    "option_videos_parse_webm": {
-        "message": "Parse webm-links and create video instead"
+    "option_audios_parse_links": {
+        "message": "Parse audio links and create audio instead"
     },
-    "option_videos_parse_all_videos": {
-        "message": "Parse all links to videos and create video instead"
+    "option_videos_parse_links": {
+        "message": "Parse video links and create video instead"
+    },
+    "option_videos_parse_webm": {
+        "message": "Only webm"
+    },
+    "option_videos_parse_all_links": {
+        "message": "Parse all links"
+    },
+    "option_videos_parse_leave_links": {
+        "message": "Leave original link"
     },
     "option_embedding_soundcloud": {
         "message": "Soundcloud &#9660;"
@@ -73,6 +82,9 @@
     },
     "option_embedding_pleercom_nokita_server": {
         "message": "Use Nokita's server instead of AJAX to get mp3 link"
+    },
+    "option_embedding_coubcom": {
+        "message": "Coub.com &#9660;"
     },
     "option_nsfw": {
         "message": "NSFW content filtering"
@@ -132,7 +144,7 @@
         "message": "&#64; before username"
     },
     "option_other_hightlight_post_comments": {
-        "message": "Hightlight post with new comments (using @NokitaKaze server)"
+        "message": "Highlight post with new comments"
     },
     "option_other_show_recommendation_count": {
         "message": "Show recommendation count and unique commentators count (using @NokitaKaze server)"

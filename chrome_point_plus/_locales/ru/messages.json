@@ -56,11 +56,20 @@
     "option_images_load_booru": {
         "message": "Загружать картинки с Booru, Tumblr и других сайтов"
     },
-    "option_videos_parse_webm": {
-        "message": "Оборачивать ссылки на webm в тег &#60;video&#62;"
+    "option_audios_parse_links": {
+        "message": "Превращать ссылки на аудио в аудио"
     },
-    "option_videos_parse_all_videos": {
-        "message": "Оборачивать ссылки на всё видео в тег &#60;video&#62;"
+    "option_videos_parse_links": {
+        "message": "Превращать ссылки на видео в видео"
+    },
+    "option_videos_parse_webm": {
+        "message": "Только webm"
+    },
+    "option_videos_parse_all_links": {
+        "message": "Все ссылки на видео"
+    },
+    "option_videos_parse_leave_links": {
+        "message": "Оставлять ссылку на видео"
     },
     "option_embedding_soundcloud": {
         "message": "Soundcloud &#9660;"
@@ -73,6 +82,9 @@
     },
     "option_embedding_pleercom_nokita_server": {
         "message": "Использовать сервер @NokitaKaze вместо AJAX-запроса для получения mp3"
+    },
+    "option_embedding_coubcom": {
+        "message": "Coub.com &#9660;"
     },
     "option_nsfw": {
         "message": "Фильтрация NSFW-контента"
@@ -132,7 +144,7 @@
         "message": "Пёс перед юзернеймом"
     },
     "option_other_hightlight_post_comments": {
-        "message": "Подсвечивать посты с новыми комментариями (используя сервер @NokitaKaze)"
+        "message": "Подсвечивать посты с новыми комментариями"
     },
     "option_other_show_recommendation_count": {
         "message": "Показывать количество рекомендаций и уникальных комментаторов в посте (используя сервер @NokitaKaze)"

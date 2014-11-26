@@ -50,10 +50,23 @@
                         </div>
 
                         <div class="option-node">
-                            <input type="checkbox" class="option-boolean" id="option-videos-parse-webm"><label for="option-videos-parse-webm" data-i18n="option_videos_parse_webm"></label>
+                            <input type="checkbox" class="option-boolean" id="option-videos-parse-links"><label for="option-videos-parse-links" data-i18n="option_videos_parse_links"></label>
 
                             <div class="option-node">
-                                <input type="checkbox" class="option-boolean" id="option-videos-parse-all-videos"><label for="option-videos-parse-all-videos" data-i18n="option_videos_parse_all_videos"></label>
+                                <input type="radio" class="option-enum" name="option-videos-parse-links-type" id="option-videos-parse-webm" value="webm" ><label for="option-videos-parse-webm" data-i18n="option_videos_parse_webm"></label>
+                                <input type="radio" class="option-enum" name="option-videos-parse-links-type" id="option-videos-parse-all-links" value="all" checked="checked"><label for="option-videos-parse-all-links" data-i18n="option_videos_parse_all_links"></label>
+                            </div>
+
+                            <div class="option-node">
+                                <input type="checkbox" class="option-boolean" id="option-videos-parse-leave-links"><label for="option-videos-parse-leave-links" data-i18n="option_videos_parse_leave_links"></label>
+                            </div>
+                        </div>
+
+                        <div class="option-node">
+                            <input type="checkbox" class="option-boolean" id="option-audios-parse-links"><label for="option-audios-parse-links" data-i18n="option_audios_parse_links"></label>
+
+                            <div class="option-node">
+                                <input type="checkbox" class="option-boolean" id="option-audios-parse-leave-links"><label for="option-audios-parse-leave-links" data-i18n="option_embedding_soundcloud_orig_link"></label>
                             </div>
                         </div>
 
@@ -70,6 +83,18 @@
 
                             <div class="option-node">
                                 <input type="checkbox" class="option-boolean" id="option-embedding-pleercom-nokita-server"><label for="option-embedding-pleercom-nokita-server" data-i18n="option_embedding_pleercom_nokita_server"></label>
+                            </div>
+
+                            <div class="option-node">
+                                <input type="checkbox" class="option-boolean" id="option-embedding-pleercom-orig-link"><label for="option-embedding-pleercom-orig-link" data-i18n="option_embedding_soundcloud_orig_link"></label>
+                            </div>
+                        </div>
+
+                        <div class="option-node">
+                            <input type="checkbox" class="option-boolean" id="option-embedding-coubcom"><label for="option-embedding-coubcom" data-i18n="option_embedding_coubcom"></label>
+
+                            <div class="option-node">
+                                <input type="checkbox" class="option-boolean" id="option-embedding-coubcom-orig-link"><label for="option-embedding-coubcom-orig-link" data-i18n="option_embedding_soundcloud_orig_link"></label>
                             </div>
                         </div>
                     </div>
