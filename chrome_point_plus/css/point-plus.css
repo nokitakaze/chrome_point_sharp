@@ -261,6 +261,11 @@ div#markItUpText-input {
 
 }
 
+.preview_content_block h2 a{
+    text-decoration: none;
+    color: #808080;
+}
+
 .preview_content_block .collector img{
     max-width: 100%;
 }

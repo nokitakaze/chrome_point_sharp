@@ -6,7 +6,8 @@ function set_links_preview_handler() {
     $(content_block).hide().addClass('preview_content_block').
         on('mouseenter', preview_contentblock_on_mouse_in).
         on('mouseleave', preview_contentblock_on_mouse_out).html(
-        '<h2></h2><div class="collector collector-1280"><img alt="Превью обычных экранов"></div>' +
+        '<h2><a target="_blank"></a></h2>'+
+        '<div class="collector collector-1280"><img alt="Превью обычных экранов"></div>' +
         '<div class="collector collector-375"><img alt="Превью телефонов"></div>'
     );
 
@@ -37,11 +38,11 @@ function set_links_preview_handler() {
 // Ссылка получила фокус
 var preview_link_current_id = null;// Номер ссылки
 var preview_lost_focus_time = null;// Время потери фокуса
-var preview_content_data = [];
+var preview_content_data = [];// @todo Надо срать в локалстораж, а не сюда
 var preview_link_mouse_in_count = 0;// Номер ивента наведения мыши
 function preview_link_on_mouse_in() {
     var this_id = parseInt($(event.currentTarget).attr('data-preview-content-id'));
-    console.debug('preview_link_on_mouse_in, this_link_id=%d, old_link_id=%d', this_id, preview_link_current_id);
+    console.log('preview_link_on_mouse_in, this_link_id=%d, old_link_id=%d', this_id, preview_link_current_id);
     preview_lost_focus_time = null;
 
     if (preview_link_current_id === this_id) {
@@ -56,7 +57,7 @@ function preview_link_on_mouse_in() {
 
 // Можно пробовать проверять и показывать контент
 function preview_show_link(mouse_event_id) {
-    console.debug('preview_show_link mouse_event=%d, last_mouse_event=%d, time=%O',
+    console.log('preview_show_link mouse_event=%d, last_mouse_event=%d, time=%O',
         mouse_event_id, preview_link_mouse_in_count, preview_lost_focus_time);
     if (preview_lost_focus_time !== null) {
         // Фокус потерян
@@ -69,7 +70,7 @@ function preview_show_link(mouse_event_id) {
 
     var url = $('.post-content a[data-preview-content-id=' + preview_link_current_id + ']').attr('href');
     if (typeof(url) == 'undefined') {
-        console.debug("Link #" + preview_link_current_id + ' does not exist. It is impossible');
+        console.error("Link #" + preview_link_current_id + ' does not exist. It is impossible');
         return;
     }
 
@@ -82,7 +83,7 @@ function preview_show_link(mouse_event_id) {
     }
 
     // Дёргаем Аякс с данными по элементу
-    console.debug('Get preview for link ' + url);
+    console.log('Get preview for link ' + url);
     $ajax({
         'url': 'https://api.kanaria.ru/point/link_preview.php?url=' + urlencode(url),
         'get_url': url,
@@ -112,8 +113,9 @@ function preview_show_link(mouse_event_id) {
     });
 }
 
+// Показываем контент
 function preview_show_content_in_block(datum_id) {
-    console.debug('preview_show_content_in_block datum_id=%d, link_id=%d', datum_id, preview_link_current_id);
+    console.log('preview_show_content_in_block datum_id=%d, link_id=%d', datum_id, preview_link_current_id);
     // Выбираем положение и размер
     var link = $('.post-content a[data-preview-content-id=' + preview_link_current_id + ']');
     var position_link = link.offset();
@@ -127,35 +129,40 @@ function preview_show_content_in_block(datum_id) {
         width = $(document).width() - left - 100;
     }
 
-    var content_block = $('.preview_content_block').stop(true, true).show().css({
+    var content_block = $('.preview_content_block').stop(true, true).fadeIn(500).css({
+        'top': position_link.top + 5,
+        'left': position_link.left + link.width() / 2,
+        'width': 10,
+        'height': 10
+    }).animate({
         'top': window.scrollY + 20,
         'left': left,
         'width': width,
         'height': $(window).height() - 100
-    });
+    }, 1000);
 
     // Заполняем контентом
     content_block.find('.collector-1280 img')[0].src = '';
     content_block.find('.collector-1280 img')[0].src = preview_content_data[datum_id].view1280;
 //    content_block.find('.collector-375 img')[0].src = preview_content_data[datum_id].view375;
-    content_block.find('h2').text(preview_content_data[datum_id].title);
+    content_block.find('h2 a').text(preview_content_data[datum_id].title)[0].href=link[0].href;
 }
 
 // Ссылка потеряла фокус
 function preview_link_on_mouse_out() {
-    console.debug('preview_link_on_mouse_out, link_id=%d', preview_link_current_id);
+    console.log('preview_link_on_mouse_out, link_id=%d', preview_link_current_id);
     preview_lost_focus_time = new Date();
 }
 
 // Всплывающее окно получило фокус
 function preview_contentblock_on_mouse_in() {
-    console.debug('preview_contentblock_on_mouse_in, link_id=%d', preview_link_current_id);
+    console.log('preview_contentblock_on_mouse_in, link_id=%d', preview_link_current_id);
     preview_lost_focus_time = null;
 }
 
 // Всплывающее окно потеряло фокус
 function preview_contentblock_on_mouse_out() {
-    console.debug('preview_contentblock_on_mouse_out, link_id=%d', preview_link_current_id);
+    console.log('preview_contentblock_on_mouse_out, link_id=%d', preview_link_current_id);
     preview_lost_focus_time = new Date();
 }
 
@@ -168,8 +175,9 @@ function check_lost_focus() {
     // Проверять и скрывать потеряный фокус
     var now = new Date();
     if (now.getTime() - preview_lost_focus_time.getTime() > 2000) {
-        console.debug('hide preview_content_block, %O', preview_lost_focus_time);
+        console.log('hide preview_content_block, %O', preview_lost_focus_time);
         preview_lost_focus_time = null;
+        preview_link_current_id = null;
         $('.preview_content_block').stop(true, true).fadeOut(750);
     }
 }
