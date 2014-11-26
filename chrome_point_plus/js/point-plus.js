@@ -1,8 +1,13 @@
+// Showing page action
+chrome.extension.sendMessage({
+    type: 'showPageAction'
+});
+
 $(document).ready(function() {
     // Grouping console log
     console.group('point-plus');
     console.info('Point+ %s', getVersion());
-
+    
     // Проверяем, загрузились ли мы
     // @todo: Убрать это говно и нормально пилить расширение не принося пользователям костыли
     // Хочешь детект? Делай невидимый элемент где-нибудь в подвале. И айдишник, а не класс. Их искать быстрее.
@@ -27,8 +32,8 @@ $(document).ready(function() {
     draft_restore();
 
     // Loading options
-    chrome.storage.sync.get('options', function(options_data) {
-        var options = options_data.options;
+    chrome.storage.sync.get('options', function(sync_data) {
+        var options = sync_data.options;
         
         // Options debug
         console.debug('Options loaded: %O', options);
@@ -525,11 +530,6 @@ $(document).ready(function() {
         }
 
         $('.point-plus-debug').fadeOut(500);
-    });
-
-    // Showing page action
-    chrome.extension.sendMessage({
-        type: 'showPageAction'
     });
 });
 
