@@ -56,11 +56,17 @@
     "option_images_load_booru": {
         "message": "Load pictures from Booru, Tumblr and some other sites"
     },
-    "option_videos_parse_webm": {
-        "message": "Parse webm-links and create video instead"
+    "option_videos_parse_links": {
+        "message": "Parse video links and create video instead"
     },
-    "option_videos_parse_all_videos": {
-        "message": "Parse all links to videos and create video instead"
+    "option_videos_parse_webm": {
+        "message": "Only webm"
+    },
+    "option_videos_parse_all_links": {
+        "message": "Parse all links"
+    },
+    "option_videos_parse_leave_links": {
+        "message": "Don't delete link itself"
     },
     "option_embedding_soundcloud": {
         "message": "Soundcloud &#9660;"
