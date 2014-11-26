@@ -13,6 +13,9 @@
     "options_text_saved": {
         "message": "Reload page to apply changes."
     },
+    "options_text_new_version": {
+        "message": "Point+ just updated.\nCheck your settings and try some new functions!"
+    },
     
     
     "options_tabs_media": {

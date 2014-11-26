@@ -1,34 +1,31 @@
+// Showing page action
+chrome.extension.sendMessage({
+    type: 'showPageAction'
+});
+
 $(document).ready(function() {
     // Grouping console log
     console.group('point-plus');
     console.info('Point+ %s', getVersion());
-
+    
     // Проверяем, загрузились ли мы
-    // @todo: Убрать это говно и нормально пилить расширение не принося пользователям костыли
-    // Хочешь детект? Делай невидимый элемент где-нибудь в подвале. И айдишник, а не класс. Их искать быстрее.
-    // Хочешь показать пользователю обработку - делай индикатор и встраивай в интерфейс сайта.
-    var point_plus_debug = $('.point-plus-debug');
-    if (point_plus_debug.length > 0){
-        console.info('Point+ already loaded, version: %s', point_plus_debug.attr('data-point-plus-version'));
+    var point_plus_debug = $('#point-plus-debug');
+    if (point_plus_debug.length > 0) {
+        console.error('Point+ %s already loaded.', point_plus_debug.data('point-plus-version'));
         return;
     }
-    point_plus_debug = null;
-    var new_div = document.createElement('div');
-    $(new_div).attr({
+    $('<div id="point-plus-debug">').attr({
         'data-point-plus-version': getVersion()
-    }).addClass('point-plus-debug').text('Point+ v' + getVersion() + ' loading...');
-    var obj = $('#user-menu-cb')[0];
-    obj.parentElement.insertBefore(new_div, obj);
-    new_div = null;
-    obj = null;
+    }).text('Point+ ' + getVersion() + ' loading...')
+            .insertBefore('#user-menu-cb');
 
     // Черновики. Ставим хандлер и восстанавливаем предыдущее состояние
     draft_set_save_handler();
     draft_restore();
 
     // Loading options
-    chrome.storage.sync.get('options', function(options_data) {
-        var options = options_data.options;
+    chrome.storage.sync.get('options', function(sync_data) {
+        var options = sync_data.options;
         
         // Options debug
         console.debug('Options loaded: %O', options);
@@ -524,12 +521,7 @@ $(document).ready(function() {
             set_space_key_skip_handler();
         }
 
-        $('.point-plus-debug').fadeOut(500);
-    });
-
-    // Showing page action
-    chrome.extension.sendMessage({
-        type: 'showPageAction'
+        $('#point-plus-debug').fadeOut(1000);
     });
 });
 

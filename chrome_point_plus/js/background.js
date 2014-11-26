@@ -1,3 +1,13 @@
+// Maintaining options version
+chrome.storage.sync.get('options_version', function(data) {
+    var pp_version = getVersion();
+    console.info('Point+ %s. Options are for %s.', pp_version, data.options_version);
+    
+    if (data.options_version != pp_version) {
+        chrome.tabs.create({url: 'options.html'});
+    }
+});
+
 // Message listener
 chrome.extension.onMessage.addListener(function(message, sender) {
     console.log('Received message: %O', message);
@@ -70,3 +80,12 @@ chrome.extension.onMessage.addListener(function(message, sender) {
         }
     }   
 });
+
+// Getting version from manifest.json
+function getVersion() { 
+    var xhr = new XMLHttpRequest(); 
+    xhr.open('GET', chrome.extension.getURL('manifest.json'), false); 
+    xhr.send(null); 
+    var manifest = JSON.parse(xhr.responseText); 
+    return manifest.version; 
+} 
