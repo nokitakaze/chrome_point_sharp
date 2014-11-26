@@ -47,7 +47,7 @@ function pp_init_options() {
                 }, function() {
                 console.log('Default options initialized. Version upgraded to %s.', pp_version);
                 
-                if (!confirm('Point+ just updated!\nCheck out new options.')) {
+                if (!confirm(chrome.i18n.getMessage('options_text_new_version'))) {
                     window.close();
                 }
             });
