@@ -13,6 +13,9 @@
     "options_text_saved": {
         "message": "Для применения изменений перезагрузите страницу."
     },
+    "options_text_new_version": {
+        "message": "Point+ только что обновился.\nПроверьте настройки и оцените новые функции!"
+    },
     
     
     "options_tabs_media": {
