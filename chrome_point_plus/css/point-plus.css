@@ -241,17 +241,28 @@ div#markItUpText-input {
 /* Превью */
 .preview_content_block{
     padding: 10px;
+    background-color: white;
     border-radius: 3px;
     border: 1px solid black;/* @todo цвет */
     position: absolute;
+    overflow-y: scroll;
+    z-index: 13;
+}
+
+.preview_content_block div.collector{
+    max-width: 95%;
+}
+
+.preview_content_block div.collector-375{
+    display: none;
 }
 
 .preview_content_block h2{
 
 }
 
-.preview_content_block img.preview{
-    max-width: 95%;
+.preview_content_block .collector img{
+    max-width: 100%;
 }
 
 
