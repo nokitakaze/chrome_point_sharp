@@ -12,5 +12,8 @@
     "**/.*",
     "node_modules",
     "chrome_point_plus/vendors/**"
-  ]
+  ],
+  "dependencies": {
+    "jquery": "~1.10.1"
+  }
 }

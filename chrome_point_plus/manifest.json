@@ -27,7 +27,8 @@
         {
             "matches": ["http://*.point.im/*", "https://*.point.im/*"],
             "js": [
-                    "js/jquery-1.10.1.min.js",
+                    "vendor/jquery/jquery.min.js",
+
                     "js/jquery.fancybox.pack.js", "js/jquery.fancybox-media.js",
                     "js/markitup/jquery.markitup.js", "js/markitup/sets/markdown/set.js",
                     "js/bquery_ajax.js",
