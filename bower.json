@@ -15,6 +15,7 @@
   ],
   "dependencies": {
     "jquery": "~1.10.1",
-    "fancybox": "~2.1.5"
+    "fancybox": "~2.1.5",
+    "markitup": "~1.1.14"
   }
 }
