@@ -1,0 +1,16 @@
+{
+  "name": "chrome-point-plus",
+  "version": "1.17.3",
+  "authors": [
+    "Alexey Skobkin"
+  ],
+  "description": "Chrome extension for point.im",
+  "license": "MIT",
+  "homepage": "https://bitbucket.org/skobkin/chrome_point_plus",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "chrome_point_plus/vendors/**"
+  ]
+}
