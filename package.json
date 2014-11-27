@@ -1,0 +1,15 @@
+{
+  "name": "chrome-point-plus",
+  "version": "1.17.3",
+  "description": "Chrome extension for point.im",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:skobkin/chrome_point_plus.git"
+  },
+  "author": "\"Alexey Skobkin\"",
+  "license": "MIT"
+}
