@@ -29,14 +29,17 @@
             "js": [
                     "vendor/jquery/jquery.min.js",
 
-                    "js/jquery.fancybox.pack.js", "js/jquery.fancybox-media.js",
+                    "vendor/fancybox/source/jquery.fancybox.pack.js",
+                    "vendor/fancybox/source/helpers/jquery.fancybox-media.js",
+
                     "js/markitup/jquery.markitup.js", "js/markitup/sets/markdown/set.js",
                     "js/bquery_ajax.js",
                     "js/options.js",
                     "js/point-plus.js"
                     ],
             "css": [
-                    "css/jquery.fancybox.css",
+                    "vendor/fancybox/source/jquery.fancybox.css",
+
                     "css/markitup/skins/markitup/style.css", "css/markitup/sets/markdown/style.css",
                     "css/point-plus.css"
                     ],
