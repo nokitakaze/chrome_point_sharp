@@ -497,6 +497,9 @@ $(document).ready(function() {
             set_space_key_skip_handler();
         }
 
+        // Система комментариев у пользователей
+        hints_init_user_system();
+
         $('#point-plus-debug').fadeOut(1000);
     });
 });
@@ -1029,5 +1032,120 @@ function fancybox_set_smart_hints(){
         }
 
         all_post_images.attr('data-fancybox-title', hint_text);
+    });
+}
+
+/**
+ * Система заметок о пользователях
+ * https://bitbucket.org/skobkin/chrome_point_plus/issue/50/---------------------------
+ */
+// Инициализируем
+function hints_init_user_system() {
+    chrome.storage.sync.get('point_user_hints', function (items) {
+        if (typeof(items.point_user_hints) == 'undefined') {
+            // Первый запуск системы
+            chrome.storage.sync.set({'point_user_hints': {}}, function () {
+                hints_draw_main_user_hint({});
+                hints_set_titles_on_users({});
+            });
+        } else {
+            // Второй+ запуск системы
+            hints_draw_main_user_hint(items.point_user_hints);
+            hints_set_titles_on_users(items.point_user_hints);
+        }
+    });
+}
+
+// Рисуем хинт и кнопку под текущим пользователем
+function hints_draw_main_user_hint(items) {
+    var current_user_name = $('.aside .info h1').text().toLowerCase();
+    if (current_user_name.length == '') {
+        return;
+    }
+
+    var current_user_hint_block = document.createElement('div');
+    $('.aside .aside-content #counters')[0].parentElement.
+        insertBefore(current_user_hint_block, $('.aside .aside-content #counters')[0]);
+    $(current_user_hint_block).addClass('current-user-hint');
+
+    // Рисуем кнопки управления
+    var buttons_block = document.createElement('div');
+    $(buttons_block).addClass('buttons').
+        html('<a class="edit" href="javascript:" title="Редактировать"></a>');
+    current_user_hint_block.appendChild(buttons_block);
+    $(buttons_block).find('.edit').on('click', function () {
+        chrome.storage.sync.get('point_user_hints', function (items) {
+            var current_text = '';
+            if (typeof(items.point_user_hints[current_user_name]) !== 'undefined') {
+                current_text = items.point_user_hints[current_user_name];
+            }
+
+            $('.current-user-hint .change_hint_block').slideDown(500);
+            $('.current-user-hint .change_hint_block textarea').val(current_text);
+        });
+    });
+
+    // Рисуем текст
+    var current_text = '';
+    if (typeof(items[current_user_name]) !== 'undefined') {
+        current_text = items[current_user_name];
+    }
+    var text_block = document.createElement('div');
+    $(text_block).addClass('text').html(hints_raw_text_to_html(current_text));
+    current_user_hint_block.appendChild(text_block);
+
+    // Рисуем невидимый блок для управления
+    var change_hint_block = document.createElement('div');
+    $(change_hint_block).addClass('change_hint_block').hide().
+        html('<textarea></textarea><input class="button_save" type="submit" value="Сохранить">' +
+        '<a href="javascript:" class="button_cancel">Отмена</a>');
+    $(change_hint_block).find('.button_save').on('click', function () {
+        $('.current-user-hint .change_hint_block').slideUp(500);
+        var new_text = $('.current-user-hint .change_hint_block textarea').val();
+        $('.current-user-hint > .text').hide().html(hints_raw_text_to_html(new_text)).fadeIn(750);
+        hints_save_new_hint(current_user_name, new_text);
+    });
+    $(change_hint_block).find('.button_cancel').on('click', function () {
+        $('.current-user-hint .change_hint_block').slideUp(500);
+    });
+    current_user_hint_block.appendChild(change_hint_block);
+}
+
+// Превращаем сырой текст в нормальный, обёрнутый в p
+function hints_raw_text_to_html(text) {
+    // @todo проверить как работает
+    text = text
+        .replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
+        .replace('"', "&quot;")
+        .replace("'", "&#039;")
+        .replace(/\r?\n/g, "</p><p>")
+    return '<p>' + text + '</p>';
+}
+
+// Рисуем title'ы на всех доступных пользователях, точнее на их аватарках
+function hints_set_titles_on_users(items) {
+    $('a').each(function () {
+        var n = $(this).attr('href').match(new RegExp('^https?\\://([0-9a-z-]+)\\.point\\.im/$'));
+        if (n == null) {
+            return;
+        }
+        var this_user_name = n[1].toLowerCase();
+        if (typeof(items[this_user_name]) == 'undefined') {
+            return;
+        }
+
+        $(this).attr({
+            'title': items[this_user_name]
+        });
+    });
+}
+
+// Сохраняем новый хинт
+function hints_save_new_hint(username, new_hint) {
+    chrome.storage.sync.get('point_user_hints', function (items) {
+        items.point_user_hints[username] = new_hint;
+        chrome.storage.sync.set({'point_user_hints': items.point_user_hints});
     });
 }

@@ -236,3 +236,53 @@ div#markItUpText-input {
     color: rgba(255,255,255,.75);
     padding: 10px 0px;
 }
+
+/* User hints */
+.current-user-hint{
+    min-height: 30px;
+    position: relative;
+}
+
+.current-user-hint .edit {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    display: none;
+    background-image: url("//point.im/img/btn-edit.png");
+    background-size: 100% 100%;
+    width: 16px;
+    height: 16px;
+}
+
+.current-user-hint:hover .edit {
+    display: block;
+}
+
+.current-user-hint > .text{
+    margin: 1em 0;
+    color: green;
+    font-style: italic;
+}
+
+.aside .aside-content #counters{
+    clear: both;
+}
+
+.current-user-hint .change_hint_block{
+
+}
+
+.current-user-hint .change_hint_block textarea{
+    width: 98%;
+    max-width: 98%;
+    margin-bottom: 10px;
+    height: 140px;
+}
+
+.current-user-hint .change_hint_block .button_save{
+    margin-right: 10px;
+}
+
+.current-user-hint .change_hint_block .button_cancel{
+
+}
