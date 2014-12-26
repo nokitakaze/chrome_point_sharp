@@ -612,7 +612,7 @@ function create_image(domain, id, additional) {
 // Помечаем непрочитанные посты более видимо чем каким-то баджем
 // Эта часть написана @RainbowSpike
 function mark_unread_post() {
-    var divs = $(".post"); // массив постов
+    var divs = $(".post").css({'padding-left':'2px'}); // массив постов
     for (var i = 0; i < divs.length; i++) { // обыск постов
         var spans = $(divs[i]).find(".unread"); // поиск метки непрочитанных комментов
         if (spans.length > 0) { // если в посте есть непрочитанные комменты...
@@ -859,39 +859,7 @@ function create_pleercom_ajax(id, current_options) {
 }
 
 // Проставляем теги у постов
-function create_tag_system() {
-    $('.post').each(function() {
-        var tags = $(this).find('div.tags a.tag');
-        for (var i = 0; i < tags.length; i++) {
-            var tag_name = $(tags[i]).html().toLowerCase();
-            $(this).addClass('post-tag-' + tag_name);
-        }
-    });
-}
-
-// Скролл по пробелу
-function set_space_key_skip_handler() {
-    if ($('#comments').length > 0) {
-        return;
-    }
-
-    // @todo Свериться с Best-practice биндинга функций. Мб там on или bind
-    $(document.body).keydown(function(e) {
-        // @todo Я хотел по отпусканию кнопки, но там уже скролл срабатывает
-        // проверяем фокус
-        if ($(':focus').length > 0) {
-            return;
-        }
-
-        var k = event.keyCode;
-        if (k == 32){
-            space_key_event();
-            return false;
-        }
-    });
-}
-
-// Проставляем теги у постов
+// @hint В данный момент эта фича используются для NSFW, потом выборку по тегам можно будет использовать много где
 function create_tag_system() {
     $('.post').each(function() {
         var tags = $(this).find('div.tags a.tag');
@@ -961,7 +929,7 @@ function draft_set_save_handler() {
 }
 
 var draft_save_busy = false;
-// Фукнция, дёргающаяся по крону
+// Фукнция, дёргающаяся по крону, проверяющая надо ли сохранять черновик
 function draft_save_check() {
     if (draft_save_busy) {
         return;
