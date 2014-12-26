@@ -47,6 +47,9 @@
     "option_fancybox_bind_images_to_one_flow": {
         "message": "Bind all images from fancybox to one flow"
     },
+    "option_fancybox_smart_hints": {
+        "message": "Smart hints for images in fancybox gallery"
+    },
     "option_images_load_original": {
         "message": "Load original images instead of thumbnails"
     },

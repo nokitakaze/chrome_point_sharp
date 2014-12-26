@@ -47,6 +47,9 @@
     "option_fancybox_bind_images_to_one_flow": {
         "message": "Связать все картинки в одну галерею"
     },
+    "option_fancybox_smart_hints": {
+        "message": "Включить умные описания для картинок при скроллинге галереи"
+    },
     "option_images_load_original": {
         "message": "Загружать оригиналы вместо миниатюр"
     },

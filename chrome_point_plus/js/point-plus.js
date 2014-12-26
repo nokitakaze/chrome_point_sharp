@@ -108,64 +108,26 @@ $(document).ready(function() {
                 $('.post-content .text').each(function() {
                     $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'one_flow_gallery');
                 });
+            }else{
+                $('.post-content .text').each(function(idxPost) {
+                    $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'post' + idxPost);
+                });
             }
 
             // Images
             if (options.option_fancybox_images.value == true) {
-                if (options.option_fancybox_bind_images_to_one_flow.value !== true) {
-                    // Linking images in posts to the galleries
-                    $('.post-content .text').each(function(idxPost) {
-                        $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'post' + idxPost);
-                    });
-                }
                 // Init fancybox
                 $('.postimg:not(.youtube)').fancybox({
                     type: 'image'
                 });
             }
-            // Правим хинт в FancyBox
-            $('.post').each(function() {
-                var all_post_images = $(this).find('.postimg');
-                if (all_post_images.length == 0) {
-                    return;
-                }
 
-                var tags = $(this).find('div.tags a.tag');
-                var hint_text = '';// Текст для хинта в FancyBox
-                // Сначала теги
-                for (var i = 0; i < tags.length; i++) {
-                    var tag_name = $(tags[i]).html().toLowerCase();
-                    hint_text += ' ' + tag_name;
-                }
-
-                // Потом текст
-                var textcontent = $(this).find('.text-content');
-                if (textcontent.length > 0) {
-                    textcontent = textcontent[0];
-                    for (var i = 0; i < textcontent.childNodes.length; i++) {
-                        var current_child_node = textcontent.childNodes[i];
-                        if ((current_child_node.nodeName !== 'P') && (current_child_node.nodeName !== '#text')) {
-                            continue;
-                        }
-                        var a = $(current_child_node).find('a.postimg');
-                        if (a.length > 0) {
-                            continue;
-                        }
-
-                        var tmp_str = current_child_node.textContent.replace(/(\n(\r)?)/g, ' ');
-                        tmp_str = tmp_str.replace("\t", " ");
-                        hint_text += ' ' + tmp_str;
-                    }
-                }
-
-                // Режем
-                hint_text = hint_text.replace(new RegExp(' {2,}'), ' ').replace(new RegExp(' +$'), '').substr(1);
-                if (hint_text.length > 140) {
-                    hint_text = hint_text.substr(0, 140 - 3) + '...';
-                }
-
-                all_post_images.attr('data-fancybox-title', hint_text);
-            });
+            // Правим хинты у фансибокса
+            if (options.option_fancybox_smart_hints.value == true) {
+                fancybox_set_smart_hints();
+            } else {
+                $('.post .postimg').attr('data-fancybox-title', ' ');
+            }
 
             // Videos
             if (options.option_fancybox_videos.value == true) {
@@ -675,7 +637,7 @@ function parse_webm(current_options) {
 
         if (n = href.match(new RegExp('\\.webm(\\?.+)?$', 'i'))) {
             var player = document.createElement('video');
-            // @todo Там может быть не vp8+vorbis
+            // Там может быть не vp8+vorbis, но мы этого никак не узнаем
             $(player).html('<source src="' + href + '" type=\'video/webm; codecs="vp8, vorbis"\' />').attr('controls', 'controls').css({
                 'display': 'block',
                 'max-width': '95%'
@@ -1053,5 +1015,51 @@ function parse_coub_links(current_options) {
                 $(obj).hide();
             }
         }
+    });
+}
+
+// Правим хинт в FancyBox
+function fancybox_set_smart_hints(){
+    $('.post').each(function() {
+        var all_post_images = $(this).find('.postimg');
+        if (all_post_images.length == 0) {
+            return;
+        }
+
+        var tags = $(this).find('div.tags a.tag');
+        var hint_text = '';// Текст для хинта в FancyBox
+        // Сначала теги
+        for (var i = 0; i < tags.length; i++) {
+            var tag_name = $(tags[i]).html().toLowerCase();
+            hint_text += ' ' + tag_name;
+        }
+
+        // Потом текст
+        var textcontent = $(this).find('.text-content');
+        if (textcontent.length > 0) {
+            textcontent = textcontent[0];
+            for (var i = 0; i < textcontent.childNodes.length; i++) {
+                var current_child_node = textcontent.childNodes[i];
+                if ((current_child_node.nodeName !== 'P') && (current_child_node.nodeName !== '#text')) {
+                    continue;
+                }
+                var a = $(current_child_node).find('a.postimg');
+                if (a.length > 0) {
+                    continue;
+                }
+
+                var tmp_str = current_child_node.textContent.replace(/(\n(\r)?)/g, ' ');
+                tmp_str = tmp_str.replace("\t", " ");
+                hint_text += ' ' + tmp_str;
+            }
+        }
+
+        // Режем
+        hint_text = hint_text.replace(new RegExp(' {2,}'), ' ').replace(new RegExp(' +$'), '').substr(1);
+        if (hint_text.length > 140) {
+            hint_text = hint_text.substr(0, 140 - 3) + '...';
+        }
+
+        all_post_images.attr('data-fancybox-title', hint_text);
     });
 }
