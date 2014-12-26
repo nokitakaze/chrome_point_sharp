@@ -286,3 +286,14 @@ div#markItUpText-input {
 .current-user-hint .change_hint_block .button_cancel{
 
 }
+
+/* Шваброточки */
+#comments .post .nesting{
+    height: 24px;
+    float: left;
+}
+
+#comments .post:hover .nesting {
+    background-repeat: repeat-x;
+    background-image: url('chrome-extension://__MSG_@@extension_id__/images/habra-point.png');
+}

@@ -158,7 +158,7 @@ $(document).ready(function() {
 
             if (options.option_nsfw_hide_posts.value == true) {
                 if ($('#comments').length == 0) {
-                    console.log('Hide NSFW posts in feed');
+                    console.log('Hide NSFW posts in feed, '+$('.post').length+' hidden');
                     $('.post').addClass('hide-nsfw-posts');
                 }
             }
@@ -500,6 +500,11 @@ $(document).ready(function() {
         // Система комментариев у пользователей
         hints_init_user_system();
 
+        // Nesting level indicator
+        if (options.option_other_comments_nesting_level.value == true) {
+            draw_nesting_level_indicator();
+        }
+
         $('#point-plus-debug').fadeOut(1000);
     });
 });
@@ -615,7 +620,7 @@ function create_image(domain, id, additional) {
 // Помечаем непрочитанные посты более видимо чем каким-то баджем
 // Эта часть написана @RainbowSpike
 function mark_unread_post() {
-    var divs = $(".post").css({'padding-left':'2px'}); // массив постов
+    var divs = $(".content-wrap > .post").css({'padding-left':'2px'}); // массив постов
     for (var i = 0; i < divs.length; i++) { // обыск постов
         var spans = $(divs[i]).find(".unread"); // поиск метки непрочитанных комментов
         if (spans.length > 0) { // если в посте есть непрочитанные комменты...
@@ -739,12 +744,12 @@ function audio_extension_to_mime(extension) {
     }
 }
 
-// Плашки у постов
+// Плашки с кол-вом уникальных пользователей и рекомендаций у постов
 function set_posts_count_label() {
     var ids = [];
-    $('.post .post-id a .cn').addClass('changed_background');
+    $('.content-wrap > .post .post-id a .cn').addClass('changed_background');
 
-    $('div.post').each(function(num, obj) {
+    $('.content-wrap > .post').each(function(num, obj) {
         var t = $(obj).attr('data-comment-id');
         if (typeof(t) !== 'undefined') {
             return;
@@ -758,7 +763,7 @@ function set_posts_count_label() {
         'success': function(a) {
             var answer = JSON.parse(a);
 
-            $('div.post').each(function(num, obj) {
+            $('.content-wrap > .post').each(function(num, obj) {
                 var id = $(obj).attr('data-id');
                 var postid = $(obj).find('.post-id a')[0];
                 var t = $(obj).attr('data-comment-id');
@@ -864,7 +869,7 @@ function create_pleercom_ajax(id, current_options) {
 // Проставляем теги у постов
 // @hint В данный момент эта фича используются для NSFW, потом выборку по тегам можно будет использовать много где
 function create_tag_system() {
-    $('.post').each(function() {
+    $('.content-wrap > .post').each(function() {
         var tags = $(this).find('div.tags a.tag');
         for (var i = 0; i < tags.length; i++) {
             var tag_name = $(tags[i]).html().toLowerCase();
@@ -900,7 +905,7 @@ function space_key_event() {
     var scroll_step_size = 0;
     var scroll_real = Math.max(scroll_current - scroll_step_size, 0);
 
-    var posts = $('.post');
+    var posts = $('.content-wrap > .post');
     for (var i = 0; i < posts.length; i++) {
         var this_top_px = $(posts[i]).offset().top;
         if (this_top_px > scroll_real) {
@@ -1154,5 +1159,35 @@ function hints_save_new_hint(username, new_hint) {
     chrome.storage.sync.get('point_user_hints', function (items) {
         items.point_user_hints[username] = new_hint;
         chrome.storage.sync.set({'point_user_hints': items.point_user_hints});
+    });
+}
+
+/**
+ * Nesting level indicator
+ * Шваброшвабровские точки
+ */
+function draw_nesting_level_indicator() {
+    $('.comments').css({'margin-left': '0px'});
+    draw_nesting_level_indicator_level($('#comments > .comments'), 1);
+}
+
+function draw_nesting_level_indicator_level(obj, level) {
+    obj.find('> .post').each(function () {
+        var nesting = document.createElement('div');
+        $(nesting).addClass('nesting').css({
+            'width': (10 * level) + 'px'
+        });
+        this.insertBefore(nesting, $(this).find('.info')[0]);
+
+        $(this).find('> .post-content').css({
+            'padding-left': (10 * level) + 'px'
+        });
+    });
+
+    obj.each(function () {
+        var comments = $(this).find('> .comments');
+        if (comments.length > 0) {
+            draw_nesting_level_indicator_level(comments, level + 1);
+        }
     });
 }

@@ -156,6 +156,9 @@
     "option_other_scroll_space_key":{
         "message": "Скроллинг постов пробелом"
     },
+    "option_other_comments_nesting_level":{
+        "message": "Индикатор уровня вложенности коммнентариев"
+    },
 
 
     "options_feedback_text": {
