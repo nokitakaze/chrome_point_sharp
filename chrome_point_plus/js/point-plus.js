@@ -926,8 +926,10 @@ function draft_restore() {
 
 // Установка хандлера
 function draft_set_save_handler() {
-    // @hint Не буду я сажать на ивенты, обосрись
-    setInterval(draft_save_check, 5000);
+    // Господи, прости меня грешного за эту строку. Меня вынудили
+    $('#text-input').on('keyup', function(){
+        draft_save_check();
+    });
     $('#new-post-wrap .footnote').append($('<span id="draft-save-status">'));
 }
 
@@ -1127,7 +1129,12 @@ function hints_raw_text_to_html(text) {
 // Рисуем title'ы на всех доступных пользователях, точнее на их аватарках
 function hints_set_titles_on_users(items) {
     $('a').each(function () {
-        var n = $(this).attr('href').match(new RegExp('^https?\\://([0-9a-z-]+)\\.point\\.im/$'));
+        var href = $(this).attr('href');
+        if (typeof(href) == 'undefined') {
+            return;
+        }
+
+        var n = href.match(new RegExp('^https?\\://([0-9a-z-]+)\\.point\\.im/$'));
         if (n == null) {
             return;
         }
