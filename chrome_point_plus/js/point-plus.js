@@ -981,19 +981,25 @@ function space_key_event() {
 
 /* Автосохранение черновиков */
 var draft_last_text = ''; // Последний зафиксированный текст
+// Восстанавливаем черновик
 function draft_restore() {
-    chrome.storage.local.get('point_draft_text', function(items) {
-        $('#new-post-form #text-input').val(items.point_draft_text);
-        draft_last_text = items.point_draft_text;
+    chrome.storage.local.get('point_draft_text', function (items) {
+        if ($('#new-post-form #text-input').val() == '') {
+            $('#new-post-form #text-input').val(items.point_draft_text);
+            draft_last_text = items.point_draft_text;
+        }
     });
 }
 
+// Установка хандлера
 function draft_set_save_handler() {
+    // @hint Не буду я сажать на ивенты, обосрись
     setInterval(draft_save_check, 5000);
-    $('#new-post-wrap .footnote').append($('<div id="draft-save-status">'));
+    $('#new-post-wrap .footnote').append($('<span id="draft-save-status">'));
 }
 
 var draft_save_busy = false;
+// Фукнция, дёргающаяся по крону
 function draft_save_check() {
     if (draft_save_busy) {
         return;
