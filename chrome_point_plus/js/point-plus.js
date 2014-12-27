@@ -1120,7 +1120,6 @@ function hints_draw_main_user_hint(items) {
 
 // Превращаем сырой текст в нормальный, обёрнутый в p
 function hints_raw_text_to_html(text) {
-    // @todo проверить как работает
     text = text
         .replace('&', "&amp;")
         .replace('<', "&lt;")
@@ -1139,7 +1138,7 @@ function hints_set_titles_on_users(items) {
             return;
         }
 
-        var n = href.match(new RegExp('^https?\\://([0-9a-z-]+)\\.point\\.im/$'));
+        var n = href.match(new RegExp('^https?\\://([0-9a-z-]+)\\.point\\.im/$', 'i'));
         if (n == null) {
             return;
         }
