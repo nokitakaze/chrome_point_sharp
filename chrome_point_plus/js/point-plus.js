@@ -1202,10 +1202,10 @@ function draw_nesting_level_indicator_level(obj, level) {
 function set_comments_refresh_tick() {
     // Проверяем, чтобы были баджи
     if ($('#main #left-menu #menu-recent .unread').length == 0) {
-        $('#main #left-menu #menu-recent').append('<span class="unread" style="display: none;">');
+        $('#main #left-menu #menu-recent').append('<span class="unread" style="display: none;">0</span>');
     }
     if ($('#main #left-menu #menu-comments .unread').length == 0) {
-        $('#main #left-menu #menu-comments').append('<span class="unread" style="display: none;">');
+        $('#main #left-menu #menu-comments').append('<span class="unread" style="display: none;">0</span>');
     }
 
     // Ставим тик
@@ -1218,7 +1218,6 @@ function comments_count_refresh_tick() {
     var iframe = document.createElement('iframe');
     document.body.appendChild(iframe);
 
-    var current_user_name=$('#user-menu-label #name h1').text();
     $(iframe).on('load', function () {
         var a = $(iframe.contentDocument.body).find('#main #left-menu #menu-recent .unread');
         var b = $(iframe.contentDocument.body).find('#main #left-menu #menu-comments .unread');
@@ -1227,20 +1226,45 @@ function comments_count_refresh_tick() {
 
         console.log('Comments: ' + count_comments + ', Recent: ' + count_recent);
         if (count_recent > 0) {
-            $('#main #left-menu #menu-recent .unread').text(count_recent).show();
+            if (parseInt($('#main #left-menu #menu-recent .unread').text()) != count_recent) {
+                $('#main #left-menu #menu-recent .unread').text(count_recent).show().css({
+                    'background-color': '#f2ebee',
+                    'color': '#7c3558'
+                });
+                setTimeout(function () {
+                    $('#main #left-menu #menu-recent .unread').css({
+                        'background-color': '#ebeef2',
+                        'color': '#35587c'
+                    });
+                }, 15000);
+            }
         } else {
             $('#main #left-menu #menu-recent .unread').text('0').hide();
         }
 
         if (count_comments > 0) {
-            $('#main #left-menu #menu-comments .unread').text(count_comments).show();
+            if (parseInt($('#main #left-menu #menu-comments .unread').text()) != count_comments) {
+                $('#main #left-menu #menu-comments .unread').text(count_comments).show().css({
+                    'background-color': '#f2ebee',
+                    'color': '#7c3558'
+                });
+                setTimeout(function () {
+                    $('#main #left-menu #menu-comments .unread').css({
+                        'background-color': '#ebeef2',
+                        'color': '#35587c'
+                    });
+                }, 15000);
+            }
         } else {
             $('#main #left-menu #menu-comments .unread').text('0').hide();
         }
 
         $('#debug_iframe').remove();
     }).attr({
-        'src': 'https://'+current_user_name+'.point.im/',
+        // Из-за Same Origin'а я дёргаю несуществующую страницу на том же домене, чтобы получить баджи и,
+        // в то же время не прочитать новые сообщения в ленте, которые могли появиться, если их написал
+        // этот пользователь
+        'src': 'https://' + document.domain + '/?tag=' + Math.random(),
         'id': 'debug_iframe'
     }).css({
         'width': '600px',
