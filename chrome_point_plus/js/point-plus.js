@@ -505,6 +505,11 @@ $(document).ready(function() {
             draw_nesting_level_indicator();
         }
 
+        // Обновляем кол-во постов и непрочитанных комментариев
+        if (options.option_other_comments_count_refresh.value == true){
+            set_comments_refresh_tick();
+        }
+
         $('#point-plus-debug').fadeOut(1000);
     });
 });
@@ -1189,4 +1194,56 @@ function draw_nesting_level_indicator_level(obj, level) {
             draw_nesting_level_indicator_level(comments, level + 1);
         }
     });
+}
+
+/**
+ * Обновляем кол-во комментариев и непрочитанных новых постов в ленте
+ */
+function set_comments_refresh_tick() {
+    // Проверяем, чтобы были баджи
+    if ($('#main #left-menu #menu-recent .unread').length == 0) {
+        $('#main #left-menu #menu-recent').append('<span class="unread" style="display: none;">');
+    }
+    if ($('#main #left-menu #menu-comments .unread').length == 0) {
+        $('#main #left-menu #menu-comments').append('<span class="unread" style="display: none;">');
+    }
+
+    // Ставим тик
+    setInterval(comments_count_refresh_tick, 60000);
+}
+
+// Проверка обновления комментариев, обновляется по крону
+function comments_count_refresh_tick() {
+    $('#debug_iframe').remove();
+    var iframe = document.createElement('iframe');
+    document.body.appendChild(iframe);
+
+    var current_user_name=$('#user-menu-label #name h1').text();
+    $(iframe).on('load', function () {
+        var a = $(iframe.contentDocument.body).find('#main #left-menu #menu-recent .unread');
+        var b = $(iframe.contentDocument.body).find('#main #left-menu #menu-comments .unread');
+        var count_recent = (a.length == 0) ? 0 : parseInt(a.text());
+        var count_comments = (b.length == 0) ? 0 : parseInt(b.text());
+
+        console.log('Comments: ' + count_comments + ', Recent: ' + count_recent);
+        if (count_recent > 0) {
+            $('#main #left-menu #menu-recent .unread').text(count_recent).show();
+        } else {
+            $('#main #left-menu #menu-recent .unread').text('0').hide();
+        }
+
+        if (count_comments > 0) {
+            $('#main #left-menu #menu-comments .unread').text(count_comments).show();
+        } else {
+            $('#main #left-menu #menu-comments .unread').text('0').hide();
+        }
+
+        $('#debug_iframe').remove();
+    }).attr({
+        'src': 'https://'+current_user_name+'.point.im/',
+        'id': 'debug_iframe'
+    }).css({
+        'width': '600px',
+        'height': '300px'
+    }).hide();
 }
