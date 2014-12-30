@@ -1105,7 +1105,8 @@ function hints_draw_main_user_hint(items) {
         current_text = items[current_user_name];
     }
     var text_block = document.createElement('div');
-    $(text_block).addClass('text').html(hints_raw_text_to_html(current_text));
+    $(text_block).addClass('text');
+    safe_saned_text(current_text, $(text_block));
     current_user_hint_block.appendChild(text_block);
 
     // Рисуем невидимый блок для управления
@@ -1116,7 +1117,7 @@ function hints_draw_main_user_hint(items) {
     $(change_hint_block).find('.button_save').on('click', function() {
         $('.current-user-hint .change_hint_block').slideUp(500);
         var new_text = $('.current-user-hint .change_hint_block textarea').val();
-        $('.current-user-hint > .text').hide().html(hints_raw_text_to_html(new_text)).fadeIn(750);
+        safe_saned_text(new_text, $('.current-user-hint > .text').hide().fadeIn(750));
         hints_save_new_hint(current_user_name, new_text);
     });
     $(change_hint_block).find('.button_cancel').on('click', function() {
@@ -1125,16 +1126,15 @@ function hints_draw_main_user_hint(items) {
     current_user_hint_block.appendChild(change_hint_block);
 }
 
-// Превращаем сырой текст в нормальный, обёрнутый в p
-function hints_raw_text_to_html(text) {
-    text = text
-        .replace('&', "&amp;")
-        .replace('<', "&lt;")
-        .replace('>', "&gt;")
-        .replace('"', "&quot;")
-        .replace("'", "&#039;")
-        .replace(/\r?\n/g, "</p><p>")
-    return '<p>' + text + '</p>';
+// Nokita Kaze снимает с себя все претензии по этому коду, обращайтесь к фаундеру проекта
+function safe_saned_text(text, object) {
+    var n = text.split(/\r?\n/);
+    object.text('');
+    for (var i = 0; i < n.length; i++) {
+        var d = document.createElement('p');
+        $(d).text(n[i]);
+        object[0].appendChild(d);
+    }
 }
 
 // Рисуем title'ы на всех доступных пользователях, точнее на их аватарках
