@@ -159,6 +159,9 @@
     "option_other_comments_nesting_level":{
         "message": "Индикатор уровня вложенности коммнентариев"
     },
+    "option_other_comments_user_system":{
+        "message": "Заметки о пользователях на полях"
+    },
     "option_other_comments_count_refresh":{
         "message": "Обновляем количество непрочитанных комментариев и постов в ленте"
     },

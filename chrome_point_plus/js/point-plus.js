@@ -108,7 +108,7 @@ $(document).ready(function() {
                 $('.post-content .text').each(function() {
                     $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'one_flow_gallery');
                 });
-            }else{
+            } else {
                 $('.post-content .text').each(function(idxPost) {
                     $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'post' + idxPost);
                 });
@@ -158,7 +158,7 @@ $(document).ready(function() {
 
             if (options.option_nsfw_hide_posts.value == true) {
                 if ($('#comments').length == 0) {
-                    console.log('Hide NSFW posts in feed, '+$('.post').length+' hidden');
+                    console.log('Hide NSFW posts in feed, %i hidden', $('.post').length);
                     $('.post').addClass('hide-nsfw-posts');
                 }
             }
@@ -498,7 +498,9 @@ $(document).ready(function() {
         }
 
         // Система комментариев у пользователей
-        hints_init_user_system();
+        if (options.option_other_comments_user_system.value == true) {
+            hints_init_user_system();
+        }
 
         // Nesting level indicator
         if (options.option_other_comments_nesting_level.value == true) {
@@ -926,7 +928,7 @@ function space_key_event() {
 var draft_last_text = ''; // Последний зафиксированный текст
 // Восстанавливаем черновик
 function draft_restore() {
-    chrome.storage.local.get('point_draft_text', function (items) {
+    chrome.storage.local.get('point_draft_text', function(items) {
         if ($('#new-post-form #text-input').val() == '') {
             $('#new-post-form #text-input').val(items.point_draft_text);
             draft_last_text = items.point_draft_text;
@@ -1053,10 +1055,10 @@ function fancybox_set_smart_hints(){
  */
 // Инициализируем
 function hints_init_user_system() {
-    chrome.storage.sync.get('point_user_hints', function (items) {
+    chrome.storage.sync.get('point_user_hints', function(items) {
         if (typeof(items.point_user_hints) == 'undefined') {
             // Первый запуск системы
-            chrome.storage.sync.set({'point_user_hints': {}}, function () {
+            chrome.storage.sync.set({'point_user_hints': {}}, function() {
                 hints_draw_main_user_hint({});
                 hints_set_titles_on_users({});
             });
@@ -1071,7 +1073,7 @@ function hints_init_user_system() {
 // Рисуем хинт и кнопку под текущим пользователем
 function hints_draw_main_user_hint(items) {
     var current_user_name = $('.aside .info h1').text().toLowerCase();
-    if (current_user_name.length == '') {
+    if (current_user_name.length == 0) {
         return;
     }
 
@@ -1085,8 +1087,8 @@ function hints_draw_main_user_hint(items) {
     $(buttons_block).addClass('buttons').
         html('<a class="edit" href="javascript:" title="Редактировать"></a>');
     current_user_hint_block.appendChild(buttons_block);
-    $(buttons_block).find('.edit').on('click', function () {
-        chrome.storage.sync.get('point_user_hints', function (items) {
+    $(buttons_block).find('.edit').on('click', function() {
+        chrome.storage.sync.get('point_user_hints', function(items) {
             var current_text = '';
             if (typeof(items.point_user_hints[current_user_name]) !== 'undefined') {
                 current_text = items.point_user_hints[current_user_name];
@@ -1111,13 +1113,13 @@ function hints_draw_main_user_hint(items) {
     $(change_hint_block).addClass('change_hint_block').hide().
         html('<textarea></textarea><input class="button_save" type="submit" value="Сохранить">' +
         '<a href="javascript:" class="button_cancel">Отмена</a>');
-    $(change_hint_block).find('.button_save').on('click', function () {
+    $(change_hint_block).find('.button_save').on('click', function() {
         $('.current-user-hint .change_hint_block').slideUp(500);
         var new_text = $('.current-user-hint .change_hint_block textarea').val();
         $('.current-user-hint > .text').hide().html(hints_raw_text_to_html(new_text)).fadeIn(750);
         hints_save_new_hint(current_user_name, new_text);
     });
-    $(change_hint_block).find('.button_cancel').on('click', function () {
+    $(change_hint_block).find('.button_cancel').on('click', function() {
         $('.current-user-hint .change_hint_block').slideUp(500);
     });
     current_user_hint_block.appendChild(change_hint_block);
@@ -1137,7 +1139,7 @@ function hints_raw_text_to_html(text) {
 
 // Рисуем title'ы на всех доступных пользователях, точнее на их аватарках
 function hints_set_titles_on_users(items) {
-    $('a').each(function () {
+    $('a').each(function() {
         var href = $(this).attr('href');
         if (typeof(href) == 'undefined') {
             return;
@@ -1160,7 +1162,7 @@ function hints_set_titles_on_users(items) {
 
 // Сохраняем новый хинт
 function hints_save_new_hint(username, new_hint) {
-    chrome.storage.sync.get('point_user_hints', function (items) {
+    chrome.storage.sync.get('point_user_hints', function(items) {
         items.point_user_hints[username] = new_hint;
         chrome.storage.sync.set({'point_user_hints': items.point_user_hints});
     });
@@ -1176,7 +1178,7 @@ function draw_nesting_level_indicator() {
 }
 
 function draw_nesting_level_indicator_level(obj, level) {
-    obj.find('> .post').each(function () {
+    obj.find('> .post').each(function() {
         var nesting = document.createElement('div');
         $(nesting).addClass('nesting').css({
             'width': (10 * level) + 'px'
@@ -1188,7 +1190,7 @@ function draw_nesting_level_indicator_level(obj, level) {
         });
     });
 
-    obj.each(function () {
+    obj.each(function() {
         var comments = $(this).find('> .comments');
         if (comments.length > 0) {
             draw_nesting_level_indicator_level(comments, level + 1);
@@ -1218,20 +1220,20 @@ function comments_count_refresh_tick() {
     var iframe = document.createElement('iframe');
     document.body.appendChild(iframe);
 
-    $(iframe).on('load', function () {
+    $(iframe).on('load', function() {
         var a = $(iframe.contentDocument.body).find('#main #left-menu #menu-recent .unread');
         var b = $(iframe.contentDocument.body).find('#main #left-menu #menu-comments .unread');
         var count_recent = (a.length == 0) ? 0 : parseInt(a.text());
         var count_comments = (b.length == 0) ? 0 : parseInt(b.text());
 
-        console.log('Comments: ' + count_comments + ', Recent: ' + count_recent);
+        console.log('Comments: %d, Recent: %d', count_comments, count_recent);
         if (count_recent > 0) {
             if (parseInt($('#main #left-menu #menu-recent .unread').text()) != count_recent) {
                 $('#main #left-menu #menu-recent .unread').text(count_recent).show().css({
                     'background-color': '#f2ebee',
                     'color': '#7c3558'
                 });
-                setTimeout(function () {
+                setTimeout(function() {
                     $('#main #left-menu #menu-recent .unread').css({
                         'background-color': '#ebeef2',
                         'color': '#35587c'
@@ -1248,7 +1250,7 @@ function comments_count_refresh_tick() {
                     'background-color': '#f2ebee',
                     'color': '#7c3558'
                 });
-                setTimeout(function () {
+                setTimeout(function() {
                     $('#main #left-menu #menu-comments .unread').css({
                         'background-color': '#ebeef2',
                         'color': '#35587c'
@@ -1264,7 +1266,7 @@ function comments_count_refresh_tick() {
         // Из-за Same Origin'а я дёргаю несуществующую страницу на том же домене, чтобы получить баджи и,
         // в то же время не прочитать новые сообщения в ленте, которые могли появиться, если их написал
         // этот пользователь
-        'src': 'https://' + document.domain + '/?tag=' + Math.random(),
+        'src': '//' + document.domain + '/?tag=' + Math.random(),
         'id': 'debug_iframe'
     }).css({
         'width': '600px',

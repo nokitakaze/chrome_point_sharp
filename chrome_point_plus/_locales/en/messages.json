@@ -159,6 +159,9 @@
     "option_other_comments_nesting_level":{
         "message": "Comments Nesting level indicator"
     },
+    "option_other_comments_user_system":{
+        "message": "Your hints about users"
+    },
     "option_other_comments_count_refresh":{
         "message": "Refresh unread posts and comments count in left menu"
     },
