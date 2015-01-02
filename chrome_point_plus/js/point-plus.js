@@ -1231,6 +1231,32 @@ function set_comments_refresh_tick(current_options) {
     setInterval(function() {
         comments_count_refresh_tick(current_options);
     }, 60000);
+
+    // Ставим слежение за позицией мыши
+    if (current_options.option_other_comments_count_refresh_title.value == true) {
+        $(document).
+            on('mouseenter', function() {
+                set_comments_refresh_clear_title_marks();
+            }).on('mouseleave', function() {
+                window_focused = false;
+            });
+
+        $(window).
+            on('focus', function() {
+                set_comments_refresh_clear_title_marks();
+            }).on('blur', function() {
+                window_focused = false;
+            });
+    }
+}
+
+var window_focused = true;
+
+// Очищаем [0; 0]
+function set_comments_refresh_clear_title_marks() {
+    var new_title = document.title.replace(new RegExp('^\\[[0-9]+\\; [0-9]+\\] '), '');
+    document.title = new_title;
+    window_focused = true;
 }
 
 // Проверка обновления комментариев, обновляется по крону
@@ -1280,7 +1306,8 @@ function comments_count_refresh_tick(current_options) {
             $('#main #left-menu #menu-comments .unread').text('0').hide();
         }
 
-        if (current_options.option_other_comments_count_refresh_title.value == true) {
+        if ((current_options.option_other_comments_count_refresh_title.value == true) &&
+            (!window_focused)) {
             var new_title = document.title.replace(new RegExp('^\\[[0-9]+\\; [0-9]+\\] '), '');
             if ((count_recent > 0) || (count_comments > 0)) {
                 new_title = '[' + count_recent + '; ' + count_comments + '] ' + new_title;
