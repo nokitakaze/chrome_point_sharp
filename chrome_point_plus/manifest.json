@@ -27,16 +27,24 @@
         {
             "matches": ["http://*.point.im/*", "https://*.point.im/*"],
             "js": [
-                    "js/jquery-1.10.1.min.js",
-                    "js/jquery.fancybox.pack.js", "js/jquery.fancybox-media.js",
-                    "js/markitup/jquery.markitup.js", "js/markitup/sets/markdown/set.js",
+                    "vendor/jquery/jquery.min.js",
+
+                    "vendor/fancybox/source/jquery.fancybox.pack.js",
+                    "vendor/fancybox/source/helpers/jquery.fancybox-media.js",
+
+                    "vendor/markitup/markitup/jquery.markitup.js",
+                    "js/markitup/sets/markdown/set.js",
+
                     "js/bquery_ajax.js",
                     "js/options.js",
                     "js/point-plus.js"
                     ],
             "css": [
-                    "css/jquery.fancybox.css",
-                    "css/markitup/skins/markitup/style.css", "css/markitup/sets/markdown/style.css",
+                    "vendor/fancybox/source/jquery.fancybox.css",
+
+                    "vendor/markitup/markitup/skins/markitup/style.css",
+                    "css/markitup/sets/markdown/style.css",
+
                     "css/point-plus.css"
                     ],
             "run_at": "document_end"
