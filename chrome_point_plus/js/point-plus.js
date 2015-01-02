@@ -509,7 +509,7 @@ $(document).ready(function() {
 
         // Обновляем кол-во постов и непрочитанных комментариев
         if (options.option_other_comments_count_refresh.value == true){
-            set_comments_refresh_tick();
+            set_comments_refresh_tick(options);
         }
 
         $('#point-plus-debug').fadeOut(1000);
@@ -1218,7 +1218,7 @@ function draw_nesting_level_indicator_level(obj, level) {
 /**
  * Обновляем кол-во комментариев и непрочитанных новых постов в ленте
  */
-function set_comments_refresh_tick() {
+function set_comments_refresh_tick(current_options) {
     // Проверяем, чтобы были баджи
     if ($('#main #left-menu #menu-recent .unread').length == 0) {
         $('#main #left-menu #menu-recent').append('<span class="unread" style="display: none;">0</span>');
@@ -1228,11 +1228,13 @@ function set_comments_refresh_tick() {
     }
 
     // Ставим тик
-    setInterval(comments_count_refresh_tick, 60000);
+    setInterval(function() {
+        comments_count_refresh_tick(current_options);
+    }, 60000);
 }
 
 // Проверка обновления комментариев, обновляется по крону
-function comments_count_refresh_tick() {
+function comments_count_refresh_tick(current_options) {
     $('#debug_iframe').remove();
     var iframe = document.createElement('iframe');
     document.body.appendChild(iframe);
@@ -1276,6 +1278,14 @@ function comments_count_refresh_tick() {
             }
         } else {
             $('#main #left-menu #menu-comments .unread').text('0').hide();
+        }
+
+        if (current_options.option_other_comments_count_refresh_title.value == true) {
+            var new_title = document.title.replace(new RegExp('^\\[[0-9]+\\; [0-9]+\\] '), '');
+            if ((count_recent > 0) || (count_comments > 0)) {
+                new_title = '[' + count_recent + '; ' + count_comments + '] ' + new_title;
+            }
+            document.title = new_title;
         }
 
         $('#debug_iframe').remove();

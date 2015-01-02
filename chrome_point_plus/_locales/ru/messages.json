@@ -165,6 +165,9 @@
     "option_other_comments_count_refresh":{
         "message": "Обновляем количество непрочитанных комментариев и постов в ленте"
     },
+    "option_other_comments_count_refresh_title":{
+        "message": "Указываем кол-во комментариев и сообщений в заголовке страницы"
+    },
 
 
     "options_feedback_text": {
