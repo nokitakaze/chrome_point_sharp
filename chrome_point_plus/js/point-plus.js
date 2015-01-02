@@ -1012,11 +1012,11 @@ function fancybox_set_smart_hints(){
         }
 
         var tags = $(this).find('div.tags a.tag');
-        var hint_text = '';// Текст для хинта в FancyBox
+        var default_hint_text = '';// Дефолтный текст для хинта в FancyBox, если не нашлость другого
         // Сначала теги
         for (var i = 0; i < tags.length; i++) {
             var tag_name = $(tags[i]).html().toLowerCase();
-            hint_text += ' ' + tag_name;
+            default_hint_text += ' ' + tag_name;
         }
 
         // Потом текст
@@ -1035,17 +1035,34 @@ function fancybox_set_smart_hints(){
 
                 var tmp_str = current_child_node.textContent.replace(/(\n(\r)?)/g, ' ');
                 tmp_str = tmp_str.replace("\t", " ");
-                hint_text += ' ' + tmp_str;
+                default_hint_text += ' ' + tmp_str;
             }
         }
 
-        // Режем
-        hint_text = hint_text.replace(new RegExp(' {2,}'), ' ').replace(new RegExp(' +$'), '').substr(1);
-        if (hint_text.length > 140) {
-            hint_text = hint_text.substr(0, 140 - 3) + '...';
+        // Режем текст
+        default_hint_text = default_hint_text.replace(new RegExp(' {2,}'), ' ').replace(new RegExp(' +$'), '').substr(1);
+        if (default_hint_text.length > 140) {
+            default_hint_text = default_hint_text.substr(0, 140 - 3) + '...';
         }
 
-        all_post_images.attr('data-fancybox-title', hint_text);
+        // Выставляем дефолтный
+        all_post_images.attr('data-fancybox-title', default_hint_text);
+
+        // А теперь перебираем по одному все картинки
+        var paragraphs = $(this).find('.post-content > .text > p, .post-content > .text, .text-content > p, .text-content');
+
+        paragraphs.each(function() {
+            var nodes = this.childNodes;
+            for (var i = 0; i < nodes.length - 2; i++) {
+                if ($(nodes[i]).hasClass('booru_pic')) {
+                    if (nodes[i + 2].nodeName == '#text') {
+                        $(nodes[i]).attr('data-fancybox-title', nodes[i + 2].textContent);
+                        i += 2;
+                        continue;
+                    }
+                }
+            }
+        });
     });
 }
 
