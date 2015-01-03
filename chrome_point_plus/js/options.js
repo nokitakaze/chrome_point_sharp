@@ -45,9 +45,7 @@ Options.prototype.init = function() {
             }, function() {
                 console.log('Default options initialized. Version upgraded to %s.', this.version);
 
-                if ( ! confirm(chrome.i18n.getMessage('options_text_new_version'))) {
-                    window.close();
-                }
+                alert(chrome.i18n.getMessage('options_text_new_version'));
             });
         }
     }.bind(this));
