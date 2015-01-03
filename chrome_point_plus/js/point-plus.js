@@ -1280,8 +1280,8 @@ function comments_count_refresh_tick(current_options) {
                 });
                 setTimeout(function() {
                     $('#main #left-menu #menu-recent .unread').css({
-                        'background-color': '#ebeef2',
-                        'color': '#35587c'
+                        'background-color': '',
+                        'color': ''
                     });
                 }, 15000);
             }
@@ -1297,8 +1297,8 @@ function comments_count_refresh_tick(current_options) {
                 });
                 setTimeout(function() {
                     $('#main #left-menu #menu-comments .unread').css({
-                        'background-color': '#ebeef2',
-                        'color': '#35587c'
+                        'background-color': '',
+                        'color': ''
                     });
                 }, 15000);
             }
