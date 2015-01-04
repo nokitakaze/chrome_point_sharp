@@ -1,0 +1,132 @@
+/* Options page */
+.pp-options {
+    width: 450px;
+    height: 450px;
+    background: #EEE;
+}
+
+/* Tabs style */
+.pp-options .usual {
+    width:450px;
+    margin: 5px;
+}
+
+.pp-options .usual ul {
+    padding: 0 0 10px 0;
+    margin: 0 0 18px 0;
+}
+
+.pp-options .usual li {
+    list-style: none;
+    float: left;
+}
+.pp-options .usual ul a {
+    display: block;
+    padding: 6px 10px;
+    text-decoration: none!important;
+    margin: 1px;
+    margin-left: 0;
+    font: 12px Georgia;
+    color: #FFF;
+    background: #C8C8C8;
+    border-radius: 15px 15px 0 0;
+}
+.pp-options .usual ul a:hover {
+    color: #FFF;
+    background: #BBB;
+}
+.pp-options .usual ul a.selected {
+    margin-bottom: 0;
+    color: #FFF;
+    background: #A5A5A5;
+    cursor: default;
+}
+.pp-options .usual div#tabs-content {
+    margin: 0 5px 0 0;
+    padding: 5px;
+    background-color: #A5A5A5;
+    border-radius: 0 15px 0 0;
+
+}
+.pp-options .usual #panel {
+    background: #B5B5B5;
+    margin: 0 5px 0 0;
+    padding: 10px;
+    border-radius: 0 0 15px 15px;
+    display: flex;
+}
+.pp-options .usual #panel button.button {
+    background-color: #C8C8C8;
+    border-radius:15px;
+    border:1px solid #dcdcdc;
+    display:inline-block;
+    cursor:pointer;
+    color:#000;
+    font-family:Arial;
+    font-size:15px;
+    font-weight:bold;
+    padding: 5px 25px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #ffffff;
+}
+.pp-options .usual #panel button.button:hover{
+    background-color:#BBB;
+}
+.pp-options .usual #panel button.button:active {
+    position:relative;
+    top:1px;
+}
+
+.pp-options .usual div a {
+    color: #000;
+    font-weight: bold;
+}
+
+.pp-options .tab-content {
+    padding: 5px 0 0 5px;
+}
+
+.pp-options .option-node {
+    display: block;
+    margin: 5px 0 5px 15px;
+}
+
+.pp-options .option-node label {
+    font: 10pt Georgia;
+    color: #FFF;
+}
+
+.pp-options .tab-content .text {
+    margin-left: 15px;
+}
+
+/* Disables subcheckboxes if parent disabled */
+.pp-options .option-node input[type="checkbox"]:not(:checked) ~.option-node {
+    display: none;
+}
+
+.pp-options .option-node input[type="checkbox"]:not(:checked) ~.option-node label {
+    color: #BBB;
+}
+
+/* Panel */
+.pp-options .left, .pp-options .right {
+    width: 50%;
+}
+
+.pp-options .left {
+    float: left;
+}
+
+.pp-options .right {
+    float: right;
+}
+
+.pp-options #status {
+    display: block;
+}
+
+.pp-options #pp-version {
+    margin-top: 6px;
+    text-align: right;
+}
