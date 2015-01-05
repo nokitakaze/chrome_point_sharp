@@ -1401,7 +1401,7 @@ function twitter_tweet_embedding_parse_links() {
                 n[2],
                 image,
                 {
-                    theme: 'dark'
+                    'lang': 'ru'
                 }
             );
             twitter_tweet_count++;
