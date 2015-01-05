@@ -89,6 +89,9 @@
     "option_embedding_coubcom": {
         "message": "Coub.com &#9660;"
     },
+    "option_embedding_twitter_tweets": {
+        "message": "Embedding tweets from Twitter"
+    },
     "option_nsfw": {
         "message": "NSFW content filtering"
     },
