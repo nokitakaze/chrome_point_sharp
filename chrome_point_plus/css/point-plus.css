@@ -164,3 +164,17 @@ div#markItUpText-input {
     background-repeat: repeat-x;
     background-image: url('chrome-extension://__MSG_@@extension_id__/images/nesting-point.png');
 }
+
+
+/* Fancybox fix */
+#fancybox-loading, .fancybox-close, .fancybox-prev span, .fancybox-next span {
+	background-image: url('chrome-extension://__MSG_@@extension_id__/vendor/fancybox/source/fancybox_sprite.png');
+}
+
+#fancybox-loading div {
+	background: url('chrome-extension://__MSG_@@extension_id__/vendor/fancybox/source/fancybox_loading.gif') center center no-repeat;
+}
+
+.fancybox-nav {
+	background: transparent url('chrome-extension://__MSG_@@extension_id__/vendor/fancybox/source/chrome-extension://__MSG_@@extension_id__/vendor/fancybox/source/blank.gif'); /* helps IE */
+}
