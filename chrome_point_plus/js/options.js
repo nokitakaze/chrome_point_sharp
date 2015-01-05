@@ -22,26 +22,27 @@ function getVersion() {
  */
 function Options() {
     this.version = getVersion();
+    this.form = document.querySelector('form');
 
+    this.showVersion();
     this.restore();
 
-    $('#tabs-content').on('click', 'input', this._onChange.bind(this));
+    this.form.addEventListener('change', this._onChange.bind(this));
+    this.listenTabs();
 }
 
 /**
  * Получает версию настроек. Если она не равна версии приложения, записывает в сторедж плагина настройки из инпутов
  * и версию приложения.
  */
-Options.prototype.init = function() {
+Options.prototype.updateOptionsFromFrom = function() {
     chrome.storage.sync.get('options_version', function(data) {
         this.logVersion(data.options_version);
 
         if (data.options_version !== this.version) {
             console.log('Initializing options...');
 
-            $('#tabs-content input').each(function(index, input) {
-                this.updateOptionFromInput($(input));
-            }.bind(this));
+            Array.prototype.forEach.call(this.form.elements, this.updateOptionFromInput.bind(this));
 
             chrome.storage.sync.set({
                 options: this.getValues(),
@@ -49,7 +50,9 @@ Options.prototype.init = function() {
             }, function() {
                 console.log('Default options initialized. Version upgraded to %s.', this.version);
 
-                alert(chrome.i18n.getMessage('options_text_new_version'));
+                if ( ! confirm(chrome.i18n.getMessage('options_text_new_version'))) {
+                    window.close();
+                }
             });
         }
     }.bind(this));
@@ -63,11 +66,7 @@ Options.prototype.save = function() {
 
     console.log('Saving options: %O', ppOptions);
 
-    // Saving parameters
-    chrome.storage.sync.set({ options: ppOptions }, function() {
-        // Update status to let user know options were saved.
-        $('#status').html(chrome.i18n.getMessage('options_text_saved'));
-    });
+    chrome.storage.sync.set({ options: ppOptions }, this.updateStatus.bind(this));
 };
 
 /**
@@ -80,26 +79,28 @@ Options.prototype.restore = function() {
         this._options = data.options || {};
 
         // Setting options in DOM
-        $.each(this._options, function(key, data) {
-            switch (data.type) {
-                case 'boolean':
-                    if (data.value) {
-                        $('#' + this.getOptionName(key)).prop('checked', true);
-                    }
-                    break;
+        Object.keys(this._options).forEach(function(key) {
+            var data = this._options[key],
+                input = this.form.elements[this.getOptionName(key)];
 
-                case 'enum':
-                    $('.option-node .option-enum[name="' + this.getOptionName(key) + '"][value="' + data.value + '"]').prop('checked', true);
-                    break;
+            if (input) {
+                switch (data.type) {
+                    case 'boolean':
+                        input.checked = data.value;
+                        break;
 
-                default:
-                    console.warn('Invalid option "%s" type: %O', key, data);
-                    break;
+                    case 'enum':
+                        input.value = data.value;
+                        break;
+
+                    default:
+                        console.warn('Invalid option "%s" type: %O', key, data);
+                        break;
+                }
             }
         }.bind(this));
 
-        this.showCopyright();
-        this.init();
+        this.updateOptionsFromFrom();
     }.bind(this));
 };
 
@@ -110,43 +111,45 @@ Options.prototype.getValues = function() {
     return this._options;
 };
 
+/**
+ * @param {Event} event Событие изменения
+ */
 Options.prototype._onChange = function(event) {
-    var $input = $(event.target);
-
-    this.updateOptionFromInput($input);
-
+    this.updateOptionFromInput(event.target);
     this.save();
 };
 
-Options.prototype.updateOptionFromInput = function($input) {
-    if (this.isBoolean($input)) {
-        this._options[this.getOptionKey($input.prop('id'))] = {
+Options.prototype.updateOptionFromInput = function(input) {
+    var key = this.getOptionKey(input.name);
+
+    if (this.isBoolean(input)) {
+        this._options[key] = {
             type: 'boolean',
-            value: $input.prop('checked')
+            value: input.checked
         };
-    } else if (this.isEnum($input)) {
-        this._options[this.getOptionKey($input.prop('name'))] = {
+    } else if (this.isEnum(input)) {
+        this._options[key] = {
             type: 'enum',
-            value: $input.val()
+            value: input.value
         };
     }
 };
 
 /**
- * @param {jQuery} $option Элемент опции
+ * @param {HTMLElement} option Элемент опции
  * @returns {Boolean} Является ли настройка булевой
  */
-Options.prototype.isBoolean = function($option) {
-    return $option.hasClass('option-boolean');
+Options.prototype.isBoolean = function(option) {
+    return option.getAttribute('type') === 'checkbox';
 };
 
 /**
  *
- * @param {jQuery} $option Элемент опции
+ * @param {HTMLElement} option Элемент опции
  * @returns {Boolean} Является ли настройка енумом
  */
-Options.prototype.isEnum = function($option) {
-    return $option.hasClass('option-enum');
+Options.prototype.isEnum = function(option) {
+    return option.getAttribute('type') === 'radio';
 };
 
 /**
@@ -174,13 +177,10 @@ Options.prototype.logVersion = function(optionsVersion) {
 };
 
 /**
- * Добавляет копирайт в подвал
+ * Добавляет номер версии в подвал
  */
-Options.prototype.showCopyright = function() {
-    $('#pp-version').html('Point+ ' + this.version
-        + ' by <a href="https://skobkin-ru.point.im/" target="_blank">@skobkin-ru</a><br>\n'
-        + '& <a href="https://nokitakaze.point.im/" target="_blank">@NokitaKaze</a>'
-    );
+Options.prototype.showVersion = function() {
+    document.querySelector('#version').innerHTML = this.version;
 };
 
 /**
@@ -202,6 +202,40 @@ Options.prototype.checkOldStyle = function() {
                 console.log('All old data removed');
             });
         }
+    });
+};
+
+/**
+ * Показывает плашку про то, что настройки сохранились и надо обновить страницу
+ */
+Options.prototype.updateStatus = function() {
+    this.status = this.status || document.querySelector('.saved');
+
+    this.status.classList.remove('hidden');
+};
+
+/**
+ * Слушает события на табах
+ */
+Options.prototype.listenTabs = function() {
+    var options = this;
+
+    options._selectedItem = document.querySelector('.tabs-item.selected');
+    options._selectedContent = document.querySelector('.tabs-content-item.selected');
+
+    Array.prototype.forEach.call(document.querySelectorAll('.tabs-item'), function(tabItem) {
+        var tabContent = document.querySelector(tabItem.getAttribute('href'));
+
+        tabItem.addEventListener('click', function() {
+            options._selectedItem.classList.remove('selected');
+            options._selectedContent.classList.remove('selected');
+
+            this.classList.add('selected');
+            tabContent.classList.add('selected');
+
+            options._selectedItem = this;
+            options._selectedContent = tabContent;
+        }, false);
     });
 };
 
