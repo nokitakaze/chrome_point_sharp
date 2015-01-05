@@ -97,7 +97,7 @@ $(document).ready(function() {
                 // Injecting JS API
                 chrome.extension.sendMessage({
                     type: 'injectJSFile',
-                    file: 'js/soundcloud/soundcloud.player.api.js'
+                    file: 'vendor/soundcloud/soundcloud.player.api.js'
                 });
 
                 // Processing links
