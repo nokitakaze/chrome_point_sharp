@@ -30,11 +30,26 @@ module.exports = function(grunt) {
             main: {
                 files: vendorCopy
             }
-        }
+        },
+        bump: {
+            options: {
+                files: [ 'package.json', 'bower.json', 'chrome_point_plus/manifest.json' ],
+                commit: true,
+                commitMessage: 'Release v%VERSION%',
+                commitFiles: [ 'package.json', 'bower.json', 'chrome_point_plus/manifest.json' ],
+                createTag: true,
+                tagName: 'v%VERSION%',
+                tagMessage: 'Version %VERSION%',
+                push: false,
+                gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d',
+                globalReplace: true
+            }
+        },
     });
 
     // Загрузить плагины
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-bump');
 
     // Что выполнять по команде `grunt`
     grunt.registerTask('default', [ 'copy' ]);
