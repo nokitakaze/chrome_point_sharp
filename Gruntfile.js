@@ -6,7 +6,9 @@ var vendorCopy = [
     'fancybox/source/jquery.fancybox.css',
 
     'markitup/markitup/jquery.markitup.js',
-    'markitup/markitup/skins/markitup/style.css'
+    'markitup/markitup/skins/markitup/style.css',
+
+    'soundcloud/soundcloud.player.api.js'
 ].map(function(file) {
     return {
         src: 'vendor/' + file,

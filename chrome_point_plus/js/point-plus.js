@@ -9,7 +9,7 @@ chrome.extension.sendMessage({
  * @constructor
  */
 function OptionsManager(options) {
-    this._options = options;
+    this._options = options || {};
 }
 
 /**
@@ -80,7 +80,7 @@ $(document).ready(function() {
 
             // Parse webm-links and create video instead
             if (options.is('option_videos_parse_links')) {
-                if (option.is('option_videos_parse_links_type', 'all')) {
+                if (options.is('option_videos_parse_links_type', 'all')) {
                     parse_all_videos(options);
                 } else {
                     parse_webm(options);
@@ -97,7 +97,7 @@ $(document).ready(function() {
                 // Injecting JS API
                 chrome.extension.sendMessage({
                     type: 'injectJSFile',
-                    file: 'js/soundcloud/soundcloud.player.api.js'
+                    file: 'vendor/soundcloud/soundcloud.player.api.js'
                 });
 
                 // Processing links
