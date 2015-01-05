@@ -39,6 +39,10 @@ Options.prototype.init = function() {
         if (data.options_version !== this.version) {
             console.log('Initializing options...');
 
+            $('#tabs-content input').each(function(index, input) {
+                this.updateOptionFromInput($(input));
+            }.bind(this));
+
             chrome.storage.sync.set({
                 options: this.getValues(),
                 options_version: this.version
@@ -73,30 +77,26 @@ Options.prototype.restore = function() {
     this.checkOldStyle();
 
     chrome.storage.sync.get('options', function(data) {
-        this._options = data.options;
+        this._options = data.options || {};
 
-        try {
-            // Setting options in DOM
-            $.each(data.options, function(key, data) {
-                switch (data.type) {
-                    case 'boolean':
-                        if (data.value) {
-                            $('#' + this.getOptionName(key)).prop('checked', true);
-                        }
-                        break;
+        // Setting options in DOM
+        $.each(this._options, function(key, data) {
+            switch (data.type) {
+                case 'boolean':
+                    if (data.value) {
+                        $('#' + this.getOptionName(key)).prop('checked', true);
+                    }
+                    break;
 
-                    case 'enum':
-                        $('.option-node .option-enum[name="' + this.getOptionName(key) + '"][value="' + data.value + '"]').prop('checked', true);
-                        break;
+                case 'enum':
+                    $('.option-node .option-enum[name="' + this.getOptionName(key) + '"][value="' + data.value + '"]').prop('checked', true);
+                    break;
 
-                    default:
-                        console.warn('Invalid option "%s" type: %O', key, data);
-                        break;
-                }
-            }.bind(this));
-        } catch (ex) {
-            console.log('Error while loading extension options: %O', ex);
-        }
+                default:
+                    console.warn('Invalid option "%s" type: %O', key, data);
+                    break;
+            }
+        }.bind(this));
 
         this.showCopyright();
         this.init();
@@ -113,8 +113,12 @@ Options.prototype.getValues = function() {
 Options.prototype._onChange = function(event) {
     var $input = $(event.target);
 
-    console.log(arguments);
+    this.updateOptionFromInput($input);
 
+    this.save();
+};
+
+Options.prototype.updateOptionFromInput = function($input) {
     if (this.isBoolean($input)) {
         this._options[this.getOptionKey($input.prop('id'))] = {
             type: 'boolean',
@@ -126,8 +130,6 @@ Options.prototype._onChange = function(event) {
             value: $input.val()
         };
     }
-
-    this.save();
 };
 
 /**
