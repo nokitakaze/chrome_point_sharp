@@ -141,6 +141,20 @@ $(document).ready(function() {
 
         // Fancybox
         if (options.is('option_fancybox')) {
+            // Injecting Fancybox to the page
+            chrome.extension.sendMessage({
+                type: 'injectJSFile',
+                file: 'vendor/fancybox/source/jquery.fancybox.pack.js'
+            });
+            chrome.extension.sendMessage({
+                type: 'injectJSFile',
+                file: 'vendor/fancybox/source/helpers/jquery.fancybox-media.js'
+            });
+            chrome.extension.sendMessage({
+                type: 'injectCSSFile',
+                file: 'vendor/fancybox/source/jquery.fancybox.css'
+            });
+            
             if (options.is('option_fancybox_bind_images_to_one_flow')) {
                 // Linking images in posts to the galleries
                 $('.post-content .text').each(function() {
@@ -268,6 +282,26 @@ $(document).ready(function() {
         }
         // Visual editor
         if (options.is('option_visual_editor_post')) {
+            // Injecting editor JS
+            chrome.extension.sendMessage({
+                type: 'injectJSFile',
+                file: 'vendor/markitup/markitup/jquery.markitup.js'
+            });
+            // Getting mySettings from set.js
+            chrome.extension.sendMessage({
+                type: 'injectJSFile',
+                file: 'js/markitup/sets/markdown/set.js'
+            });
+            // CSS
+            chrome.extension.sendMessage({
+                type: 'injectCSSFile',
+                file: 'vendor/markitup/markitup/skins/markitup/style.css'
+            });
+            chrome.extension.sendMessage({
+                type: 'injectCSSFile',
+                file: 'css/markitup/sets/markdown/style.css'
+            });
+            
             // Add classes
             $('#new-post-form #text-input, .post-content #text-input').addClass('markitup').css('height', '20em');
             // Init
