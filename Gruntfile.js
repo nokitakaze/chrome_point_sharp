@@ -35,10 +35,10 @@ module.exports = function(grunt) {
             options: {
                 files: [ 'package.json', 'bower.json', 'chrome_point_plus/manifest.json' ],
                 commit: true,
-                commitMessage: 'Release v%VERSION%',
+                commitMessage: 'Release %VERSION%',
                 commitFiles: [ 'package.json', 'bower.json', 'chrome_point_plus/manifest.json' ],
                 createTag: true,
-                tagName: 'v%VERSION%',
+                tagName: '%VERSION%',
                 tagMessage: 'Version %VERSION%',
                 push: false,
                 gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d',
