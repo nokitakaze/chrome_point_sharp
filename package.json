@@ -1,6 +1,6 @@
 {
   "name": "chrome-point-plus",
-  "version": "1.17.3",
+  "version": "1.18.8",
   "description": "Chrome extension for point.im",
   "main": "index.js",
   "scripts": {

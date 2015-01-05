@@ -108,64 +108,26 @@ $(document).ready(function() {
                 $('.post-content .text').each(function() {
                     $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'one_flow_gallery');
                 });
+            } else {
+                $('.post-content .text').each(function(idxPost) {
+                    $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'post' + idxPost);
+                });
             }
 
             // Images
             if (options.option_fancybox_images.value == true) {
-                if (options.option_fancybox_bind_images_to_one_flow.value !== true) {
-                    // Linking images in posts to the galleries
-                    $('.post-content .text').each(function(idxPost) {
-                        $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'post' + idxPost);
-                    });
-                }
                 // Init fancybox
                 $('.postimg:not(.youtube)').fancybox({
                     type: 'image'
                 });
             }
-            // Правим хинт в FancyBox
-            $('.post').each(function() {
-                var all_post_images = $(this).find('.postimg');
-                if (all_post_images.length == 0) {
-                    return;
-                }
 
-                var tags = $(this).find('div.tags a.tag');
-                var hint_text = '';// Текст для хинта в FancyBox
-                // Сначала теги
-                for (var i = 0; i < tags.length; i++) {
-                    var tag_name = $(tags[i]).html().toLowerCase();
-                    hint_text += ' ' + tag_name;
-                }
-
-                // Потом текст
-                var textcontent = $(this).find('.text-content');
-                if (textcontent.length > 0) {
-                    textcontent = textcontent[0];
-                    for (var i = 0; i < textcontent.childNodes.length; i++) {
-                        var current_child_node = textcontent.childNodes[i];
-                        if ((current_child_node.nodeName !== 'P') && (current_child_node.nodeName !== '#text')) {
-                            continue;
-                        }
-                        var a = $(current_child_node).find('a.postimg');
-                        if (a.length > 0) {
-                            continue;
-                        }
-
-                        var tmp_str = current_child_node.textContent.replace(/(\n(\r)?)/g, ' ');
-                        tmp_str = tmp_str.replace("\t", " ");
-                        hint_text += ' ' + tmp_str;
-                    }
-                }
-
-                // Режем
-                hint_text = hint_text.replace(new RegExp(' {2,}'), ' ').replace(new RegExp(' +$'), '').substr(1);
-                if (hint_text.length > 140) {
-                    hint_text = hint_text.substr(0, 140 - 3) + '...';
-                }
-
-                all_post_images.attr('data-fancybox-title', hint_text);
-            });
+            // Правим хинты у фансибокса
+            if (options.option_fancybox_smart_hints.value == true) {
+                fancybox_set_smart_hints();
+            } else {
+                $('.post .postimg').attr('data-fancybox-title', ' ');
+            }
 
             // Videos
             if (options.option_fancybox_videos.value == true) {
@@ -196,7 +158,7 @@ $(document).ready(function() {
 
             if (options.option_nsfw_hide_posts.value == true) {
                 if ($('#comments').length == 0) {
-                    console.log('Hide NSFW posts in feed');
+                    console.log('Hide NSFW posts in feed, %i hidden', $('.post').length);
                     $('.post').addClass('hide-nsfw-posts');
                 }
             }
@@ -535,6 +497,26 @@ $(document).ready(function() {
             set_space_key_skip_handler();
         }
 
+        // Система комментариев у пользователей
+        if (options.option_other_comments_user_system.value == true) {
+            hints_init_user_system();
+        }
+
+        // Nesting level indicator
+        if (options.option_other_comments_nesting_level.value == true) {
+            draw_nesting_level_indicator();
+        }
+
+        // Обновляем кол-во постов и непрочитанных комментариев
+        if (options.option_other_comments_count_refresh.value == true){
+            set_comments_refresh_tick(options);
+        }
+
+        // Твиты из Твиттера
+        if (options.option_embedding_twitter_tweets.value == true){
+            twitter_tweet_embedding_init();
+        }
+
         $('#point-plus-debug').fadeOut(1000);
     });
 });
@@ -650,7 +632,7 @@ function create_image(domain, id, additional) {
 // Помечаем непрочитанные посты более видимо чем каким-то баджем
 // Эта часть написана @RainbowSpike
 function mark_unread_post() {
-    var divs = $(".post"); // массив постов
+    var divs = $(".content-wrap > .post").css({'padding-left':'2px'}); // массив постов
     for (var i = 0; i < divs.length; i++) { // обыск постов
         var spans = $(divs[i]).find(".unread"); // поиск метки непрочитанных комментов
         if (spans.length > 0) { // если в посте есть непрочитанные комменты...
@@ -675,7 +657,7 @@ function parse_webm(current_options) {
 
         if (n = href.match(new RegExp('\\.webm(\\?.+)?$', 'i'))) {
             var player = document.createElement('video');
-            // @todo Там может быть не vp8+vorbis
+            // Там может быть не vp8+vorbis, но мы этого никак не узнаем
             $(player).html('<source src="' + href + '" type=\'video/webm; codecs="vp8, vorbis"\' />').attr('controls', 'controls').css({
                 'display': 'block',
                 'max-width': '95%'
@@ -774,12 +756,12 @@ function audio_extension_to_mime(extension) {
     }
 }
 
-// Плашки у постов
+// Плашки с кол-вом уникальных пользователей и рекомендаций у постов
 function set_posts_count_label() {
     var ids = [];
-    $('.post .post-id a .cn').addClass('changed_background');
+    $('.content-wrap > .post .post-id a .cn').addClass('changed_background');
 
-    $('div.post').each(function(num, obj) {
+    $('.content-wrap > .post').each(function(num, obj) {
         var t = $(obj).attr('data-comment-id');
         if (typeof(t) !== 'undefined') {
             return;
@@ -793,7 +775,7 @@ function set_posts_count_label() {
         'success': function(a) {
             var answer = JSON.parse(a);
 
-            $('div.post').each(function(num, obj) {
+            $('.content-wrap > .post').each(function(num, obj) {
                 var id = $(obj).attr('data-id');
                 var postid = $(obj).find('.post-id a')[0];
                 var t = $(obj).attr('data-comment-id');
@@ -897,41 +879,9 @@ function create_pleercom_ajax(id, current_options) {
 }
 
 // Проставляем теги у постов
+// @hint В данный момент эта фича используются для NSFW, потом выборку по тегам можно будет использовать много где
 function create_tag_system() {
-    $('.post').each(function() {
-        var tags = $(this).find('div.tags a.tag');
-        for (var i = 0; i < tags.length; i++) {
-            var tag_name = $(tags[i]).html().toLowerCase();
-            $(this).addClass('post-tag-' + tag_name);
-        }
-    });
-}
-
-// Скролл по пробелу
-function set_space_key_skip_handler() {
-    if ($('#comments').length > 0) {
-        return;
-    }
-
-    // @todo Свериться с Best-practice биндинга функций. Мб там on или bind
-    $(document.body).keydown(function(e) {
-        // @todo Я хотел по отпусканию кнопки, но там уже скролл срабатывает
-        // проверяем фокус
-        if ($(':focus').length > 0) {
-            return;
-        }
-
-        var k = event.keyCode;
-        if (k == 32){
-            space_key_event();
-            return false;
-        }
-    });
-}
-
-// Проставляем теги у постов
-function create_tag_system() {
-    $('.post').each(function() {
+    $('.content-wrap > .post').each(function() {
         var tags = $(this).find('div.tags a.tag');
         for (var i = 0; i < tags.length; i++) {
             var tag_name = $(tags[i]).html().toLowerCase();
@@ -967,7 +917,7 @@ function space_key_event() {
     var scroll_step_size = 0;
     var scroll_real = Math.max(scroll_current - scroll_step_size, 0);
 
-    var posts = $('.post');
+    var posts = $('.content-wrap > .post');
     for (var i = 0; i < posts.length; i++) {
         var this_top_px = $(posts[i]).offset().top;
         if (this_top_px > scroll_real) {
@@ -981,19 +931,27 @@ function space_key_event() {
 
 /* Автосохранение черновиков */
 var draft_last_text = ''; // Последний зафиксированный текст
+// Восстанавливаем черновик
 function draft_restore() {
     chrome.storage.local.get('point_draft_text', function(items) {
-        $('#new-post-form #text-input').val(items.point_draft_text);
-        draft_last_text = items.point_draft_text;
+        if ($('#new-post-form #text-input').val() == '') {
+            $('#new-post-form #text-input').val(items.point_draft_text);
+            draft_last_text = items.point_draft_text;
+        }
     });
 }
 
+// Установка хандлера
 function draft_set_save_handler() {
-    setInterval(draft_save_check, 5000);
-    $('#new-post-wrap .footnote').append($('<div id="draft-save-status">'));
+    // Господи, прости меня грешного за эту строку. Меня вынудили
+    $('#text-input').on('keyup', function(){
+        draft_save_check();
+    });
+    $('#new-post-wrap .footnote').append($('<span id="draft-save-status">'));
 }
 
 var draft_save_busy = false;
+// Фукнция, дёргающаяся по крону, проверяющая надо ли сохранять черновик
 function draft_save_check() {
     if (draft_save_busy) {
         return;
@@ -1046,6 +1004,407 @@ function parse_coub_links(current_options) {
             if (current_options.option_embedding_coubcom_orig_link.value == false) {
                 $(obj).hide();
             }
+        }
+    });
+}
+
+// Правим хинт в FancyBox
+function fancybox_set_smart_hints(){
+    $('.post').each(function() {
+        var all_post_images = $(this).find('.postimg');
+        if (all_post_images.length == 0) {
+            return;
+        }
+
+        var tags = $(this).find('div.tags a.tag');
+        var default_hint_text = '';// Дефолтный текст для хинта в FancyBox, если не нашлость другого
+        // Сначала теги
+        for (var i = 0; i < tags.length; i++) {
+            var tag_name = $(tags[i]).html().toLowerCase();
+            default_hint_text += ' ' + tag_name;
+        }
+
+        // Потом текст
+        var textcontent = $(this).find('.text-content');
+        if (textcontent.length > 0) {
+            textcontent = textcontent[0];
+            for (var i = 0; i < textcontent.childNodes.length; i++) {
+                var current_child_node = textcontent.childNodes[i];
+                if ((current_child_node.nodeName !== 'P') && (current_child_node.nodeName !== '#text')) {
+                    continue;
+                }
+                var a = $(current_child_node).find('a.postimg');
+                if (a.length > 0) {
+                    continue;
+                }
+
+                var tmp_str = current_child_node.textContent.replace(/(\n(\r)?)/g, ' ');
+                tmp_str = tmp_str.replace("\t", " ");
+                default_hint_text += ' ' + tmp_str;
+            }
+        }
+
+        // Режем текст
+        default_hint_text = default_hint_text.replace(new RegExp(' {2,}'), ' ').replace(new RegExp(' +$'), '').substr(1);
+        if (default_hint_text.length > 140) {
+            default_hint_text = default_hint_text.substr(0, 140 - 3) + '...';
+        }
+
+        // Выставляем дефолтный
+        all_post_images.attr('data-fancybox-title', default_hint_text);
+
+        // А теперь перебираем по одному все картинки
+        var paragraphs = $(this).find('.post-content > .text > p, .post-content > .text, .text-content > p, .text-content');
+
+        paragraphs.each(function() {
+            var nodes = this.childNodes;
+            for (var i = 0; i < nodes.length - 2; i++) {
+                if ($(nodes[i]).hasClass('booru_pic')) {
+                    if (nodes[i + 2].nodeName == '#text') {
+                        $(nodes[i]).attr('data-fancybox-title', nodes[i + 2].textContent);
+                        i += 2;
+                        continue;
+                    }
+                }
+            }
+        });
+    });
+}
+
+/**
+ * Система заметок о пользователях
+ * https://bitbucket.org/skobkin/chrome_point_plus/issue/50/---------------------------
+ */
+// Инициализируем
+function hints_init_user_system() {
+    chrome.storage.sync.get('point_user_hints', function(items) {
+        if (typeof(items.point_user_hints) == 'undefined') {
+            // Первый запуск системы
+            chrome.storage.sync.set({'point_user_hints': {}}, function() {
+                hints_draw_main_user_hint({});
+                hints_set_titles_on_users({});
+            });
+        } else {
+            // Второй+ запуск системы
+            hints_draw_main_user_hint(items.point_user_hints);
+            hints_set_titles_on_users(items.point_user_hints);
+        }
+    });
+}
+
+// Рисуем хинт и кнопку под текущим пользователем
+function hints_draw_main_user_hint(items) {
+    var current_user_name = $('.aside .info h1').text().toLowerCase();
+    if (current_user_name.length == 0) {
+        return;
+    }
+
+    var current_user_hint_block = document.createElement('div');
+    $('.aside .aside-content #counters')[0].parentElement.
+        insertBefore(current_user_hint_block, $('.aside .aside-content #counters')[0]);
+    $(current_user_hint_block).addClass('current-user-hint');
+
+    // Рисуем кнопки управления
+    var buttons_block = document.createElement('div');
+    $(buttons_block).addClass('buttons').
+        html('<a class="edit" href="javascript:" title="Редактировать"></a>');
+    current_user_hint_block.appendChild(buttons_block);
+    $(buttons_block).find('.edit').on('click', function() {
+        chrome.storage.sync.get('point_user_hints', function(items) {
+            var current_text = '';
+            if (typeof(items.point_user_hints[current_user_name]) !== 'undefined') {
+                current_text = items.point_user_hints[current_user_name];
+            }
+
+            $('.current-user-hint .change_hint_block').slideDown(500);
+            $('.current-user-hint .change_hint_block textarea').val(current_text);
+        });
+    });
+
+    // Рисуем текст
+    var current_text = '';
+    if (typeof(items[current_user_name]) !== 'undefined') {
+        current_text = items[current_user_name];
+    }
+    var text_block = document.createElement('div');
+    $(text_block).addClass('text');
+    safe_saned_text(current_text, $(text_block));
+    current_user_hint_block.appendChild(text_block);
+
+    // Рисуем невидимый блок для управления
+    var change_hint_block = document.createElement('div');
+    $(change_hint_block).addClass('change_hint_block').hide().
+        html('<textarea></textarea><input class="button_save" type="submit" value="Сохранить">' +
+        '<a href="javascript:" class="button_cancel">Отмена</a>');
+    $(change_hint_block).find('.button_save').on('click', function() {
+        $('.current-user-hint .change_hint_block').slideUp(500);
+        var new_text = $('.current-user-hint .change_hint_block textarea').val();
+        safe_saned_text(new_text, $('.current-user-hint > .text').hide().fadeIn(750));
+        hints_save_new_hint(current_user_name, new_text);
+    });
+    $(change_hint_block).find('.button_cancel').on('click', function() {
+        $('.current-user-hint .change_hint_block').slideUp(500);
+    });
+    current_user_hint_block.appendChild(change_hint_block);
+}
+
+// Nokita Kaze снимает с себя все претензии по этому коду, обращайтесь к фаундеру проекта
+function safe_saned_text(text, object) {
+    var n = text.split(/\r?\n/);
+    object.text('');
+    for (var i = 0; i < n.length; i++) {
+        var d = document.createElement('p');
+        $(d).text(n[i]);
+        object[0].appendChild(d);
+    }
+}
+
+// Рисуем title'ы на всех доступных пользователях, точнее на их аватарках
+function hints_set_titles_on_users(items) {
+    $('a').each(function() {
+        var href = $(this).attr('href');
+        if (typeof(href) == 'undefined') {
+            return;
+        }
+
+        var n = href.match(new RegExp('^https?\\://([0-9a-z-]+)\\.point\\.im/$', 'i'));
+        if (n == null) {
+            return;
+        }
+        var this_user_name = n[1].toLowerCase();
+        if (typeof(items[this_user_name]) == 'undefined') {
+            return;
+        }
+
+        $(this).attr({
+            'title': items[this_user_name]
+        });
+    });
+}
+
+// Сохраняем новый хинт
+function hints_save_new_hint(username, new_hint) {
+    chrome.storage.sync.get('point_user_hints', function(items) {
+        items.point_user_hints[username] = new_hint;
+        chrome.storage.sync.set({'point_user_hints': items.point_user_hints});
+    });
+}
+
+/**
+ * Nesting level indicator
+ * Шваброшвабровские точки
+ */
+function draw_nesting_level_indicator() {
+    $('.comments').css({'margin-left': '0px'});
+    draw_nesting_level_indicator_level($('#comments > .comments'), 1);
+}
+
+function draw_nesting_level_indicator_level(obj, level) {
+    obj.find('> .post').each(function() {
+        var nesting = document.createElement('div');
+        $(nesting).addClass('nesting').css({
+            'width': (10 * level) + 'px'
+        });
+        this.insertBefore(nesting, $(this).find('.info')[0]);
+
+        $(this).find('> .post-content').css({
+            'padding-left': (10 * level) + 'px'
+        });
+    });
+
+    obj.each(function() {
+        var comments = $(this).find('> .comments');
+        if (comments.length > 0) {
+            draw_nesting_level_indicator_level(comments, level + 1);
+        }
+    });
+}
+
+/**
+ * Обновляем кол-во комментариев и непрочитанных новых постов в ленте
+ */
+function set_comments_refresh_tick(current_options) {
+    // Проверяем, чтобы были баджи
+    if ($('#main #left-menu #menu-recent .unread').length == 0) {
+        $('#main #left-menu #menu-recent').append('<span class="unread" style="display: none;">0</span>');
+    }
+    if ($('#main #left-menu #menu-comments .unread').length == 0) {
+        $('#main #left-menu #menu-comments').append('<span class="unread" style="display: none;">0</span>');
+    }
+
+    // Ставим тик
+    setInterval(function() {
+        comments_count_refresh_tick(current_options);
+    }, 60000);
+
+    // Ставим слежение за позицией мыши
+    if (current_options.option_other_comments_count_refresh_title.value == true) {
+        $(document).
+            on('mouseenter', function() {
+                set_comments_refresh_clear_title_marks();
+            }).on('mouseleave', function() {
+                window_focused = false;
+            });
+
+        $(window).
+            on('focus', function() {
+                set_comments_refresh_clear_title_marks();
+            }).on('blur', function() {
+                window_focused = false;
+            });
+    }
+}
+
+var window_focused = true;
+
+// Очищаем [0; 0]
+function set_comments_refresh_clear_title_marks() {
+    var new_title = document.title.replace(new RegExp('^\\[[0-9]+\\; [0-9]+\\] '), '');
+    document.title = new_title;
+    window_focused = true;
+}
+
+// Проверка обновления комментариев, обновляется по крону
+function comments_count_refresh_tick(current_options) {
+    $('#debug_iframe').remove();
+    var iframe = document.createElement('iframe');
+    document.body.appendChild(iframe);
+
+    $(iframe).on('load', function() {
+        var a = $(iframe.contentDocument.body).find('#main #left-menu #menu-recent .unread');
+        var b = $(iframe.contentDocument.body).find('#main #left-menu #menu-comments .unread');
+        var count_recent = (a.length == 0) ? 0 : parseInt(a.text());
+        var count_comments = (b.length == 0) ? 0 : parseInt(b.text());
+
+        console.log('Comments: %d, Recent: %d', count_comments, count_recent);
+        if (count_recent > 0) {
+            if (parseInt($('#main #left-menu #menu-recent .unread').text()) != count_recent) {
+                $('#main #left-menu #menu-recent .unread').text(count_recent).show().css({
+                    'background-color': '#f2ebee',
+                    'color': '#7c3558'
+                });
+                setTimeout(function() {
+                    $('#main #left-menu #menu-recent .unread').css({
+                        'background-color': '',
+                        'color': ''
+                    });
+                }, 15000);
+            }
+        } else {
+            $('#main #left-menu #menu-recent .unread').text('0').hide();
+        }
+
+        if (count_comments > 0) {
+            if (parseInt($('#main #left-menu #menu-comments .unread').text()) != count_comments) {
+                $('#main #left-menu #menu-comments .unread').text(count_comments).show().css({
+                    'background-color': '#f2ebee',
+                    'color': '#7c3558'
+                });
+                setTimeout(function() {
+                    $('#main #left-menu #menu-comments .unread').css({
+                        'background-color': '',
+                        'color': ''
+                    });
+                }, 15000);
+            }
+        } else {
+            $('#main #left-menu #menu-comments .unread').text('0').hide();
+        }
+
+        if ((current_options.option_other_comments_count_refresh_title.value == true) &&
+            (!window_focused)) {
+            var new_title = document.title.replace(new RegExp('^\\[[0-9]+\\; [0-9]+\\] '), '');
+            if ((count_recent > 0) || (count_comments > 0)) {
+                new_title = '[' + count_recent + '; ' + count_comments + '] ' + new_title;
+            }
+            document.title = new_title;
+        }
+
+        $('#debug_iframe').remove();
+    }).attr({
+        // Из-за Same Origin'а я дёргаю несуществующую страницу на том же домене, чтобы получить баджи и,
+        // в то же время не прочитать новые сообщения в ленте, которые могли появиться, если их написал
+        // этот пользователь
+        'src': '//' + document.domain + '/?tag=' + Math.random(),
+        'id': 'debug_iframe'
+    }).css({
+        'width': '600px',
+        'height': '300px'
+    }).hide();
+}
+
+/**
+ * Встраиваем твиты из Твиттера
+ */
+function twitter_tweet_embedding_init() {
+    // Чёрная магия. Выбираемся из манямирка, прихватив с собой пару сраных функций
+    // https://developer.chrome.com/extensions/content_scripts Isolated World
+    var e = document.createElement("script");
+    e.appendChild(document.createTextNode(twitter_tweet_embedding_wait_for_ready_injected.toString() +
+    twitter_tweet_embedding_parse_links.toString() + 'twitter_tweet_embedding_wait_for_ready_injected();'));
+    document.head.appendChild(e);
+
+    // Встраиваем скрипт так, как описано в best twitter practice https://dev.twitter.com/web/javascript/loading
+    window.twttr = (function(d, s, id) {
+        var t, js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://platform.twitter.com/widgets.js";
+        fjs.parentNode.insertBefore(js, fjs);
+        return window.twttr || (t = {
+                _e: [], ready: function(f) {
+                    t._e.push(f);
+                }
+            });
+    }(document, "script", "twitter-wjs"));
+}
+
+/**
+ * Проверяем загрузились ли мы. Эта функция запускается из page scope
+ */
+function twitter_tweet_embedding_wait_for_ready_injected() {
+    if (typeof(window.twttr) == 'undefined') {
+        setTimeout(twitter_tweet_embedding_wait_for_ready_injected, 100);
+        return;
+    }
+    if (typeof(window.twttr.widgets) == 'undefined') {
+        setTimeout(twitter_tweet_embedding_wait_for_ready_injected, 100);
+        return;
+    }
+    twitter_tweet_embedding_parse_links();
+}
+
+/**
+ * Парсим все ссылки. Эта функция запускается из page scope
+ */
+function twitter_tweet_embedding_parse_links() {
+    // Обрабатываем все твиты
+    var twitter_tweet_count = 0;
+    $('.post-content a').each(function(num, obj) {
+        if ($(obj).hasClass('booru_pic')) {
+            return;
+        }
+
+        var href = obj.href;
+        var n;
+
+        if (n = href.match(new RegExp('^https?://(www\\.)?twitter\\.com/[^/]+/status/([0-9]+)', 'i'))) {
+            var image = document.createElement('div');
+            $(image).attr({
+                'id': 'tweet-' + twitter_tweet_count,
+                'data-tweet-id': n[2]
+            }).addClass('twitter-tweet-embedded');
+            obj.parentElement.insertBefore(image, obj);
+
+            window.twttr.widgets.createTweet(
+                n[2],
+                image,
+                {
+                    'lang': 'ru'
+                }
+            );
+            twitter_tweet_count++;
         }
     });
 }

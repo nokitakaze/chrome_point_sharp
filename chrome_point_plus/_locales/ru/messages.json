@@ -47,6 +47,9 @@
     "option_fancybox_bind_images_to_one_flow": {
         "message": "Связать все картинки в одну галерею"
     },
+    "option_fancybox_smart_hints": {
+        "message": "Включить умные описания для картинок при скроллинге галереи"
+    },
     "option_images_load_original": {
         "message": "Загружать оригиналы вместо миниатюр"
     },
@@ -85,6 +88,9 @@
     },
     "option_embedding_coubcom": {
         "message": "Coub.com &#9660;"
+    },
+    "option_embedding_twitter_tweets": {
+        "message": "Встраиваем твиты из Твиттера"
     },
     "option_nsfw": {
         "message": "Фильтрация NSFW-контента"
@@ -152,6 +158,18 @@
 
     "option_other_scroll_space_key":{
         "message": "Скроллинг постов пробелом"
+    },
+    "option_other_comments_nesting_level":{
+        "message": "Индикатор уровня вложенности коммнентариев"
+    },
+    "option_other_comments_user_system":{
+        "message": "Заметки о пользователях на полях"
+    },
+    "option_other_comments_count_refresh":{
+        "message": "Обновляем количество непрочитанных комментариев и постов в ленте"
+    },
+    "option_other_comments_count_refresh_title":{
+        "message": "Указываем кол-во комментариев и сообщений в заголовке страницы"
     },
 
 
