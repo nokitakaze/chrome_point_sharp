@@ -1,0 +1,27 @@
+/* 
+    Created on : Jan 7, 2015, 8:58:42 AM
+    Author     : skobkin
+*/
+
+/* Fancybox fix */
+#fancybox-loading, .fancybox-close, .fancybox-prev span, .fancybox-next span {
+    background-image: url('chrome-extension://__MSG_@@extension_id__/vendor/fancybox/source/fancybox_sprite.png');
+}
+
+#fancybox-loading div {
+    background-image: url('chrome-extension://__MSG_@@extension_id__/vendor/fancybox/source/fancybox_loading.gif');
+}
+
+.fancybox-overlay {
+    background-image: url('chrome-extension://__MSG_@@extension_id__/vendor/fancybox/source/fancybox_overlay.png');
+}
+
+@media only screen and (min-device-pixel-ratio: 1.5) {
+    #fancybox-loading, .fancybox-close, .fancybox-prev span, .fancybox-next span {
+        background-image: url('chrome-extension://__MSG_@@extension_id__/vendor/fancybox/source/fancybox_sprite@2x.png');
+    }
+
+    #fancybox-loading div {
+        background-image: url('chrome-extension://__MSG_@@extension_id__/vendor/fancybox/source/fancybox_loading@2x.gif');
+    }
+}

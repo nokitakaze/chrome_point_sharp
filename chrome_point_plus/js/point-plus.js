@@ -1,6 +1,8 @@
 // Showing page action
-chrome.extension.sendMessage({
+chrome.runtime.sendMessage({
     type: 'showPageAction'
+}, null, function(response) {
+    console.debug('showPageAction response: %O', response);
 });
 
 /**
@@ -68,7 +70,7 @@ $(document).ready(function() {
         // Options debug
         try {
             console.debug('Options loaded: %O', options.getOptions());
-        }catch(e){}
+        } catch(e){}
         create_tag_system();
 
         // Embedding
@@ -94,38 +96,44 @@ $(document).ready(function() {
 
             // Soundcloud
             if (options.is('option_embedding_soundcloud')) {
-                // Injecting JS API
-                chrome.extension.sendMessage({
-                    type: 'injectJSFile',
-                    file: 'vendor/soundcloud/soundcloud.player.api.js'
-                });
+                // Executing Soundcloud player JS API
+                chrome.runtime.sendMessage({
+                    type: 'executeJSFiles',
+                    files: [{
+                        file: 'vendor/soundcloud/soundcloud.player.api.js',
+                        runAt: 'document_end'
+                    }]
+                }, null, function(response) {
+                    console.debug('Soundcloud injection response: %O', response);
+                    // If scripts are executed
+                    if (response) {
+                        // Processing links
+                        $('.post .post-content a[href*="\\:\\/\\/soundcloud\\.com\\/"]').each(function(index) {
+                            console.log($(this));
 
-                // Processing links
-                $('.post .post-content a[href*="\\:\\/\\/soundcloud\\.com\\/"]').each(function(index) {
-                    console.log($(this));
+                            // @todo: вынести в отдельный шаблон
+                            $player = $('<div class="pp-soundcloud">\
+                                            <object height="81" width="100%" id="pp-soundcloud-' + index + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">\
+                                              <param name="movie" value="//player.soundcloud.com/player.swf?url=' + encodeURIComponent($(this).prop('href'))
+                                            + '&enable_api=true&object_id=pp-soundcloud-' + index + '">\
+                                              <param name="allowscriptaccess" value="always">\
+                                              <embed allowscriptaccess="always" height="81" src="//player.soundcloud.com/player.swf?url='
+                                            + encodeURIComponent($(this).prop('href')) + '&enable_api=true&object_id=pp-soundcloud-' + index
+                                            + '" type="application/x-shockwave-flash" width="100%" name="pp-soundcloud-' + index + '"></embed>\
+                                            </object>\
+                                        </div>');
 
-                    // @todo: вынести в отдельный шаблон
-                    $player = $('<div class="pp-soundcloud">\
-                                    <object height="81" width="100%" id="pp-soundcloud-' + index + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">\
-                                      <param name="movie" value="//player.soundcloud.com/player.swf?url=' + encodeURIComponent($(this).prop('href'))
-                                    + '&enable_api=true&object_id=pp-soundcloud-' + index + '">\
-                                      <param name="allowscriptaccess" value="always">\
-                                      <embed allowscriptaccess="always" height="81" src="//player.soundcloud.com/player.swf?url='
-                                    + encodeURIComponent($(this).prop('href')) + '&enable_api=true&object_id=pp-soundcloud-' + index
-                                    + '" type="application/x-shockwave-flash" width="100%" name="pp-soundcloud-' + index + '"></embed>\
-                                    </object>\
-                                </div>');
-
-                    // Replace or prepend
-                    if (options.is('option_embedding_soundcloud_orig_link')) {
-                        // Before
-                        $(this).before($player);
-                    } else {
-                        // Replace
-                        $(this).replaceWith($player);
+                            // Replace or prepend
+                            if (options.is('option_embedding_soundcloud_orig_link')) {
+                                // Before
+                                $(this).before($player);
+                            } else {
+                                // Replace
+                                $(this).replaceWith($player);
+                            }
+                        });
                     }
                 });
-
             }
 
             // Parse pleer.com links and create audio instead
@@ -142,66 +150,83 @@ $(document).ready(function() {
         // Fancybox
         if (options.is('option_fancybox')) {
             // Injecting Fancybox to the page
-            chrome.extension.sendMessage({
-                type: 'injectJSFile',
-                file: 'vendor/fancybox/source/jquery.fancybox.pack.js'
-            });
-            chrome.extension.sendMessage({
-                type: 'injectJSFile',
-                file: 'vendor/fancybox/source/helpers/jquery.fancybox-media.js'
-            });
-            chrome.extension.sendMessage({
+            // CSS
+            // @todo message response callback processing
+            chrome.runtime.sendMessage({
                 type: 'injectCSSFile',
                 file: 'vendor/fancybox/source/jquery.fancybox.css'
             });
-            
-            if (options.is('option_fancybox_bind_images_to_one_flow')) {
-                // Linking images in posts to the galleries
-                $('.post-content .text').each(function() {
-                    $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'one_flow_gallery');
-                });
-            } else {
-                $('.post-content .text').each(function(idxPost) {
-                    $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'post' + idxPost);
-                });
-            }
+            // @todo message response callback processing
+            chrome.runtime.sendMessage({
+                type: 'injectCSSFile',
+                file: 'css/fancybox/style.css'
+            });
+            // JS
+            chrome.runtime.sendMessage(null, {
+                type: 'executeJSFiles',
+                files: [{
+                    file: 'vendor/fancybox/source/jquery.fancybox.pack.js',
+                    runAt: 'document_end'
+                }, {
+                    // @todo Move to the option_fancybox_videos section
+                    file: 'vendor/fancybox/source/helpers/jquery.fancybox-media.js',
+                    runAt: 'document_end'
+                }]
+            }, null, function(response) {
+                // If all JS are executed
+                console.debug('Fancybox injection response: %O', response);
+                if (response) {
+                    console.log('Fancybox executed. Processing...');
+                    
+                    if (options.is('option_fancybox_bind_images_to_one_flow')) {
+                        // Linking images in posts to the galleries
+                        $('.post-content .text').each(function() {
+                            $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'one_flow_gallery');
+                        });
+                    } else {
+                        $('.post-content .text').each(function(idxPost) {
+                            $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'post' + idxPost);
+                        });
+                    }
 
-            // Images
-            if (options.is('option_fancybox_images')) {
-                // Init fancybox
-                $('.postimg:not(.youtube)').fancybox({
-                    type: 'image'
-                });
-            }
+                    // Images
+                    if (options.is('option_fancybox_images')) {
+                        // Init fancybox
+                        $('.postimg:not(.youtube)').fancybox({
+                            type: 'image'
+                        });
+                    }
 
-            // Правим хинты у фансибокса
-            if (options.is('option_fancybox_smart_hints')) {
-                fancybox_set_smart_hints();
-            } else {
-                $('.post .postimg').attr('data-fancybox-title', ' ');
-            }
+                    // Правим хинты у фансибокса
+                    if (options.is('option_fancybox_smart_hints')) {
+                        fancybox_set_smart_hints();
+                    } else {
+                        $('.post .postimg').attr('data-fancybox-title', ' ');
+                    }
 
-            // Videos
-            if (options.is('option_fancybox_videos')) {
-                $('.postimg.youtube').addClass('fancybox-media').fancybox({
-                    helpers: {
-                        media: {
-                            youtube: {
-                                params: {
-                                    autoplay: 1
+                    // Videos
+                    if (options.is('option_fancybox_videos')) {
+                        $('.postimg.youtube').addClass('fancybox-media').fancybox({
+                            helpers: {
+                                media: {
+                                    youtube: {
+                                        params: {
+                                            autoplay: 1
+                                        }
+                                    }
                                 }
                             }
-                        }
+                        });
                     }
-                });
-            }
-            // Posts
-            if (options.is('option_fancybox_posts')) {
-                // Excluding some sort of piece-of-shit makeup
-                $('.post-id a').not('#comments .post-id a, #top-post .post-id a').attr('data-fancybox-type', 'iframe').fancybox({
-                    maxWidth: 780
-                });
-            }
+                    // Posts
+                    if (options.is('option_fancybox_posts')) {
+                        // Excluding some sort of piece-of-shit makeup
+                        $('.post-id a').not('#comments .post-id a, #top-post .post-id a').attr('data-fancybox-type', 'iframe').fancybox({
+                            maxWidth: 780
+                        });
+                    }
+                }
+            });
         }
 
         // NSFW Filtering
@@ -282,41 +307,55 @@ $(document).ready(function() {
         }
         // Visual editor
         if (options.is('option_visual_editor_post')) {
-            // Injecting editor JS
-            chrome.extension.sendMessage({
-                type: 'injectJSFile',
-                file: 'vendor/markitup/markitup/jquery.markitup.js'
-            });
-            // Getting mySettings from set.js
-            chrome.extension.sendMessage({
-                type: 'injectJSFile',
-                file: 'js/markitup/sets/markdown/set.js'
-            });
+            // Add classes
+            $('#new-post-form #text-input, .post-content #text-input').addClass('markitup').css('height', '20em');
+            
             // CSS
-            chrome.extension.sendMessage({
+            // @todo message response callback processing
+            chrome.runtime.sendMessage({
                 type: 'injectCSSFile',
                 file: 'vendor/markitup/markitup/skins/markitup/style.css'
             });
-            chrome.extension.sendMessage({
+            // Fixes for extension
+            // @todo message response callback processing
+            chrome.runtime.sendMessage({
+                type: 'injectCSSFile',
+                file: 'css/markitup/skins/markitup/style.css'
+            });
+            // @todo message response callback processing
+            chrome.runtime.sendMessage({
                 type: 'injectCSSFile',
                 file: 'css/markitup/sets/markdown/style.css'
             });
-            
-            // Add classes
-            $('#new-post-form #text-input, .post-content #text-input').addClass('markitup').css('height', '20em');
-            // Init
-            $('.markitup').markItUp(mySettings);
+            // JS
+            chrome.runtime.sendMessage({
+                type: 'executeJSFiles',
+                files: [{
+                    file: 'vendor/markitup/markitup/jquery.markitup.js',
+                    runAt: 'document_end'
+                }, {
+                    file: 'js/markitup/sets/markdown/set.js',
+                    runAt: 'document_end'
+                }]
+            }, null, function(response) {
+                console.debug('MarkItUp injection response: %O', response);
+                // If scripts are executed
+                if (response) {
+                    // Init MarkItUp
+                    $('.markitup').markItUp(mySettings);
 
-            // Send by CTRL+Enter
-            if (options.is('option_ctrl_enter')) {
-                // New post
-                $('#new-post-form #text-input, .post-content #text-input').on('keydown.point_plus', function(e) {
-                    if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
-                        e.preventDefault();
-                        $(this).parents('#new-post-form,#post-edit-form').submit();
+                    // Send by CTRL+Enter
+                    if (options.is('option_ctrl_enter')) {
+                        // New post
+                        $('#new-post-form #text-input, .post-content #text-input').on('keydown.point_plus', function(e) {
+                            if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
+                                e.preventDefault();
+                                $(this).parents('#new-post-form,#post-edit-form').submit();
+                            }
+                        });
                     }
-                });
-            }
+                }
+            });
         }
         // Google search
         if (options.is('option_search_with_google')) {
@@ -335,7 +374,7 @@ $(document).ready(function() {
 
             // @todo: унести в опцию
             // Adding event listener for notification click
-            chrome.extension.sendMessage({
+            chrome.runtime.sendMessage({
                 type: 'listenNotificationClicks',
                 protocol: getProtocol()
             });
@@ -357,7 +396,7 @@ $(document).ready(function() {
                 try {
                     // ping :)
                     if (evt.data == 'ping') {
-                        console.debug('ws-ping');
+                        console.info('ws-ping');
                     } else {
                         var wsMessage = JSON.parse(evt.data);
 
@@ -491,7 +530,7 @@ $(document).ready(function() {
                                         // Desktop notifications
                                         if (options.is('option_ws_comments_notifications')) {
                                             console.log('Showing desktop notification');
-                                            chrome.extension.sendMessage({
+                                            chrome.runtime.sendMessage({
                                                 type: 'showNotification',
                                                 notificationId: 'comment_' + wsMessage.post_id + '#' + wsMessage.comment_id,
                                                 avatarUrl: getProtocol() + userAvatar + '/80',
@@ -550,7 +589,8 @@ $(document).ready(function() {
         }
         // @ before username
         if (options.is('option_at_before_username')) {
-            chrome.extension.sendMessage({
+            // @todo message response callback processing
+            chrome.runtime.sendMessage({
                 type: 'injectCSSFile',
                 file: 'css/modules/at_before_username.css'
             });
@@ -594,7 +634,7 @@ $(document).ready(function() {
 });
 
 function getProtocol() {
-    return ((location.protocol == 'http:') ? 'http:' : 'https:')
+    return ((location.protocol == 'http:') ? 'http:' : 'https:');
 }
 
 function escapeHtml(text) {
