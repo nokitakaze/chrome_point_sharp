@@ -1322,6 +1322,11 @@ function hints_save_new_hint(username, new_hint) {
  * Шваброшвабровские точки
  */
 function draw_nesting_level_indicator() {
+    if ($($('#comments #tree-switch a')[0]).hasClass('active')) {
+        // Мы в режиме списко-образных комментариев
+        return;
+    }
+
     $('.comments').css({'margin-left': '0px'});
     draw_nesting_level_indicator_level($('#comments > .comments'), 1);
 }
