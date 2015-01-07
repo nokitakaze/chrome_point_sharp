@@ -311,6 +311,12 @@ $(document).ready(function() {
                 type: 'injectCSSFile',
                 file: 'vendor/markitup/markitup/skins/markitup/style.css'
             });
+            // Fixes for extension
+            // @todo message response callback processing
+            chrome.runtime.sendMessage({
+                type: 'injectCSSFile',
+                file: 'css/markitup/skins/markitup/style.css'
+            });
             // @todo message response callback processing
             chrome.runtime.sendMessage({
                 type: 'injectCSSFile',
