@@ -919,7 +919,9 @@ function parse_pleercom_links(current_options) {
         parse_pleercom_links_ajax(current_options);
     }
 }
-
+/**
+ * @deprecated since 1.19
+ */
 function parse_pleercom_links_nokita() {
     $('.post-content a').each(function(num, obj) {
         var href = obj.href;
