@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Point+",
-    "version": "1.18.8",
+    "version": "1.18.9",
     "default_locale": "ru",
     "author": "__MSG_ext_author__",
     "homepage_url": "https://bitbucket.org/skobkin/chrome_point_plus",
@@ -65,6 +65,7 @@
         "http://player.soundcloud.com/*",
         "https://player.soundcloud.com/*",
         "https://api.kanaria.ru/point/*",
+        "https://api.instagram.com/*",
         "storage",
         "notifications",
         "tabs"

@@ -40,6 +40,11 @@ $(document).ready(function() {
                 load_all_booru_images();
             }
 
+            // Посты из Инстаграма
+            if (options.option_embedding_instagram_posts.value == true){
+                instagram_posts_embedding_init(options);
+            }
+
             // Parse webm-links and create video instead
             if (options.option_videos_parse_links.value == true) {
                 if (options.option_videos_parse_links_type.value == "all") {
@@ -87,7 +92,6 @@ $(document).ready(function() {
                         $(this).replaceWith($player);
                     }
                 });
-
             }
 
             // Parse pleer.com links and create audio instead
@@ -98,6 +102,11 @@ $(document).ready(function() {
             // Parse coub.com links and create iframe instead
             if (options.option_embedding_coubcom.value == true) {
                 parse_coub_links(options);
+            }
+
+            // Твиты из Твиттера
+            if (options.option_embedding_twitter_tweets.value == true){
+                twitter_tweet_embedding_init();
             }
         }
 
@@ -510,11 +519,6 @@ $(document).ready(function() {
         // Обновляем кол-во постов и непрочитанных комментариев
         if (options.option_other_comments_count_refresh.value == true){
             set_comments_refresh_tick(options);
-        }
-
-        // Твиты из Твиттера
-        if (options.option_embedding_twitter_tweets.value == true){
-            twitter_tweet_embedding_init();
         }
 
         $('#point-plus-debug').fadeOut(1000);
@@ -1405,6 +1409,50 @@ function twitter_tweet_embedding_parse_links() {
                 }
             );
             twitter_tweet_count++;
+        }
+    });
+}
+
+/**
+ * Посты из Инстаграма
+ */
+function instagram_posts_embedding_init(current_options) {
+    var insagram_post_count = 0;
+    $('.post-content a').each(function(num, obj) {
+        if ($(obj).hasClass('booru_pic')) {
+            return;
+        }
+
+        var href = obj.href;
+        var n;
+
+        if (n = href.match(new RegExp('^https?://(www\\.)?instagram\\.com/p/([a-z0-9]+)/?', 'i'))) {
+            $ajax({
+                'url': 'https://api.instagram.com/oembed?url=' + urlencode('http://instagram.com/p/' + n[2] + '/'),
+                'success': function(text) {
+                    var answer = JSON.parse(text);
+                    var new_post = document.createElement('a');
+                    $(new_post).attr({
+                        'id': 'instagram-' + insagram_post_count,
+                        'href': answer.thumbnail_url,
+                        'title': answer.title,
+                        'target': '_blank',
+                        'data-fancybox-group': (current_options.option_fancybox_bind_images_to_one_flow.value == true)
+                            ? 'one_flow_gallery' : '',
+                        'data-fancybox-title': (current_options.option_fancybox_smart_hints.value == true)
+                            ? answer.title : ' '
+                    }).addClass('instagram-post-embedded').addClass('postimg');
+
+                    var image = document.createElement('img');
+                    image.alt = new_post.title;
+                    image.src = new_post.href;
+                    new_post.appendChild(image);
+
+                    obj.parentElement.insertBefore(new_post, obj);
+                    insagram_post_count++;
+                }
+            });
+
         }
     });
 }

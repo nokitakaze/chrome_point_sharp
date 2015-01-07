@@ -92,6 +92,9 @@
     "option_embedding_twitter_tweets": {
         "message": "Встраиваем твиты из Твиттера"
     },
+    "option_embedding_instagram_posts": {
+        "message": "Встраиваем посты из Instagram"
+    },
     "option_nsfw": {
         "message": "Фильтрация NSFW-контента"
     },
