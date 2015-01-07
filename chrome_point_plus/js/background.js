@@ -49,6 +49,9 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                 sendResponse(true);
                 
                 console.log('Showed pageAction for tab #%s', sender.tab.id);
+                
+                // Fuck You, Chrome API documentation!!11
+                return true;
                 break;
                 
             case 'showNotification':
@@ -67,6 +70,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                     } 
                 );
                 
+                // Fuck You, Chrome API documentation!!11
+                return true;
                 break;
                 
             case 'listenNotificationClicks':
@@ -88,6 +93,9 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                 });
                 
                 sendResponse(true);
+                
+                // Fuck You, Chrome API documentation!!11
+                return true;
                 break;
 
             /**
@@ -103,6 +111,9 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
                     console.info('JS file executed: "%s"', message.file);
                 });
+                
+                // Fuck You, Chrome API documentation!!11
+                return true;
                 break;
                 
             // Inject several files
@@ -112,9 +123,11 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                 if (message.files.length) {
                     injectJS(sender.tab.id ? sender.tab.id : null, message.files, function() {
                         // @fixme does not sending response now!
+                        console.info('All scripts executed');
+                        
                         sendResponse(true);
                         
-                        console.info('All scripts executed');
+                        return true;
                     });
                 } else {
                     /* 
@@ -125,6 +138,9 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                     
                     console.warn('No scripts executed (empty script array)');
                 }
+                
+                // Fuck You, Chrome API documentation!!11
+                return true;
                 break;
 
             /**
@@ -139,6 +155,9 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
                     console.info('CSS file "%s" injected', message.file);
                 });
+                
+                // Fuck You, Chrome API documentation!!11
+                return true;
                 break;
                 
             case 'injectCSSCode':
@@ -152,6 +171,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                     });
                 }
 
+                // Fuck You, Chrome API documentation!!11
+                return true;
                 break;
         }
     }   
