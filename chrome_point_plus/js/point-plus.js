@@ -156,6 +156,11 @@ $(document).ready(function() {
                 type: 'injectCSSFile',
                 file: 'vendor/fancybox/source/jquery.fancybox.css'
             });
+            // @todo message response callback processing
+            chrome.runtime.sendMessage({
+                type: 'injectCSSFile',
+                file: 'css/fancybox/style.css'
+            });
             // JS
             chrome.runtime.sendMessage(null, {
                 type: 'executeJSFiles',
