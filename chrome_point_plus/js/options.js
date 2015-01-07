@@ -1,34 +1,24 @@
 /**
- * Получает версию настроек из манифеста
- * @returns {String} Версия настроек
- */
-function getVersion() {
-    var xhr = new XMLHttpRequest(),
-        manifest;
-
-    xhr.open('GET', chrome.extension.getURL('manifest.json'), false);
-    xhr.send(null);
-
-    manifest = JSON.parse(xhr.responseText);
-
-    return manifest.version;
-}
-
-/**
  * Объект, управляющий сохранением настроек на странице настроек
  *
  * При создании сохраняет версию, восстанавливает настройки, слушает изменения на инпутах.
  * @constructor
  */
 function Options() {
-    this.version = getVersion();
     this.form = document.querySelector('form');
 
-    this.showVersion();
-    this.restore();
-
-    this.form.addEventListener('change', this._onChange.bind(this));
     this.listenTabs();
+    
+    chrome.runtime.sendMessage(null, {
+        type: 'getManifestVersion'
+    }, null, function(response) {
+        this.version = response.version || 'undefined';
+        
+        this.showVersion();
+        this.restore();
+        
+        this.form.addEventListener('change', this._onChange.bind(this));
+    }.bind(this));
 }
 
 /**

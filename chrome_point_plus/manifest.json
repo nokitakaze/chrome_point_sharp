@@ -29,10 +29,8 @@
             "js": [
                     "vendor/jquery/jquery.min.js",
 
-                    "js/markitup/sets/markdown/set.js",
-
                     "js/bquery_ajax.js",
-                    "js/options.js",
+                    
                     "js/point-plus.js"
                     ],
             "css": [
@@ -57,6 +55,7 @@
         "http://player.soundcloud.com/*",
         "https://player.soundcloud.com/*",
         "https://api.kanaria.ru/point/*",
+        "https://*.twitter.com/*",
         "storage",
         "notifications",
         "tabs"
