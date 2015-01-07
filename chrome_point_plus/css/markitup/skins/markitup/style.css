@@ -1,5 +1,5 @@
 .markItUpContainer  {
-    background:#FFF url(chrome-extension://__MSG_@@extension_id__/images/markitup/skins/markitup/bg-container.png) repeat-x top left;
+    background-image: url(chrome-extension://__MSG_@@extension_id__/images/markitup/skins/markitup/bg-container.png);
 }
 .markItUpEditor {
     background: none;
@@ -12,25 +12,25 @@
 /***************************************************************************************/
 /* first row of buttons */
 .markItUpHeader ul .markItUpDropMenu {
-    background:transparent url(chrome-extension://__MSG_@@extension_id__/images/markitup/skins/markitup/menu.png) no-repeat 115% 50%;
+    background-image: url(chrome-extension://__MSG_@@extension_id__/images/markitup/skins/markitup/menu.png);
 }
 .markItUpHeader ul ul .markItUpDropMenu {
-    background:#F5F5F5 url(chrome-extension://__MSG_@@extension_id__/images/markitup/skins/markitup/submenu.png) no-repeat 100% 50%;
+    background-image: url(chrome-extension://__MSG_@@extension_id__/images/markitup/skins/markitup/submenu.png);
 }
 /***************************************************************************************/
 .html .markItUpEditor {
-    background-image:url(chrome-extension://__MSG_@@extension_id__/images/markitup/skins/markitup/bg-editor-html.png);
+    background-image: url(chrome-extension://__MSG_@@extension_id__/images/markitup/skins/markitup/bg-editor-html.png);
 }
 .markdown .markItUpEditor {
-    background-image:url(chrome-extension://__MSG_@@extension_id__/images/markitup/skins/markitup/bg-editor-markdown.png);
+    background-image: url(chrome-extension://__MSG_@@extension_id__/images/markitup/skins/markitup/bg-editor-markdown.png);
 }
 .textile .markItUpEditor {
-    background-image:url(chrome-extension://__MSG_@@extension_id__/images/markitup/skins/markitup/bg-editor-textile.png);
+    background-image: url(chrome-extension://__MSG_@@extension_id__/images/markitup/skins/markitup/bg-editor-textile.png);
 }
 .bbcode .markItUpEditor {
-    background-image:url(chrome-extension://__MSG_@@extension_id__/images/markitup/skins/markitup/bg-editor-bbcode.png);
+    background-image: url(chrome-extension://__MSG_@@extension_id__/images/markitup/skins/markitup/bg-editor-bbcode.png);
 }
 .wiki .markItUpEditor,
 .dotclear .markItUpEditor {
-    background-image:url(chrome-extension://__MSG_@@extension_id__/images/markitup/skins/markitup/bg-editor-wiki.png);
+    background-image: url(chrome-extension://__MSG_@@extension_id__/images/markitup/skins/markitup/bg-editor-wiki.png);
 }
