@@ -3,11 +3,49 @@ chrome.extension.sendMessage({
     type: 'showPageAction'
 });
 
+/**
+ * Объект для получения опций
+ * @param {Object} options Хеш настроек
+ * @constructor
+ */
+function OptionsManager(options) {
+    this._options = options || {};
+}
+
+/**
+ * @param {String} optionName Имя опции
+ * @returns {Boolean|String|Null} Значение опции
+ */
+OptionsManager.prototype.get = function(optionName) {
+    return this._options.hasOwnProperty(optionName) ? this._options[optionName].value : null;
+};
+
+/**
+ * Проверяет, равна ли опция значению value. Если value не переданно, проверяет задана ли она и не равна ли false/''
+ * @param {String} optionName Имя опции
+ * @param {Boolean|String} [value=true] Значение опции
+ * @returns {Boolean}
+ */
+OptionsManager.prototype.is = function(optionName, value) {
+    if (typeof value !== 'undefined') {
+        return this.get(optionName) === value;
+    } else {
+        return Boolean(this.get(optionName));
+    }
+};
+
+/**
+ * @returns {Object} Хеш опций
+ */
+OptionsManager.prototype.getOptions = function() {
+    return this._options;
+};
+
 $(document).ready(function() {
     // Grouping console log
     console.group('point-plus');
     console.info('Point+ %s', getVersion());
-    
+
     // Проверяем, загрузились ли мы
     var point_plus_debug = $('#point-plus-debug');
     if (point_plus_debug.length > 0) {
@@ -25,24 +63,24 @@ $(document).ready(function() {
 
     // Loading options
     chrome.storage.sync.get('options', function(sync_data) {
-        var options = sync_data.options;
+        var options = new OptionsManager(sync_data.options);
 
         // Options debug
         try {
-            console.debug('Options loaded: %O', options);
+            console.debug('Options loaded: %O', options.getOptions());
         }catch(e){}
         create_tag_system();
 
         // Embedding
-        if (options.option_embedding.value == true) {
+        if (options.is('option_embedding')) {
             // Load pictures from Booru, Tumblr and some other sites
-            if (options.option_images_load_booru.value == true) {
+            if (options.is('option_images_load_booru')) {
                 load_all_booru_images();
             }
 
             // Parse webm-links and create video instead
-            if (options.option_videos_parse_links.value == true) {
-                if (options.option_videos_parse_links_type.value == "all") {
+            if (options.is('option_videos_parse_links')) {
+                if (options.is('option_videos_parse_links_type', 'all')) {
                     parse_all_videos(options);
                 } else {
                     parse_webm(options);
@@ -50,19 +88,19 @@ $(document).ready(function() {
             }
 
             // Parse audio links
-            if (options.option_audios_parse_links.value == true) {
+            if (options.is('option_audios_parse_links')) {
                 parse_all_audios(options);
             }
 
             // Soundcloud
-            if (options.option_embedding_soundcloud.value == true) {
+            if (options.is('option_embedding_soundcloud')) {
                 // Injecting JS API
                 chrome.extension.sendMessage({
                     type: 'injectJSFile',
-                    file: 'js/soundcloud/soundcloud.player.api.js'
+                    file: 'vendor/soundcloud/soundcloud.player.api.js'
                 });
 
-                // Processing links 
+                // Processing links
                 $('.post .post-content a[href*="\\:\\/\\/soundcloud\\.com\\/"]').each(function(index) {
                     console.log($(this));
 
@@ -79,7 +117,7 @@ $(document).ready(function() {
                                 </div>');
 
                     // Replace or prepend
-                    if (options.option_embedding_soundcloud_orig_link.value == true) {
+                    if (options.is('option_embedding_soundcloud_orig_link')) {
                         // Before
                         $(this).before($player);
                     } else {
@@ -91,19 +129,33 @@ $(document).ready(function() {
             }
 
             // Parse pleer.com links and create audio instead
-            if (options.option_embedding_pleercom.value == true) {
+            if (options.is('option_embedding_pleercom')) {
                 parse_pleercom_links(options);
             }
 
             // Parse coub.com links and create iframe instead
-            if (options.option_embedding_coubcom.value == true) {
+            if (options.is('option_embedding_coubcom')) {
                 parse_coub_links(options);
             }
         }
 
         // Fancybox
-        if (options.option_fancybox.value == true) {
-            if (options.option_fancybox_bind_images_to_one_flow.value == true) {
+        if (options.is('option_fancybox')) {
+            // Injecting Fancybox to the page
+            chrome.extension.sendMessage({
+                type: 'injectJSFile',
+                file: 'vendor/fancybox/source/jquery.fancybox.pack.js'
+            });
+            chrome.extension.sendMessage({
+                type: 'injectJSFile',
+                file: 'vendor/fancybox/source/helpers/jquery.fancybox-media.js'
+            });
+            chrome.extension.sendMessage({
+                type: 'injectCSSFile',
+                file: 'vendor/fancybox/source/jquery.fancybox.css'
+            });
+            
+            if (options.is('option_fancybox_bind_images_to_one_flow')) {
                 // Linking images in posts to the galleries
                 $('.post-content .text').each(function() {
                     $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'one_flow_gallery');
@@ -115,7 +167,7 @@ $(document).ready(function() {
             }
 
             // Images
-            if (options.option_fancybox_images.value == true) {
+            if (options.is('option_fancybox_images')) {
                 // Init fancybox
                 $('.postimg:not(.youtube)').fancybox({
                     type: 'image'
@@ -123,14 +175,14 @@ $(document).ready(function() {
             }
 
             // Правим хинты у фансибокса
-            if (options.option_fancybox_smart_hints.value == true) {
+            if (options.is('option_fancybox_smart_hints')) {
                 fancybox_set_smart_hints();
             } else {
                 $('.post .postimg').attr('data-fancybox-title', ' ');
             }
 
             // Videos
-            if (options.option_fancybox_videos.value == true) {
+            if (options.is('option_fancybox_videos')) {
                 $('.postimg.youtube').addClass('fancybox-media').fancybox({
                     helpers: {
                         media: {
@@ -144,7 +196,7 @@ $(document).ready(function() {
                 });
             }
             // Posts
-            if (options.option_fancybox_posts.value == true) {
+            if (options.is('option_fancybox_posts')) {
                 // Excluding some sort of piece-of-shit makeup
                 $('.post-id a').not('#comments .post-id a, #top-post .post-id a').attr('data-fancybox-type', 'iframe').fancybox({
                     maxWidth: 780
@@ -153,10 +205,10 @@ $(document).ready(function() {
         }
 
         // NSFW Filtering
-        if (options.option_nsfw.value == true) {
+        if (options.is('option_nsfw')) {
             $('.post-tag-nsfw,.post-tag-сиськи').find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'hidden-images');
 
-            if (options.option_nsfw_hide_posts.value == true) {
+            if (options.is('option_nsfw_hide_posts')) {
                 if ($('#comments').length == 0) {
                     console.log('Hide NSFW posts in feed, %i hidden', $('.post').length);
                     $('.post').addClass('hide-nsfw-posts');
@@ -164,20 +216,20 @@ $(document).ready(function() {
             }
 
             // Blurred posts
-            if (options.option_nsfw_blur_posts_entire.value == true) {
+            if (options.is('option_nsfw_blur_posts_entire')) {
                 console.log('Bluring NSFW posts');
                 $('.post').addClass('blur-nsfw-entire');
-            } else if (options.option_nsfw_blur_posts_images.value == true) {
+            } else if (options.is('option_nsfw_blur_posts_images')) {
                 console.log('Bluring images in NSFW posts');
                 $('.post').addClass('blur-nsfw-images');
             }
 
             // Blurred comments
             if ($('.post').hasClass('post-tag-nsfw') || $('.post').hasClass('post-tag-сиськи')) {
-                if (options.option_nsfw_blur_comments_entire.value == true) {
+                if (options.is('option_nsfw_blur_comments_entire')) {
                     console.log('Bluring comments');
                     $('#comments').addClass('blur-nsfw-entire');
-                } else if (options.option_nsfw_blur_comments_images.value == true) {
+                } else if (options.is('option_nsfw_blur_comments_images')) {
                     // @hint Никита Ветров официально складывает с себя все претензии, если у кого-то от этого говна упадёт драйвер видео-карты
                     console.log('Bluring images in comments');
                     $('#comments').addClass('blur-nsfw-images');
@@ -187,7 +239,7 @@ $(document).ready(function() {
 
         // Hotkeys
         // Send by CTRL+Enter
-        if (options.option_ctrl_enter.value == true) {
+        if (options.is('option_ctrl_enter')) {
             // Reply
             // Delegated event for all comments
             $('.content-wrap #comments').on('keydown.point_plus', '.reply-form textarea', function(e) {
@@ -206,7 +258,7 @@ $(document).ready(function() {
         }
         // Look and feel
         // Fluid #main layout
-        if (options.option_fluid_layout.value == true) {
+        if (options.is('option_fluid_layout')) {
             $('#main, #header, #subheader, #footer').css({
                 'width': '95%',
                 'max-width': '95%'
@@ -214,7 +266,7 @@ $(document).ready(function() {
             // TODO: fix #main #left-menu #top-link position
         }
         // Image resizing
-        if (options.option_images_load_original.value == true) {
+        if (options.is('option_images_load_original')) {
             // Setting new image source
             $('.postimg:not(.youtube) img').each(function() {
                 console.log($(this).parent('.postimg').attr('href'));
@@ -229,14 +281,34 @@ $(document).ready(function() {
             });
         }
         // Visual editor
-        if (options.option_visual_editor_post.value == true) {
+        if (options.is('option_visual_editor_post')) {
+            // Injecting editor JS
+            chrome.extension.sendMessage({
+                type: 'injectJSFile',
+                file: 'vendor/markitup/markitup/jquery.markitup.js'
+            });
+            // Getting mySettings from set.js
+            chrome.extension.sendMessage({
+                type: 'injectJSFile',
+                file: 'js/markitup/sets/markdown/set.js'
+            });
+            // CSS
+            chrome.extension.sendMessage({
+                type: 'injectCSSFile',
+                file: 'vendor/markitup/markitup/skins/markitup/style.css'
+            });
+            chrome.extension.sendMessage({
+                type: 'injectCSSFile',
+                file: 'css/markitup/sets/markdown/style.css'
+            });
+            
             // Add classes
             $('#new-post-form #text-input, .post-content #text-input').addClass('markitup').css('height', '20em');
             // Init
             $('.markitup').markItUp(mySettings);
 
             // Send by CTRL+Enter
-            if (options.option_ctrl_enter.value == true) {
+            if (options.is('option_ctrl_enter')) {
                 // New post
                 $('#new-post-form #text-input, .post-content #text-input').on('keydown.point_plus', function(e) {
                     if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
@@ -247,7 +319,7 @@ $(document).ready(function() {
             }
         }
         // Google search
-        if (options.option_search_with_google.value == true) {
+        if (options.is('option_search_with_google')) {
             $('#search-form input[type="text"]').attr('placeholder', 'Google').keydown(function(e) {
                 if (e.keyCode == 10 || e.keyCode == 13) {
                     e.preventDefault();
@@ -256,11 +328,11 @@ $(document).ready(function() {
             });
         }
         // WebSocket
-        if (options.option_ws.value == true) {
+        if (options.is('option_ws')) {
             // SSL or plain
             ws = new WebSocket(((location.protocol == 'https:') ? 'wss' : 'ws') + '://point.im/ws');
             console.log('WebSocket created: %O', ws);
-            
+
             // @todo: унести в опцию
             // Adding event listener for notification click
             chrome.extension.sendMessage({
@@ -297,7 +369,7 @@ $(document).ready(function() {
                                     console.debug(wsMessage);
 
                                     // Check option
-                                    if (options.option_ws_comments.value != true) {
+                                    if ( ! options.is('option_ws_comments')) {
                                         console.log('Comments processing disabled');
                                         console.groupEnd();
                                         break;
@@ -335,7 +407,7 @@ $(document).ready(function() {
 
                                         // Date and time of comment
                                         var date = new Date();
-                                        
+
                                         // @todo: унести наверх
                                         // Data for template
                                         var userLink = '//' + wsMessage.author + '.point.im/';
@@ -344,7 +416,7 @@ $(document).ready(function() {
                                         var userAvatar = '//point.im/avatar/' + wsMessage.author;
                                         var commentLink = '//point.im/' + wsMessage.post_id + '#' + wsMessage.comment_id;
                                         var csRfToken = $('.reply-form input[name="csrf_token"').val();
-                                        
+
                                         // Filling template
                                         console.info('Changing data in the comment element');
                                         // Date and time
@@ -411,13 +483,13 @@ $(document).ready(function() {
                                         $commentTemplate.before($anchor);
 
                                         // Fading out highlight if needed
-                                        if (options.option_ws_comments_color_fadeout.value == true) {
+                                        if (options.is('option_ws_comments_color_fadeout')) {
                                             console.log('Fading out the highlight');
                                             $commentTemplate.children('.pp-highlight').fadeOut(20000);
                                         }
 
                                         // Desktop notifications
-                                        if (options.option_ws_comments_notifications.value == true) {
+                                        if (options.is('option_ws_comments_notifications')) {
                                             console.log('Showing desktop notification');
                                             chrome.extension.sendMessage({
                                                 type: 'showNotification',
@@ -473,11 +545,11 @@ $(document).ready(function() {
             };
         }
         // Font size
-        if ((options.option_enlarge_font.value == true) && (options.option_enlarge_font_size.value !== undefined)) {
-            $('body').css('font-size', (options.option_enlarge_font_size.value / 100) + 'em');
+        if ((options.is('option_enlarge_font')) && (option.get('option_enlarge_font_size'))) {
+            $('body').css('font-size', (option.get('option_enlarge_font_size') / 100) + 'em');
         }
         // @ before username
-        if (options.option_at_before_username.value == true) {
+        if (options.is('option_at_before_username')) {
             chrome.extension.sendMessage({
                 type: 'injectCSSFile',
                 file: 'css/modules/at_before_username.css'
@@ -485,35 +557,35 @@ $(document).ready(function() {
         }
 
         // Hightlight post with new comments
-        if (options.option_other_hightlight_post_comments.value == true) {
+        if (options.is('option_other_hightlight_post_comments')) {
             mark_unread_post();
         }
         // Show recommendation count and unique commentators count
-        if (options.option_other_show_recommendation_count.value == true) {
+        if (options.is('option_other_show_recommendation_count')) {
             set_posts_count_label();
         }
         // `Space` key scroll handler
-        if (options.option_other_scroll_space_key.value == true){
+        if (options.is('option_other_scroll_space_key')){
             set_space_key_skip_handler();
         }
 
         // Система комментариев у пользователей
-        if (options.option_other_comments_user_system.value == true) {
+        if (options.is('option_other_comments_user_system')) {
             hints_init_user_system();
         }
 
         // Nesting level indicator
-        if (options.option_other_comments_nesting_level.value == true) {
+        if (options.is('option_other_comments_nesting_level')) {
             draw_nesting_level_indicator();
         }
 
         // Обновляем кол-во постов и непрочитанных комментариев
-        if (options.option_other_comments_count_refresh.value == true){
+        if (options.is('option_other_comments_count_refresh')) {
             set_comments_refresh_tick(options);
         }
 
         // Твиты из Твиттера
-        if (options.option_embedding_twitter_tweets.value == true){
+        if (options.is('option_embedding_twitter_tweets')) {
             twitter_tweet_embedding_init();
         }
 
@@ -665,7 +737,7 @@ function parse_webm(current_options) {
 
             obj.parentElement.insertBefore(player, obj);
 
-            if (current_options.option_videos_parse_leave_links.value == false) {
+            if (current_options.is('option_videos_parse_leave_links', false)) {
                 $(obj).hide();
             }
         }
@@ -692,7 +764,7 @@ function parse_all_videos(current_options) {
 
             obj.parentElement.insertBefore(player, obj);
 
-            if (current_options.option_videos_parse_leave_links.value == false) {
+            if (current_options.is('option_videos_parse_leave_links', false)) {
                 $(obj).hide();
             }
         }
@@ -741,7 +813,7 @@ function parse_all_audios(current_options){
 
             obj.parentElement.insertBefore(player, obj);
 
-            if (current_options.option_audios_parse_leave_links.value == false) {
+            if (current_options.is('option_audios_parse_leave_links', false)) {
                 $(obj).hide();
             }
         }
@@ -801,7 +873,7 @@ function set_posts_count_label() {
 }
 
 function parse_pleercom_links(current_options) {
-    if (current_options.option_embedding_pleercom_nokita_server.value) {
+    if (current_options.is('option_embedding_pleercom_nokita_server')) {
         parse_pleercom_links_nokita();
     } else {
         parse_pleercom_links_ajax(current_options);
@@ -852,7 +924,6 @@ function create_pleercom_ajax(id, current_options) {
         'postdata': 'action=download&id=' + id,
         'dont_set_content_type': true,
         'pleer_id': id,
-        'current_options':current_options,
         'headers': [['Accept', '*'], ['Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8']],
         'success': function(a) {
             var answer = JSON.parse(a);
@@ -865,7 +936,7 @@ function create_pleercom_ajax(id, current_options) {
             });
             $('.embeded_audio_' + this.settings.pleer_id)[0].appendChild(player);
 
-            if (this.settings.current_options.option_embedding_pleercom_orig_link.value == false){
+            if (current_options.is('option_embedding_pleercom_orig_link', false)){
                 $('.pleercom_original_link_'+this.settings.pleer_id).hide();
             }
         },
@@ -1001,7 +1072,7 @@ function parse_coub_links(current_options) {
 
             obj.parentElement.insertBefore(player, obj);
 
-            if (current_options.option_embedding_coubcom_orig_link.value == false) {
+            if (current_options.is('option_embedding_coubcom_orig_link', false)) {
                 $(obj).hide();
             }
         }
@@ -1238,7 +1309,7 @@ function set_comments_refresh_tick(current_options) {
     }, 60000);
 
     // Ставим слежение за позицией мыши
-    if (current_options.option_other_comments_count_refresh_title.value == true) {
+    if (current_options.is('option_other_comments_count_refresh_title')) {
         $(document).
             on('mouseenter', function() {
                 set_comments_refresh_clear_title_marks();
@@ -1311,7 +1382,7 @@ function comments_count_refresh_tick(current_options) {
             $('#main #left-menu #menu-comments .unread').text('0').hide();
         }
 
-        if ((current_options.option_other_comments_count_refresh_title.value == true) &&
+        if ((current_options.is('option_other_comments_count_refresh_title')) &&
             (!window_focused)) {
             var new_title = document.title.replace(new RegExp('^\\[[0-9]+\\; [0-9]+\\] '), '');
             if ((count_recent > 0) || (count_comments > 0)) {
