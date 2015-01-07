@@ -1517,16 +1517,16 @@ function twitter_tweet_embedding_parse_links() {
         var n;
 
         if (n = href.match(new RegExp('^https?://(www\\.)?twitter\\.com/[^/]+/status/([0-9]+)', 'i'))) {
-            var image = document.createElement('div');
-            $(image).attr({
+            var tweet = document.createElement('div');
+            $(tweet).attr({
                 'id': 'tweet-' + twitter_tweet_count,
                 'data-tweet-id': n[2]
             }).addClass('twitter-tweet-embedded');
-            obj.parentElement.insertBefore(image, obj);
+            obj.parentElement.insertBefore(tweet, obj);
 
             window.twttr.widgets.createTweet(
                 n[2],
-                image,
+                tweet,
                 {
                     'lang': 'ru'
                 }
