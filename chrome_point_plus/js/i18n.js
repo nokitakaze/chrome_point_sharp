@@ -1,6 +1,6 @@
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
     // Processing all emenents contains data-i18n attribute
-    $('[data-i18n]').each(function() {
-        $(this).html(chrome.i18n.getMessage($(this).data('i18n')));
+    Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function(elem) {
+        elem.innerHTML = chrome.i18n.getMessage(elem.dataset.i18n);
     });
-});
+}, false);
