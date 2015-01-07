@@ -57,7 +57,7 @@
         "message": "Включить встраивание &#9660;"
     },
     "option_images_load_booru": {
-        "message": "Загружать картинки с Booru, Tumblr и других сайтов"
+        "message": "Загружать картинки с Booru, Tumblr и т.п."
     },
     "option_audios_parse_links": {
         "message": "Прямые ссылки на аудио"

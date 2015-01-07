@@ -57,7 +57,7 @@
         "message": "Enable embedding &#9660;"
     },
     "option_images_load_booru": {
-        "message": "Load pictures from Booru, Tumblr and some other sites"
+        "message": "Load pictures from Booru, Tumblr, etc"
     },
     "option_audios_parse_links": {
         "message": "Audio direct links"
