@@ -57,7 +57,7 @@ $(document).ready(function() {
     $('<div id="point-plus-debug">').attr({
         'data-point-plus-version': getVersion()
     }).text('Point+ ' + getVersion() + ' loading...')
-            .insertBefore('#user-menu-cb');
+        .insertBefore('#user-menu-cb');
 
     // Черновики. Ставим хандлер и восстанавливаем предыдущее состояние
     draft_set_save_handler();

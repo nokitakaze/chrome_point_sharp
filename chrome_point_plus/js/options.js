@@ -180,7 +180,10 @@ Options.prototype.logVersion = function(optionsVersion) {
  * Добавляет номер версии в подвал
  */
 Options.prototype.showVersion = function() {
-    document.querySelector('#version').innerHTML = this.version;
+    var version_block = document.querySelector('#version');
+    if (version_block !== null) {
+        version_block.innerHTML = this.version;
+    }
 };
 
 /**
