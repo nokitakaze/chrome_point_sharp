@@ -151,6 +151,7 @@ $(document).ready(function() {
         if (options.is('option_fancybox')) {
             // Injecting Fancybox to the page
             // CSS
+            // @todo message response callback processing
             chrome.runtime.sendMessage({
                 type: 'injectCSSFile',
                 file: 'vendor/fancybox/source/jquery.fancybox.css'
@@ -305,10 +306,12 @@ $(document).ready(function() {
             $('#new-post-form #text-input, .post-content #text-input').addClass('markitup').css('height', '20em');
             
             // CSS
+            // @todo message response callback processing
             chrome.runtime.sendMessage({
                 type: 'injectCSSFile',
                 file: 'vendor/markitup/markitup/skins/markitup/style.css'
             });
+            // @todo message response callback processing
             chrome.runtime.sendMessage({
                 type: 'injectCSSFile',
                 file: 'css/markitup/sets/markdown/style.css'
@@ -575,6 +578,7 @@ $(document).ready(function() {
         }
         // @ before username
         if (options.is('option_at_before_username')) {
+            // @todo message response callback processing
             chrome.runtime.sendMessage({
                 type: 'injectCSSFile',
                 file: 'css/modules/at_before_username.css'

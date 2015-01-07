@@ -94,7 +94,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                 
                 sendResponse(true);
                 
-                // Fuck You, Chrome API documentation!!11
+                // Fuck You, Chrome API documentation!
                 return true;
                 break;
 
@@ -110,9 +110,10 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                     sendResponse(true);
 
                     console.info('JS file executed: "%s"', message.file);
+                    return true;
                 });
                 
-                // Fuck You, Chrome API documentation!!11
+                // Fuck You, Chrome API documentation!
                 return true;
                 break;
                 
@@ -126,7 +127,6 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                         console.info('All scripts executed');
                         
                         sendResponse(true);
-                        
                         return true;
                     });
                 } else {
@@ -139,7 +139,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                     console.warn('No scripts executed (empty script array)');
                 }
                 
-                // Fuck You, Chrome API documentation!!11
+                // Fuck You, Chrome API documentation!
                 return true;
                 break;
 
@@ -151,12 +151,13 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                 chrome.tabs.insertCSS(sender.tab.id ? sender.tab.id : null, {
                     file: message.file
                 }, function() {
-                    sendResponse(true);
+                    // @todo message response callback processing
+                    //sendResponse(true);
 
                     console.info('CSS file "%s" injected', message.file);
                 });
                 
-                // Fuck You, Chrome API documentation!!11
+                // Fuck You, Chrome API documentation!
                 return true;
                 break;
                 
@@ -165,13 +166,19 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                     chrome.tabs.insertCSS(sender.tab.id ? sender.tab.id : null, {
                         code: message.code
                     }, function() {
-                        sendResponse(true);
+                        // @todo message response callback processing
+                        //sendResponse(true);
                         
                         console.info('CSS code injected: \n%s', message.file);
                     });
                 }
 
-                // Fuck You, Chrome API documentation!!11
+                // Fuck You, Chrome API documentation!
+                return true;
+                break;
+                
+            default:
+                sendResponse(false);
                 return true;
                 break;
         }
