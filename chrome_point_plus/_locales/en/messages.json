@@ -48,7 +48,7 @@
         "message": "Bind all images from fancybox to one flow"
     },
     "option_fancybox_smart_hints": {
-        "message": "Smart hints for images in fancybox gallery"
+        "message": "Generate image caption from tags"
     },
     "option_images_load_original": {
         "message": "Load original images instead of thumbnails"
@@ -57,13 +57,13 @@
         "message": "Enable embedding &#9660;"
     },
     "option_images_load_booru": {
-        "message": "Load pictures from Booru, Tumblr and some other sites"
+        "message": "Load pictures from Booru, Tumblr, etc"
     },
     "option_audios_parse_links": {
-        "message": "Parse audio links and create audio instead"
+        "message": "Audio direct links"
     },
     "option_videos_parse_links": {
-        "message": "Parse video links and create video instead"
+        "message": "Video direct links"
     },
     "option_videos_parse_webm": {
         "message": "Only webm"
@@ -84,13 +84,16 @@
         "message": "Pleer.com &#9660;"
     },
     "option_embedding_pleercom_nokita_server": {
-        "message": "Use Nokita's server instead of AJAX to get mp3 link"
+        "message": "Use Nokita's server (deprecated)"
     },
     "option_embedding_coubcom": {
         "message": "Coub.com &#9660;"
     },
+    "option_embedding_coubcom_orig_link": {
+        "message": "Leave original link"
+    },
     "option_embedding_twitter_tweets": {
-        "message": "Embedding tweets from Twitter"
+        "message": "Twitter"
     },
     "option_embedding_instagram_posts": {
         "message": "Embedding posts from Instagram"
