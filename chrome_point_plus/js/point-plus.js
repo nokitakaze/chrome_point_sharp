@@ -176,7 +176,7 @@ $(document).ready(function() {
                 // If all JS are executed
                 console.debug('Fancybox injection response: %O', response);
                 if (response) {
-                    console.log('Fancybox executed. Processing...')
+                    console.log('Fancybox executed. Processing...');
                     
                     if (options.is('option_fancybox_bind_images_to_one_flow')) {
                         // Linking images in posts to the galleries
@@ -396,7 +396,7 @@ $(document).ready(function() {
                 try {
                     // ping :)
                     if (evt.data == 'ping') {
-                        console.debug('ws-ping');
+                        console.info('ws-ping');
                     } else {
                         var wsMessage = JSON.parse(evt.data);
 
@@ -634,7 +634,7 @@ $(document).ready(function() {
 });
 
 function getProtocol() {
-    return ((location.protocol == 'http:') ? 'http:' : 'https:')
+    return ((location.protocol == 'http:') ? 'http:' : 'https:');
 }
 
 function escapeHtml(text) {

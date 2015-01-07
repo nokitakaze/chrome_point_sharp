@@ -13,7 +13,7 @@ chrome.storage.sync.get('options_version', function(data) {
  * Inject several JS files
  * @param {number} tabId Unique ID of tab which requested injection
  * @param {Object[]} files Array of objects of files to inject
- * @callback onAllInjected Callback function running when injection ends
+ * @param {function} onAllInjected allback function running when injection ends
  */
 function injectJS(tabId, files, onAllInjected) {
     var item = files.shift();
