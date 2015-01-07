@@ -5,6 +5,7 @@ chrome.runtime.sendMessage({
     console.debug('showPageAction response: %O', response);
 });
 
+// @todo Move OptionsManager to the separate file
 /**
  * Объект для получения опций
  * @param {Object} options Хеш настроек
@@ -43,10 +44,18 @@ OptionsManager.prototype.getOptions = function() {
     return this._options;
 };
 
+var ppVersion;
+
+chrome.runtime.sendMessage(null, {
+    type: 'getManifestVersion'
+}, null, function(response) {
+    ppVersion = response.version || 'undefined';
+});
+
 $(document).ready(function() {
     // Grouping console log
     console.group('point-plus');
-    console.info('Point+ %s', getVersion());
+    console.info('Point+ %s', ppVersion);
 
     // Проверяем, загрузились ли мы
     var point_plus_debug = $('#point-plus-debug');
@@ -55,8 +64,8 @@ $(document).ready(function() {
         return;
     }
     $('<div id="point-plus-debug">').attr({
-        'data-point-plus-version': getVersion()
-    }).text('Point+ ' + getVersion() + ' loading...')
+        'data-point-plus-version': ppVersion
+    }).text('Point+ ' + ppVersion + ' loading...')
             .insertBefore('#user-menu-cb');
 
     // Черновики. Ставим хандлер и восстанавливаем предыдущее состояние

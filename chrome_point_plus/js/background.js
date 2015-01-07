@@ -40,7 +40,7 @@ function injectJS(tabId, files, onAllInjected) {
 // Message listener
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     // @todo Check if sender.tab may be undefined in some cases
-    console.log('Received message from tab #%i: %O', sender.tab.id, message);
+    console.log('Received message from tab #%s: %O', sender.tab ? sender.tab.id : 'undefined', message);
     
     if (message) {
         switch (message.type) {
@@ -71,6 +71,11 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                 );
                 
                 // Fuck You, Chrome API documentation!!11
+                return true;
+                break;
+                
+            case 'getManifestVersion':
+                sendResponse({version: getVersion()});
                 return true;
                 break;
                 
@@ -186,7 +191,12 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 });
 
 // Getting version from manifest.json
-function getVersion() { 
+function getVersion() {
+    /**
+     * @deprecated XMLHttpRequest in the background worker is deprecated
+     * according to the Chrome warning. But we definitely need synchronous
+     * AJAX here
+     */
     var xhr = new XMLHttpRequest(); 
     xhr.open('GET', chrome.extension.getURL('manifest.json'), false); 
     xhr.send(null); 
