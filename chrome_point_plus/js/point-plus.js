@@ -1056,14 +1056,23 @@ function space_key_event() {
     }
 }
 
-/* Автосохранение черновиков */
+/**
+ * Автосохранение черновиков
+ **/
 var draft_last_text = ''; // Последний зафиксированный текст
+var draft_last_tags = ''; // Последние зафиксированные теги
+var draft_save_busy = false;// Флаг занятости функции сохранения
+var draft_save_last_time = null;// Время последнего сохранения
 // Восстанавливаем черновик
 function draft_restore() {
-    chrome.storage.local.get('point_draft_text', function(items) {
+    chrome.storage.local.get(['point_draft_text', 'point_draft_tags'], function(items) {
         if ($('#new-post-form #text-input').val() == '') {
             $('#new-post-form #text-input').val(items.point_draft_text);
             draft_last_text = items.point_draft_text;
+        }
+        if ($('#new-post-form #tags-input').val() == '') {
+            $('#new-post-form #tags-input').val(items.point_draft_tags);
+            draft_last_tags = items.point_draft_tags;
         }
     });
 }
@@ -1071,32 +1080,43 @@ function draft_restore() {
 // Установка хандлера
 function draft_set_save_handler() {
     // Господи, прости меня грешного за эту строку. Меня вынудили
-    $('#text-input').on('keyup', function(){
+    $('#text-input, #tags-input').on('keyup', function() {
         draft_save_check();
+        setTimeout(draft_save_check, 3000);// Второй раз мы дёргаем для последнего нажатия
     });
     $('#new-post-wrap .footnote').append($('<span id="draft-save-status">'));
 }
 
-var draft_save_busy = false;
-// Фукнция, дёргающаяся по крону, проверяющая надо ли сохранять черновик
+// Фукнция, дёргающаяся по нажатию клавиши, проверяющая надо ли сохранять черновик
 function draft_save_check() {
     if (draft_save_busy) {
         return;
     }
-    draft_save_busy = true;
+    if (draft_save_last_time !== null) {
+        if ((new Date()).getTime() < draft_save_last_time.getTime() + 3000) {
+            return;
+        }
+    }
 
     var current_text = $('#new-post-form #text-input').val();
-    if (draft_last_text == current_text) {
-        draft_save_busy = false;
+    var current_tags = $('#new-post-form #tags-input').val();
+    if ((draft_last_text == current_text) && (draft_last_tags == current_tags)) {
         return;
     }
+    draft_save_busy = true;
+    draft_save_last_time = new Date();
+
     // @todo i18n
     $('#draft-save-status').text('Сохраняем черновик...').show();
 
     // Сохраняем
     draft_last_text = current_text;
+    draft_last_tags = current_tags;
     // Save it using the Chrome extension storage API.
-    chrome.storage.local.set({'point_draft_text': draft_last_text}, function() {
+    chrome.storage.local.set({
+        'point_draft_text': draft_last_text,
+        'point_draft_tags': draft_last_tags
+    }, function() {
         // Notify that we saved.
         draft_save_busy = false;
         $('#draft-save-status').text('Черновик сохранён...');
