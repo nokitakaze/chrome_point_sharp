@@ -123,14 +123,13 @@ $(document).ready(function() {
             // CSS
             // @todo message response callback processing
             chrome.runtime.sendMessage({
-                type: 'injectCSSFile',
-                file: 'vendor/fancybox/source/jquery.fancybox.css'
+                type: 'injectCSSFiles',
+                files: [
+                    'vendor/fancybox/source/jquery.fancybox.css',
+                    'css/fancybox/style.css'
+                ]
             });
-            // @todo message response callback processing
-            chrome.runtime.sendMessage({
-                type: 'injectCSSFile',
-                file: 'css/fancybox/style.css'
-            });
+
             // JS
             chrome.runtime.sendMessage(null, {
                 type: 'executeJSFiles',
@@ -283,20 +282,14 @@ $(document).ready(function() {
             // CSS
             // @todo message response callback processing
             chrome.runtime.sendMessage({
-                type: 'injectCSSFile',
-                file: 'vendor/markitup/markitup/skins/markitup/style.css'
+                type: 'injectCSSFiles',
+                files: [
+                    'vendor/markitup/markitup/skins/markitup/style.css',
+                    'css/markitup/skins/markitup/style.css',
+                    'css/markitup/sets/markdown/style.css'
+                ]
             });
-            // Fixes for extension
-            // @todo message response callback processing
-            chrome.runtime.sendMessage({
-                type: 'injectCSSFile',
-                file: 'css/markitup/skins/markitup/style.css'
-            });
-            // @todo message response callback processing
-            chrome.runtime.sendMessage({
-                type: 'injectCSSFile',
-                file: 'css/markitup/sets/markdown/style.css'
-            });
+
             // JS
             chrome.runtime.sendMessage({
                 type: 'executeJSFiles',
@@ -501,8 +494,8 @@ $(document).ready(function() {
         if (options.is('option_at_before_username')) {
             // @todo message response callback processing
             chrome.runtime.sendMessage({
-                type: 'injectCSSFile',
-                file: 'css/modules/at_before_username.css'
+                type: 'injectCSSFiles',
+                files: 'css/modules/at_before_username.css'
             });
         }
         
