@@ -15,7 +15,7 @@
   "devDependencies": {
     "bower": "^1.3.12",
     "grunt": "^0.4.5",
-    "grunt-bump": "0.0.16",
+    "grunt-bump": "git://github.com/nkirkes/grunt-bump.git#nkirkes/restrict-version-key-name",
     "grunt-contrib-copy": "^0.7.0"
   }
 }
