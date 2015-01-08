@@ -32,6 +32,7 @@
                     "js/bquery_ajax.js",
 
                     "js/options-manager.js",
+                    "js/message-sender.js",
 
                     "js/point-plus.js"
                     ],
