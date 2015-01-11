@@ -186,7 +186,7 @@ $(document).ready(function() {
                 console.debug('Fancybox injection response: %O', response);
                 if (response) {
                     console.log('Fancybox executed. Processing...');
-                    
+
                     if (options.is('option_fancybox_bind_images_to_one_flow')) {
                         // Linking images in posts to the galleries
                         $('.post-content .text').each(function() {
@@ -318,7 +318,7 @@ $(document).ready(function() {
         if (options.is('option_visual_editor_post')) {
             // Add classes
             $('#new-post-form #text-input, .post-content #text-input').addClass('markitup').css('height', '20em');
-            
+
             // CSS
             // @todo message response callback processing
             chrome.runtime.sendMessage({
@@ -593,8 +593,8 @@ $(document).ready(function() {
             };
         }
         // Font size
-        if ((options.is('option_enlarge_font')) && (option.get('option_enlarge_font_size'))) {
-            $('body').css('font-size', (option.get('option_enlarge_font_size') / 100) + 'em');
+        if ((options.is('option_enlarge_font')) && (options.get('option_enlarge_font_size'))) {
+            $('body').css('font-size', (options.get('option_enlarge_font_size') / 100) + 'em');
         }
         // @ before username
         if (options.is('option_at_before_username')) {
