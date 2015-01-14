@@ -68,10 +68,6 @@ $(document).ready(function() {
     }).text('Point+ ' + ppVersion + ' loading...')
         .insertBefore('#user-menu-cb');
 
-    // Черновики. Ставим хандлер и восстанавливаем предыдущее состояние
-    draft_set_save_handler();
-    draft_restore();
-
     // Loading options
     chrome.storage.sync.get('options', function(sync_data) {
         var options = new OptionsManager(sync_data.options);
@@ -641,6 +637,12 @@ $(document).ready(function() {
         // Обновляем кол-во постов и непрочитанных комментариев
         if (options.is('option_other_comments_count_refresh')) {
             set_comments_refresh_tick(options);
+        }
+
+        // Черновики. Ставим хандлер и восстанавливаем предыдущее состояние
+        if (options.is('option_other_post_draft_save')) {
+            draft_set_save_handler();
+            draft_restore();
         }
 
         $('#point-plus-debug').fadeOut(1000);
