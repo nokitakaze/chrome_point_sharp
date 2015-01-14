@@ -381,13 +381,6 @@ $(document).ready(function() {
             ws = new WebSocket(((location.protocol == 'https:') ? 'wss' : 'ws') + '://point.im/ws');
             console.log('WebSocket created: %O', ws);
 
-            // @todo: унести в опцию
-            // Adding event listener for notification click
-            chrome.runtime.sendMessage({
-                type: 'listenNotificationClicks',
-                protocol: getProtocol()
-            });
-
             // Detecting post id if presented
             var postId = $('#top-post').attr('data-id');
             console.debug('Current post id detected as #%s', postId);
@@ -477,7 +470,7 @@ $(document).ready(function() {
                                                 type: 'showNotification',
                                                 notificationId: 'comment_' + wsMessage.post_id + '#' + wsMessage.comment_id,
                                                 avatarUrl: getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
-                                                title: '@' + wsMessage.author + ' #' + wsMessage.post_id + '/' + wsMessage.comment_id + '',
+                                                title: '@' + wsMessage.author + ' #' + wsMessage.post_id + '/' + wsMessage.comment_id,
                                                 text: wsMessage.text
                                             }, function(response) {});
                                         }
@@ -493,6 +486,17 @@ $(document).ready(function() {
                                     console.groupCollapsed('ws-post #%s', wsMessage.post_id);
 
                                     console.debug(wsMessage);
+                                    
+                                    if (true /*options.is('option_ws_posts_notifications')*/) {
+                                        console.log('Showing desktop notification');
+                                        chrome.runtime.sendMessage({
+                                            type: 'showNotification',
+                                            notificationId: 'post_' + wsMessage.post_id,
+                                            avatarUrl: getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
+                                            title: 'Post by @' + wsMessage.author + ' #' + wsMessage.post_id,
+                                            text: wsMessage.text
+                                        }, function(response) {});
+                                    }
 
                                     console.groupEnd();
                                     break;
