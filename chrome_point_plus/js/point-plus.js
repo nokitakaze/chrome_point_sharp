@@ -450,8 +450,8 @@ $(document).ready(function() {
                                         console.info('Inserting comment');
                                         
                                         // Search for parent comment
-                                        $parentComment = $('.post[data-comment-id="' + wsMessage.to_comment_id + '"]');
-                                        console.log('Parent comment: %O', $parentComment);
+                                        $parentComment = (wsMessage.to_comment_id) ? ($('.post[data-comment-id="' + wsMessage.to_comment_id + '"]')) : [];
+                                        console.log('Parent comment: %O', $parentComment || null);
                                         
                                         // If list mode or not addressed to other comment
                                         if ($('#comments #tree-switch a').eq(0).hasClass('active') || (wsMessage.to_comment_id === null) || (!$parentComment.length)) {
@@ -476,10 +476,10 @@ $(document).ready(function() {
                                             chrome.runtime.sendMessage({
                                                 type: 'showNotification',
                                                 notificationId: 'comment_' + wsMessage.post_id + '#' + wsMessage.comment_id,
-                                                avatarUrl: getProtocol() + userAvatar + '/80',
-                                                title: '@' + wsMessage.author + ' #' + wsMessage.post_id + '(/' + wsMessage.comment_id + ')',
+                                                avatarUrl: getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
+                                                title: '@' + wsMessage.author + ' #' + wsMessage.post_id + '/' + wsMessage.comment_id + '',
                                                 text: wsMessage.text
-                                            });
+                                            }, function(response) {});
                                         }
 
                                         console.groupEnd();
@@ -631,10 +631,6 @@ function create_comment_elements(commentData, onCommentCreated) {
 
         // Data for template
         var userLink = '//' + commentData.author + '.point.im/';
-        var postAuthorLink = $('#top-post .info a').attr('href');
-        var postLink = postAuthorLink + commentData.postId;
-        var userAvatar = '//point.im/avatar/' + commentData.author;
-        var commentLink = '//point.im/' + commentData.postId + '#' + commentData.id;
         var csRfToken = $('.reply-form:first input[name="csrf_token"]').val();
 
         // Filling template
@@ -650,9 +646,9 @@ function create_comment_elements(commentData, onCommentCreated) {
         // Author
         $commentTemplate.find('.author a.user').attr('href', userLink).text(commentData.author);
         // Avatar and link
-        $commentTemplate.find('.info a').attr('href', userLink).children('img.avatar').attr('src', userAvatar + '/24');
+        $commentTemplate.find('.info a').attr('href', userLink).children('img.avatar').attr('src', '//point.im/avatar/' + commentData.author + '/24');
         // Post and comment ID's link
-        $commentTemplate.find('.clearfix .post-id a').attr('href', commentLink).html('#' + commentData.postId + '/' + commentData.id)
+        $commentTemplate.find('.clearfix .post-id a').attr('href', '//point.im/' + commentData.postId + '#' + commentData.id).text('#' + commentData.postId + '/' + commentData.id)
             // Adding answer label
             .after((commentData.toId !== null) ? (' в ответ на <a href="#' + commentData.toId + '">/' + commentData.toId + '</a>') : (''));
         // Setting action labels and other attributes
@@ -660,7 +656,7 @@ function create_comment_elements(commentData, onCommentCreated) {
         $commentTemplate.find('.action-labels .more-label').attr('for', 'action-' + commentData.postId + '_' + commentData.id);
         $commentTemplate.find('.post-content input[name="action-radio"]').attr('id', 'action-' + commentData.postId + '_' + commentData.id);
         // Bookmark link
-        $commentTemplate.find('.action-buttons a.bookmark').attr('href', postLink + '/b?comment_id=' + commentData.id + '&csrf_token=' + csRfToken);
+        $commentTemplate.find('.action-buttons a.bookmark').attr('href', $('#top-post .info a').attr('href') + commentData.postId + '/b?comment_id=' + commentData.id + '&csrf_token=' + csRfToken);
         // Reply form
         $commentTemplate.find('.post-content input.reply-radio').attr('id', 'reply-' + commentData.postId + '_' + commentData.id);
         $commentTemplate.find('.post-content form.reply-form').attr('action', '/' + commentData.postId);
@@ -672,14 +668,14 @@ function create_comment_elements(commentData, onCommentCreated) {
         // Fading out highlight if needed
         if (commentData.fadeOut) {
             console.log('Fading out the highlight');
-            $commentTemplate.children('.pp-highlight').fadeOut(20000);
+            $commentTemplate.children('.pp-highlight').delay(250).fadeOut(20000);
         }
         
-        // Hiding and fading in
-        $commentTemplate.hide().fadeIn(2000);
+        // Hiding
+        $commentTemplate.hide().delay(250).fadeIn(2000);
         
         // Triggering callback
-        onCommentCreated([$anchor, $commentTemplate]);
+        onCommentCreated($anchor.add($commentTemplate));
     });
 }
 
