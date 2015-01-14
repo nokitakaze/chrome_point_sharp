@@ -61,16 +61,15 @@ $(document).ready(function() {
     var point_plus_debug = $('#point-plus-debug');
     if (point_plus_debug.length > 0) {
         console.error('Point+ %s already loaded.', point_plus_debug.data('point-plus-version'));
+        chrome.runtime.sendMessage({
+            type: 'hidePageAction'
+        }, null);
         return;
     }
     $('<div id="point-plus-debug">').attr({
         'data-point-plus-version': ppVersion
     }).text('Point+ ' + ppVersion + ' loading...')
         .insertBefore('#user-menu-cb');
-
-    // Черновики. Ставим хандлер и восстанавливаем предыдущее состояние
-    draft_set_save_handler();
-    draft_restore();
 
     // Loading options
     chrome.storage.sync.get('options', function(sync_data) {
@@ -196,7 +195,7 @@ $(document).ready(function() {
                 console.debug('Fancybox injection response: %O', response);
                 if (response) {
                     console.log('Fancybox executed. Processing...');
-                    
+
                     if (options.is('option_fancybox_bind_images_to_one_flow')) {
                         // Linking images in posts to the galleries
                         $('.post-content .text').each(function() {
@@ -328,7 +327,7 @@ $(document).ready(function() {
         if (options.is('option_visual_editor_post')) {
             // Add classes
             $('#new-post-form #text-input, .post-content #text-input').addClass('markitup').css('height', '20em');
-            
+
             // CSS
             // @todo message response callback processing
             chrome.runtime.sendMessage({
@@ -603,8 +602,8 @@ $(document).ready(function() {
             };
         }
         // Font size
-        if ((options.is('option_enlarge_font')) && (option.get('option_enlarge_font_size'))) {
-            $('body').css('font-size', (option.get('option_enlarge_font_size') / 100) + 'em');
+        if ((options.is('option_enlarge_font')) && (options.get('option_enlarge_font_size'))) {
+            $('body').css('font-size', (options.get('option_enlarge_font_size') / 100) + 'em');
         }
         // @ before username
         if (options.is('option_at_before_username')) {
@@ -641,6 +640,12 @@ $(document).ready(function() {
         // Обновляем кол-во постов и непрочитанных комментариев
         if (options.is('option_other_comments_count_refresh')) {
             set_comments_refresh_tick(options);
+        }
+
+        // Черновики. Ставим хандлер и восстанавливаем предыдущее состояние
+        if (options.is('option_other_post_draft_save')) {
+            draft_set_save_handler();
+            draft_restore();
         }
 
         $('#point-plus-debug').fadeOut(1000);
