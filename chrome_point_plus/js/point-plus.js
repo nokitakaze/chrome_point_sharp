@@ -61,6 +61,9 @@ $(document).ready(function() {
     var point_plus_debug = $('#point-plus-debug');
     if (point_plus_debug.length > 0) {
         console.error('Point+ %s already loaded.', point_plus_debug.data('point-plus-version'));
+        chrome.runtime.sendMessage({
+            type: 'hidePageAction'
+        }, null);
         return;
     }
     $('<div id="point-plus-debug">').attr({

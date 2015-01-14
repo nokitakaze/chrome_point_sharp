@@ -39,21 +39,27 @@ function injectJS(tabId, files, onAllInjected) {
 
 // Message listener
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-    // @todo Check if sender.tab may be undefined in some cases
-    console.log('Received message from tab #%s: %O', sender.tab ? sender.tab.id : 'undefined', message);
+    console.log('Received message from tab #%s: %O', (typeof(sender.tab) != 'undefined') ? sender.tab.id : 'undefined', message);
     
     if (message) {
         switch (message.type) {
             case 'showPageAction':
                 chrome.pageAction.show(sender.tab.id);
                 sendResponse(true);
-                
+
                 console.log('Showed pageAction for tab #%s', sender.tab.id);
-                
+
                 // Fuck You, Chrome API documentation!!11
                 return true;
                 break;
-                
+
+            case 'hidePageAction':
+                chrome.pageAction.hide(sender.tab.id);
+                sendResponse(true);
+
+                console.log('Hide pageAction for tab #%s', sender.tab.id);
+                return true;
+
             case 'showNotification':
                 chrome.notifications.create(
                     message.notificationId, {   
