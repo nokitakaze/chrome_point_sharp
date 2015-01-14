@@ -543,6 +543,81 @@ $(document).ready(function() {
                 file: 'css/modules/at_before_username.css'
             });
         }
+        
+        // @todo implement option
+        if (true || options.is('option_ajax_comments')) {
+            // Removing old bindings
+            // Dirty hack for page context
+            $('#comments').replaceWith($('#comments').clone());
+
+            // Binding new
+            $('#comments').on('keypress.pp', '.reply-form textarea', function (evt) {
+                if ((evt.keyCode === 10 || evt.keyCode === 13) && (evt.ctrlKey || evt.metaKey)) {
+                    evt.stopPropagation();
+                    evt.preventDefault();
+                    
+                    var $post = $(this).parents('.post:first');
+                    var csRf = $(this).siblings('input[name="csrf_token"]').val();
+                    console.log(csRf);
+                    
+                    $.ajax({
+                        type: 'POST',
+                        url: '/api/post/' + $post.data('id'),
+                        data: {
+                            text: $(this).val(),
+                            comment_id: $post.data('comment-id')
+                        },
+                        success: function (data, textStatus) {
+                            console.log('data %O', data);
+                            console.log('status %O', textStatus);
+                            /*{
+                                comment_id: 34,
+                                id: 'ovrwcv'
+                            };*/
+                            
+                            if (textStatus == 'success') {
+                                // Hiding form
+                                $('#reply-' + $post.data('id') + '_' + $post.data('comment-id')).prop('checked', false);
+                                
+                                create_comment_elements({
+                                    id: data.comment_id,
+                                    toId: $post.data('comment-id') || null,
+                                    postId: $post.data('id'),
+                                    author: $('#name h1').text(),
+                                    text: $(this).val(),
+                                    fadeOut: false
+                                }, function($comment) {
+                                    // If list mode or not addressed to other comment
+                                    if ($('#comments #tree-switch a').eq(0).hasClass('active') || ($post.data('comment-id') === undefined)) {
+                                        // Adding to the end of the list
+                                        $('.content-wrap #comments #post-reply').before($comment);
+                                    } else {
+                                        // Check for children
+                                        $parentCommentChildren = $post.next('.comments');
+                                        // If child comment already exist
+                                        if ($parentCommentChildren.length) {
+                                            console.log('Child comments found. Appending...');
+                                            $parentCommentChildren.append($comment);
+                                        } else {
+                                            console.log('No child comments found. Creating...');
+                                            $post.after($('<div>').addClass('comments').append($comment).css('margin-left', '0px'));
+                                        }
+                                    }
+                                });
+                                
+                                // Cleaning textarea
+                                $(this).val('');
+                                
+                            }
+                        }.bind(this),
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader('X-CSRF', csRf);
+                        }
+                    });
+                }
+            });
+            
+        }
 
         // Hightlight post with new comments
         if (options.is('option_other_hightlight_post_comments')) {
