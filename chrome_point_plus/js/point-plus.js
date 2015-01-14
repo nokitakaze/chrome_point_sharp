@@ -1347,7 +1347,7 @@ function hints_save_new_hint(username, new_hint) {
  * Шваброшвабровские точки
  */
 function draw_nesting_level_indicator() {
-    if ($($('#comments #tree-switch a')[0]).hasClass('active')) {
+    if ($('#comments #tree-switch a').eq(0).hasClass('active')) {
         // Мы в режиме списко-образных комментариев
         return;
     }
