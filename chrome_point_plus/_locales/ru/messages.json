@@ -14,7 +14,7 @@
         "message": "Для применения изменений перезагрузите страницу."
     },
     "options_text_new_version": {
-        "message": "Point+ только что обновился.\nПроверьте настройки и оцените новые функции!"
+        "message": "Point+ только что обновился.\nХотите оценить новые функции?"
     },
     
     
@@ -48,7 +48,7 @@
         "message": "Связать все картинки в одну галерею"
     },
     "option_fancybox_smart_hints": {
-        "message": "Включить умные описания для картинок при скроллинге галереи"
+        "message": "Генерировать подписи к картинкам из тегов"
     },
     "option_images_load_original": {
         "message": "Загружать оригиналы вместо миниатюр"
@@ -57,13 +57,13 @@
         "message": "Включить встраивание &#9660;"
     },
     "option_images_load_booru": {
-        "message": "Загружать картинки с Booru, Tumblr и других сайтов"
+        "message": "Загружать картинки с Booru, Tumblr и т.п."
     },
     "option_audios_parse_links": {
-        "message": "Превращать ссылки на аудио в аудио"
+        "message": "Прямые ссылки на аудио"
     },
     "option_videos_parse_links": {
-        "message": "Превращать ссылки на видео в видео"
+        "message": "Прямые ссылки на видео"
     },
     "option_videos_parse_webm": {
         "message": "Только webm"
@@ -84,13 +84,19 @@
         "message": "Pleer.com &#9660;"
     },
     "option_embedding_pleercom_nokita_server": {
-        "message": "Использовать сервер @NokitaKaze вместо AJAX-запроса для получения mp3"
+        "message": "Использовать сервер @NokitaKaze (deprecated)"
     },
     "option_embedding_coubcom": {
         "message": "Coub.com &#9660;"
     },
+    "option_embedding_coubcom_orig_link": {
+        "message": "Не убирать ссылку"
+    },
     "option_embedding_twitter_tweets": {
-        "message": "Встраиваем твиты из Твиттера"
+        "message": "Twitter"
+    },
+    "option_embedding_instagram_posts": {
+        "message": "Встраиваем посты из Instagram"
     },
     "option_nsfw": {
         "message": "Фильтрация NSFW-контента"

@@ -1,151 +1,235 @@
-var ppOptions = {};
+/**
+ * Объект, управляющий сохранением настроек на странице настроек
+ *
+ * При создании сохраняет версию, восстанавливает настройки, слушает изменения на инпутах.
+ * @constructor
+ */
+function Options() {
+    this.form = document.querySelector('form');
 
-// Binding event listeners
-$(function() {
-    pp_restore_options();
+    this.listenTabs();
     
-    // Delegating events
-    $('#tabs-content').on('click', 'input', function() {
-        pp_save_options();
-    });
-});
-
-// Initializing full options structure
-function pp_init_options() {
-    var pp_version = getVersion();
-    
-    chrome.storage.sync.get('options_version', function(data) {
-        console.info('Point+ %s, local options are for %s', pp_version, data.options_version);
+    chrome.runtime.sendMessage(null, {
+        type: 'getManifestVersion'
+    }, null, function(response) {
+        this.version = response.version || 'undefined';
         
-        // Checking last options version
-        if (data.options_version != getVersion()) {
+        this.showVersion();
+        this.restore();
+        
+        this.form.addEventListener('change', this._onChange.bind(this));
+    }.bind(this));
+}
+
+/**
+ * Получает версию настроек. Если она не равна версии приложения, записывает в сторедж плагина настройки из инпутов
+ * и версию приложения.
+ */
+Options.prototype.updateOptionsFromFrom = function() {
+    chrome.storage.sync.get('options_version', function(data) {
+        this.logVersion(data.options_version);
+
+        if (data.options_version !== this.version) {
             console.log('Initializing options...');
-            
-            $('.option-node').find('input').each(function(idx, $input) {
-                console.debug($(this));
-                
-                // Using option types
-                if ($(this).hasClass('option-boolean')) {
-                    ppOptions[$(this).prop('id').replace(/-/g, '_')] = {
-                        type: 'boolean',
-                        value: $(this).prop('checked')
-                    };
-                } else if ($(this).hasClass('option-enum')) {
-                    if ($(this).prop('checked')) {
-                        ppOptions[$(this).prop('name').replace(/-/g, '_')] = {
-                            type: 'enum',
-                            value: $(this).val()
-                        };
-                    }
-                }
-            });
-            
-            // Updating options
+
+            Array.prototype.forEach.call(this.form.elements, this.updateOptionFromInput.bind(this));
+
             chrome.storage.sync.set({
-                    options: ppOptions,
-                    options_version: getVersion()
-                }, function() {
-                console.log('Default options initialized. Version upgraded to %s.', pp_version);
-                
-                if (!confirm(chrome.i18n.getMessage('options_text_new_version'))) {
+                options: this.getValues(),
+                options_version: this.version
+            }, function() {
+                console.log('Default options initialized. Version upgraded to %s.', this.version);
+
+                if ( ! confirm(chrome.i18n.getMessage('options_text_new_version'))) {
                     window.close();
                 }
             });
         }
-    });
-}
+    }.bind(this));
+};
 
-// Saves options to sync storage.
-// @todo: optimize it! (merge)
-function pp_save_options() {
-    $('.option-node').find('input').each(function(idx, $input) {
-        console.log($(this));
-        
-        // Using option types
-        if ($(this).hasClass('option-boolean')) {
-            ppOptions[$(this).prop('id').replace(/-/g, '_')] = {
-                type: 'boolean',
-                value: $(this).prop('checked')
-            };
-        } else if ($(this).hasClass('option-enum')) {
-            if ($(this).prop('checked')) {
-                ppOptions[$(this).prop('name').replace(/-/g, '_')] = {
-                    type: 'enum',
-                    value: $(this).val()
-                };
-            }
-        }
-    });
-    
+/**
+ * Сохраняет настройки
+ */
+Options.prototype.save = function() {
+    var ppOptions = this.getValues();
+
     console.log('Saving options: %O', ppOptions);
 
-    // Saving parameters
-    chrome.storage.sync.set({options: ppOptions}, function() {
-        // Update status to let user know options were saved.
-        $('#status').html(chrome.i18n.getMessage('options_text_saved'));
-    });
-}
+    chrome.storage.sync.set({ options: ppOptions }, this.updateStatus.bind(this));
+};
 
-// Restores select box state to saved value from localStorage.
-function pp_restore_options() {
-    // Cleaning old style options
-    // Delete after some time
+/**
+ * Получает настройки из стореджа плагина, устанавливает соответствующим инпутам соответствующие значения.
+ */
+Options.prototype.restore = function() {
+    this.checkOldStyle();
+
+    chrome.storage.sync.get('options', function(data) {
+        this._options = data.options || {};
+
+        // Setting options in DOM
+        Object.keys(this._options).forEach(function(key) {
+            var data = this._options[key],
+                input = this.form.elements[this.getOptionName(key)];
+
+            if (input) {
+                switch (data.type) {
+                    case 'boolean':
+                        input.checked = data.value;
+                        break;
+
+                    case 'enum':
+                        input.value = data.value;
+                        break;
+
+                    default:
+                        console.warn('Invalid option "%s" type: %O', key, data);
+                        break;
+                }
+            }
+        }.bind(this));
+
+        this.updateOptionsFromFrom();
+    }.bind(this));
+};
+
+/**
+ * @returns {Object} Хеш настроек вида { имя_настроки: значение_настройки }
+ */
+Options.prototype.getValues = function() {
+    return this._options;
+};
+
+/**
+ * @param {Event} event Событие изменения
+ */
+Options.prototype._onChange = function(event) {
+    this.updateOptionFromInput(event.target);
+    this.save();
+};
+
+Options.prototype.updateOptionFromInput = function(input) {
+    var key = this.getOptionKey(input.name);
+
+    if (this.isBoolean(input)) {
+        this._options[key] = {
+            type: 'boolean',
+            value: input.checked
+        };
+    } else if (this.isEnum(input)) {
+        this._options[key] = {
+            type: 'enum',
+            value: input.value
+        };
+    }
+};
+
+/**
+ * @param {HTMLElement} option Элемент опции
+ * @returns {Boolean} Является ли настройка булевой
+ */
+Options.prototype.isBoolean = function(option) {
+    return option.getAttribute('type') === 'checkbox';
+};
+
+/**
+ *
+ * @param {HTMLElement} option Элемент опции
+ * @returns {Boolean} Является ли настройка енумом
+ */
+Options.prototype.isEnum = function(option) {
+    return option.getAttribute('type') === 'radio';
+};
+
+/**
+ * @param {String} name Имя инпута
+ * @returns {String} Ключ для хеша настроек
+ */
+Options.prototype.getOptionKey = function(name) {
+    return name.replace(/-/g, '_');
+};
+
+/**
+ * @param {String} Ключ хеша настроек
+ * @returns {String} Имя инпута
+ */
+Options.prototype.getOptionName = function(key) {
+    return key.replace(/_/g, '-');
+};
+
+/**
+ * Выводит в консоль версию настроек и версию плагина
+ * @param {String} optionsVersion
+ */
+Options.prototype.logVersion = function(optionsVersion) {
+    console.info('Point+ %s, local options are for %s', this.version, optionsVersion);
+};
+
+/**
+ * Добавляет номер версии в подвал
+ */
+Options.prototype.showVersion = function() {
+    var version_block = document.querySelector('#version');
+    if (version_block !== null) {
+        version_block.innerHTML = this.version;
+    }
+};
+
+/**
+ * Проверяет, не старого ли формата настройки. И если старого, то удаляет их.
+ */
+Options.prototype.checkOldStyle = function() {
     chrome.storage.sync.get('option_fancybox', function(data) {
         if ((data.option_fancybox === true) || (data.option_fancybox === false)) {
             console.log('Found old-style options. Cleaning...');
+
             chrome.storage.sync.get(null, function(data) {
+
                 console.log('Old data: %O', data);
+
                 for (option in data) {
                     chrome.storage.sync.remove(option);
                 }
+
                 console.log('All old data removed');
             });
         }
     });
-    
-        // Loading options
-        chrome.storage.sync.get('options', function(options) {
-            
-            try {
-                // Setting options in DOM
-                $.each(options.options, function(key, data) {
-                    switch (data.type) {
-                        case 'boolean':
-                            if (data.value) {
-                                $('#' + key.replace(/_/g, '-')).prop('checked', true);
-                            }
-                            break;
+};
 
-                        case 'enum':
-                            $('.option-node .option-enum[name="' + key.replace(/_/g, '-') + '"][value="' + data.value + '"]').prop('checked', true);
-                            break;
+/**
+ * Показывает плашку про то, что настройки сохранились и надо обновить страницу
+ */
+Options.prototype.updateStatus = function() {
+    this.status = this.status || document.querySelector('.saved');
 
-                        default:
-                            console.warn('Invalid option "%s" type: %O', key, data);
-                            break;
-                    }
-                });
-            } catch (ex) {
-                console.error('Error while loading extension options: %O', ex);
-            }
+    this.status.classList.remove('hidden');
+};
 
-        
-        // Showing version
-        $('#pp-version').html('Point+ ' + getVersion() 
-                + ' by <a href="https://skobkin-ru.point.im/" target="_blank">@skobkin-ru</a><br>\n\
-                     & <a href="https://nokitakaze.point.im/" target="_blank">@NokitaKaze</a>'
-        );
+/**
+ * Слушает события на табах
+ */
+Options.prototype.listenTabs = function() {
+    var options = this;
 
-        // Initializing new options
-        pp_init_options();
+    options._selectedItem = document.querySelector('.tabs-item.selected');
+    options._selectedContent = document.querySelector('.tabs-content-item.selected');
+
+    Array.prototype.forEach.call(document.querySelectorAll('.tabs-item'), function(tabItem) {
+        var tabContent = document.querySelector(tabItem.getAttribute('href'));
+
+        tabItem.addEventListener('click', function() {
+            options._selectedItem.classList.remove('selected');
+            options._selectedContent.classList.remove('selected');
+
+            this.classList.add('selected');
+            tabContent.classList.add('selected');
+
+            options._selectedItem = this;
+            options._selectedContent = tabContent;
+        }, false);
     });
-}
+};
 
-// Getting version from manifest.json
-function getVersion() { 
-    var xhr = new XMLHttpRequest(); 
-    xhr.open('GET', chrome.extension.getURL('manifest.json'), false); 
-    xhr.send(null); 
-    var manifest = JSON.parse(xhr.responseText); 
-    return manifest.version; 
-} 
+new Options();

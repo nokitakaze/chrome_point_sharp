@@ -1,6 +1,6 @@
 {
   "name": "chrome-point-plus",
-  "version": "1.18.8",
+  "version": "1.30.0",
   "authors": [
     "Alexey Skobkin"
   ],
@@ -16,6 +16,7 @@
   "dependencies": {
     "jquery": "~1.10.1",
     "fancybox": "~2.1.5",
-    "markitup": "~1.1.14"
+    "markitup": "~1.1.14",
+    "soundcloud": "git@github.com:soundcloud/Widget-JS-API.git"
   }
 }
