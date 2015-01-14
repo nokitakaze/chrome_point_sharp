@@ -45,7 +45,7 @@
         "message": "Использовать для ссылок на посты"
     },
     "option_fancybox_bind_images_to_one_flow": {
-        "message": "Связать все картинки в одну галерею"
+        "message": "Связать все картинки в одну галерею Fancybox"
     },
     "option_fancybox_smart_hints": {
         "message": "Генерировать подписи к картинкам из тегов"
@@ -60,10 +60,10 @@
         "message": "Загружать картинки с Booru, Tumblr и т.п."
     },
     "option_audios_parse_links": {
-        "message": "Прямые ссылки на аудио"
+        "message": "Аудио по прямой ссылке"
     },
     "option_videos_parse_links": {
-        "message": "Прямые ссылки на видео"
+        "message": "Видео по прямой ссылке"
     },
     "option_videos_parse_webm": {
         "message": "Только webm"

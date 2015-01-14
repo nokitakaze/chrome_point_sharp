@@ -45,7 +45,7 @@
         "message": "Use for post links"
     },
     "option_fancybox_bind_images_to_one_flow": {
-        "message": "Bind all images from fancybox to one flow"
+        "message": "Bind all images to one Fancybox gallery"
     },
     "option_fancybox_smart_hints": {
         "message": "Generate image caption from tags"
@@ -60,10 +60,10 @@
         "message": "Load pictures from Booru, Tumblr, etc"
     },
     "option_audios_parse_links": {
-        "message": "Audio direct links"
+        "message": "Audio from direct links"
     },
     "option_videos_parse_links": {
-        "message": "Video direct links"
+        "message": "Video from direct links"
     },
     "option_videos_parse_webm": {
         "message": "Only webm"
