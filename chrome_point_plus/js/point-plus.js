@@ -567,7 +567,13 @@ $(document).ready(function() {
                             text: $(this).val(),
                             comment_id: $post.data('comment-id')
                         },
-                        success: function (data, textStatus) {
+                        error: function(req, status, error) {
+                            console.error('AJAX request error while sending the comment: %s', error);
+                            console.log('Status: %s', status);
+                            
+                            alert(chrome.i18n.getMessage('msg_comment_send_failed') + '\n' + error);
+                        }, 
+                        success: function(data, textStatus) {
                             console.log('data %O', data);
                             console.log('status %O', textStatus);
                             /*{
@@ -575,10 +581,11 @@ $(document).ready(function() {
                                 id: 'ovrwcv'
                             };*/
                             
-                            if (textStatus == 'success') {
+                            if (textStatus === 'success') {
                                 // Hiding form
                                 $('#reply-' + $post.data('id') + '_' + $post.data('comment-id')).prop('checked', false);
                                 
+                                // Creating the comment HTML
                                 create_comment_elements({
                                     id: data.comment_id,
                                     toId: $post.data('comment-id') || null,
@@ -594,6 +601,8 @@ $(document).ready(function() {
                                     } else {
                                         // Check for children
                                         $parentCommentChildren = $post.next('.comments');
+                                        
+                                        // @fixme Find a bug with lost indentation of new comment
                                         // If child comment already exist
                                         if ($parentCommentChildren.length) {
                                             console.log('Child comments found. Appending...');
@@ -658,16 +667,6 @@ $(document).ready(function() {
 
 function getProtocol() {
     return ((location.protocol == 'http:') ? 'http:' : 'https:');
-}
-
-function escapeHtml(text) {
-    return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        //.replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;")
-        .replace(/\n/g, "<br>");
 }
 
 // Monts for Date.getMonth()
