@@ -487,7 +487,7 @@ $(document).ready(function() {
 
                                     console.debug(wsMessage);
                                     
-                                    if (true /*options.is('option_ws_posts_notifications')*/) {
+                                    if (options.is('option_ws_posts_notifications')) {
                                         console.log('Showing desktop notification');
                                         chrome.runtime.sendMessage({
                                             type: 'showNotification',
@@ -559,7 +559,6 @@ $(document).ready(function() {
 
                         var $post = $(this).parents('.post:first');
                         var csRf = $(this).siblings('input[name="csrf_token"]').val();
-                        console.log(csRf);
 
                         $.ajax({
                             type: 'POST',
@@ -751,6 +750,8 @@ function create_comment_elements(commentData, onCommentCreated) {
             console.log('Fading out the highlight');
             $commentTemplate.children('.pp-highlight').delay(250).fadeOut(20000);
         }
+        
+        // @todo add indentation indicator support
         
         // Hiding
         $commentTemplate.hide().delay(250).fadeIn(2000);

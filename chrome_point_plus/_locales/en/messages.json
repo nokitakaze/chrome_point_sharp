@@ -140,14 +140,14 @@
     "option_ws_comments_notifications": {
         "message": "Show desktop notifications"
     },
-    "option_ws_feeds": {
-        "message": "Process feeds &#9660;"
+    "option_ws_posts": {
+        "message": "Process posts &#9660;"
     },
-    "option_ws_feeds_subscriptions": {
-        "message": "Subscriptions feed"
+    "option_ws_posts_add": {
+        "message": "Add posts to the feed"
     },
-    "option_ws_feeds_blogs": {
-        "message": "User blog pages (only when subscribed)"
+    "option_ws_posts_notifications": {
+        "message": "Show desktop notifications"
     },
     "option_enlarge_font": {
         "message": "Enlarge font size &#9660;"

@@ -138,16 +138,16 @@
         "message": "Затухание подсветки через 20 секунд"
     },
     "option_ws_comments_notifications": {
-        "message": "Включить уведомления на рабочем столе"
+        "message": "Показывать всплывающие уведомления"
     },
-    "option_ws_feeds": {
-        "message": "Обрабатывать ленты &#9660;"
+    "option_ws_posts": {
+        "message": "Обрабатывать посты &#9660;"
     },
-    "option_ws_feeds_subscriptions": {
-        "message": "Подписки"
+    "option_ws_posts_add": {
+        "message": "Автоматически добавлять в ленту"
     },
-    "option_ws_feeds_blogs": {
-        "message": "Блоги пользователей (только при подписке)"
+    "option_ws_posts_notifications": {
+        "message": "Показывать всплывающие уведомления"
     },
     "option_enlarge_font": {
         "message": "Увеличить шрифт &#9660;"
