@@ -113,8 +113,11 @@
     "option_nsfw_blur_comments_entire": {
         "message": "Blur entire comments in nsfw posts"
     },
-    "option_ctrl_enter": {
-        "message": "Send post and comments by CTRL+Enter (deprecated)"
+    "option_ajax": {
+        "message": "AJAX"
+    },
+    "option_ajax_comments": {
+        "message": "Send comments via AJAX (CTRL+Enter)"
     },
     "option_fluid_layout": {
         "message": "Fluid layout"

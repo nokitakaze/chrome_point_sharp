@@ -113,8 +113,11 @@
     "option_nsfw_blur_comments_entire": {
         "message": "Размытие комментариев целиком"
     },
-    "option_ctrl_enter": {
-        "message": "Отправлять текст по CTRL+Enter (устарело)"
+    "option_ajax": {
+        "message": "AJAX"
+    },
+    "option_ajax_comments": {
+        "message": "Отправка комментариев через AJAX (CTRL+Enter)"
     },
     "option_fluid_layout": {
         "message": "&#34;Резиновая&#34; вёрстка (растянуть сайт по горизонтали)"
