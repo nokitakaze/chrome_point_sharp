@@ -557,7 +557,7 @@ $(document).ready(function() {
                         evt.stopPropagation();
                         evt.preventDefault();
 
-                        var $post = $(this).parents('.post:first');
+                        var $post = $(this).parents('.post').first();
                         var csRf = $(this).siblings('input[name="csrf_token"]').val();
 
                         $.ajax({
@@ -711,7 +711,7 @@ function create_comment_elements(commentData, onCommentCreated) {
 
         // Data for template
         var userLink = '//' + commentData.author + '.point.im/';
-        var csRfToken = $('.reply-form:first input[name="csrf_token"]').val();
+        var csRfToken = $('.reply-form input[name="csrf_token"]').first().val();
 
         // Filling template
         // Date and time
