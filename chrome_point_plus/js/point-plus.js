@@ -486,16 +486,17 @@ $(document).ready(function() {
                                     console.groupCollapsed('ws-post #%s', wsMessage.post_id);
 
                                     console.debug(wsMessage);
-                                    
-                                    if (options.is('option_ws_posts_notifications')) {
-                                        console.log('Showing desktop notification');
-                                        chrome.runtime.sendMessage({
-                                            type: 'showNotification',
-                                            notificationId: 'post_' + wsMessage.post_id,
-                                            avatarUrl: getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
-                                            title: 'Post by @' + wsMessage.author + ' #' + wsMessage.post_id,
-                                            text: wsMessage.text
-                                        }, function(response) {});
+                                    if (options.is('option_ws_posts')) {
+                                        if (options.is('option_ws_posts_notifications')) {
+                                            console.log('Showing desktop notification');
+                                            chrome.runtime.sendMessage({
+                                                type: 'showNotification',
+                                                notificationId: 'post_' + wsMessage.post_id,
+                                                avatarUrl: getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
+                                                title: 'Post by @' + wsMessage.author + ' #' + wsMessage.post_id,
+                                                text: wsMessage.text
+                                            }, function(response) {});
+                                        }
                                     }
 
                                     console.groupEnd();
