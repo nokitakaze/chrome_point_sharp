@@ -39,7 +39,12 @@
         "js/point_sharp_shared_code.js"
       ],
       "css": [
-        "css/point-plus.css"
+        "css/options.css",
+        "css/additional/point-plus.css",
+        "css/additional/fancybox/style.css",
+        "css/additional/markitup/sets/markdown/style.css",
+        "css/additional/markitup/skins/markdown/style.css",
+        "css/additional/modules/at_before_username.css"
       ],
       "run_at": "document_end"
     }

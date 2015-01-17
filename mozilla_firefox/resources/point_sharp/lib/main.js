@@ -34,7 +34,13 @@ exports.main = function () {
     pageMod.PageMod({
         include: new RegExp('^https?://(.+\\.)?point\\.im(/.*)?'),
         contentScriptWhen: "end",
-        // @todo CSS вставить
+        contentStyleFile:[
+            self.data.url("css/additional/point-plus.css"),
+            self.data.url("css/additional/fancybox/style.css"),
+            self.data.url("css/additional/markitup/sets/markdown/style.css"),
+            self.data.url("css/additional/markitup/skins/markdown/style.css"),
+            self.data.url("css/additional/modules/at_before_username.css")
+        ],
         contentScriptFile: [
             self.data.url("js/jquery.js"),
             self.data.url("js/bquery_ajax.js"),

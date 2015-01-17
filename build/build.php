@@ -66,11 +66,5 @@
         system('cp -R "'.addslashes($root_folder.'/build/'.$pair[0]).'" "'.addslashes($root_folder.'/'.$pair[2]).'"');
     }
 
-    copy($root_folder.'/build/src/point-plus.css',
-        $root_folder.'/chrome_point_plus/css/point-plus.css');
-    copy($root_folder.'/build/src/point-plus.css',
-        $root_folder.'/mozilla_firefox/resources/point_sharp/data/css/point-plus.css');
-
-
     echo "Version ".$json->version.'.'.$build_version->version.' builded at '.gmdate('Y-m-d H:i:sO')."\n";
 ?>

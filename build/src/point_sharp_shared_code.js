@@ -31,7 +31,7 @@ $(document).ready(function () {
             'data-point-plus-version': options.version()
         }).text('Point# ' + options.version() + ' loading...');
 
-        // Показываем иконку приложения
+        // Показываем иконку приложения в адресной строке
         urlbar_icon_show();
 
 
