@@ -52,6 +52,7 @@ exports.main = function () {
             // Получаем значение
             worker.port.on('get_storage_value', function (json) {
                 var data = JSON.parse(json);
+                // @todo Переписать на много значений
                 //console.log("Extension code. get_storage_value %O", data);
                 var value = (typeof(simplestore.storage[data.key]) !== 'undefined')
                     ? simplestore.storage[data.key] : null;

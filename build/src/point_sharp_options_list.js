@@ -25,9 +25,6 @@ var point_sharp_options_tree = {
 
 };
 
-// @todo Решить нужно ли?
-var point_sharp_options_current = null;
-
 /**
  * Инициализатор опций, дёргается первым из кода, потом запускает всё остальное
  *
@@ -37,7 +34,7 @@ function point_sharp_options_init(callback) {
     // @todo перебрать все значения point_sharp_options_tree, превратить их в список с default value
 
     // Берём версию и Local Storage
-    point_sharp_get_version(function () {
+    point_sharp_get_version(function (point_sharp_version) {
         local_storage_get('options', function (raw_options) {
             console.info("Options: ", point_sharp_version, raw_options);
             raw_options.version = point_sharp_version;
@@ -55,6 +52,27 @@ function point_sharp_options_init(callback) {
 
 }
 
+/**
+ * Сохраняем набор опций
+ *
+ * @param data object из значений
+ * @param success_callback Функция, которую дёрнем, когда сохраним значение
+ */
+function local_options_set(data, success_callback) {
+    console.log("Content code. local_options_set %O", data);
+    // Из-за проблемы двух окон мы сначала берём опции, а потом сохраняем их
+    local_storage_get('options', function (current_options) {
+        for (var key in data) {
+            if (data.hasOwnProperty(key)) {
+                current_options[key] = data[key];
+            }
+        }
+
+        local_storage_set({'options': current_options}, success_callback);
+    });
+
+    console.log("Content code. local_options_set end");
+}
 
 /**
  * Объект для преобразования сырых опций в объект

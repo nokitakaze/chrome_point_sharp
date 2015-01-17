@@ -10,8 +10,10 @@
  * @param callback Функция, которую дёрнем, когда получим значение
  */
 function local_storage_get(key, callback) {
-    // @todo Реализовать через chrome.storage.sync
     console.log("Content code. local_storage_get %s %O", key, callback);
+    chrome.storage.sync.get(key, function (sync_data) {
+        callback((typeof(key) == 'string') ? sync_data[key] : sync_data);
+    });
     console.log("Content code. local_storage_get end");
 }
 
@@ -22,21 +24,11 @@ function local_storage_get(key, callback) {
  * @param success_callback Функция, которую дёрнем, когда сохраним значение
  */
 function local_storage_set(data, success_callback) {
-    // @todo Реализовать через chrome.storage.sync
     console.log("Content code. local_storage_set %O", data);
+    chrome.storage.sync.set(data, function () {
+        success_callback();
+    });
     console.log("Content code. local_storage_set end");
-}
-
-/**
- * Сохраняем набор опций
- *
- * @param data object из значений
- * @param success_callback Функция, которую дёрнем, когда сохраним значение
- */
-function local_options_set(data, success_callback) {
-    // @todo Реализовать через chrome.storage.sync
-    console.log("Content code. local_options_set %O", data);
-    console.log("Content code. local_options_set end");
 }
 
 /**
@@ -82,13 +74,13 @@ function urlbar_icon_show() {
  *
  * @param callback function callback с версией
  */
-function point_sharp_get_version(callback){
+function point_sharp_get_version(callback) {
     console.group('point-sharp');
 
     chrome.runtime.sendMessage(null, {
         type: 'getManifestVersion'
-    }, null, function(response) {
-        ppVersion = response.version || 'undefined';
+    }, null, function (response) {
+        var ppVersion = response.version || 'undefined';
         callback(ppVersion);
     });
 

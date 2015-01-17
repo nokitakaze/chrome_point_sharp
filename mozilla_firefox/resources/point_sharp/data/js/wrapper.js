@@ -48,17 +48,6 @@ function local_storage_set(data, success_callback) {
     // console.log("Content code. local_storage_set end");
 }
 
-/**
- * Сохраняем набор опций
- *
- * @param data object из значений
- * @param success_callback Функция, которую дёрнем, когда сохраним значение
- */
-function local_options_set(data, success_callback) {
-    // @todo Реализовать
-    console.log("Content code. local_options_set %O", data);
-    console.log("Content code. local_options_set end");
-}
 
 /**
  * Функция, которая выполняется перед всеми улучшениями
