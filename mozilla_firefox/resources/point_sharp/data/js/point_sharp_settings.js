@@ -1,5 +1,7 @@
 /**
  * Страница, инклюдящаяся в /point-sharp-settings.html
+ *
+ * Только для Mozilla Firefox
  */
 
 /**

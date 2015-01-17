@@ -54,6 +54,11 @@
     copy($root_folder.'/build/src/point_sharp_shared_code_additional.js',
         $root_folder.'/mozilla_firefox/resources/point_sharp/data/js/point_sharp_shared_code_additional.js');
 
+    copy($root_folder.'/build/src/point_sharp_options_list.js',
+        $root_folder.'/chrome_point_plus/js/point_sharp_options_list.js');
+    copy($root_folder.'/build/src/point_sharp_options_list.js',
+        $root_folder.'/mozilla_firefox/resources/point_sharp/data/js/point_sharp_options_list.js');
+    
     copy($root_folder.'/build/src/bquery_ajax.js',
         $root_folder.'/chrome_point_plus/js/bquery_ajax.js');
     copy($root_folder.'/build/src/bquery_ajax.js',
