@@ -1,6 +1,5 @@
 /* Options page */
-body
-{
+body {
     font-family: Arial;
     font-size: 14px;
     line-height: 20px;
@@ -14,19 +13,16 @@ body
     background: #eee;
 }
 
-a
-{
+a {
     color: #1abef1;
 }
 
-p
-{
+p {
     margin: 0;
     padding: 0;
 }
 
-.tabs-list
-{
+.tabs-list {
     position: relative;
     z-index: 1;
 
@@ -36,8 +32,7 @@ p
     padding: 0;
 }
 
-.tabs-item
-{
+.tabs-item {
     display: inline-block;
 
     padding: 7px 15px 3px;
@@ -49,8 +44,7 @@ p
     border: 1px solid transparent;
 }
 
-.tabs-item.selected
-{
+.tabs-item.selected {
     cursor: default;
 
     border-color: #dedede;
@@ -58,8 +52,7 @@ p
     background: #fff;
 }
 
-.tabs-content
-{
+.tabs-content {
     position: relative;
 
     height: 345px;
@@ -71,8 +64,7 @@ p
     background: #fff;
 }
 
-.tabs-content::before
-{
+.tabs-content::before {
     position: absolute;
     top: 0;
     right: 0;
@@ -82,12 +74,11 @@ p
 
     content: '';
 
-    background-image: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 30%, rgba(255,255,255,0) 100%);
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 30%, rgba(255, 255, 255, 0) 100%);
     background-size: 20px 20px;
 }
 
-.tabs-content-item
-{
+.tabs-content-item {
     display: none;
     overflow: auto;
 
@@ -100,20 +91,18 @@ p
     background: transparent;
 }
 
-.tabs-content-item.selected
-{
+.tabs-content-item.selected {
     display: block;
 }
 
-input[type='checkbox']
-{
+input[type='checkbox'] {
     margin-right: 5px;
     margin-left: 0;
 
     vertical-align: 1px;
 }
-.option-node
-{
+
+.option-node {
     display: block;
 
     padding: 0 0 5px 21px;
@@ -121,24 +110,20 @@ input[type='checkbox']
     text-indent: -21px;
 }
 
-.option-node input[type='checkbox']:not(:checked) ~ .option-node
-{
+.option-node input[type='checkbox']:not(:checked) ~ .option-node {
     display: none;
 }
 
-.option-node input[type='checkbox']:not(:checked) ~ .option-node label
-{
+.option-node input[type='checkbox']:not(:checked) ~ .option-node label {
     color: #999;
 }
 
-.footer
-{
+.footer {
     margin: 0;
     padding: 10px 15px;
 }
 
-.saved
-{
+.saved {
     position: relative;
     z-index: 1;
 
@@ -154,8 +139,7 @@ input[type='checkbox']
     background: #4caf50;
 }
 
-.saved.hidden
-{
+.saved.hidden {
     transform: scaleY(.5);
 
     opacity: 0;

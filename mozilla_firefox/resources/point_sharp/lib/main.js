@@ -13,7 +13,8 @@ var simplestore = require("sdk/simple-storage");
 
 //main
 exports.main = function () {
-    console.info("I'm alive");
+    console.group('point-sharp');
+    console.info("main.js");
 
     // Создаём иконку в адресной строке
     urlbar.url_icon_init(utils.getMostRecentBrowserWindow(), function () {
