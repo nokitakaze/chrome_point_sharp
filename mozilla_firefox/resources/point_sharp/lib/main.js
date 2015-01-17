@@ -34,12 +34,15 @@ exports.main = function () {
     pageMod.PageMod({
         include: new RegExp('^https?://(.+\\.)?point\\.im(/.*)?'),
         contentScriptWhen: "end",
-        contentStyleFile:[
+        contentStyleFile: [
             self.data.url("css/additional/point-plus.css"),
             self.data.url("css/additional/fancybox/style.css"),
             self.data.url("css/additional/markitup/sets/markdown/style.css"),
-            self.data.url("css/additional/markitup/skins/markdown/style.css"),
-            self.data.url("css/additional/modules/at_before_username.css")
+            self.data.url("css/additional/markitup/skins/markitup/style.css"),
+            self.data.url("css/additional/modules/at_before_username.css"),
+            self.data.url("vendor/fancybox/source/jquery.fancybox.css"),
+            self.data.url("css/additional/fancybox/style.css"),
+            self.data.url("vendor/markitup/markitup/skins/markitup/style.css")
         ],
         contentScriptFile: [
             self.data.url("js/jquery.js"),
@@ -47,6 +50,13 @@ exports.main = function () {
             self.data.url("js/point_sharp_options_list.js"),
             self.data.url("js/point_sharp_shared_code_additional.js"),
             self.data.url("js/point_sharp_shared_code_websocket.js"),
+
+            self.data.url("vendor/soundcloud/soundcloud.player.api.js"),
+            self.data.url("vendor/fancybox/source/jquery.fancybox.pack.js"),
+            self.data.url("vendor/fancybox/source/helpers/jquery.fancybox-media.js"),
+            self.data.url("vendor/markitup/markitup/jquery.markitup.js"),
+            self.data.url("js/markitup_set.js"),
+
 
             self.data.url("js/wrapper.js"),
             self.data.url("js/point_sharp_shared_code.js"),

@@ -238,3 +238,7 @@ var months = [
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
 ];
 
+function getProtocol() {
+    return ((location.protocol == 'http:') ? 'http:' : 'https:');
+}
+
