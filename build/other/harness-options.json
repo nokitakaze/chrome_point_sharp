@@ -2,7 +2,7 @@
   "check_memory": false,
   "enable_e10s": false,
   "is-sdk-bundled": false,
-  "jetpackID": "helloworld@ru.wikiversity.org",
+  "jetpackID": "pointsharp@kanaria.ru",
   "loader": "addon-sdk/lib/sdk/loader/cuddlefish.js",
   "main": "main",
   "mainPath": "point_sharp/main",
@@ -51,7 +51,7 @@
     "point_sharp": {
       "author": "%%AUTHOR%%",
       "description": "%%DESCRIPTION%%",
-      "homepage": "http://example.com/",
+      "homepage": "%%HOMEPAGE%%",
       "keywords": [
         ""
       ],
@@ -60,12 +60,20 @@
       "name": "point_sharp",
       "permissions": {
         "private-browsing": false,
-        "cross-domain-content": ["https://api.instagram.com/"]
+        "cross-domain-content": [
+          "https://pleer.com/",
+          "http://player.soundcloud.com/",
+          "https://player.soundcloud.com/",
+          "https://api.kanaria.ru/point/",
+          "https://api.instagram.com/",
+          "https://api.twitter.com/",
+          "https://www.twitter.com/"
+        ]
       },
-      "version": "0.0.11"
+      "version": "%%VERSION%%"
     }
   },
-  "name": "point_sharp",
+  "name": "%%NAME%%",
   "parseable": false,
   "sdkVersion": "1.15",
   "staticArgs": {},

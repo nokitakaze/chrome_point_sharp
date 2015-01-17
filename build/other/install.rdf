@@ -4,7 +4,7 @@
   <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
   <Description about="urn:mozilla:install-manifest">
     <em:id>pointsharp@kanaria.ru</em:id>
-    <em:version>0.0.14</em:version>
+    <em:version>%%VERSION%%</em:version>
     <em:type>2</em:type>
     <em:bootstrap>true</em:bootstrap>
     <em:unpack>false</em:unpack>
@@ -28,10 +28,10 @@
    </em:targetApplication>
 
     <!-- Front End MetaData -->
-    <em:name>Point#</em:name>
-    <em:description>?</em:description>
-    <em:creator>Nokita Kaze</em:creator>
-    <em:homepageURL>https://bitbucket.org/NokitaKaze/chrome_point_plus-nokita-version</em:homepageURL>
+    <em:name>%%NAME%%</em:name>
+    <em:description>%%DESCRIPTION%%</em:description>
+    <em:creator>%%AUTHOR%%</em:creator>
+    <em:homepageURL>%%HOMEPAGE%%</em:homepageURL>
     
   </Description>
 </RDF>
