@@ -55,20 +55,22 @@
         copy($root_folder.'/build/src/'.$filename, $root_folder.'/mozilla_firefox/resources/point_sharp/data/js/'.$filename);
     }
 
-    // Копируем CSS
+    // Копируем Папки
+    foreach (array(
+                 array('vendor', 'chrome_point_plus/vendor', 'mozilla_firefox/resources/point_sharp/data/vendor'),
+                 array('css', 'chrome_point_plus/css/additional', 'mozilla_firefox/resources/point_sharp/data/css/additional'),
+             ) as $pair){
+        // @todo Проверить квоты
+        system('rm -rf "'.addslashes($root_folder.'/'.$pair[1]).'" "'.addslashes($root_folder.'/'.$pair[2]).'"');
+        system('cp -R "'.addslashes($root_folder.'/build/'.$pair[0]).'" "'.addslashes($root_folder.'/'.$pair[1]).'"');
+        system('cp -R "'.addslashes($root_folder.'/build/'.$pair[0]).'" "'.addslashes($root_folder.'/'.$pair[2]).'"');
+    }
+
     copy($root_folder.'/build/src/point-plus.css',
         $root_folder.'/chrome_point_plus/css/point-plus.css');
     copy($root_folder.'/build/src/point-plus.css',
         $root_folder.'/mozilla_firefox/resources/point_sharp/data/css/point-plus.css');
 
-
-    // Копируем vendor
-    system('rm -rf '.addslashes($root_folder.'/chrome_point_plus/vendor').' '.
-        addslashes($root_folder.'/mozilla_firefox/resources/point_sharp/data/vendor'));
-    system('cp -R "'.addslashes($root_folder.'/build/vendor').'" "'.
-        addslashes($root_folder.'/chrome_point_plus/vendor').'"');
-    system('cp -R "'.addslashes($root_folder.'/build/vendor').'" "'.
-        addslashes($root_folder.'/mozilla_firefox/resources/point_sharp/data/vendor').'"');
 
     echo "Version ".$json->version.'.'.$build_version->version.' builded at '.gmdate('Y-m-d H:i:sO')."\n";
 ?>
