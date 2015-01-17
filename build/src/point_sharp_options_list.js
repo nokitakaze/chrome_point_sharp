@@ -36,17 +36,23 @@ var point_sharp_options_current = null;
 function point_sharp_options_init(callback) {
     // @todo перебрать все значения point_sharp_options_tree, превратить их в список с default value
 
-    local_storage_get('options', function (raw_options) {
-        console.info("Options: ", raw_options);
-        // @todo Перебираем все опции и задаём им default значения, если надо
+    // Берём версию и Local Storage
+    point_sharp_get_version(function () {
+        local_storage_get('options', function (raw_options) {
+            console.info("Options: ", point_sharp_version, raw_options);
+            raw_options.version = point_sharp_version;
+            // @todo Перебираем все опции и задаём им default значения, если надо
 
-        // @todo Не забыть про платформозависимые опции
+            // @todo Не забыть про платформозависимые опции
 
-        // @todo Если есть хотя бы одно сменённое значение, сохраняем опции
+            // @todo Если есть хотя бы одно сменённое значение, сохраняем опции
 
-        // @todo Дёргаем callback
-
+            // Дёргаем callback
+            var options = new OptionsManager(raw_options);
+            callback(options);
+        });
     });
+
 }
 
 
@@ -57,10 +63,12 @@ function point_sharp_options_init(callback) {
  * @constructor
  */
 function OptionsManager(raw_options) {
-    this._options = raw_options || {};
+    this._options = raw_options;
 }
 
 /**
+ * Берём значений опции ИЗ КЕША (может быть не реальным)
+ *
  * @param {String} optionName Имя опции
  * @returns {Boolean|String|Null} Значение опции
  */
@@ -74,7 +82,18 @@ OptionsManager.prototype.get = function (optionName) {
 };
 
 /**
+ * Сохраняем набор опций. Враппер для local_options_set
+ *
+ * @param {String} data Имя опции
+ * @param {function} success_callback Имя опции
+ */
+OptionsManager.prototype.set = function (data, success_callback) {
+    local_options_set(data, success_callback);
+};
+
+/**
  * Проверяет, равна ли опция значению value. Если value не переданно, проверяет задана ли она и не равна ли false/''
+ *
  * @param {String} optionName Имя опции
  * @param {Boolean|String} [value=true] Значение опции
  * @returns {Boolean}
@@ -88,8 +107,18 @@ OptionsManager.prototype.is = function (optionName, value) {
 };
 
 /**
+ * Геттер для сырых опций
+ *
  * @returns {Object} Кеш опций
  */
 OptionsManager.prototype.getOptions = function () {
     return this._options;
 };
+
+/**
+ * @returns {Object} Версия расширения
+ */
+OptionsManager.prototype.version = function () {
+    return this._options.version;
+};
+

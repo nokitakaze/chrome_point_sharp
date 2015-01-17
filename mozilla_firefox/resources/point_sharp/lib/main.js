@@ -59,13 +59,26 @@ exports.main = function () {
                 worker.port.emit('get_storage_value_' + data.callback, JSON.stringify(value));
             });
 
-            // Сохраняем значение
+            // Сохраняем значения в стороже
             worker.port.on('set_storage_value', function (json) {
                 var data = JSON.parse(json);
                 //console.log("Extension code. set_storage_value %O", data);
+                // @todo Переписать, теперь там object из значений
+                console.error('main.js, Переписать эту строку');
                 simplestore.storage[data.key] = data.value;
 
                 worker.port.emit('set_storage_value_' + data.callback, 'true');
+            });
+
+            // Сохраняем значения опций
+            worker.port.on('set_options_value', function (json) {
+                var data = JSON.parse(json);
+                //console.log("Extension code. set_storage_value %O", data);
+                // @todo Реализовать
+                console.error('main.js, Не реализовано');
+
+
+                worker.port.emit('set_options_value_' + data.callback, 'true');
             });
 
 

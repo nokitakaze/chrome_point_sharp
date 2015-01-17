@@ -1,4 +1,10 @@
-/* Point.Im */
+/**
+ * Point.Im
+ *
+ * ПЛАТФОРМОНЕЗАВИМИСЫЙ ФАЙЛ
+ */
+
+
 /* MarkItUp margin fix */
 div#markItUpText-input {
     margin-top: 30px;
@@ -160,6 +166,7 @@ div#markItUpText-input {
     float: left;
 }
 
+/* todo поставить if, потому что платформозависимость */
 #comments .post:hover .nesting {
     background-repeat: repeat-x;
     background-image: url('chrome-extension://__MSG_@@extension_id__/images/nesting-point.png');

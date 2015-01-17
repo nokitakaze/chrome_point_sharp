@@ -27,13 +27,12 @@ function local_storage_get(key, callback) {
 /**
  * Сохраняем значение в Local Storage
  *
- * @param key Название элемента
- * @param value Значение элемента
+ * @param data object из значений
  * @param success_callback Функция, которую дёрнем, когда сохраним значение
  */
-function local_storage_set(key, value, success_callback) {
+function local_storage_set(data, success_callback) {
 // @todo Удалять старые прослушивальщики
-    // console.log("Content code. local_storage_set %s = %O", key, value);
+    // console.log("Content code. local_storage_set %O", data);
     var callback_rand = Math.random();
     self.port.on('set_storage_value_' + callback_rand, function (value) {
         // @todo Проверять value, вдруг там не true
@@ -43,11 +42,22 @@ function local_storage_set(key, value, success_callback) {
         }
     });
     self.port.emit('set_storage_value', JSON.stringify({
-        'key': key,
-        'value': value,
+        'data': data,
         'callback': callback_rand
     }));
     // console.log("Content code. local_storage_set end");
+}
+
+/**
+ * Сохраняем набор опций
+ *
+ * @param data object из значений
+ * @param success_callback Функция, которую дёрнем, когда сохраним значение
+ */
+function local_options_set(data, success_callback) {
+    // @todo Реализовать
+    console.log("Content code. local_options_set %O", data);
+    console.log("Content code. local_options_set end");
 }
 
 /**
@@ -67,6 +77,34 @@ function point_loaded_first(options) {
 function point_loaded_last(options) {
     // Запуск страницы Settings
     if (document.location.href.match(new RegExp('https?://point\\.im/point\\-sharp\\-settings\\.html(\\?.*)?$'))) {
-        point_sharp_settings_page_init();
+        point_sharp_settings_page_init(options);
     }
 }
+
+/**
+ * Скрываем значок в адресной строке
+ *
+ * В Mozilla Firefox нет кейса, в котором его было бы надо скрывать. Реализовывать не нужно
+ */
+function urlbar_icon_hide() {
+}
+
+/**
+ * Показываем значок в адресной строке
+ *
+ * В Mozilla Firefox он уже есть, реализовывать не нужно
+ */
+function urlbar_icon_show() {
+}
+
+/**
+ * Версия расширения
+ *
+ * @param callback function callback с версией
+ */
+function point_sharp_get_version(callback){
+    // @todo Реализовать
+    // https://developer.mozilla.org/en-US/Add-ons/Code_snippets/Miscellaneous
+    callback(null);
+}
+
