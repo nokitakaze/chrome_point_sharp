@@ -44,30 +44,23 @@
     }
 
     // Копируем исходники
-    copy($root_folder.'/build/src/point_sharp_shared_code.js',
-        $root_folder.'/chrome_point_plus/js/point_sharp_shared_code.js');
-    copy($root_folder.'/build/src/point_sharp_shared_code.js',
-        $root_folder.'/mozilla_firefox/resources/point_sharp/data/js/point_sharp_shared_code.js');
+    foreach (array(
+                 'point_sharp_shared_code.js',
+                 'point_sharp_shared_code_additional.js',
+                 'point_sharp_shared_code_websocket.js',
+                 'point_sharp_options_list.js',
+                 'bquery_ajax.js'
+             ) as $filename){
+        copy($root_folder.'/build/src/'.$filename, $root_folder.'/chrome_point_plus/js/'.$filename);
+        copy($root_folder.'/build/src/'.$filename, $root_folder.'/mozilla_firefox/resources/point_sharp/data/js/'.$filename);
+    }
 
-    copy($root_folder.'/build/src/point_sharp_shared_code_additional.js',
-        $root_folder.'/chrome_point_plus/js/point_sharp_shared_code_additional.js');
-    copy($root_folder.'/build/src/point_sharp_shared_code_additional.js',
-        $root_folder.'/mozilla_firefox/resources/point_sharp/data/js/point_sharp_shared_code_additional.js');
-
-    copy($root_folder.'/build/src/point_sharp_options_list.js',
-        $root_folder.'/chrome_point_plus/js/point_sharp_options_list.js');
-    copy($root_folder.'/build/src/point_sharp_options_list.js',
-        $root_folder.'/mozilla_firefox/resources/point_sharp/data/js/point_sharp_options_list.js');
-
-    copy($root_folder.'/build/src/bquery_ajax.js',
-        $root_folder.'/chrome_point_plus/js/bquery_ajax.js');
-    copy($root_folder.'/build/src/bquery_ajax.js',
-        $root_folder.'/mozilla_firefox/resources/point_sharp/data/js/bquery_ajax.js');
-
+    // Копируем CSS
     copy($root_folder.'/build/src/point-plus.css',
         $root_folder.'/chrome_point_plus/css/point-plus.css');
     copy($root_folder.'/build/src/point-plus.css',
         $root_folder.'/mozilla_firefox/resources/point_sharp/data/css/point-plus.css');
+
 
     // Копируем vendor
     system('rm -rf '.addslashes($root_folder.'/chrome_point_plus/vendor').' '.

@@ -34,11 +34,13 @@ exports.main = function () {
     pageMod.PageMod({
         include: new RegExp('^https?://(.+\\.)?point\\.im(/.*)?'),
         contentScriptWhen: "end",
+        // @todo CSS вставить
         contentScriptFile: [
             self.data.url("js/jquery.js"),
             self.data.url("js/bquery_ajax.js"),
             self.data.url("js/point_sharp_options_list.js"),
             self.data.url("js/point_sharp_shared_code.js"),
+            self.data.url("js/point_sharp_shared_code_websocket.js"),
 
             self.data.url("js/wrapper.js"),
             self.data.url("js/point_test.js"),

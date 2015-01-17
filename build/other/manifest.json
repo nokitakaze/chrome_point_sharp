@@ -35,6 +35,7 @@
         "js/wrapper.js",
         "js/point_sharp_options_list.js",
         "js/point_sharp_shared_code_additional.js",
+        "js/point_sharp_shared_code_websocket.js",
         "js/point_sharp_shared_code.js"
       ],
       "css": [
