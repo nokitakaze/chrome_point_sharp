@@ -75,8 +75,6 @@ function urlbar_icon_show() {
  * @param callback function callback с версией
  */
 function point_sharp_get_version(callback) {
-    console.group('point-sharp');
-
     chrome.runtime.sendMessage(null, {
         type: 'getManifestVersion'
     }, null, function (response) {

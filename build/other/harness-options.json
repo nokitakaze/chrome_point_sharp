@@ -73,7 +73,7 @@
       "version": "%%VERSION%%"
     }
   },
-  "name": "%%NAME%%",
+  "name": "point_sharp",
   "parseable": false,
   "sdkVersion": "1.15",
   "staticArgs": {},

@@ -4,11 +4,16 @@
  * ПЛАТФОРМОНЕЗАВИСИМЫЙ ФАЙЛ
  */
 
+if (typeof(console.group) !== 'undefined') {
+    console.group('point-sharp');
+}
+console.info("shared_code.js");
+
 $(document).ready(function () {
     // Проверяем, загрузились ли мы
     var point_plus_debug = $('#point-plus-debug');
     if (point_plus_debug.length > 0) {
-        console.info('Point+ %s already loaded', point_plus_debug.data('point-plus-version'));
+        console.info('Point+', point_plus_debug.data('point-plus-version'), 'already loaded');
         urlbar_icon_hide();
         return;
     }
@@ -16,12 +21,12 @@ $(document).ready(function () {
         'data-point-plus-version': 'undefined'
     }).text('Point# loading...')
         .insertBefore('#user-menu-cb');
-    delete point_plus_debug;
 
     // Дёргаем все опции и версию заодно
     point_sharp_options_init(function (options) {
         // Основная функция
         // У нас уже есть все Опции, обёрнутые в OptionsManager
+        console.log("All options and code loaded");
         $('#point-plus-debug').attr({
             'data-point-plus-version': options.version()
         }).text('Point# ' + options.version() + ' loading...');
@@ -309,6 +314,7 @@ $(document).ready(function () {
                 $(this).attr('src', $(this).parent('.postimg').attr('href'));
             });
             // Resizing
+            // @todo WAT?! Это не сделано по умолчанию? Проверить
             $('.postimg:not(.youtube), .postimg:not(.youtube) img').css({
                 'width': 'auto',
                 'height': 'auto',
@@ -377,10 +383,13 @@ $(document).ready(function () {
                 }
             });
         }
-        // WebSocket
-        if (options.is('option_ws')) {
-            skobkin_websocket_init(options);
-        }
+        /*
+         // @todo Оттестировать
+         // WebSocket
+         if (options.is('option_ws')) {
+         skobkin_websocket_init(options);
+         }
+         */
         // Font size
         if ((options.is('option_enlarge_font')) && (options.get('option_enlarge_font_size'))) {
             $('body').css('font-size', (options.get('option_enlarge_font_size') / 100) + 'em');

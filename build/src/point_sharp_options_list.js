@@ -36,8 +36,14 @@ function point_sharp_options_init(callback) {
     // Берём версию и Local Storage
     point_sharp_get_version(function (point_sharp_version) {
         local_storage_get('options', function (raw_options) {
-            console.info("Options: ", point_sharp_version, raw_options);
-            raw_options.version = point_sharp_version;
+            console.info("Version: ", point_sharp_version, "Options from storage: ", raw_options);
+            if (raw_options == null) {
+                // Мы загрузились в первый раз... для чего... для кого
+                console.info('raw_options is null. First loading?');
+                raw_options = {};
+            }
+
+            raw_options['version'] = point_sharp_version;
             // @todo Перебираем все опции и задаём им default значения, если надо
 
             // @todo Не забыть про платформозависимые опции

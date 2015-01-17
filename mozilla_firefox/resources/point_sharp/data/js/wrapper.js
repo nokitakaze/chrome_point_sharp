@@ -10,7 +10,7 @@
  * @param callback Функция, которую дёрнем, когда получим значение
  */
 function local_storage_get(key, callback) {
-// @todo Удалять старые прослушивальщики
+    // @todo Удалять старые прослушивальщики
     // console.log("Content code. local_storage_get %s %O", key, callback);
     var callback_rand = Math.random();
     self.port.on('get_storage_value_' + callback_rand, function (value) {
@@ -31,7 +31,7 @@ function local_storage_get(key, callback) {
  * @param success_callback Функция, которую дёрнем, когда сохраним значение
  */
 function local_storage_set(data, success_callback) {
-// @todo Удалять старые прослушивальщики
+    // @todo Удалять старые прослушивальщики
     // console.log("Content code. local_storage_set %O", data);
     var callback_rand = Math.random();
     self.port.on('set_storage_value_' + callback_rand, function (value) {
@@ -94,6 +94,7 @@ function urlbar_icon_show() {
 function point_sharp_get_version(callback){
     // @todo Реализовать
     // https://developer.mozilla.org/en-US/Add-ons/Code_snippets/Miscellaneous
-    callback(null);
+    console.warn('wrapper.js, not realized');
+    callback('0.0.1');
 }
 
