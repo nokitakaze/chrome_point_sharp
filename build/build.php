@@ -58,11 +58,16 @@
         $root_folder.'/chrome_point_plus/js/point_sharp_options_list.js');
     copy($root_folder.'/build/src/point_sharp_options_list.js',
         $root_folder.'/mozilla_firefox/resources/point_sharp/data/js/point_sharp_options_list.js');
-    
+
     copy($root_folder.'/build/src/bquery_ajax.js',
         $root_folder.'/chrome_point_plus/js/bquery_ajax.js');
     copy($root_folder.'/build/src/bquery_ajax.js',
         $root_folder.'/mozilla_firefox/resources/point_sharp/data/js/bquery_ajax.js');
+
+    copy($root_folder.'/build/src/point-plus.css',
+        $root_folder.'/chrome_point_plus/css/point-plus.css');
+    copy($root_folder.'/build/src/point-plus.css',
+        $root_folder.'/mozilla_firefox/resources/point_sharp/data/css/point-plus.css');
 
     // Копируем vendor
     system('rm -rf '.addslashes($root_folder.'/chrome_point_plus/vendor').' '.
