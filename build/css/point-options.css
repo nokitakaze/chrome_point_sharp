@@ -4,6 +4,11 @@
  * ПЛАТФОРМОНЕЗАВИМИСЫЙ ФАЙЛ
  */
 
+.point-options-wrapper .tabs-list,
+.point-options-wrapper .tabs-content {
+    display: none;
+}
+
 .point-options-wrapper a {
     color: #1abef1;
 }

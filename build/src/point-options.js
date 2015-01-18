@@ -46,13 +46,35 @@ function draw_option_tree(tree) {
     });
 
     // Нажатие галок на чекбоксах
-    $('.point-options-wrapper .tab-content .option-node > input[type="checkbox"]').on('click', function () {
-        // @todo Сделать Нажатие галок на чекбоксах
+    $('.point-options-wrapper .tabs-content .option-node input[type="checkbox"]').on('change', function () {
+        var name = $(this).prop('name').replace(new RegExp('\\-', 'g'), '_');
+        this_page_change_keyvalue(name, $(this).prop('checked'));
     });
 
-    // @todo Нажатие галок на радиобатонах
+    //  Нажатие галок на радиобатонах
+    $('.point-options-wrapper .tabs-content .option-node input[type="radio"]').on('change', function () {
+        var name = $(this).prop('name').replace(new RegExp('\\-', 'g'), '_');
+        var new_value = null;
+        $('.point-options-wrapper .tabs-content .option-node input[type="radio"][name="' + $(this).prop('name') + '"]').
+            each(function () {
+                if ((new_value == null) || $(this).prop('checked')) {
+                    new_value = $(this).val();
+                }
+            });
+        this_page_change_keyvalue(name, new_value);
+    });
 
+}
 
+function this_page_change_keyvalue(key, value) {
+    var tmp = {};
+    tmp[key] = value;
+
+    $('.point-options-wrapper .saved').text('Опции сохраняются...').removeClass('hidden');
+    local_options_set(tmp, function () {
+        $('.point-options-wrapper .saved').text('Опции сохранены').addClass('hidden');
+        redraw_current_options_value();
+    });
 }
 
 /**
@@ -69,24 +91,40 @@ function draw_option_branch(parent_obj, index, branch) {
             children_length++;
         }
     }
+    // @todo Сделать платформо-зависимые опции
 
-    if (branch.type == 'radio') {
-        // Радио
-        // @todo Создание радио-батонов не сделано
-        console.warn('radio is not realized');
+    var item;
+    if (branch.type == 'enum') {
+        // Создание радио-батонов
+        item = document.createElement('div');
+        $(item).addClass('option-node');
+        for (var i = 0; i < branch.radio_values.length; i++) {
+            var radio_item = document.createElement('label');
+            $(radio_item).html('<input type="radio"><span></span>').
+                find('input').attr({
+                    'name': index.replace(/_/g, '-'),
+                    'value': branch.radio_values[i].value
+                });
+            $(radio_item).find('span').attr({
+                'data-i18n': index
+            }).text(branch.radio_values[i].text);
+            $(item).append(radio_item);
+        }
 
+        // Добавляем детей
+        for (var child_index in branch.children) {
+            draw_option_branch(item, child_index, branch.children[child_index]);
+        }
     } else if (children_length == 0) {
         // Одиночный
-        var item = document.createElement('label');
+        item = document.createElement('label');
         $(item).addClass('option-node').
             html('<input type="checkbox"><span></span>').
             find('input').attr('name', index.replace(/_/g, '-'));
         $(item).find('span').attr('data-i18n', index).text(branch.description);
-
-        $(parent_obj).append(item);
-    } else {
+    } else if (children_length > 0) {
         // Зависимые опции
-        var item = document.createElement('div');
+        item = document.createElement('div');
         $(item).addClass('option-node').
             html('<input type="checkbox"><label></label>').
             find('input').attr({
@@ -102,11 +140,12 @@ function draw_option_branch(parent_obj, index, branch) {
         for (var child_index in branch.children) {
             draw_option_branch(item, child_index, branch.children[child_index]);
         }
-
-
-        // Добавляем в parent object
-        $(parent_obj).append(item);
+    } else {
+        console.error('option ', index, ' is not defined');
     }
+
+    // Добавляем в parent object
+    $(parent_obj).append(item);
 }
 
 /**
@@ -114,19 +153,35 @@ function draw_option_branch(parent_obj, index, branch) {
  **/
 function redraw_current_options_value() {
     point_sharp_options_init(function (options) {
-        console.log("point_sharp_options_init: ", options);
+        $('.point-options-wrapper .tabs-list').fadeIn(500);
+        $('.point-options-wrapper .tabs-content').fadeIn(500);
+
+        var raw_options = options.getOptions();
 
         // Выставляем галки
-        $('.point-options-wrapper .option-node > input[type="checkbox"]').first().val(0);
-        var raw_options = options.getOptions();
+        $('.point-options-wrapper .option-node > input[type="checkbox"]').first().prop('checked', false);
         for (var index in raw_options) {
             if (options.is(index)) {
-                $('.point-options-wrapper [name="' + (index.replace(/_/g, '-')) + '"]').
+                $('.point-options-wrapper input[type="checkbox"][name="' + (index.replace(/_/g, '-')) + '"]').
                     first().prop('checked', true);
             }
         }
 
-        // @todo Выставляем радио-батоны
+        // Выставляем радио-батоны
+        $('.point-options-wrapper .option-node input[type="radio"]').prop('checked', false);
+        for (var index in raw_options) {
+            if (options.getType(index) != 'enum') {
+                continue;
+            }
+
+            $('.point-options-wrapper .option-node input[type="radio"][name="' + (index.replace(/_/g, '-')) + '"]').
+                each(function () {
+                    if ($(this).val() == options.get(index)) {
+                        $(this).prop('checked', true);
+                    }
+                });
+        }
+
     });
 }
 
