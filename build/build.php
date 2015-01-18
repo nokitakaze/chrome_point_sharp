@@ -28,6 +28,7 @@
             array('other/install.rdf', 'mozilla_firefox/install.rdf'),
             array('other/harness-options.json', 'mozilla_firefox/harness-options.json'),
             array('other/manifest.json', 'chrome_point_plus/manifest.json'),
+            array('other/main.js', 'mozilla_firefox/resources/point_sharp/lib/main.js')
         ) as $pair){
         // Берём контент
         $content = file_get_contents($root_folder.'/build/'.$pair[0]);

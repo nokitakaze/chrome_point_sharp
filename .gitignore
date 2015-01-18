@@ -11,7 +11,11 @@
 /mozilla_firefox/resources/point_sharp/data/js/point_sharp_shared_code_websocket.js
 /mozilla_firefox/resources/point_sharp/data/js/bquery_ajax.js
 /mozilla_firefox/resources/point_sharp/data/js/point_sharp_options_list.js
+/mozilla_firefox/resources/point_sharp/data/js/point-options.js
+/mozilla_firefox/resources/point_sharp/data/js/markitup_set.js
 /mozilla_firefox/resources/point_sharp/data/css/additional
+/mozilla_firefox/resources/point_sharp/lib/main.js
+
 
 /chrome_point_plus/manifest.json
 /chrome_point_plus/vendor
@@ -20,12 +24,6 @@
 /chrome_point_plus/js/point_sharp_shared_code_websocket.js
 /chrome_point_plus/js/bquery_ajax.js
 /chrome_point_plus/js/point_sharp_options_list.js
-/chrome_point_plus/css/additional
-
-/mozilla_firefox/resources/point_sharp/data/js/markitup_set.js
-
-/chrome_point_plus/js/markitup_set.js
-
 /chrome_point_plus/js/point-options.js
-
-/mozilla_firefox/resources/point_sharp/data/js/point-options.js
+/chrome_point_plus/js/markitup_set.js
+/chrome_point_plus/css/additional

@@ -102,6 +102,11 @@ exports.main = function () {
                 worker.port.emit('set_storage_value_' + data.callback, 'true');
             });
 
+            // Версия Extension'а
+            worker.port.on('get_extension_version', function (callback_rand) {
+                worker.port.emit('set_extension_version' + callback_rand, '%%VERSION%%');
+            });
+
         }
 
 

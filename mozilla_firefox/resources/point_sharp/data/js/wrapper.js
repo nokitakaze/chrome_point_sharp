@@ -91,10 +91,12 @@ function urlbar_icon_show() {
  *
  * @param callback function callback с версией
  */
-function point_sharp_get_version(callback){
-    // @todo Реализовать
-    // https://developer.mozilla.org/en-US/Add-ons/Code_snippets/Miscellaneous
-    console.warn('wrapper.js, point_sharp_get_version not realized');
-    callback('0.0.1');
+function point_sharp_get_version(callback) {
+    // @todo Удалять старые прослушивальщики
+    var callback_rand = Math.random();
+    self.port.on('set_extension_version' + callback_rand, function (version) {
+        callback(version);
+    });
+    self.port.emit('get_extension_version', callback_rand);
 }
 
