@@ -42,7 +42,9 @@ function url_icon_init(window, callback) {
         check_tab_status(callback);
     });
 
-    check_tab_status(callback);
+    setTimeout(function () {
+        check_tab_status(callback);
+    }, 1000);
 }
 
 /**
@@ -58,6 +60,7 @@ function url_icon_create(window, callback) {
     if (window.document.querySelector('#point-sharp-settings-img') !== null) {
         return;
     }
+
     var new_icon = window.document.createElement('image');
     new_icon.setAttribute('id', 'point-sharp-settings-img');
     // @todo Поменять иконку
