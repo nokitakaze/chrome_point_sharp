@@ -121,7 +121,7 @@ var point_sharp_options_tree = {
                             "option_embedding_pleercom_orig_link": {
                                 "type": "boolean",
                                 "default_value": false,
-                                "description": ""
+                                "description": "Не убирать ссылку"
                             }
                         }
                     },
