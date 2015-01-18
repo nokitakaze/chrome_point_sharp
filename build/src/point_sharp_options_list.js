@@ -9,7 +9,7 @@
 var point_sharp_options_tree = {
     "tree_media":{
         "type":"tree",
-        "description":"",
+        "description":"Медиа",
         "children":{
             "option_fancybox":{
                 "type":"checkbox",
@@ -65,7 +65,7 @@ var point_sharp_options_tree = {
                         "children":{
                             "option_videos_parse_links_type":{
                                 "type":"radio",
-                                "default_value":"webm",
+                                "default_value":"all",
                                 "radio_values":[
                                     {
                                         "text":"Только webm",
@@ -190,7 +190,7 @@ var point_sharp_options_tree = {
     },
     "tree_other":{
         "type":"tree",
-        "description":"",
+        "description":"Другое",
         "children":{
             "option_ctrl_enter":{
                 "type":"checkbox",
@@ -289,7 +289,7 @@ var point_sharp_options_tree = {
     },
     "tree_websocket":{
         "type":"tree",
-        "description":"",
+        "description":"Вебсокеты",
         "children":{
             "option_ws":{
                 "type":"checkbox",
