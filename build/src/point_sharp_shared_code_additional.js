@@ -8,7 +8,7 @@
 // Картинки с бурятников
 var booru_picture_count = 0;
 function load_all_booru_images() {
-    $('.post-content a').each(function(num, obj) {
+    $('.post-content a').each(function (num, obj) {
         if ($(obj).hasClass('booru_pic')) {
             return;
         }
@@ -96,7 +96,7 @@ function create_image(domain, id, additional) {
 // Помечаем непрочитанные посты более видимо чем каким-то баджем
 // Эта часть написана @RainbowSpike
 function mark_unread_post() {
-    var divs = $(".content-wrap > .post").css({'padding-left':'2px'}); // массив постов
+    var divs = $(".content-wrap > .post").css({'padding-left': '2px'}); // массив постов
     for (var i = 0; i < divs.length; i++) { // обыск постов
         var spans = $(divs[i]).find(".unread"); // поиск метки непрочитанных комментов
         if (spans.length > 0) { // если в посте есть непрочитанные комменты...
@@ -111,7 +111,7 @@ function mark_unread_post() {
 
 // Webm
 function parse_webm(current_options) {
-    $('.post-content a').each(function(num, obj) {
+    $('.post-content a').each(function (num, obj) {
         if ($(obj).hasClass('booru_pic')) {
             return;
         }
@@ -138,7 +138,7 @@ function parse_webm(current_options) {
 
 // Видео
 function parse_all_videos(current_options) {
-    $('.post-content a').each(function(num, obj) {
+    $('.post-content a').each(function (num, obj) {
         if ($(obj).hasClass('booru_pic')) {
             return;
         }
@@ -165,17 +165,22 @@ function parse_all_videos(current_options) {
 
 function video_extension_to_mime(extension) {
     switch (extension) {
-        case 'webm':return 'video/webm; codecs="vp8, vorbis';
-        case 'avi' :return 'video/avi;';
-        case 'mp4' :return 'video/mp4;';
-        case 'mpg' :return 'video/mp4;';
-        case 'mpeg':return 'video/mp4;';
+        case 'webm':
+            return 'video/webm; codecs="vp8, vorbis';
+        case 'avi' :
+            return 'video/avi;';
+        case 'mp4' :
+            return 'video/mp4;';
+        case 'mpg' :
+            return 'video/mp4;';
+        case 'mpeg':
+            return 'video/mp4;';
     }
 }
 
 // Аудио
-function parse_all_audios(current_options){
-    $('.post-content a').each(function(num, obj) {
+function parse_all_audios(current_options) {
+    $('.post-content a').each(function (num, obj) {
         if ($(obj).hasClass('booru_pic')) {
             return;
         }
@@ -186,12 +191,12 @@ function parse_all_audios(current_options){
         if (n = href.match(new RegExp('^https?:\\/\\/([a-z0-9.-]+)\\/[a-z0-9_\\/.%-]+\\.(mp3|ogg|wav)(\\?.+)?$', 'i'))) {
             var domain = n[1];
             // Проверяем откуда мы грузимся
-            if (domain.match(new RegExp('\\.vk\\.me$', 'i'))){
+            if (domain.match(new RegExp('\\.vk\\.me$', 'i'))) {
                 // Так то ж Контакт!
-                if (typeof(n[3])=='undefined'){
+                if (typeof(n[3]) == 'undefined') {
                     return;
                 }
-                if (!n[3].match('extra\\=', 'i')){
+                if (!n[3].match('extra\\=', 'i')) {
                     return;
                 }
             }
@@ -214,9 +219,12 @@ function parse_all_audios(current_options){
 
 function audio_extension_to_mime(extension) {
     switch (extension) {
-        case 'mp3': return 'audio/mpeg';
-        case 'ogg': return 'audio/ogg; codecs=vorbis';
-        case 'wav': return 'audio/vnd.wave';
+        case 'mp3':
+            return 'audio/mpeg';
+        case 'ogg':
+            return 'audio/ogg; codecs=vorbis';
+        case 'wav':
+            return 'audio/vnd.wave';
     }
 }
 
@@ -225,7 +233,7 @@ function set_posts_count_label() {
     var ids = [];
     $('.content-wrap > .post .post-id a .cn').addClass('changed_background');
 
-    $('.content-wrap > .post').each(function(num, obj) {
+    $('.content-wrap > .post').each(function (num, obj) {
         var t = $(obj).attr('data-comment-id');
         if (typeof(t) !== 'undefined') {
             return;
@@ -236,10 +244,10 @@ function set_posts_count_label() {
 
     $ajax({
         'url': 'https://api.kanaria.ru/point/get_post_info.php?list=' + urlencode(ids.join(',')),
-        'success': function(a) {
+        'success': function (a) {
             var answer = JSON.parse(a);
 
-            $('.content-wrap > .post').each(function(num, obj) {
+            $('.content-wrap > .post').each(function (num, obj) {
                 var id = $(obj).attr('data-id');
                 var postid = $(obj).find('.post-id a')[0];
                 var t = $(obj).attr('data-comment-id');
@@ -275,7 +283,7 @@ function parse_pleercom_links(current_options) {
  * @deprecated since 1.19
  */
 function parse_pleercom_links_nokita() {
-    $('.post-content a').each(function(num, obj) {
+    $('.post-content a').each(function (num, obj) {
         var href = obj.href;
         var n = null;
 
@@ -297,14 +305,14 @@ function parse_pleercom_links_nokita() {
 }
 
 function parse_pleercom_links_ajax(current_options) {
-    $('.post-content a').each(function(num, obj) {
+    $('.post-content a').each(function (num, obj) {
         var href = obj.href;
         var n = null;
 
         if (n = href.match(new RegExp('^https?:\\/\\/pleer\\.com\\/tracks\\/([0-9a-z]+)', 'i'))) {
             var player_div = document.createElement('div');
             $(player_div).addClass('embeded_audio').addClass('embeded_audio_' + n[1]);
-            $(obj).addClass('pleercom_original_link_'+n[1]);
+            $(obj).addClass('pleercom_original_link_' + n[1]);
             obj.parentElement.insertBefore(player_div, obj);
             create_pleercom_ajax(n[1], current_options);
         }
@@ -319,7 +327,7 @@ function create_pleercom_ajax(id, current_options) {
         'dont_set_content_type': true,
         'pleer_id': id,
         'headers': [['Accept', '*'], ['Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8']],
-        'success': function(a) {
+        'success': function (a) {
             var answer = JSON.parse(a);
             var player = document.createElement('audio');
             // @todo Проверять существование track_link
@@ -330,11 +338,11 @@ function create_pleercom_ajax(id, current_options) {
             });
             $('.embeded_audio_' + this.settings.pleer_id)[0].appendChild(player);
 
-            if (current_options.is('option_embedding_pleercom_orig_link', false)){
-                $('.pleercom_original_link_'+this.settings.pleer_id).hide();
+            if (current_options.is('option_embedding_pleercom_orig_link', false)) {
+                $('.pleercom_original_link_' + this.settings.pleer_id).hide();
             }
         },
-        'error': function() {
+        'error': function () {
             console.log('Can not get pleer.com url');
             setTimeout(new Function('create_pleercom_ajax("' + this.settings.pleer_id + '");'), 1000);
         }
@@ -346,7 +354,7 @@ function create_pleercom_ajax(id, current_options) {
 // Проставляем теги у постов
 // @hint В данный момент эта фича используются для NSFW, потом выборку по тегам можно будет использовать много где
 function create_tag_system() {
-    $('.content-wrap > .post').each(function() {
+    $('.content-wrap > .post').each(function () {
         var tags = $(this).find('div.tags a.tag');
         for (var i = 0; i < tags.length; i++) {
             var tag_name = $(tags[i]).html().toLowerCase();
@@ -362,7 +370,7 @@ function set_space_key_skip_handler() {
     }
 
     // @todo Свериться с Best-practice биндинга функций. Мб там on или bind
-    $(document.body).keydown(function(e) {
+    $(document.body).keydown(function (e) {
         // @todo Я хотел по отпусканию кнопки, но там уже скролл срабатывает
         // проверяем фокус
         if ($(':focus').length > 0) {
@@ -401,7 +409,8 @@ var draft_save_busy = false;// Флаг занятости функции сох
 var draft_save_last_time = null;// Время последнего сохранения
 // Восстанавливаем черновик
 function draft_restore() {
-    chrome.storage.local.get(['point_draft_text', 'point_draft_tags'], function(items) {
+    // @todo Переписать под Mozilla Firefox
+    chrome.storage.local.get(['point_draft_text', 'point_draft_tags'], function (items) {
         if ($('#new-post-form #text-input').val() == '') {
             $('#new-post-form #text-input').val(items.point_draft_text);
             draft_last_text = items.point_draft_text;
@@ -416,7 +425,7 @@ function draft_restore() {
 // Установка хандлера
 function draft_set_save_handler() {
     // Господи, прости меня грешного за эту строку. Меня вынудили
-    $('#text-input, #tags-input').on('keyup', function() {
+    $('#text-input, #tags-input').on('keyup', function () {
         draft_save_check();
         setTimeout(draft_save_check, 3000);// Второй раз мы дёргаем для последнего нажатия
     });
@@ -449,14 +458,15 @@ function draft_save_check() {
     draft_last_text = current_text;
     draft_last_tags = current_tags;
     // Save it using the Chrome extension storage API.
+    // @todo Переписать под Mozilla Firefox
     chrome.storage.local.set({
         'point_draft_text': draft_last_text,
         'point_draft_tags': draft_last_tags
-    }, function() {
+    }, function () {
         // Notify that we saved.
         draft_save_busy = false;
         $('#draft-save-status').text('Черновик сохранён...');
-        setTimeout(function() {
+        setTimeout(function () {
             $('#draft-save-status').fadeOut(1000);
         }, 1000);
     });
@@ -465,7 +475,7 @@ function draft_save_check() {
 
 // Парсим ссылки на coub
 function parse_coub_links(current_options) {
-    $('.post-content a').each(function(num, obj) {
+    $('.post-content a').each(function (num, obj) {
         var href = obj.href;
         var n = null;
 
@@ -492,8 +502,8 @@ function parse_coub_links(current_options) {
 }
 
 // Правим хинт в FancyBox
-function fancybox_set_smart_hints(){
-    $('.post').each(function() {
+function fancybox_set_smart_hints() {
+    $('.post').each(function () {
         var all_post_images = $(this).find('.postimg');
         if (all_post_images.length == 0) {
             return;
@@ -539,7 +549,7 @@ function fancybox_set_smart_hints(){
         // А теперь перебираем по одному все картинки
         var paragraphs = $(this).find('.post-content > .text > p, .post-content > .text, .text-content > p, .text-content');
 
-        paragraphs.each(function() {
+        paragraphs.each(function () {
             var nodes = this.childNodes;
             for (var i = 0; i < nodes.length - 2; i++) {
                 if ($(nodes[i]).hasClass('booru_pic')) {
@@ -560,10 +570,11 @@ function fancybox_set_smart_hints(){
  */
 // Инициализируем
 function hints_init_user_system() {
-    chrome.storage.sync.get('point_user_hints', function(items) {
+    // @todo Переписать под Mozilla Firefox
+    chrome.storage.sync.get('point_user_hints', function (items) {
         if (typeof(items.point_user_hints) == 'undefined') {
             // Первый запуск системы
-            chrome.storage.sync.set({'point_user_hints': {}}, function() {
+            chrome.storage.sync.set({'point_user_hints': {}}, function () {
                 hints_draw_main_user_hint({});
                 hints_set_titles_on_users({});
             });
@@ -592,8 +603,9 @@ function hints_draw_main_user_hint(items) {
     $(buttons_block).addClass('buttons').
         html('<a class="edit" href="javascript:" title="Редактировать"></a>');
     current_user_hint_block.appendChild(buttons_block);
-    $(buttons_block).find('.edit').on('click', function() {
-        chrome.storage.sync.get('point_user_hints', function(items) {
+    $(buttons_block).find('.edit').on('click', function () {
+        // @todo Переписать под Mozilla Firefox
+        chrome.storage.sync.get('point_user_hints', function (items) {
             var current_text = '';
             if (typeof(items.point_user_hints[current_user_name]) !== 'undefined') {
                 current_text = items.point_user_hints[current_user_name];
@@ -619,13 +631,13 @@ function hints_draw_main_user_hint(items) {
     $(change_hint_block).addClass('change_hint_block').hide().
         html('<textarea></textarea><input class="button_save" type="submit" value="Сохранить">' +
         '<a href="javascript:" class="button_cancel">Отмена</a>');
-    $(change_hint_block).find('.button_save').on('click', function() {
+    $(change_hint_block).find('.button_save').on('click', function () {
         $('.current-user-hint .change_hint_block').slideUp(500);
         var new_text = $('.current-user-hint .change_hint_block textarea').val();
         safe_saned_text(new_text, $('.current-user-hint > .text').hide().fadeIn(750));
         hints_save_new_hint(current_user_name, new_text);
     });
-    $(change_hint_block).find('.button_cancel').on('click', function() {
+    $(change_hint_block).find('.button_cancel').on('click', function () {
         $('.current-user-hint .change_hint_block').slideUp(500);
     });
     current_user_hint_block.appendChild(change_hint_block);
@@ -644,7 +656,7 @@ function safe_saned_text(text, object) {
 
 // Рисуем title'ы на всех доступных пользователях, точнее на их аватарках
 function hints_set_titles_on_users(items) {
-    $('a').each(function() {
+    $('a').each(function () {
         var href = $(this).attr('href');
         if (typeof(href) == 'undefined') {
             return;
@@ -667,7 +679,8 @@ function hints_set_titles_on_users(items) {
 
 // Сохраняем новый хинт
 function hints_save_new_hint(username, new_hint) {
-    chrome.storage.sync.get('point_user_hints', function(items) {
+    // @todo Переписать под Mozilla Firefox
+    chrome.storage.sync.get('point_user_hints', function (items) {
         items.point_user_hints[username] = new_hint;
         chrome.storage.sync.set({'point_user_hints': items.point_user_hints});
     });
@@ -688,7 +701,7 @@ function draw_nesting_level_indicator() {
 }
 
 function draw_nesting_level_indicator_level(obj, level) {
-    obj.find('> .post').each(function() {
+    obj.find('> .post').each(function () {
         var nesting = document.createElement('div');
         $(nesting).addClass('nesting').css({
             'width': (10 * level) + 'px'
@@ -700,7 +713,7 @@ function draw_nesting_level_indicator_level(obj, level) {
         });
     });
 
-    obj.each(function() {
+    obj.each(function () {
         var comments = $(this).find('> .comments');
         if (comments.length > 0) {
             draw_nesting_level_indicator_level(comments, level + 1);
@@ -721,23 +734,23 @@ function set_comments_refresh_tick(current_options) {
     }
 
     // Ставим тик
-    setInterval(function() {
+    setInterval(function () {
         comments_count_refresh_tick(current_options);
     }, 60000);
 
     // Ставим слежение за позицией мыши
     if (current_options.is('option_other_comments_count_refresh_title')) {
         $(document).
-            on('mouseenter', function() {
+            on('mouseenter', function () {
                 set_comments_refresh_clear_title_marks();
-            }).on('mouseleave', function() {
+            }).on('mouseleave', function () {
                 window_focused = false;
             });
 
         $(window).
-            on('focus', function() {
+            on('focus', function () {
                 set_comments_refresh_clear_title_marks();
-            }).on('blur', function() {
+            }).on('blur', function () {
                 window_focused = false;
             });
     }
@@ -758,7 +771,7 @@ function comments_count_refresh_tick(current_options) {
     var iframe = document.createElement('iframe');
     document.body.appendChild(iframe);
 
-    $(iframe).on('load', function() {
+    $(iframe).on('load', function () {
         var a = $(iframe.contentDocument.body).find('#main #left-menu #menu-recent .unread');
         var b = $(iframe.contentDocument.body).find('#main #left-menu #menu-comments .unread');
         var count_recent = (a.length == 0) ? 0 : parseInt(a.text());
@@ -771,7 +784,7 @@ function comments_count_refresh_tick(current_options) {
                     'background-color': '#f2ebee',
                     'color': '#7c3558'
                 });
-                setTimeout(function() {
+                setTimeout(function () {
                     $('#main #left-menu #menu-recent .unread').css({
                         'background-color': '',
                         'color': ''
@@ -788,7 +801,7 @@ function comments_count_refresh_tick(current_options) {
                     'background-color': '#f2ebee',
                     'color': '#7c3558'
                 });
-                setTimeout(function() {
+                setTimeout(function () {
                     $('#main #left-menu #menu-comments .unread').css({
                         'background-color': '',
                         'color': ''
@@ -825,7 +838,7 @@ function comments_count_refresh_tick(current_options) {
  * Встраиваем твиты из Твиттера
  */
 function twitter_tweet_embedding_init() {
-    // @todo Враппер для Fx
+    // @todo Написать враппер для Fx, если нужен
     // Чёрная магия. Выбираемся из манямирка, прихватив с собой пару сраных функций
     // https://developer.chrome.com/extensions/content_scripts Isolated World
     var e = document.createElement("script");
@@ -834,7 +847,7 @@ function twitter_tweet_embedding_init() {
     document.head.appendChild(e);
 
     // Встраиваем скрипт так, как описано в best twitter practice https://dev.twitter.com/web/javascript/loading
-    window.twttr = (function(d, s, id) {
+    window.twttr = (function (d, s, id) {
         var t, js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
         js = d.createElement(s);
@@ -842,7 +855,7 @@ function twitter_tweet_embedding_init() {
         js.src = "https://platform.twitter.com/widgets.js";
         fjs.parentNode.insertBefore(js, fjs);
         return window.twttr || (t = {
-                _e: [], ready: function(f) {
+                _e: [], ready: function (f) {
                     t._e.push(f);
                 }
             });
@@ -870,7 +883,7 @@ function twitter_tweet_embedding_wait_for_ready_injected() {
 function twitter_tweet_embedding_parse_links() {
     // Обрабатываем все твиты
     var twitter_tweet_count = 0;
-    $('.post-content a').each(function(num, obj) {
+    $('.post-content a').each(function (num, obj) {
         if ($(obj).hasClass('booru_pic')) {
             return;
         }
@@ -903,7 +916,7 @@ function twitter_tweet_embedding_parse_links() {
  */
 function instagram_posts_embedding_init(current_options) {
     var insagram_post_count = 0;
-    $('.post-content a').each(function(num, obj) {
+    $('.post-content a').each(function (num, obj) {
         if ($(obj).hasClass('booru_pic')) {
             return;
         }
@@ -914,7 +927,7 @@ function instagram_posts_embedding_init(current_options) {
         if (n = href.match(new RegExp('^https?://(www\\.)?instagram\\.com/p/([a-z0-9]+)/?', 'i'))) {
             $ajax({
                 'url': 'https://api.instagram.com/oembed?url=' + urlencode('http://instagram.com/p/' + n[2] + '/'),
-                'success': function(text) {
+                'success': function (text) {
                     var answer = JSON.parse(text);
                     var new_post = document.createElement('a');
                     $(new_post).attr({

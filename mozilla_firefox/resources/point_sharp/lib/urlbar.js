@@ -60,6 +60,7 @@ function url_icon_create(window, callback) {
     }
     var new_icon = window.document.createElement('image');
     new_icon.setAttribute('id', 'point-sharp-settings-img');
+    // @todo Поменять иконку
     new_icon.style.listStyleImage = 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3' +
     'AH1ZAAAAB3RJTUUH3ggPFjUC2GfwMAAAAAlwSFlzAAAewgAAHsIBbtB1PgAAAARnQU1BAACxjwv8YQUAAAYaSURBVHjaNVVpbFRlFH1RNgnyw4' +
     'Sf+FdjDMYYFSKCYhCCCgYNiyBKWVsbNqVQFClh1woEIkuhYqmt1tKFtrRWS6nQ1rZWutHSyqxvljfztnnz3kynhR/H82bGHydv3sw395x7z733' +

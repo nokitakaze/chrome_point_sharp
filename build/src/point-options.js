@@ -190,6 +190,11 @@ $(document).ready(function () {
     // Я не буду пользоваться паттерном стратегия. Если наговнокодить на одной странице, плохо не будет
     if (navigator.appVersion.match(/.*chrome.*/i) == null) {
         // Mozilla Firefox
+
+        if (document.location.href.match(new RegExp('https?://point\\.im/point\\-sharp\\-settings\\.html(\\?.*)?')) == null) {
+            return;
+        }
+
         $('.content-wrap').addClass('point-options-wrapper').
             html('<nav class="tabs-list"></nav><form class="tabs-content"></form>' +
             '<p class="saved hidden" data-i18n="options_text_saved"></p><div>' +
