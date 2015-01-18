@@ -43,7 +43,9 @@ exports.main = function () {
             self.data.url("css/additional/modules/at_before_username.css"),
             self.data.url("vendor/fancybox/source/jquery.fancybox.css"),
             self.data.url("css/additional/fancybox/style.css"),
-            self.data.url("vendor/markitup/markitup/skins/markitup/style.css")
+            self.data.url("vendor/markitup/markitup/skins/markitup/style.css"),
+
+            self.data.url("css/additional/point-options.css")// CSS Опций
         ],
         contentScriptFile: [
             self.data.url("js/jquery.js"),
@@ -61,7 +63,7 @@ exports.main = function () {
 
             self.data.url("js/wrapper.js"),
             self.data.url("js/point_sharp_shared_code.js"),
-            self.data.url("js/point_sharp_settings.js")// Страница Опций
+            self.data.url("js/point-options.js")// Страница Опций
         ],
         onAttach: function (worker) {
             // @hint Поскольку в Fx исключено появление двух одинаковых extension'ов, скрытие иконки я не реализую
@@ -100,6 +102,8 @@ exports.main = function () {
             });
 
         }
+
+
     });
 
 };

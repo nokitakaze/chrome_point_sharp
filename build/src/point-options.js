@@ -11,8 +11,9 @@ function draw_option_tree(tree) {
         // Нав
         var nav = document.createElement('a');
         $(nav).attr({
-            'href': '#' + index,
-            'data-i18n': index.replace(/_/g, '-')
+            'href': '#',
+            'data-i18n': index.replace(/_/g, '-'),
+            'data-tab-name': index
         }).addClass('tabs-item').text(tree[index].description);
         $('.tabs-list').append(nav);
 
@@ -33,6 +34,16 @@ function draw_option_tree(tree) {
     // Ставим первую
     $('.tabs-list > .tabs-item').first().addClass('selected');
     $('.tabs-content > .tabs-content-item').first().addClass('selected');
+
+    // Лисенер
+    $('.tabs-list > .tabs-item').on('click', function () {
+        $('.tabs-list > .tabs-item').removeClass('selected');
+        $('.tabs-content > .tabs-content-item').removeClass('selected');
+
+        $(this).addClass('selected');
+        var index = $(this).attr('data-tab-name');
+        $('.tabs-content > .tabs-content-item[id="' + index + '"]').addClass('selected');
+    });
 }
 
 /**
@@ -49,7 +60,6 @@ function draw_option_branch(parent_obj, index, branch) {
             children_length++;
         }
     }
-
 
     if (branch.type == 'radio') {
         // Радио
@@ -101,9 +111,21 @@ function redraw_current_options_value() {
 
 }
 
+
 $(document).ready(function () {
-    // Создаём DOM
-    console.log("Options Tree: ", point_sharp_options_tree);
+    // Я не буду пользоваться паттерном стратегия. Если наговнокодить на одной странице, плохо не будет
+    if (navigator.appVersion.match(/.*chrome.*/i) == null) {
+        // Mozilla Firefox
+        $('.content-wrap').addClass('point-options-wrapper').
+            html('<nav class="tabs-list"></nav><form class="tabs-content"></form>' +
+            '<p class="saved hidden" data-i18n="options_text_saved"></p><div>' +
+            '<p>Point# <span id="version"></span> by' +
+            '<a href="https://skobkin-ru.point.im/" target="_blank">@skobkin-ru</a>,' +
+            '<a href="https://isqua.point.im/" target="_blank">@isqua</a>,' +
+            '<a href="https://nokitakaze.point.im/" target="_blank">@NokitaKaze</a>' +
+            '</p></div>');
+    }
+
     draw_option_tree(point_sharp_options_tree);
     redraw_current_options_value();
 });

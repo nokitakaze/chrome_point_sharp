@@ -1,0 +1,137 @@
+/**
+ * Инклюдится только на страницу опций
+ *
+ * ПЛАТФОРМОНЕЗАВИМИСЫЙ ФАЙЛ
+ */
+
+.point-options-wrapper a {
+    color: #1abef1;
+}
+
+.point-options-wrapper p {
+    margin: 0;
+    padding: 0;
+}
+
+.point-options-wrapper .tabs-list {
+    position: relative;
+    z-index: 1;
+
+    display: block;
+
+    margin: 0 0 -1px;
+    padding: 0;
+}
+
+.point-options-wrapper .tabs-item {
+    display: inline-block;
+
+    padding: 7px 15px 3px;
+
+    list-style-type: none;
+
+    text-decoration: none;
+
+    border: 1px solid transparent;
+}
+
+.point-options-wrapper .tabs-item.selected {
+    cursor: default;
+
+    border-color: #dedede;
+    border-bottom-color: #fff;
+    background: #fff;
+}
+
+.point-options-wrapper .tabs-content {
+    position: relative;
+
+    height: 345px;
+    margin: 0;
+    padding: 0;
+
+    border: 1px solid #dedede;
+    border-radius: 0 0 3px 3px;
+    background: #fff;
+}
+
+.point-options-wrapper .tabs-content::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+
+    height: 20px;
+
+    content: '';
+
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 30%, rgba(255, 255, 255, 0) 100%);
+    background-size: 20px 20px;
+}
+
+.point-options-wrapper .tabs-content-item {
+    display: none;
+    overflow: auto;
+
+    box-sizing: border-box;
+    max-height: 100%;
+    margin: 0;
+    padding: 10px 15px 5px;
+
+    border: none;
+    background: transparent;
+}
+
+.point-options-wrapper .tabs-content-item.selected {
+    display: block;
+}
+
+.point-options-wrapper input[type='checkbox'] {
+    margin-right: 5px;
+    margin-left: 0;
+
+    vertical-align: 1px;
+}
+
+.point-options-wrapper .option-node {
+    display: block;
+
+    padding: 0 0 5px 21px;
+
+    text-indent: -21px;
+}
+
+.point-options-wrapper .option-node input[type='checkbox']:not(:checked) ~ .option-node {
+    display: none;
+}
+
+.point-options-wrapper .option-node input[type='checkbox']:not(:checked) ~ .option-node label {
+    color: #999;
+}
+
+.point-options-wrapper .footer {
+    margin: 0;
+    padding: 10px 15px;
+}
+
+.point-options-wrapper .saved {
+    position: relative;
+    z-index: 1;
+
+    margin: -2px 1px 0;
+    padding: 10px 15px;
+
+    transition: all .2s;
+    transform-origin: 50% 0;
+
+    color: #fff;
+    border-top: 1px solid #dedede;
+    border-radius: 0 0 2px 2px;
+    background: #4caf50;
+}
+
+.point-options-wrapper .saved.hidden {
+    transform: scaleY(.5);
+
+    opacity: 0;
+}
