@@ -33,7 +33,7 @@ $(document).ready(function () {
  * @param options Опции из OptionManager
  */
 function pimp_my_page(options) {
-    console.log("All options and code loaded");
+    console.log("pimp_my_page start");
     $('#point-plus-debug').attr({
         'data-point-plus-version': options.version()
     }).text('Point# ' + options.version() + ' loading...');
@@ -272,7 +272,7 @@ function pimp_my_page(options) {
         $('#search-form input[type="text"]').attr('placeholder', 'Google').keydown(function (e) {
             if (e.keyCode == 10 || e.keyCode == 13) {
                 e.preventDefault();
-                document.location.href = '//www.google.ru/search?q=site%3Apoint.im+' + $(this).val();
+                document.location.href = 'https://www.google.ru/search?q=site%3Apoint.im+' + urlencode($(this).val());
             }
         });
     }
@@ -335,4 +335,5 @@ function pimp_my_page(options) {
 
     // Закрываем значок
     $('#point-plus-debug').fadeOut(500);
+    console.log("pimp_my_page stop");
 }

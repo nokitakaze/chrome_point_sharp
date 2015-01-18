@@ -6,7 +6,7 @@
 /**
  * Получаем значение из Local Storage
  *
- * @param key Название элемента
+ * @param key Название элемента. Если передаётся строка, до будет возвращено одно значение, иначе array
  * @param callback Функция, которую дёрнем, когда получим значение
  */
 function local_storage_get(key, callback) {
@@ -94,7 +94,7 @@ function urlbar_icon_show() {
 function point_sharp_get_version(callback){
     // @todo Реализовать
     // https://developer.mozilla.org/en-US/Add-ons/Code_snippets/Miscellaneous
-    console.warn('wrapper.js, not realized');
+    console.warn('wrapper.js, point_sharp_get_version not realized');
     callback('0.0.1');
 }
 

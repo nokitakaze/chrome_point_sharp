@@ -76,8 +76,9 @@ exports.main = function () {
                 console.log("Extension code. get_storage_value ", data);
                 var value;
                 if (typeof(data.key) == 'object') {
-                    value = [];
-                    for (var single_key in data.key) {
+                    value = {};
+                    for (var i = 0; i < data.key.length; i++) {
+                        var single_key = data.key[i];
                         value[single_key] = (typeof(simplestore.storage[single_key]) !== 'undefined')
                             ? simplestore.storage[single_key] : null;
                     }

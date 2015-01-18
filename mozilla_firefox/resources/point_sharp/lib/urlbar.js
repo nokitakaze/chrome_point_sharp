@@ -33,10 +33,10 @@ function url_icon_init(window, callback) {
             //console.log(tab.id + ', ' + tab.url + " is closed");
             // @todo Написать
             /*
-            setTimeout(function () {
-                check_tab_status(callback);
-            }, 100);
-            */
+             setTimeout(function () {
+             check_tab_status(callback);
+             }, 100);
+             */
         });
 
         check_tab_status(callback);

@@ -62,9 +62,6 @@ function load_all_booru_images() {
             var image = create_image('animepicturesnet', n[1]);
             obj.parentElement.insertBefore(image, obj);
             booru_picture_count++;
-        } else if (false) {
-
-
         }
 
     });
@@ -122,10 +119,11 @@ function parse_webm(current_options) {
         if (n = href.match(new RegExp('\\.webm(\\?.+)?$', 'i'))) {
             var player = document.createElement('video');
             // Там может быть не vp8+vorbis, но мы этого никак не узнаем
-            $(player).html('<source src="' + href + '" type=\'video/webm; codecs="vp8, vorbis"\' />').attr('controls', 'controls').css({
-                'display': 'block',
-                'max-width': '95%'
-            }).addClass('parsed-webm-link');
+            $(player).html('<source src="' + href + '" type=\'video/webm; codecs="vp8, vorbis"\' />').
+                attr('controls', 'controls').css({
+                    'display': 'block',
+                    'max-width': '95%'
+                }).addClass('parsed-webm-link');
 
             obj.parentElement.insertBefore(player, obj);
 
@@ -409,8 +407,9 @@ var draft_save_busy = false;// Флаг занятости функции сох
 var draft_save_last_time = null;// Время последнего сохранения
 // Восстанавливаем черновик
 function draft_restore() {
-    // @todo Переписать под Mozilla Firefox
-    chrome.storage.local.get(['point_draft_text', 'point_draft_tags'], function (items) {
+    console.info('draft_restore');
+    local_storage_get(['point_draft_text', 'point_draft_tags'], function (items) {
+        console.info('draft_restore callback', items);
         if ($('#new-post-form #text-input').val() == '') {
             $('#new-post-form #text-input').val(items.point_draft_text);
             draft_last_text = items.point_draft_text;
@@ -451,15 +450,13 @@ function draft_save_check() {
     draft_save_busy = true;
     draft_save_last_time = new Date();
 
-    // @todo i18n
     $('#draft-save-status').text('Сохраняем черновик...').show();
 
     // Сохраняем
     draft_last_text = current_text;
     draft_last_tags = current_tags;
-    // Save it using the Chrome extension storage API.
-    // @todo Переписать под Mozilla Firefox
-    chrome.storage.local.set({
+
+    local_storage_set({
         'point_draft_text': draft_last_text,
         'point_draft_tags': draft_last_tags
     }, function () {
@@ -477,13 +474,14 @@ function draft_save_check() {
 function parse_coub_links(current_options) {
     $('.post-content a').each(function (num, obj) {
         var href = obj.href;
-        var n = null;
+        var n;
 
         if (n = href.match(new RegExp('^https?:\\/\\/coub\\.com\\/view\\/([0-9a-z]+)', 'i'))) {
             var player = document.createElement('iframe');
             var parent_width = $(obj.parentElement).width();
             $(player).attr({
-                'src': 'https://coub.com/embed/' + n[1] + '?muted=false&autostart=false&originalSize=false&hideTopBar=false&startWithHD=true',
+                'src': 'https://coub.com/embed/' + n[1] +
+                '?muted=false&autostart=false&originalSize=false&hideTopBar=false&startWithHD=true',
                 'allowfullscreen': 'true'
             }).css({
                 'max-width': '640px',
@@ -556,7 +554,6 @@ function fancybox_set_smart_hints() {
                     if (nodes[i + 2].nodeName == '#text') {
                         $(nodes[i]).attr('data-fancybox-title', nodes[i + 2].textContent);
                         i += 2;
-                        continue;
                     }
                 }
             }
@@ -570,18 +567,18 @@ function fancybox_set_smart_hints() {
  */
 // Инициализируем
 function hints_init_user_system() {
-    // @todo Переписать под Mozilla Firefox
-    chrome.storage.sync.get('point_user_hints', function (items) {
-        if (typeof(items.point_user_hints) == 'undefined') {
+    local_storage_get('point_user_hints', function (point_user_hints) {
+        if ((typeof(point_user_hints) == 'undefined') || (point_user_hints === null)) {
             // Первый запуск системы
-            chrome.storage.sync.set({'point_user_hints': {}}, function () {
+            console.info('Storage key `point_user_hints` is not defined. First exec?');
+            local_storage_set({'point_user_hints': {}}, function () {
                 hints_draw_main_user_hint({});
                 hints_set_titles_on_users({});
             });
         } else {
             // Второй+ запуск системы
-            hints_draw_main_user_hint(items.point_user_hints);
-            hints_set_titles_on_users(items.point_user_hints);
+            hints_draw_main_user_hint(point_user_hints);
+            hints_set_titles_on_users(point_user_hints);
         }
     });
 }
@@ -604,11 +601,10 @@ function hints_draw_main_user_hint(items) {
         html('<a class="edit" href="javascript:" title="Редактировать"></a>');
     current_user_hint_block.appendChild(buttons_block);
     $(buttons_block).find('.edit').on('click', function () {
-        // @todo Переписать под Mozilla Firefox
-        chrome.storage.sync.get('point_user_hints', function (items) {
+        local_storage_get('point_user_hints', function (point_user_hints) {
             var current_text = '';
-            if (typeof(items.point_user_hints[current_user_name]) !== 'undefined') {
-                current_text = items.point_user_hints[current_user_name];
+            if (typeof(point_user_hints[current_user_name]) !== 'undefined') {
+                current_text = point_user_hints[current_user_name];
             }
 
             $('.current-user-hint .change_hint_block').slideDown(500);
@@ -679,10 +675,9 @@ function hints_set_titles_on_users(items) {
 
 // Сохраняем новый хинт
 function hints_save_new_hint(username, new_hint) {
-    // @todo Переписать под Mozilla Firefox
-    chrome.storage.sync.get('point_user_hints', function (items) {
-        items.point_user_hints[username] = new_hint;
-        chrome.storage.sync.set({'point_user_hints': items.point_user_hints});
+    local_storage_get('point_user_hints', function (point_user_hints) {
+        point_user_hints[username] = new_hint;
+        local_storage_set({'point_user_hints': point_user_hints});
     });
 }
 
@@ -760,8 +755,7 @@ var window_focused = true;
 
 // Очищаем [0; 0]
 function set_comments_refresh_clear_title_marks() {
-    var new_title = document.title.replace(new RegExp('^\\[[0-9]+\\; [0-9]+\\] '), '');
-    document.title = new_title;
+    document.title = document.title.replace(new RegExp('^\\[[0-9]+\\; [0-9]+\\] '), '');
     window_focused = true;
 }
 
@@ -777,7 +771,7 @@ function comments_count_refresh_tick(current_options) {
         var count_recent = (a.length == 0) ? 0 : parseInt(a.text());
         var count_comments = (b.length == 0) ? 0 : parseInt(b.text());
 
-        console.log('Comments: %d, Recent: %d', count_comments, count_recent);
+        console.log('Comments: ', count_comments, ', Recent: ', count_recent);
         if (count_recent > 0) {
             if (parseInt($('#main #left-menu #menu-recent .unread').text()) != count_recent) {
                 $('#main #left-menu #menu-recent .unread').text(count_recent).show().css({
@@ -836,9 +830,10 @@ function comments_count_refresh_tick(current_options) {
 
 /**
  * Встраиваем твиты из Твиттера
+ *
+ * Workaround для Google Chrome. В Fx этот workaround ничего не ломает, поэтому оставил так
  */
 function twitter_tweet_embedding_init() {
-    // @todo Написать враппер для Fx, если нужен
     // Чёрная магия. Выбираемся из манямирка, прихватив с собой пару сраных функций
     // https://developer.chrome.com/extensions/content_scripts Isolated World
     var e = document.createElement("script");

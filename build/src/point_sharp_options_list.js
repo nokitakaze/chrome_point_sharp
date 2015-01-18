@@ -424,7 +424,6 @@ var point_sharp_options_set_save = false;
  * @param success_callback Функция, которую дёрнем, когда сохраним значение
  */
 function local_options_set(data, success_callback) {
-    console.log("Content code. local_options_set", data);
     if (point_sharp_options_set_save) {
         // Кекекекекекекекекеке
         setTimeout(function () {
@@ -432,6 +431,7 @@ function local_options_set(data, success_callback) {
         }, 50);
     }
 
+    console.log("Content code. local_options_set", data);
     point_sharp_options_set_save = true;
 
     // Из-за проблемы двух окон мы сначала берём опции, а потом сохраняем их

@@ -6,7 +6,7 @@
 /**
  * Получаем значение из Local Storage
  *
- * @param key Название элемента
+ * @param key Название элемента. Если передаётся строка, до будет возвращено одно значение, иначе array
  * @param callback Функция, которую дёрнем, когда получим значение
  */
 function local_storage_get(key, callback) {
