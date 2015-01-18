@@ -4,8 +4,8 @@
  * @param tree Дерево опций
  */
 function draw_option_tree(tree) {
-    $('.tabs-list').html('');
-    $('.tabs-content').html('');
+    $('.point-options-wrapper .tabs-list').html('');
+    $('.point-options-wrapper .tabs-content').html('');
 
     for (var index in tree) {
         // Нав
@@ -15,7 +15,7 @@ function draw_option_tree(tree) {
             'data-i18n': index.replace(/_/g, '-'),
             'data-tab-name': index
         }).addClass('tabs-item').text(tree[index].description);
-        $('.tabs-list').append(nav);
+        $('.point-options-wrapper .tabs-list').append(nav);
 
         // Секция
         var section = document.createElement('section');
@@ -28,26 +28,35 @@ function draw_option_tree(tree) {
             draw_option_branch(section, child_index, tree[index].children[child_index]);
         }
 
-        $('.tabs-content').append(section);
+        $('.point-options-wrapper .tabs-content').append(section);
     }
 
-    // Ставим первую
-    $('.tabs-list > .tabs-item').first().addClass('selected');
-    $('.tabs-content > .tabs-content-item').first().addClass('selected');
+    // Ставим первые табы выбранными
+    $('.point-options-wrapper .tabs-list > .tabs-item').first().addClass('selected');
+    $('.point-options-wrapper .tabs-content > .tabs-content-item').first().addClass('selected');
 
-    // Лисенер
-    $('.tabs-list > .tabs-item').on('click', function () {
-        $('.tabs-list > .tabs-item').removeClass('selected');
-        $('.tabs-content > .tabs-content-item').removeClass('selected');
+    // Переключение табов
+    $('.point-options-wrapper .tabs-list > .tabs-item').on('click', function () {
+        $('.point-options-wrapper .tabs-list > .tabs-item').removeClass('selected');
+        $('.point-options-wrapper .tabs-content > .tabs-content-item').removeClass('selected');
 
         $(this).addClass('selected');
         var index = $(this).attr('data-tab-name');
-        $('.tabs-content > .tabs-content-item[id="' + index + '"]').addClass('selected');
+        $('.point-options-wrapper .tabs-content > .tabs-content-item[id="' + index + '"]').addClass('selected');
     });
+
+    // Нажатие галок на чекбоксах
+    $('.point-options-wrapper .tab-content .option-node > input[type="checkbox"]').on('click', function () {
+        // @todo Сделать Нажатие галок на чекбоксах
+    });
+
+    // @todo Нажатие галок на радиобатонах
+
+
 }
 
 /**
- * Рисуем ветку у объекта
+ * Создаём ветку опций
  *
  * @param branch Ветка
  */
@@ -63,7 +72,7 @@ function draw_option_branch(parent_obj, index, branch) {
 
     if (branch.type == 'radio') {
         // Радио
-        // @todo Не сделано
+        // @todo Создание радио-батонов не сделано
         console.warn('radio is not realized');
 
     } else if (children_length == 0) {
@@ -94,21 +103,31 @@ function draw_option_branch(parent_obj, index, branch) {
             draw_option_branch(item, child_index, branch.children[child_index]);
         }
 
+
         // Добавляем в parent object
         $(parent_obj).append(item);
     }
 }
 
 /**
- * Обновляем текущие галки
- */
+ * Обновляем текущие галки и радио-батоны. Обновляем значения из сторожа
+ **/
 function redraw_current_options_value() {
     point_sharp_options_init(function (options) {
         console.log("point_sharp_options_init: ", options);
-        // @todo Выставляем галки
 
+        // Выставляем галки
+        $('.point-options-wrapper .option-node > input[type="checkbox"]').first().val(0);
+        var raw_options = options.getOptions();
+        for (var index in raw_options) {
+            if (options.is(index)) {
+                $('.point-options-wrapper [name="' + (index.replace(/_/g, '-')) + '"]').
+                    first().prop('checked', true);
+            }
+        }
+
+        // @todo Выставляем радио-батоны
     });
-
 }
 
 
@@ -124,6 +143,10 @@ $(document).ready(function () {
             '<a href="https://isqua.point.im/" target="_blank">@isqua</a>,' +
             '<a href="https://nokitakaze.point.im/" target="_blank">@NokitaKaze</a>' +
             '</p></div>');
+    } else {
+        // Google Chrome
+        // @todo Узнать что мы не в маленьком окне и удалить класс кастрации
+        // $('body').removeClass('point-options-castrate');
     }
 
     draw_option_tree(point_sharp_options_tree);

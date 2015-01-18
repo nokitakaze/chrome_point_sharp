@@ -4,7 +4,6 @@
  * ПЛАТФОРМОНЕЗАВИСИМЫЙ ФАЙЛ
  */
 
-// @todo Скопировать все опции
 // @todo Не забыть про платформозависимые опции
 var point_sharp_options_tree = {
     "tree_media":{
@@ -13,12 +12,12 @@ var point_sharp_options_tree = {
         "children":{
             "option_fancybox":{
                 "type":"checkbox",
-                "default_value":false,
+                "default_value":true,
                 "description":"Включить Fancybox ▼",
                 "children":{
                     "option_fancybox_images":{
                         "type":"checkbox",
-                        "default_value":false,
+                        "default_value":true,
                         "description":"Использовать для картинок"
                     },
                     "option_fancybox_videos":{
@@ -33,12 +32,12 @@ var point_sharp_options_tree = {
                     },
                     "option_fancybox_bind_images_to_one_flow":{
                         "type":"checkbox",
-                        "default_value":false,
+                        "default_value":true,
                         "description":"Связать все картинки в одну галерею Fancybox"
                     },
                     "option_fancybox_smart_hints":{
                         "type":"checkbox",
-                        "default_value":false,
+                        "default_value":true,
                         "description":"Генерировать подписи к картинкам из тегов"
                     }
                 }
@@ -50,18 +49,18 @@ var point_sharp_options_tree = {
             },
             "option_embedding":{
                 "type":"checkbox",
-                "default_value":false,
+                "default_value":true,
                 "description":"Включить встраивание ▼",
                 "children":{
                     "option_images_load_booru":{
                         "type":"checkbox",
-                        "default_value":false,
+                        "default_value":true,
                         "description":"Загружать картинки с Booru, Tumblr и т.п."
                     },
                     "option_videos_parse_links":{
                         "type":"checkbox",
-                        "default_value":false,
-                        "description":"Видео по прямой ссылке",
+                        "default_value":true,
+                        "description":"Превращать ссылку на видео в видео",
                         "children":{
                             "option_videos_parse_links_type":{
                                 "type":"radio",
@@ -80,26 +79,26 @@ var point_sharp_options_tree = {
                             },
                             "option_videos_parse_leave_links":{
                                 "type":"checkbox",
-                                "default_value":false,
+                                "default_value":true,
                                 "description":"Оставлять ссылку на видео"
                             }
                         }
                     },
                     "option_audios_parse_links":{
                         "type":"checkbox",
-                        "default_value":false,
-                        "description":"Аудио по прямой ссылке",
+                        "default_value":true,
+                        "description":"Превращать ссылку на аудио в тег audio",
                         "children":{
                             "option_audios_parse_leave_links":{
                                 "type":"checkbox",
                                 "default_value":false,
-                                "description":""
+                                "description":"Оставлять ссылку на аудио"
                             }
                         }
                     },
                     "option_embedding_soundcloud":{
                         "type":"checkbox",
-                        "default_value":false,
+                        "default_value":true,
                         "description":"Soundcloud ▼",
                         "children":{
                             "option_embedding_soundcloud_orig_link":{
@@ -111,7 +110,7 @@ var point_sharp_options_tree = {
                     },
                     "option_embedding_pleercom":{
                         "type":"checkbox",
-                        "default_value":false,
+                        "default_value":true,
                         "description":"Pleer.com ▼",
                         "children":{
                             "option_embedding_pleercom_nokita_server":{
@@ -128,7 +127,7 @@ var point_sharp_options_tree = {
                     },
                     "option_embedding_coubcom":{
                         "type":"checkbox",
-                        "default_value":false,
+                        "default_value":true,
                         "description":"Coub.com ▼",
                         "children":{
                             "option_embedding_coubcom_orig_link":{
@@ -140,12 +139,12 @@ var point_sharp_options_tree = {
                     },
                     "option_embedding_twitter_tweets":{
                         "type":"checkbox",
-                        "default_value":false,
+                        "default_value":true,
                         "description":"Twitter"
                     },
                     "option_embedding_instagram_posts":{
                         "type":"checkbox",
-                        "default_value":false,
+                        "default_value":true,
                         "description":"Встраиваем посты из Instagram"
                     }
                 }
@@ -222,15 +221,15 @@ var point_sharp_options_tree = {
                         "default_value":"85",
                         "radio_values":[
                             {
-                                "text":"\n 0.85 em\n ",
+                                "text":"0.85 em",
                                 "value":"85"
                             },
                             {
-                                "text":"\n 1 em\n ",
+                                "text":"1 em",
                                 "value":"100"
                             },
                             {
-                                "text":"\n 1.1 em\n ",
+                                "text":"1.1 em",
                                 "value":"110"
                             }
                         ],
@@ -245,44 +244,44 @@ var point_sharp_options_tree = {
             },
             "option_other_hightlight_post_comments":{
                 "type":"checkbox",
-                "default_value":false,
+                "default_value":true,
                 "description":"Подсвечивать посты с новыми комментариями"
             },
             "option_other_show_recommendation_count":{
                 "type":"checkbox",
-                "default_value":false,
-                "description":"Показывать количество рекомендаций и уникальных комментаторов в посте (используя сервер @NokitaKaze)"
+                "default_value":true,
+                "description":"Показывать количество рекомендаций и уникальных комментаторов в посте"
             },
             "option_other_scroll_space_key":{
                 "type":"checkbox",
-                "default_value":false,
+                "default_value":true,
                 "description":"Скроллинг постов пробелом"
             },
             "option_other_comments_nesting_level":{
                 "type":"checkbox",
-                "default_value":false,
+                "default_value":true,
                 "description":"Индикатор уровня вложенности коммнентариев"
             },
             "option_other_comments_count_refresh":{
                 "type":"checkbox",
-                "default_value":false,
+                "default_value":true,
                 "description":"Обновляем количество непрочитанных комментариев и постов в ленте",
                 "children":{
                     "option_other_comments_count_refresh_title":{
                         "type":"checkbox",
-                        "default_value":false,
+                        "default_value":true,
                         "description":"Указываем кол-во комментариев и сообщений в заголовке страницы"
                     }
                 }
             },
             "option_other_comments_user_system":{
                 "type":"checkbox",
-                "default_value":false,
+                "default_value":true,
                 "description":"Заметки о пользователях на полях"
             },
             "option_other_post_draft_save":{
                 "type":"checkbox",
-                "default_value":false,
+                "default_value":true,
                 "description":"Сохранение и восстановление черновиков постов"
             }
         }

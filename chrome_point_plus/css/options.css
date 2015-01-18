@@ -4,8 +4,6 @@ body {
     font-size: 14px;
     line-height: 20px;
 
-    width: 450px;
-    height: 450px;
     margin: 0;
     padding: 5px;
 
@@ -13,3 +11,12 @@ body {
     background: #eee;
 }
 
+body.point-options-castrate {
+    width: 450px;
+    height: 450px;
+}
+
+.point-options-castrate.point-options-wrapper .tabs-content,
+.point-options-castrate .point-options-wrapper .tabs-content {
+    height: 345px;
+}
