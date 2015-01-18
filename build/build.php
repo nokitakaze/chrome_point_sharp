@@ -44,7 +44,7 @@
         file_put_contents($root_folder.'/'.$pair[1], $content);
     }
 
-    // Копируем исходники
+    // Копируем Javscript исходники
     foreach (array(
                  'point_sharp_shared_code.js',
                  'point_sharp_shared_code_additional.js',
