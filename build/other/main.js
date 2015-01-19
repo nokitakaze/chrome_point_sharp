@@ -48,7 +48,7 @@ exports.main = function () {
             self.data.url("css/additional/point-options.css")// CSS Опций
         ],
         contentScriptFile: [
-            self.data.url("js/jquery.js"),
+            self.data.url("vendor/jquery/jquery.min.js"),
             self.data.url("js/bquery_ajax.js"),
             self.data.url("js/point_sharp_options_list.js"),
             self.data.url("js/point_sharp_shared_code_additional.js"),
