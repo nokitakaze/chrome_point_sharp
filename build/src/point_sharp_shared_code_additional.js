@@ -319,7 +319,7 @@ function parse_pleercom_links_ajax(current_options) {
 
 function create_pleercom_ajax(id, current_options) {
     $ajax({
-        'url': 'https://pleer.com/site_api/files/get_url',
+        'url': '//pleer.com/site_api/files/get_url',
         'type': 'post',
         'postdata': 'action=download&id=' + id,
         'dont_set_content_type': true,
@@ -341,8 +341,11 @@ function create_pleercom_ajax(id, current_options) {
             }
         },
         'error': function () {
-            console.log('Can not get pleer.com url');
-            setTimeout(new Function('create_pleercom_ajax("' + this.settings.pleer_id + '");'), 1000);
+            console.log('Can not get pleer.com url for ', id);
+            var current_pleer_id = this.settings.pleer_id;
+            setTimeout(function () {
+                create_pleercom_ajax(current_pleer_id, current_options);
+            }, 1000);
         }
 
     });
@@ -850,10 +853,10 @@ function twitter_tweet_embedding_init() {
         js.src = "https://platform.twitter.com/widgets.js";
         fjs.parentNode.insertBefore(js, fjs);
         return window.twttr || (t = {
-                _e: [], ready: function (f) {
-                    t._e.push(f);
-                }
-            });
+            _e: [], ready: function (f) {
+                t._e.push(f);
+            }
+        });
     }(document, "script", "twitter-wjs"));
 }
 
