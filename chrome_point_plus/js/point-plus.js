@@ -612,7 +612,7 @@ $(document).ready(function() {
                                                 $parentCommentChildren.append($comment);
                                             } else {
                                                 console.log('No child comments found. Creating...');
-                                                $post.after($('<div>').addClass('comments').append($comment).css('margin-left', '0px'));
+                                                $post.after($('<div>').addClass('comments').append($comment));
                                             }
                                         }
                                     });
