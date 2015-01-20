@@ -64,14 +64,15 @@ function skobkin_websocket_init(options) {
                             }
 
                             // Generating comment from websocket message
-                            create_comment_elements({
+                            ajax_get_comments_create_comment_elements({
                                 id: wsMessage.comment_id,
                                 toId: wsMessage.to_comment_id,
                                 postId: wsMessage.post_id,
                                 author: wsMessage.author,
                                 text: wsMessage.text,
+                                options: options,
                                 fadeOut: options.is('option_ws_comments_color_fadeout')
-                            }, function($comment) {
+                            }, function($comment, again_callback) {
                                 // It's time to DOM
                                 console.info('Inserting comment');
 
@@ -115,6 +116,7 @@ function skobkin_websocket_init(options) {
                                 }
 
                                 console.groupEnd();
+                                again_callback();
                             });
 
 
@@ -261,9 +263,12 @@ function ajax_get_comments_post_comment($post, csRf, event_parent, options) {
                     postId: $post.data('id'),
                     author: $('#name h1').text(),
                     text: $(event_parent).val(),
+                    options: current_options,
                     fadeOut: false
                 },
-                function($comment) {
+                function($comment, callback_again) {
+                    // Эта функция добавляет элемент $comment в DOM
+
                     // If list mode or not addressed to other comment
                     if ($('#comments #tree-switch a').eq(0).hasClass('active') ||
                         ($post.data('comment-id') === undefined)) {
@@ -282,8 +287,7 @@ function ajax_get_comments_post_comment($post, csRf, event_parent, options) {
                         }
                     }
 
-                    // @todo Сюда встают все обработчкики post factum, используя options
-
+                    callback_again();
                 }
             );
 
@@ -297,43 +301,44 @@ function ajax_get_comments_post_comment($post, csRf, event_parent, options) {
 /**
  * @type {string} Шаблон комментария
  */
-const ajax_get_comments_comment_template = '<div class="pp-highlight"></div>' + "\n" +
-                                           '<div class="info">' + "\n" +
-                                           '    <a href="#"><img class="avatar" src="#author-avatar" alt=""/></a>' + "\n" +
-                                           '    <div class="created">' + "\n\n" +
-                                           '    </div>' + "\n" +
-                                           '</div>' + "\n" +
-                                           '<div class="post-content">' + "\n" +
-                                           '    <div class="author">' + "\n" +
-                                           '        <a href="#" class="user"><!-- %author% --></a>' + "\n" +
-                                           '    </div>' + "\n" +
-                                           '    <div class="text">' + "\n" +
-                                           '        <!-- <p>Comment text</p> -->' + "\n" +
-                                           '    </div>' + "\n" +
-                                           '    <div class="clearfix">' + "\n" +
-                                           '        <div class="post-id">' + "\n" +
-                                           '            <a href="#"><!-- #%post-id%/%comment-id% --></a>' + "\n" +
-                                           '        </div>' + "\n" +
-                                           '        <div class="action-labels">' + "\n" +
-                                           '            <label class="reply-label">ответить</label>' + "\n" +
-                                           '            <label class="more-label">ещё &#9662;</label>' + "\n" +
-                                           '        </div>' + "\n" +
-                                           '    </div>' + "\n" +
-                                           '    <input type="checkbox" class="action-cb" name="action-radio"/>' + "\n" +
-                                           '    <div class="action-buttons">' + "\n" +
-                                           '        <a class="bookmark" href="#">в закладки</a>' + "\n" +
-                                           '    </div>' + "\n" +
-                                           '    <!-- Reply form -->' + "\n" +
-                                           '    <input type="radio" class="reply-radio" name="reply-radio"/>' + "\n" +
-                                           '    <form class="reply-form" action="#" method="post">' + "\n" +
-                                           '        <textarea name="text"></textarea>' + "\n" +
-                                           '        <input type="hidden" name="comment_id" value="">' + "\n" +
-                                           '        <input type="hidden" name="csrf_token" value="">' + "\n" +
-                                           '        <div class="clearfix">' + "\n" +
-                                           '            <input type="submit" value="Ответить"/>' + "\n" +
-                                           '        </div>' + "\n" +
-                                           '    </form>' + "\n" +
-                                           '</div>';
+const ajax_get_comments_comment_template =
+    '<div class="pp-highlight"></div>' + "\n" +
+    '<div class="info">' + "\n" +
+    '    <a href="#"><img class="avatar" src="#author-avatar" alt=""/></a>' + "\n" +
+    '    <div class="created">' + "\n\n" +
+    '    </div>' + "\n" +
+    '</div>' + "\n" +
+    '<div class="post-content">' + "\n" +
+    '    <div class="author">' + "\n" +
+    '        <a href="#" class="user"><!-- %author% --></a>' + "\n" +
+    '    </div>' + "\n" +
+    '    <div class="text">' + "\n" +
+    '        <!-- <p>Comment text</p> -->' + "\n" +
+    '    </div>' + "\n" +
+    '    <div class="clearfix">' + "\n" +
+    '        <div class="post-id">' + "\n" +
+    '            <a href="#"><!-- #%post-id%/%comment-id% --></a>' + "\n" +
+    '        </div>' + "\n" +
+    '        <div class="action-labels">' + "\n" +
+    '            <label class="reply-label">ответить</label>' + "\n" +
+    '            <label class="more-label">ещё &#9662;</label>' + "\n" +
+    '        </div>' + "\n" +
+    '    </div>' + "\n" +
+    '    <input type="checkbox" class="action-cb" name="action-radio"/>' + "\n" +
+    '    <div class="action-buttons">' + "\n" +
+    '        <a class="bookmark" href="#">в закладки</a>' + "\n" +
+    '    </div>' + "\n" +
+    '    <!-- Reply form -->' + "\n" +
+    '    <input type="radio" class="reply-radio" name="reply-radio"/>' + "\n" +
+    '    <form class="reply-form" action="#" method="post">' + "\n" +
+    '        <textarea name="text"></textarea>' + "\n" +
+    '        <input type="hidden" name="comment_id" value="">' + "\n" +
+    '        <input type="hidden" name="csrf_token" value="">' + "\n" +
+    '        <div class="clearfix">' + "\n" +
+    '            <input type="submit" value="Ответить"/>' + "\n" +
+    '        </div>' + "\n" +
+    '    </form>' + "\n" +
+    '</div>';
 
 /**
  * Creating new comment elements for dynamic injection into the DOM
@@ -345,7 +350,8 @@ const ajax_get_comments_comment_template = '<div class="pp-highlight"></div>' + 
  * @param {string} commentData.author Author of the comment
  * @param {string} commentData.text Text of the comment
  * @param {boolean} commentData.fadeOut Is fadeout enabled or not
- * @param {function} onCommentCreated Callback which is called when comment is ready
+ * @param {function} onCommentCreated Callback which is called when comment is ready.
+ * Этот коллбэк добавляет элемент в дом, а потом дёргает коллбэк опять
  *
  */
 function ajax_get_comments_create_comment_elements(commentData, onCommentCreated) {
@@ -421,5 +427,11 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
     $commentTemplate.hide().delay(250).fadeIn(2000);
 
     // Triggering callback
-    onCommentCreated($anchor.add($commentTemplate));
+    onCommentCreated($anchor.add($commentTemplate), function() {
+        // Сюда код возвращается вновь, наш элемент уже внутри DOM!
+        // Едет callback через callback
+        // @todo Сюда встают все обработчкики post factum, используя options
+        console.log('Callback again ', commentData.options);
+
+    });
 }
