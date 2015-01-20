@@ -51,8 +51,7 @@
                  'point_sharp_shared_code_websocket.js',
                  'point_sharp_options_list.js',
                  'bquery_ajax.js',
-                 'point-options.js',
-                 'markitup_set.js'
+                 'point-options.js'
              ) as $filename){
         copy($root_folder.'/build/src/'.$filename, $root_folder.'/chrome_point_plus/js/'.$filename);
         copy($root_folder.'/build/src/'.$filename, $root_folder.'/mozilla_firefox/resources/point_sharp/data/js/'.$filename);
