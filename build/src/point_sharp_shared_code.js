@@ -278,14 +278,11 @@ function pimp_my_page(options) {
         });
     }
 
-    // @todo Оттестировать
     // WebSocket
-    /*
-     if (options.is('option_ws')) {
-     skobkin_websocket_init(options);
-     option_ajax_init(options);
-     }
-     */
+    if (options.is('option_ws')) {
+        skobkin_websocket_init(options);
+        ajax_get_comments_init(options);
+    }
 
     // Font size
     if ((options.is('option_enlarge_font')) && (options.get('option_enlarge_font_size'))) {
