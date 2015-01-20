@@ -695,41 +695,6 @@ function hints_save_new_hint(username, new_hint) {
 }
 
 /**
- * Nesting level indicator
- * Шваброшвабровские точки
- */
-function draw_nesting_level_indicator() {
-    if ($('#comments #tree-switch a').eq(0).hasClass('active')) {
-        // Мы в режиме списко-образных комментариев
-        return;
-    }
-
-    $('.comments').css({'margin-left': '0px'});
-    draw_nesting_level_indicator_level($('#comments > .comments'), 1);
-}
-
-function draw_nesting_level_indicator_level(obj, level) {
-    obj.find('> .post').each(function() {
-        var nesting = document.createElement('div');
-        $(nesting).addClass('nesting').css({
-            'width': (10 * level) + 'px'
-        });
-        this.insertBefore(nesting, $(this).find('.info')[0]);
-
-        $(this).find('> .post-content').css({
-            'padding-left': (10 * level) + 'px'
-        });
-    });
-
-    obj.each(function() {
-        var comments = $(this).find('> .comments');
-        if (comments.length > 0) {
-            draw_nesting_level_indicator_level(comments, level + 1);
-        }
-    });
-}
-
-/**
  * Обновляем кол-во комментариев и непрочитанных новых постов в ленте
  */
 function set_comments_refresh_tick(current_options) {

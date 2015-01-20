@@ -283,6 +283,7 @@ function pimp_my_page(options) {
     /*
      if (options.is('option_ws')) {
      skobkin_websocket_init(options);
+     option_ajax_init(options);
      }
      */
 
@@ -316,7 +317,7 @@ function pimp_my_page(options) {
 
     // Nesting level indicator
     if (options.is('option_other_comments_nesting_level')) {
-        draw_nesting_level_indicator();
+        $('#comments').addClass('nesting_level');
     }
 
     // Обновляем кол-во постов и непрочитанных комментариев

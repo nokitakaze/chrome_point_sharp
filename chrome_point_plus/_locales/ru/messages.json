@@ -116,8 +116,11 @@
     "option_nsfw_blur_comments_entire": {
         "message": "Размытие комментариев целиком"
     },
-    "option_ctrl_enter": {
-        "message": "Отправлять текст по CTRL+Enter (устарело)"
+    "option_ajax": {
+        "message": "AJAX"
+    },
+    "option_ajax_comments": {
+        "message": "Отправка комментариев через AJAX (CTRL+Enter)"
     },
     "option_fluid_layout": {
         "message": "&#34;Резиновая&#34; вёрстка (растянуть сайт по горизонтали)"
@@ -138,16 +141,16 @@
         "message": "Затухание подсветки через 20 секунд"
     },
     "option_ws_comments_notifications": {
-        "message": "Включить уведомления на рабочем столе"
+        "message": "Показывать всплывающие уведомления"
     },
-    "option_ws_feeds": {
-        "message": "Обрабатывать ленты &#9660;"
+    "option_ws_posts": {
+        "message": "Обрабатывать посты &#9660;"
     },
-    "option_ws_feeds_subscriptions": {
-        "message": "Подписки"
+    "option_ws_posts_add": {
+        "message": "Автоматически добавлять в ленту"
     },
-    "option_ws_feeds_blogs": {
-        "message": "Блоги пользователей (только при подписке)"
+    "option_ws_posts_notifications": {
+        "message": "Показывать всплывающие уведомления"
     },
     "option_enlarge_font": {
         "message": "Увеличить шрифт &#9660;"
@@ -184,5 +187,10 @@
 
     "options_feedback_text": {
         "message": "<p>Нашли ошибку? Не стесняйтесь <a href=\"https:\/\/bitbucket.org\/skobkin\/chrome_point_plus\/issues?status=new&status=open\" target=\"_blank\">сообщить о ней<\/a>.<\/p><p>Также вы можете сделать пожертвование автору:<\/p><p><iframe frameborder=\"0\" allowtransparency=\"true\" scrolling=\"no\" src=\"https:\/\/money.yandex.ru\/embed\/small.xml?account=41001539215836&quickpay=small&yamoney-payment-type=on&button-text=04&button-size=s&button-color=black&targets=Point%2B&default-sum=150&successURL=https%3A%2F%2Fbitbucket.org%2Fskobkin%2Fchrome_point_plus\" width=\"158\" height=\"31\"><\/iframe><\/p><p><iframe frameborder=\"0\" allowtransparency=\"true\" scrolling=\"no\" src=\"https:\/\/money.yandex.ru\/embed\/small.xml?account=41001539215836&quickpay=small&any-card-payment-type=on&button-text=04&button-size=s&button-color=black&targets=Point%2B&default-sum=150&successURL=https%3A%2F%2Fbitbucket.org%2Fskobkin%2Fchrome_point_plus\" width=\"158\" height=\"31\"><\/iframe><\/p><p><form action=\"https:\/\/www.paypal.com\/cgi-bin\/webscr\" method=\"post\" target=\"_top\"><input type=\"hidden\" name=\"cmd\" value=\"_s-xclick\"><input type=\"hidden\" name=\"hosted_button_id\" value=\"WW33X5J5WFSP4\"><input type=\"image\" src=\"https:\/\/www.paypalobjects.com\/ru_RU\/RU\/i\/btn\/btn_donateCC_LG.gif\" border=\"0\" name=\"submit\" alt=\"PayPal — более безопасный и легкий способ оплаты через Интернет!\"><img alt=\"\" border=\"0\" src=\"https:\/\/www.paypalobjects.com\/en_US\/i\/scr\/pixel.gif\" width=\"1\" height=\"1\"><\/form><\/p>"
+    },
+    
+    
+    "msg_comment_send_failed":{
+        "message": "Ошибка отправки комментария:"
     }
 }

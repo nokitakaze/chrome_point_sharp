@@ -9,13 +9,6 @@ function skobkin_websocket_init(options) {
     ws = new WebSocket(((location.protocol == 'https:') ? 'wss' : 'ws') + '://point.im/ws');
     console.log('WebSocket created: %O', ws);
 
-    // @todo: унести в опцию
-    // Adding event listener for notification click
-    chrome.runtime.sendMessage({
-        type: 'listenNotificationClicks',
-        protocol: getProtocol()
-    });
-
     // Detecting post id if presented
     var postId = $('#top-post').attr('data-id');
     console.debug('Current post id detected as #%s', postId);
@@ -45,7 +38,7 @@ function skobkin_websocket_init(options) {
                             console.debug(wsMessage);
 
                             // Check option
-                            if (!options.is('option_ws_comments')) {
+                            if ( ! options.is('option_ws_comments')) {
                                 console.log('Comments processing disabled');
                                 console.groupEnd();
                                 break;
@@ -60,126 +53,42 @@ function skobkin_websocket_init(options) {
 
                             // Check we are in specified post
                             if (wsMessage.post_id != postId) {
-                                console.log('The comment is for #%s but current page is for #%s', wsMessage.post_id, postId);
+                                console.log('The comment is not for this post');
                                 console.groupEnd();
                                 break;
                             }
 
-                            var $anchor = $('<a>').attr('name', wsMessage.comment_id);
-
-                            // Initializing comment element
-                            var $commentTemplate = $('<div>').attr({
-                                'class': 'post',
-                                'data-id': postId,
-                                'data-comment-id': wsMessage.comment_id,
-                                'data-to-comment-id': (wsMessage.to_comment_id != null) ? wsMessage.to_comment_id : ''
-                            });
-
-                            // @todo: Вынести в отдельную функцию
-                            // Loading HTML template
-                            $commentTemplate.load(chrome.extension.getURL('includes/comment.html'), function() {
-                                // Load complete
-                                console.info('comment.html loaded');
-
-                                // Date and time of comment
-                                var date = new Date();
-
-                                // @todo: унести наверх
-                                // Data for template
-                                var userLink = '//' + wsMessage.author + '.point.im/';
-                                var postAuthorLink = $('#top-post .info a').attr('href');
-                                var postLink = postAuthorLink + wsMessage.post_id;
-                                var userAvatar = '//point.im/avatar/' + wsMessage.author;
-                                var commentLink = '//point.im/' + wsMessage.post_id + '#' + wsMessage.comment_id;
-                                var csRfToken = $('.reply-form input[name="csrf_token"').val();
-
-                                // Filling template
-                                console.info('Changing data in the comment element');
-                                // Date and time
-                                $commentTemplate.find('.info .created')
-                                    .append($('<span>').html(((date.getDate().toString.length < 2) ? ('0' +
-                                                                                                      date.getDate().toString())
-                                        : (date.getDate().toString())) + '&nbsp;' + months[date.getMonth()]))
-                                    // Crutchy fix
-                                    .append($('<br>'))
-                                    ///Crutchy fix
-                                    .append($('<span>').html(date.getHours() + ':' +
-                                                             ((date.getMinutes().toString().length < 2) ? ('0' +
-                                                                                                           date.getMinutes().toString())
-                                                                 : (date.getMinutes().toString()))));
-                                // Comment text
-                                $commentTemplate.find('.text').append($('<p>').html(escapeHtml(wsMessage.text)));
-                                // Author
-                                $commentTemplate.find('.author a.user').attr('href', userLink).html(wsMessage.author);
-                                // Avatar and link
-                                $commentTemplate.find('.info a').attr('href', userLink).children('img.avatar').attr('src',
-                                    userAvatar + '/24');
-                                // Post and comment ID's link
-                                $commentTemplate.find('.clearfix .post-id a').attr('href', commentLink).html('#' +
-                                                                                                             wsMessage.post_id +
-                                                                                                             '/' +
-                                                                                                             wsMessage.comment_id)
-                                    // Adding answer label
-                                    .after((wsMessage.to_comment_id !== null) ? (' в ответ на <a href="#' +
-                                                                                 wsMessage.to_comment_id + '">/' +
-                                                                                 wsMessage.to_comment_id + '</a>') : (''));
-                                // Setting action labels and other attributes
-                                $commentTemplate.find('.action-labels .reply-label').attr('for',
-                                    'reply-' + wsMessage.post_id + '_' + wsMessage.comment_id);
-                                $commentTemplate.find('.action-labels .more-label').attr('for',
-                                    'action-' + wsMessage.post_id + '_' + wsMessage.comment_id);
-                                $commentTemplate.find('.post-content input[name="action-radio"]').attr('id',
-                                    'action-' + wsMessage.post_id + '_' + wsMessage.comment_id);
-                                // Bookmark link
-                                $commentTemplate.find('.action-buttons a.bookmark').attr('href',
-                                    postLink + '/b?comment_id=' + wsMessage.comment_id + '&csrf_token=' + csRfToken);
-                                // Reply form
-                                $commentTemplate.find('.post-content input.reply-radio').attr('id',
-                                    'reply-' + wsMessage.post_id + '_' + wsMessage.comment_id);
-                                $commentTemplate.find('.post-content form.reply-form').attr('action', '/' + wsMessage.post_id);
-                                $commentTemplate.find('.post-content form.reply-form textarea[name="text"]').html('@' +
-                                                                                                                  wsMessage.author +
-                                                                                                                  ', ');
-                                $commentTemplate.find('.post-content form.reply-form input[name="comment_id"]').val(wsMessage.comment_id);
-                                $commentTemplate.find('.post-content form.reply-form input[name="csrf_token"]').val(csRfToken);
-                                ///Filling template
-
+                            // Generating comment from websocket message
+                            create_comment_elements({
+                                id: wsMessage.comment_id,
+                                toId: wsMessage.to_comment_id,
+                                postId: wsMessage.post_id,
+                                author: wsMessage.author,
+                                text: wsMessage.text,
+                                fadeOut: options.is('option_ws_comments_color_fadeout')
+                            }, function($comment) {
                                 // It's time to DOM
                                 console.info('Inserting comment');
+
+                                // Search for parent comment
+                                $parentComment = (wsMessage.to_comment_id) ? ($('.post[data-comment-id="' + wsMessage.to_comment_id + '"]')) : [];
+                                console.log('Parent comment: %O', $parentComment || null);
+
                                 // If list mode or not addressed to other comment
-                                if ((treeSwitch == '?tree=0') || (wsMessage.to_comment_id == null)) {
-                                    // List mode
-                                    $('.content-wrap #comments #post-reply').before($commentTemplate.hide().fadeIn(2000));
+                                if ($('#comments #tree-switch a').eq(0).hasClass('active') || (wsMessage.to_comment_id === null) || (!$parentComment.length)) {
+                                    // Adding to the end of the list
+                                    $('.content-wrap #comments #post-reply').before($comment);
                                 } else {
-                                    // Tree mode
-                                    // Search parent comment
-                                    $parentComment = $('.post[data-comment-id="' + wsMessage.to_comment_id + '"]');
-                                    if ($parentComment.length > 0) {
-                                        console.log('Parent comment: %O', $parentComment);
-                                        // Check for children
-                                        $parentCommentChildren = $parentComment.next('.comments');
-                                        // If child comment already exist
-                                        if ($parentCommentChildren.length > 0) {
-                                            console.log('Child comments found. Appending...');
-                                            $parentCommentChildren.append($commentTemplate.hide().fadeIn(2000));
-                                        } else {
-                                            console.log('No child comments found. Creating...');
-                                            $parentComment.after($('<div>').addClass('comments').append($commentTemplate.hide().fadeIn(2000)));
-                                        }
+                                    // Check for children
+                                    $parentCommentChildren = $parentComment.next('.comments');
+                                    // If child comment already exist
+                                    if ($parentCommentChildren.length > 0) {
+                                        console.log('Child comments found. Appending...');
+                                        $parentCommentChildren.append($comment);
                                     } else {
-                                        console.log('Parent comment not found');
-                                        // FIXME: Double code
-                                        $('.content-wrap #comments #post-reply').before($commentTemplate.hide().fadeIn(2000));
+                                        console.log('No child comments found. Creating...');
+                                        $parentComment.after($('<div>').addClass('comments').append($comment));
                                     }
-                                }
-
-                                // Adding anchor
-                                $commentTemplate.before($anchor);
-
-                                // Fading out highlight if needed
-                                if (options.is('option_ws_comments_color_fadeout')) {
-                                    console.log('Fading out the highlight');
-                                    $commentTemplate.children('.pp-highlight').fadeOut(20000);
                                 }
 
                                 // Desktop notifications
@@ -188,30 +97,42 @@ function skobkin_websocket_init(options) {
                                     chrome.runtime.sendMessage({
                                         type: 'showNotification',
                                         notificationId: 'comment_' + wsMessage.post_id + '#' + wsMessage.comment_id,
-                                        avatarUrl: getProtocol() + userAvatar + '/80',
-                                        title: '@' + wsMessage.author + ' #' + wsMessage.post_id + '(/' + wsMessage.comment_id +
-                                               ')',
+                                        avatarUrl: getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
+                                        title: '@' + wsMessage.author + ' #' + wsMessage.post_id + '/' + wsMessage.comment_id,
                                         text: wsMessage.text
-                                    });
+                                    }, function(response) {});
                                 }
 
                                 console.groupEnd();
                             });
 
+
                             break;
 
                         // Posts
                         case 'post':
-                            console.group('ws-post #%s', wsMessage.post_id);
+                            console.groupCollapsed('ws-post #%s', wsMessage.post_id);
 
                             console.debug(wsMessage);
+                            if (options.is('option_ws_posts')) {
+                                if (options.is('option_ws_posts_notifications')) {
+                                    console.log('Showing desktop notification');
+                                    chrome.runtime.sendMessage({
+                                        type: 'showNotification',
+                                        notificationId: 'post_' + wsMessage.post_id,
+                                        avatarUrl: getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
+                                        title: 'Post by @' + wsMessage.author + ' #' + wsMessage.post_id,
+                                        text: wsMessage.text
+                                    }, function(response) {});
+                                }
+                            }
 
                             console.groupEnd();
                             break;
 
                         // Recommendation
                         case 'ok':
-                            console.group('ws-recommendation #%s/%s', wsMessage.post_id, wsMessage.comment_id);
+                            console.groupCollapsed('ws-recommendation #%s/%s', wsMessage.post_id, wsMessage.comment_id);
 
                             console.debug(wsMessage);
 
@@ -219,7 +140,7 @@ function skobkin_websocket_init(options) {
                             break;
 
                         default:
-                            console.group('ws-other');
+                            console.groupCollapsed('ws-other');
 
                             console.log(wsMessage);
 
@@ -232,23 +153,12 @@ function skobkin_websocket_init(options) {
 
             }
         } catch (e) {
-            console.log('WebSocket exception:')
+            console.log('WebSocket exception:');
             console.log(e);
             console.log(evt.data);
         }
         ;
     };
-
-}
-
-function escapeHtml(text) {
-    return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        //.replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;")
-        .replace(/\n/g, "<br>");
 }
 
 // Monts for Date.getMonth()
@@ -261,3 +171,172 @@ function getProtocol() {
     return ((location.protocol == 'http:') ? 'http:' : 'https:');
 }
 
+function option_ajax_init(){
+    // Comments
+    if (options.is('option_ajax_comments')) {
+        // Removing old bindings
+        // Dirty hack for page context
+        $('#comments').replaceWith($('#comments').clone());
+
+        // Binding new
+        $('#comments').on('keypress.pp', '.reply-form textarea', function (evt) {
+            if ((evt.keyCode === 10 || evt.keyCode === 13) && (evt.ctrlKey || evt.metaKey)) {
+                evt.stopPropagation();
+                evt.preventDefault();
+
+                var $post = $(this).parents('.post').first();
+                var csRf = $(this).siblings('input[name="csrf_token"]').val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/post/' + $post.data('id'),
+                    data: {
+                        text: $(this).val(),
+                        comment_id: $post.data('comment-id')
+                    },
+                    error: function(req, status, error) {
+                        console.error('AJAX request error while sending the comment: %s', error);
+                        console.log('Status: %s', status);
+
+                        alert(chrome.i18n.getMessage('msg_comment_send_failed') + '\n' + error);
+                    },
+                    /**
+                     * @param {object} data Response data
+                     * @param {number} data.comment_id ID of the created comment
+                     * @param {string} data.id ID of the post
+                     * @param {string} textStatus Text of request status
+                     */
+                    success: function(data, textStatus) {
+                        console.log('data %O', data);
+                        console.log('status %O', textStatus);
+
+                        if (textStatus === 'success') {
+                            // Hiding form
+                            $('#reply-' + $post.data('id') + '_' + $post.data('comment-id')).prop('checked', false);
+
+                            // Creating the comment HTML
+                            create_comment_elements({
+                                id: data.comment_id,
+                                toId: $post.data('comment-id') || null,
+                                postId: $post.data('id'),
+                                author: $('#name h1').text(),
+                                text: $(this).val(),
+                                fadeOut: false
+                            }, function($comment) {
+                                // If list mode or not addressed to other comment
+                                if ($('#comments #tree-switch a').eq(0).hasClass('active') || ($post.data('comment-id') === undefined)) {
+                                    // Adding to the end of the list
+                                    $('.content-wrap #comments #post-reply').before($comment);
+                                } else {
+                                    // Check for children
+                                    $parentCommentChildren = $post.next('.comments');
+
+                                    // @fixme Find a bug with lost indentation of new comment
+                                    // If child comment already exist
+                                    if ($parentCommentChildren.length) {
+                                        console.log('Child comments found. Appending...');
+                                        $parentCommentChildren.append($comment);
+                                    } else {
+                                        console.log('No child comments found. Creating...');
+                                        $post.after($('<div>').addClass('comments').append($comment));
+                                    }
+                                }
+                            });
+
+                            // Cleaning textarea
+                            $(this).val('');
+
+                        }
+                    }.bind(this),
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('X-CSRF', csRf);
+                    }
+                });
+            }
+        });
+    }
+}
+
+/**
+ * Creating new comment elements for dynamic injection into the DOM
+ *
+ * @param {object} commentData Comment data
+ * @param {string|number} commentData.id ID of the created comment
+ * @param {string|number} commentData.toId ID of the comment replying to
+ * @param {string} commentData.postId ID of the post
+ * @param {string} commentData.author Author of the comment
+ * @param {string} commentData.text Text of the comment
+ * @param {boolean} commentData.fadeOut Is fadeout enabled or not
+ * @param {function} onCommentCreated Callback which is called when comment is ready
+ *
+ */
+function create_comment_elements(commentData, onCommentCreated) {
+    var $anchor = $('<a>').attr('name', commentData.id);
+
+    // Initializing comment element
+    var $commentTemplate = $('<div>').attr({
+        'class': 'post',
+        'data-id': commentData.postId,
+        'data-comment-id': commentData.id,
+        'data-to-comment-id': commentData.id || ''
+    });
+
+    // Loading HTML template
+    $commentTemplate.load(chrome.extension.getURL('includes/comment.html'), function() {
+        // Load complete
+        console.info('comment.html loaded');
+
+        // Date and time of comment
+        var date = new Date();
+
+        // Data for template
+        var userLink = '//' + commentData.author + '.point.im/';
+        var csRfToken = $('.reply-form input[name="csrf_token"]').first().val();
+
+        // Filling template
+        // Date and time
+        $commentTemplate.find('.info .created')
+            .append($('<span>').html(((date.getDate().toString.length < 2) ? ('0' + date.getDate().toString()) : (date.getDate().toString())) + '&nbsp;' + months[date.getMonth()]))
+            // Crutchy fix
+            .append($('<br>'))
+            ///Crutchy fix
+            .append($('<span>').html(date.getHours() + ':' + ((date.getMinutes().toString().length < 2) ? ('0' + date.getMinutes().toString()) : (date.getMinutes().toString()))));
+        // Comment text
+        $commentTemplate.find('.text').append($('<p>').text(commentData.text));
+        // Author
+        $commentTemplate.find('.author a.user').attr('href', userLink).text(commentData.author);
+        // Avatar and link
+        $commentTemplate.find('.info a').attr('href', userLink).children('img.avatar').attr('src', '//point.im/avatar/' + commentData.author + '/24');
+        // Post and comment ID's link
+        $commentTemplate.find('.clearfix .post-id a').attr('href', '//point.im/' + commentData.postId + '#' + commentData.id).text('#' + commentData.postId + '/' + commentData.id)
+            // Adding answer label
+            .after((commentData.toId !== null) ? (' в ответ на <a href="#' + commentData.toId + '">/' + commentData.toId + '</a>') : (''));
+        // Setting action labels and other attributes
+        $commentTemplate.find('.action-labels .reply-label').attr('for', 'reply-' + commentData.postId + '_' + commentData.id);
+        $commentTemplate.find('.action-labels .more-label').attr('for', 'action-' + commentData.postId + '_' + commentData.id);
+        $commentTemplate.find('.post-content input[name="action-radio"]').attr('id', 'action-' + commentData.postId + '_' + commentData.id);
+        // Bookmark link
+        $commentTemplate.find('.action-buttons a.bookmark').attr('href', $('#top-post .info a').attr('href') + commentData.postId + '/b?comment_id=' + commentData.id + '&csrf_token=' + csRfToken);
+        // Reply form
+        $commentTemplate.find('.post-content input.reply-radio').attr('id', 'reply-' + commentData.postId + '_' + commentData.id);
+        $commentTemplate.find('.post-content form.reply-form').attr('action', '/' + commentData.postId);
+        $commentTemplate.find('.post-content form.reply-form textarea[name="text"]').html('@' + commentData.author + ', ');
+        $commentTemplate.find('.post-content form.reply-form input[name="comment_id"]').val(commentData.id);
+        $commentTemplate.find('.post-content form.reply-form input[name="csrf_token"]').val(csRfToken);
+        ///Filling template
+
+        // Fading out highlight if needed
+        if (commentData.fadeOut) {
+            console.log('Fading out the highlight');
+            $commentTemplate.children('.pp-highlight').delay(250).fadeOut(20000);
+        }
+
+        // @todo add indentation indicator support
+
+        // Hiding
+        $commentTemplate.hide().delay(250).fadeIn(2000);
+
+        // Triggering callback
+        onCommentCreated($anchor.add($commentTemplate));
+    });
+}
