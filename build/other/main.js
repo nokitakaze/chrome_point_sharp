@@ -12,14 +12,14 @@ var urlbar = require('point_sharp/urlbar');
 var simplestore = require("sdk/simple-storage");
 
 //main
-exports.main = function () {
+exports.main = function() {
     console.group('point-sharp');
     console.info("main.js");
 
     // Создаём иконку в адресной строке
-    urlbar.url_icon_init(utils.getMostRecentBrowserWindow(), function () {
+    urlbar.url_icon_init(utils.getMostRecentBrowserWindow(), function() {
         utils.getMostRecentBrowserWindow().gBrowser.selectedTab =
-            utils.getMostRecentBrowserWindow().gBrowser.addTab("https://point.im/point-sharp-settings.html");
+        utils.getMostRecentBrowserWindow().gBrowser.addTab("https://point.im/point-sharp-settings.html");
     });
 
     // Инициализируем Storage, если его не существовало
@@ -65,13 +65,13 @@ exports.main = function () {
             self.data.url("js/point_sharp_shared_code.js"),
             self.data.url("js/point-options.js")// Страница Опций
         ],
-        onAttach: function (worker) {
+        onAttach: function(worker) {
             // @hint Поскольку в Fx исключено появление двух одинаковых extension'ов, скрытие иконки я не реализую
 
             // Storage
 
             // Получаем значение
-            worker.port.on('get_storage_value', function (json) {
+            worker.port.on('get_storage_value', function(json) {
                 var data = JSON.parse(json);
                 console.log("Extension code. get_storage_value ", data);
                 var value;
@@ -92,7 +92,7 @@ exports.main = function () {
             });
 
             // Сохраняем значения в стороже
-            worker.port.on('set_storage_value', function (json) {
+            worker.port.on('set_storage_value', function(json) {
                 var data = JSON.parse(json);
                 console.log("Extension code. set_storage_value ", data);
                 for (var key in data.data) {
@@ -103,7 +103,7 @@ exports.main = function () {
             });
 
             // Версия Extension'а
-            worker.port.on('get_extension_version', function (callback_rand) {
+            worker.port.on('get_extension_version', function(callback_rand) {
                 worker.port.emit('set_extension_version' + callback_rand, '%%VERSION%%');
             });
 

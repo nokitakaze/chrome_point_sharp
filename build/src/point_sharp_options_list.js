@@ -366,14 +366,14 @@ function point_sharp_options_init(callback) {
      */
     var options_plain_list = [];
     for (var index in point_sharp_options_tree) {
-        point_sharp_options_branch_view(point_sharp_options_tree[index], function (name, item) {
+        point_sharp_options_branch_view(point_sharp_options_tree[index], function(name, item) {
             options_plain_list[name] = item;
         });
     }
 
     // Берём версию и Local Storage
-    point_sharp_get_version(function (point_sharp_version) {
-        local_storage_get('options', function (raw_options) {
+    point_sharp_get_version(function(point_sharp_version) {
+        local_storage_get('options', function(raw_options) {
             console.info("Version: ", point_sharp_version, "Options from storage: ", raw_options);
             if (raw_options == null) {
                 // Мы загрузились в первый раз... для чего... для кого
@@ -399,7 +399,7 @@ function point_sharp_options_init(callback) {
             // Если есть хотя бы одно сменённое значение, сохраняем опции
             if (need_save_options) {
                 console.info('There is some new options', changed_options);
-                local_options_set(changed_options, function () {
+                local_options_set(changed_options, function() {
                 });
             }
 
@@ -426,7 +426,7 @@ var point_sharp_options_set_save = false;
 function local_options_set(data, success_callback) {
     if (point_sharp_options_set_save) {
         // Кекекекекекекекекеке
-        setTimeout(function () {
+        setTimeout(function() {
             local_options_set(data, success_callback);
         }, 50);
     }
@@ -435,7 +435,7 @@ function local_options_set(data, success_callback) {
     point_sharp_options_set_save = true;
 
     // Из-за проблемы двух окон мы сначала берём опции, а потом сохраняем их
-    local_storage_get('options', function (current_options) {
+    local_storage_get('options', function(current_options) {
         if ((typeof(current_options) != 'object') || (current_options === null)) {
             current_options = {};
         }
@@ -444,7 +444,7 @@ function local_options_set(data, success_callback) {
             current_options[key] = data[key];
         }
 
-        local_storage_set({'options': current_options}, function () {
+        local_storage_set({'options': current_options}, function() {
             point_sharp_options_set_save = false;
             success_callback();
         });
@@ -469,7 +469,7 @@ function OptionsManager(raw_options) {
  * @param {String} optionName Имя опции
  * @returns {Boolean|String|Null} Значение опции
  */
-OptionsManager.prototype.get = function (optionName) {
+OptionsManager.prototype.get = function(optionName) {
     if (this._options.hasOwnProperty(optionName)) {
         return this._options[optionName];
     } else {
@@ -484,7 +484,7 @@ OptionsManager.prototype.get = function (optionName) {
  * @param {String} data Набор из имени опций и её значения
  * @param {function} success_callback Имя опции
  */
-OptionsManager.prototype.set = function (data, success_callback) {
+OptionsManager.prototype.set = function(data, success_callback) {
     for (var index in data) {
         this._options[index] = data[index];
     }
@@ -499,7 +499,7 @@ OptionsManager.prototype.set = function (data, success_callback) {
  * @param {Boolean|String} [value=true] Значение опции
  * @returns {Boolean}
  */
-OptionsManager.prototype.is = function (optionName, value) {
+OptionsManager.prototype.is = function(optionName, value) {
     if (typeof value !== 'undefined') {
         return this.get(optionName) === value;
     } else {
@@ -512,14 +512,14 @@ OptionsManager.prototype.is = function (optionName, value) {
  *
  * @returns {Object} Кеш опций
  */
-OptionsManager.prototype.getOptions = function () {
+OptionsManager.prototype.getOptions = function() {
     return this._options;
 };
 
 /**
  * @returns {Object} Версия расширения
  */
-OptionsManager.prototype.version = function () {
+OptionsManager.prototype.version = function() {
     return this._options.version;
 };
 
@@ -529,10 +529,10 @@ OptionsManager.prototype.version = function () {
  * @param optionName
  * @returns {null|string}
  */
-OptionsManager.prototype.getType = function (optionName) {
+OptionsManager.prototype.getType = function(optionName) {
     var ret = null;
     for (var index in point_sharp_options_tree) {
-        point_sharp_options_branch_view(point_sharp_options_tree[index], function (name, item) {
+        point_sharp_options_branch_view(point_sharp_options_tree[index], function(name, item) {
             if (name == optionName) {
                 ret = item.type;
             }

@@ -1,77 +1,77 @@
 {
-  "manifest_version": 2,
-  "name": "%%NAME%%",
-  "version": "%%VERSION%%",
-  "default_locale": "ru",
-  "author": "%%AUTHOR%%",
-  "homepage_url": "%%HOMEPAGE%%",
-  "description": "%%DESCRIPTION%%",
-  "options_page": "options.html",
-  "page_action": {
-    "default_icon": {
-      "19": "images/icon19.png"
+    "manifest_version": 2,
+    "name": "%%NAME%%",
+    "version": "%%VERSION%%",
+    "default_locale": "ru",
+    "author": "%%AUTHOR%%",
+    "homepage_url": "%%HOMEPAGE%%",
+    "description": "%%DESCRIPTION%%",
+    "options_page": "options.html",
+    "page_action": {
+        "default_icon": {
+            "19": "images/icon19.png"
+        },
+        "default_title": "__MSG_ext_page_action_title__",
+        "default_popup": "options.html"
     },
-    "default_title": "__MSG_ext_page_action_title__",
-    "default_popup": "options.html"
-  },
-  "icons": {
-    "16": "images/icon16.png",
-    "48": "images/icon48.png",
-    "128": "images/icon128.png"
-  },
-  "content_scripts": [
-    {
-      "matches": [
+    "icons": {
+        "16": "images/icon16.png",
+        "48": "images/icon48.png",
+        "128": "images/icon128.png"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "http://*.point.im/*",
+                "https://*.point.im/*"
+            ],
+            "js": [
+                "vendor/jquery/jquery.min.js",
+                "js/bquery_ajax.js",
+                "js/wrapper.js",
+                "js/point_sharp_options_list.js",
+                "js/point_sharp_shared_code_additional.js",
+                "js/point_sharp_shared_code_websocket.js",
+                "js/point_sharp_shared_code.js",
+                "vendor/markitup/markitup/jquery.markitup.js",
+                "js/markitup_set.js",
+                "vendor/soundcloud/soundcloud.player.api.js",
+                "vendor/fancybox/source/jquery.fancybox.pack.js",
+                "vendor/fancybox/source/helpers/jquery.fancybox-media.js"
+            ],
+            "css": [
+                "css/additional/point-plus.css",
+                "css/additional/fancybox/style.css",
+                "css/additional/modules/at_before_username.css",
+
+                "css/additional/markitup/sets/markdown/style.css",
+                "css/additional/markitup/skins/markitup/style.css",
+
+                "vendor/fancybox/source/jquery.fancybox.css"
+            ],
+            "run_at": "document_end"
+        }
+    ],
+    "web_accessible_resources": [
+        "images/*",
+        "includes/*",
+        "vendor/*",
+        "manifest.json"
+    ],
+    "background": {
+        "scripts": ["js/background.js"]
+    },
+    "permissions": [
         "http://*.point.im/*",
-        "https://*.point.im/*"
-      ],
-      "js": [
-        "vendor/jquery/jquery.min.js",
-        "js/bquery_ajax.js",
-        "js/wrapper.js",
-        "js/point_sharp_options_list.js",
-        "js/point_sharp_shared_code_additional.js",
-        "js/point_sharp_shared_code_websocket.js",
-        "js/point_sharp_shared_code.js",
-        "vendor/markitup/markitup/jquery.markitup.js",
-        "js/markitup_set.js",
-        "vendor/soundcloud/soundcloud.player.api.js",
-        "vendor/fancybox/source/jquery.fancybox.pack.js",
-        "vendor/fancybox/source/helpers/jquery.fancybox-media.js"
-      ],
-      "css": [
-        "css/additional/point-plus.css",
-        "css/additional/fancybox/style.css",
-        "css/additional/modules/at_before_username.css",
-
-        "css/additional/markitup/sets/markdown/style.css",
-        "css/additional/markitup/skins/markitup/style.css",
-
-        "vendor/fancybox/source/jquery.fancybox.css"
-      ],
-      "run_at": "document_end"
-    }
-  ],
-  "web_accessible_resources": [
-    "images/*",
-    "includes/*",
-    "vendor/*",
-    "manifest.json"
-  ],
-  "background": {
-    "scripts": ["js/background.js"]
-  },
-  "permissions": [
-    "http://*.point.im/*",
-    "https://*.point.im/*",
-    "https://pleer.com/*",
-    "http://player.soundcloud.com/*",
-    "https://player.soundcloud.com/*",
-    "https://api.kanaria.ru/point/*",
-    "https://api.instagram.com/*",
-    "https://*.twitter.com/*",
-    "storage",
-    "notifications",
-    "tabs"
-  ]
+        "https://*.point.im/*",
+        "https://pleer.com/*",
+        "http://player.soundcloud.com/*",
+        "https://player.soundcloud.com/*",
+        "https://api.kanaria.ru/point/*",
+        "https://api.instagram.com/*",
+        "https://*.twitter.com/*",
+        "storage",
+        "notifications",
+        "tabs"
+    ]
 }

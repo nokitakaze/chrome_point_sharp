@@ -4,7 +4,7 @@
  * ПЛАТФОРМОНЕЗАВИСИМЫЙ ГОВНОКОД
  */
 
-function skobkin_websocket_init(options){
+function skobkin_websocket_init(options) {
     // SSL or plain
     ws = new WebSocket(((location.protocol == 'https:') ? 'wss' : 'ws') + '://point.im/ws');
     console.log('WebSocket created: %O', ws);
@@ -24,12 +24,12 @@ function skobkin_websocket_init(options){
     console.debug('Comments view mode: %s', treeSwitch);
 
     // Error handler
-    ws.onerror = function (err) {
+    ws.onerror = function(err) {
         console.error('WebSocket error: %O', err);
     };
 
     // Message handler
-    ws.onmessage = function (evt) {
+    ws.onmessage = function(evt) {
         try {
             // ping :)
             if (evt.data == 'ping') {
@@ -77,7 +77,7 @@ function skobkin_websocket_init(options){
 
                             // @todo: Вынести в отдельную функцию
                             // Loading HTML template
-                            $commentTemplate.load(chrome.extension.getURL('includes/comment.html'), function () {
+                            $commentTemplate.load(chrome.extension.getURL('includes/comment.html'), function() {
                                 // Load complete
                                 console.info('comment.html loaded');
 
@@ -97,31 +97,49 @@ function skobkin_websocket_init(options){
                                 console.info('Changing data in the comment element');
                                 // Date and time
                                 $commentTemplate.find('.info .created')
-                                    .append($('<span>').html(((date.getDate().toString.length < 2) ? ('0' + date.getDate().toString()) : (date.getDate().toString())) + '&nbsp;' + months[date.getMonth()]))
+                                    .append($('<span>').html(((date.getDate().toString.length < 2) ? ('0' +
+                                                                                                      date.getDate().toString())
+                                        : (date.getDate().toString())) + '&nbsp;' + months[date.getMonth()]))
                                     // Crutchy fix
                                     .append($('<br>'))
                                     ///Crutchy fix
-                                    .append($('<span>').html(date.getHours() + ':' + ((date.getMinutes().toString().length < 2) ? ('0' + date.getMinutes().toString()) : (date.getMinutes().toString()))));
+                                    .append($('<span>').html(date.getHours() + ':' +
+                                                             ((date.getMinutes().toString().length < 2) ? ('0' +
+                                                                                                           date.getMinutes().toString())
+                                                                 : (date.getMinutes().toString()))));
                                 // Comment text
                                 $commentTemplate.find('.text').append($('<p>').html(escapeHtml(wsMessage.text)));
                                 // Author
                                 $commentTemplate.find('.author a.user').attr('href', userLink).html(wsMessage.author);
                                 // Avatar and link
-                                $commentTemplate.find('.info a').attr('href', userLink).children('img.avatar').attr('src', userAvatar + '/24');
+                                $commentTemplate.find('.info a').attr('href', userLink).children('img.avatar').attr('src',
+                                    userAvatar + '/24');
                                 // Post and comment ID's link
-                                $commentTemplate.find('.clearfix .post-id a').attr('href', commentLink).html('#' + wsMessage.post_id + '/' + wsMessage.comment_id)
+                                $commentTemplate.find('.clearfix .post-id a').attr('href', commentLink).html('#' +
+                                                                                                             wsMessage.post_id +
+                                                                                                             '/' +
+                                                                                                             wsMessage.comment_id)
                                     // Adding answer label
-                                    .after((wsMessage.to_comment_id !== null) ? (' в ответ на <a href="#' + wsMessage.to_comment_id + '">/' + wsMessage.to_comment_id + '</a>') : (''));
+                                    .after((wsMessage.to_comment_id !== null) ? (' в ответ на <a href="#' +
+                                                                                 wsMessage.to_comment_id + '">/' +
+                                                                                 wsMessage.to_comment_id + '</a>') : (''));
                                 // Setting action labels and other attributes
-                                $commentTemplate.find('.action-labels .reply-label').attr('for', 'reply-' + wsMessage.post_id + '_' + wsMessage.comment_id);
-                                $commentTemplate.find('.action-labels .more-label').attr('for', 'action-' + wsMessage.post_id + '_' + wsMessage.comment_id);
-                                $commentTemplate.find('.post-content input[name="action-radio"]').attr('id', 'action-' + wsMessage.post_id + '_' + wsMessage.comment_id);
+                                $commentTemplate.find('.action-labels .reply-label').attr('for',
+                                    'reply-' + wsMessage.post_id + '_' + wsMessage.comment_id);
+                                $commentTemplate.find('.action-labels .more-label').attr('for',
+                                    'action-' + wsMessage.post_id + '_' + wsMessage.comment_id);
+                                $commentTemplate.find('.post-content input[name="action-radio"]').attr('id',
+                                    'action-' + wsMessage.post_id + '_' + wsMessage.comment_id);
                                 // Bookmark link
-                                $commentTemplate.find('.action-buttons a.bookmark').attr('href', postLink + '/b?comment_id=' + wsMessage.comment_id + '&csrf_token=' + csRfToken);
+                                $commentTemplate.find('.action-buttons a.bookmark').attr('href',
+                                    postLink + '/b?comment_id=' + wsMessage.comment_id + '&csrf_token=' + csRfToken);
                                 // Reply form
-                                $commentTemplate.find('.post-content input.reply-radio').attr('id', 'reply-' + wsMessage.post_id + '_' + wsMessage.comment_id);
+                                $commentTemplate.find('.post-content input.reply-radio').attr('id',
+                                    'reply-' + wsMessage.post_id + '_' + wsMessage.comment_id);
                                 $commentTemplate.find('.post-content form.reply-form').attr('action', '/' + wsMessage.post_id);
-                                $commentTemplate.find('.post-content form.reply-form textarea[name="text"]').html('@' + wsMessage.author + ', ');
+                                $commentTemplate.find('.post-content form.reply-form textarea[name="text"]').html('@' +
+                                                                                                                  wsMessage.author +
+                                                                                                                  ', ');
                                 $commentTemplate.find('.post-content form.reply-form input[name="comment_id"]').val(wsMessage.comment_id);
                                 $commentTemplate.find('.post-content form.reply-form input[name="csrf_token"]').val(csRfToken);
                                 ///Filling template
@@ -171,7 +189,8 @@ function skobkin_websocket_init(options){
                                         type: 'showNotification',
                                         notificationId: 'comment_' + wsMessage.post_id + '#' + wsMessage.comment_id,
                                         avatarUrl: getProtocol() + userAvatar + '/80',
-                                        title: '@' + wsMessage.author + ' #' + wsMessage.post_id + '(/' + wsMessage.comment_id + ')',
+                                        title: '@' + wsMessage.author + ' #' + wsMessage.post_id + '(/' + wsMessage.comment_id +
+                                               ')',
                                         text: wsMessage.text
                                     });
                                 }

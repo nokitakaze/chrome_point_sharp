@@ -16,9 +16,9 @@
     $build_version = json_decode(file_get_contents($root_folder.'./build/build_version.json'));
     $build_version->version++;
     file_put_contents($root_folder.'./build/build_version.json', json_encode(array(
-        'last_build_time'     => time(),
+        'last_build_time' => time(),
         'last_build_time_str' => gmdate('Y-m-d H:i:sO'),
-        'version'             => $build_version->version
+        'version' => $build_version->version
     )));
 
     // Меняем контент
@@ -29,7 +29,7 @@
             array('other/harness-options.json', 'mozilla_firefox/harness-options.json'),
             array('other/manifest.json', 'chrome_point_plus/manifest.json'),
             array('other/main.js', 'mozilla_firefox/resources/point_sharp/lib/main.js')
-        ) as $pair){
+        ) as $pair) {
         // Берём контент
         $content = file_get_contents($root_folder.'/build/'.$pair[0]);
 
@@ -52,20 +52,23 @@
                  'point_sharp_options_list.js',
                  'bquery_ajax.js',
                  'point-options.js'
-             ) as $filename){
+             ) as $filename) {
         copy($root_folder.'/build/src/'.$filename, $root_folder.'/chrome_point_plus/js/'.$filename);
-        copy($root_folder.'/build/src/'.$filename, $root_folder.'/mozilla_firefox/resources/point_sharp/data/js/'.$filename);
+        copy($root_folder.'/build/src/'.$filename,
+            $root_folder.'/mozilla_firefox/resources/point_sharp/data/js/'.$filename);
     }
 
     // Копируем Папки
     foreach (array(
                  array('vendor', 'chrome_point_plus/vendor', 'mozilla_firefox/resources/point_sharp/data/vendor'),
                  array('css', 'chrome_point_plus/css/additional', 'mozilla_firefox/resources/point_sharp/data/css/additional'),
-             ) as $pair){
+             ) as $pair) {
         // @todo Проверить квоты
         system('rm -rf "'.addslashes($root_folder.'/'.$pair[1]).'" "'.addslashes($root_folder.'/'.$pair[2]).'"');
-        system('cp -R "'.addslashes($root_folder.'/build/'.$pair[0]).'" "'.addslashes($root_folder.'/'.$pair[1]).'"');
-        system('cp -R "'.addslashes($root_folder.'/build/'.$pair[0]).'" "'.addslashes($root_folder.'/'.$pair[2]).'"');
+        system('cp -R "'.addslashes($root_folder.'/build/'.$pair[0]).'" "'.addslashes($root_folder.'/'.$pair[1]).
+               '"');
+        system('cp -R "'.addslashes($root_folder.'/build/'.$pair[0]).'" "'.addslashes($root_folder.'/'.$pair[2]).
+               '"');
     }
 
     echo "Version ".$json->version.'.'.$build_version->version.' builded at '.gmdate('Y-m-d H:i:sO')."\n";

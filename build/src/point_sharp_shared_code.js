@@ -9,7 +9,7 @@ if (typeof(console.group) !== 'undefined') {
 }
 console.info("shared_code.js");
 
-$(document).ready(function () {
+$(document).ready(function() {
     // Проверяем, был ли уже загружен Point# или Point+
     var point_plus_debug = $('#point-plus-debug');
     if (point_plus_debug.length > 0) {
@@ -76,16 +76,17 @@ function pimp_my_page(options) {
         // Soundcloud
         if (options.is('option_embedding_soundcloud')) {
             // Processing links
-            $('.post .post-content a[href*="\\:\\/\\/soundcloud\\.com\\/"]').each(function (index) {
+            $('.post .post-content a[href*="\\:\\/\\/soundcloud\\.com\\/"]').each(function(index) {
                 // @todo: переписать это дерьмо на нормальный HTML5 плеер
                 var $player = $('<div class="pp-soundcloud">\
                                             <object height="81" width="100%" id="pp-soundcloud-' + index + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">\
-                                              <param name="movie" value="//player.soundcloud.com/player.swf?url=' + encodeURIComponent($(this).prop('href'))
-                + '&enable_api=true&object_id=pp-soundcloud-' + index + '">\
+                                              <param name="movie" value="//player.soundcloud.com/player.swf?url=' +
+                                encodeURIComponent($(this).prop('href'))
+                                + '&enable_api=true&object_id=pp-soundcloud-' + index + '">\
                                               <param name="allowscriptaccess" value="always">\
                                               <embed allowscriptaccess="always" height="81" src="//player.soundcloud.com/player.swf?url='
-                + encodeURIComponent($(this).prop('href')) + '&enable_api=true&object_id=pp-soundcloud-' + index
-                + '" type="application/x-shockwave-flash" width="100%" name="pp-soundcloud-' + index + '"></embed>\
+                                + encodeURIComponent($(this).prop('href')) + '&enable_api=true&object_id=pp-soundcloud-' + index
+                                + '" type="application/x-shockwave-flash" width="100%" name="pp-soundcloud-' + index + '"></embed>\
                                             </object>\
                                         </div>');
 
@@ -120,11 +121,11 @@ function pimp_my_page(options) {
     if (options.is('option_fancybox')) {
         if (options.is('option_fancybox_bind_images_to_one_flow')) {
             // Linking images in posts to the galleries
-            $('.post-content .text').each(function () {
+            $('.post-content .text').each(function() {
                 $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'one_flow_gallery');
             });
         } else {
-            $('.post-content .text').each(function (idxPost) {
+            $('.post-content .text').each(function(idxPost) {
                 $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'post' + idxPost);
             });
         }
@@ -206,14 +207,14 @@ function pimp_my_page(options) {
     if (options.is('option_ctrl_enter')) {
         // Reply
         // Delegated event for all comments
-        $('.content-wrap #comments').on('keydown.point_plus', '.reply-form textarea', function (e) {
+        $('.content-wrap #comments').on('keydown.point_plus', '.reply-form textarea', function(e) {
             if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
                 e.preventDefault();
                 $(this).parent('.reply-form').submit();
             }
         });
         // New post
-        $('#new-post-form #text-input,#new-post-form #tags-input').on('keydown.point_plus', function (e) {
+        $('#new-post-form #text-input,#new-post-form #tags-input').on('keydown.point_plus', function(e) {
             if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
                 e.preventDefault();
                 $(this).parent('#new-post-form').submit();
@@ -234,7 +235,7 @@ function pimp_my_page(options) {
     // Image resizing
     if (options.is('option_images_load_original')) {
         // Setting new image source
-        $('.postimg:not(.youtube) img').each(function () {
+        $('.postimg:not(.youtube) img').each(function() {
             console.log($(this).parent('.postimg').attr('href'));
             $(this).attr('src', $(this).parent('.postimg').attr('href'));
         });
@@ -258,7 +259,7 @@ function pimp_my_page(options) {
         // Send by CTRL+Enter
         if (options.is('option_ctrl_enter')) {
             // New post
-            $('#new-post-form #text-input, .post-content #text-input').on('keydown.point_plus', function (e) {
+            $('#new-post-form #text-input, .post-content #text-input').on('keydown.point_plus', function(e) {
                 if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
                     e.preventDefault();
                     $(this).parents('#new-post-form,#post-edit-form').submit();
@@ -269,7 +270,7 @@ function pimp_my_page(options) {
 
     // Google search
     if (options.is('option_search_with_google')) {
-        $('#search-form input[type="text"]').attr('placeholder', 'Google').keydown(function (e) {
+        $('#search-form input[type="text"]').attr('placeholder', 'Google').keydown(function(e) {
             if (e.keyCode == 10 || e.keyCode == 13) {
                 e.preventDefault();
                 document.location.href = 'https://www.google.ru/search?q=site%3Apoint.im+' + urlencode($(this).val());

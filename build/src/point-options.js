@@ -36,7 +36,7 @@ function draw_option_tree(tree) {
     $('.point-options-wrapper .tabs-content > .tabs-content-item').first().addClass('selected');
 
     // Переключение табов
-    $('.point-options-wrapper .tabs-list > .tabs-item').on('click', function () {
+    $('.point-options-wrapper .tabs-list > .tabs-item').on('click', function() {
         $('.point-options-wrapper .tabs-list > .tabs-item').removeClass('selected');
         $('.point-options-wrapper .tabs-content > .tabs-content-item').removeClass('selected');
 
@@ -46,17 +46,17 @@ function draw_option_tree(tree) {
     });
 
     // Нажатие галок на чекбоксах
-    $('.point-options-wrapper .tabs-content .option-node input[type="checkbox"]').on('change', function () {
+    $('.point-options-wrapper .tabs-content .option-node input[type="checkbox"]').on('change', function() {
         var name = $(this).prop('name').replace(new RegExp('\\-', 'g'), '_');
         this_page_change_keyvalue(name, $(this).prop('checked'));
     });
 
     //  Нажатие галок на радиобатонах
-    $('.point-options-wrapper .tabs-content .option-node input[type="radio"]').on('change', function () {
+    $('.point-options-wrapper .tabs-content .option-node input[type="radio"]').on('change', function() {
         var name = $(this).prop('name').replace(new RegExp('\\-', 'g'), '_');
         var new_value = null;
         $('.point-options-wrapper .tabs-content .option-node input[type="radio"][name="' + $(this).prop('name') + '"]').
-            each(function () {
+            each(function() {
                 if ((new_value == null) || $(this).prop('checked')) {
                     new_value = $(this).val();
                 }
@@ -71,7 +71,7 @@ function this_page_change_keyvalue(key, value) {
     tmp[key] = value;
 
     $('.point-options-wrapper .saved').text('Опции сохраняются...').removeClass('hidden');
-    local_options_set(tmp, function () {
+    local_options_set(tmp, function() {
         $('.point-options-wrapper .saved').text('Опции сохранены').addClass('hidden');
         redraw_current_options_value();
     });
@@ -152,7 +152,7 @@ function draw_option_branch(parent_obj, index, branch) {
  * Обновляем текущие галки и радио-батоны. Обновляем значения из сторожа
  **/
 function redraw_current_options_value() {
-    point_sharp_options_init(function (options) {
+    point_sharp_options_init(function(options) {
         $('.point-options-wrapper .tabs-list').fadeIn(500);
         $('.point-options-wrapper .tabs-content').fadeIn(500);
 
@@ -175,7 +175,7 @@ function redraw_current_options_value() {
             }
 
             $('.point-options-wrapper .option-node input[type="radio"][name="' + (index.replace(/_/g, '-')) + '"]').
-                each(function () {
+                each(function() {
                     if ($(this).val() == options.get(index)) {
                         $(this).prop('checked', true);
                     }
@@ -186,7 +186,7 @@ function redraw_current_options_value() {
 }
 
 
-$(document).ready(function () {
+$(document).ready(function() {
     // Я не буду пользоваться паттерном стратегия. Если наговнокодить на одной странице, плохо не будет
     if (navigator.appVersion.match(/.*chrome.*/i) == null) {
         // Mozilla Firefox
@@ -197,12 +197,12 @@ $(document).ready(function () {
 
         $('.content-wrap').addClass('point-options-wrapper').
             html('<nav class="tabs-list"></nav><form class="tabs-content"></form>' +
-            '<p class="saved hidden" data-i18n="options_text_saved"></p><div>' +
-            '<p>Point# <span id="version"></span> by' +
-            '<a href="https://skobkin-ru.point.im/" target="_blank">@skobkin-ru</a>,' +
-            '<a href="https://isqua.point.im/" target="_blank">@isqua</a>,' +
-            '<a href="https://nokitakaze.point.im/" target="_blank">@NokitaKaze</a>' +
-            '</p></div>');
+                 '<p class="saved hidden" data-i18n="options_text_saved"></p><div>' +
+                 '<p>Point# <span id="version"></span> by' +
+                 '<a href="https://skobkin-ru.point.im/" target="_blank">@skobkin-ru</a>,' +
+                 '<a href="https://isqua.point.im/" target="_blank">@isqua</a>,' +
+                 '<a href="https://nokitakaze.point.im/" target="_blank">@NokitaKaze</a>' +
+                 '</p></div>');
     } else {
         // Google Chrome
         // @todo Узнать что мы не в маленьком окне и удалить класс кастрации

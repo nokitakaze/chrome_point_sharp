@@ -1,24 +1,24 @@
 {
-  "name": "%%NAME%%",
-  "version": "%%VERSION%%",
-  "authors": [
-    "Alexey Skobkin",
-    "Nikita Vetrov",
-    "isqua"
-  ],
-  "description": "%%DESCRIPTION%%",
-  "license": "MIT",
-  "homepage": "%%HOMEPAGE%%",
-  "private": true,
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "chrome_point_plus/vendors/**"
-  ],
-  "dependencies": {
-    "jquery": "~2.1.3",
-    "fancybox": "~2.1.5",
-    "markitup": "~1.1.14",
-    "soundcloud": "git@github.com:soundcloud/Widget-JS-API.git"
-  }
+    "name": "%%NAME%%",
+    "version": "%%VERSION%%",
+    "authors": [
+        "Alexey Skobkin",
+        "Nikita Vetrov",
+        "isqua"
+    ],
+    "description": "%%DESCRIPTION%%",
+    "license": "MIT",
+    "homepage": "%%HOMEPAGE%%",
+    "private": true,
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "chrome_point_plus/vendors/**"
+    ],
+    "dependencies": {
+        "jquery": "~2.1.3",
+        "fancybox": "~2.1.5",
+        "markitup": "~1.1.14",
+        "soundcloud": "git@github.com:soundcloud/Widget-JS-API.git"
+    }
 }

@@ -1,18 +1,18 @@
 {
-  "name": "Point#",
-  "version": "2.0.0",
-  "description": "Browser extension for point.im",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@bitbucket.org:NokitaKaze/chrome_point_plus-nokita-version.git"
-  },
-  "author": "Nikita Vetrov",
-  "license": "MIT",
-  "devDependencies": {
-    "bower": "^1.3.12"
-  }
+    "name": "Point#",
+    "version": "2.0.0",
+    "description": "Browser extension for point.im",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@bitbucket.org:NokitaKaze/chrome_point_plus-nokita-version.git"
+    },
+    "author": "Nikita Vetrov",
+    "license": "MIT",
+    "devDependencies": {
+        "bower": "^1.3.12"
+    }
 }

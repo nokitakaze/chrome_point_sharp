@@ -13,7 +13,7 @@ function local_storage_get(key, callback) {
     // @todo Удалять старые прослушивальщики
     // console.log("Content code. local_storage_get %s %O", key, callback);
     var callback_rand = Math.random();
-    self.port.on('get_storage_value_' + callback_rand, function (value) {
+    self.port.on('get_storage_value_' + callback_rand, function(value) {
         // console.log("Content code. local_storage_get.callback %s", value);
         callback(JSON.parse(value));
     });
@@ -34,7 +34,7 @@ function local_storage_set(data, success_callback) {
     // @todo Удалять старые прослушивальщики
     // console.log("Content code. local_storage_set %O", data);
     var callback_rand = Math.random();
-    self.port.on('set_storage_value_' + callback_rand, function (value) {
+    self.port.on('set_storage_value_' + callback_rand, function(value) {
         // @todo Проверять value, вдруг там не true
         // console.log("Content code. local_storage_set.callback %s", value);
         if (typeof(success_callback) == 'function') {
@@ -94,7 +94,7 @@ function urlbar_icon_show() {
 function point_sharp_get_version(callback) {
     // @todo Удалять старые прослушивальщики
     var callback_rand = Math.random();
-    self.port.on('set_extension_version' + callback_rand, function (version) {
+    self.port.on('set_extension_version' + callback_rand, function(version) {
         callback(version);
     });
     self.port.emit('get_extension_version', callback_rand);
