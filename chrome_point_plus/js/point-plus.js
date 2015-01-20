@@ -595,7 +595,7 @@ $(document).ready(function() {
                                         postId: $post.data('id'),
                                         author: $('#name h1').text(),
                                         text: $(this).val(),
-                                        fadeOut: false
+                                        fadeOut: true
                                     }, function($comment) {
                                         // If list mode or not addressed to other comment
                                         if ($('#comments #tree-switch a').eq(0).hasClass('active') || ($post.data('comment-id') === undefined)) {
