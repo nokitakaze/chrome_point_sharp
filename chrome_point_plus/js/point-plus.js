@@ -651,7 +651,7 @@ $(document).ready(function() {
 
         // Nesting level indicator
         if (options.is('option_other_comments_nesting_level')) {
-            draw_nesting_level_indicator();
+            $('#comments').addClass('nesting_level');
         }
 
         // Обновляем кол-во постов и непрочитанных комментариев
@@ -1409,36 +1409,6 @@ function hints_save_new_hint(username, new_hint) {
     chrome.storage.sync.get('point_user_hints', function(items) {
         items.point_user_hints[username] = new_hint;
         chrome.storage.sync.set({'point_user_hints': items.point_user_hints});
-    });
-}
-
-/**
- * Nesting level indicator
- * Шваброшвабровские точки
- */
-function draw_nesting_level_indicator() {
-    $('.comments').css({'margin-left': '0px'});
-    draw_nesting_level_indicator_level($('#comments > .comments'), 1);
-}
-
-function draw_nesting_level_indicator_level(obj, level) {
-    obj.find('> .post').each(function() {
-        var nesting = document.createElement('div');
-        $(nesting).addClass('nesting').css({
-            'width': (10 * level) + 'px'
-        });
-        this.insertBefore(nesting, $(this).find('.info')[0]);
-
-        $(this).find('> .post-content').css({
-            'padding-left': (10 * level) + 'px'
-        });
-    });
-
-    obj.each(function() {
-        var comments = $(this).find('> .comments');
-        if (comments.length > 0) {
-            draw_nesting_level_indicator_level(comments, level + 1);
-        }
     });
 }
 
