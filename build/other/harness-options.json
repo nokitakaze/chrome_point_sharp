@@ -75,7 +75,7 @@
     },
     "name": "point_sharp",
     "parseable": false,
-    "sdkVersion": "1.15",
+    "sdkVersion": "1.17",
     "staticArgs": {},
     "verbose": false
 }
