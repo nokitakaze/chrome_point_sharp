@@ -8,6 +8,23 @@ chrome.storage.sync.get('options_version', function(data) {
     }
 });
 
+// Adding notification click event listener
+chrome.notifications.onClicked.addListener(function(notificationId) {
+    // Detecting notification type
+    if (notificationId.indexOf('comment_') === 0) {
+        tab_url = 'https://point.im/' + notificationId.replace(/comment_/g, '');
+    } else if (notificationId.indexOf('post_') === 0) {
+        tab_url = 'https://point.im/' + notificationId.replace(/post_/g, '');
+    }
+    console.log('Notification %s clicked! Opening new tab: %s', notificationId, tab_url);
+
+    if (tab_url !== undefined) {
+        chrome.tabs.create({
+            url: tab_url
+        });
+    }
+});
+
 // Crutches and bikes
 /**
  * Inject several JS files
@@ -79,30 +96,6 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                 return true;
                 break;
                 
-            case 'listenNotificationClicks':
-                // Adding notification click event listener
-                chrome.notifications.onClicked.addListener(function(notificationId) {
-                    // Detecting notification type
-                    if (notificationId.indexOf('comment_') === 0) {
-                        tab_url = message.protocol + '//' + 'point.im/' + notificationId.replace(/comment_/g, '');
-                    } else if (notificationId.indexOf('post_') === 0) {
-                        tab_url = message.protocol + '//' + 'point.im/' + notificationId.replace(/post_/g, '');
-                    }
-                    console.log('Notification %s clicked! Opening new tab: %s', notificationId, tab_url);
-                    
-                    if (tab_url !== undefined) {
-                        chrome.tabs.create({
-                            url: tab_url
-                        });
-                    }
-                });
-                
-                sendResponse(true);
-                
-                // Fuck You, Chrome API documentation!
-                return true;
-                break;
-
             /**
              * @deprecated since 1.19.1
              */
