@@ -232,7 +232,7 @@ function ajax_get_comments_post_comment($post, csRf, event_parent, options) {
 
     $ajax({
         type: 'POST',
-        url: '/api/post/' + $post.data('id'),
+        url:      '/api/post/' + $post.data('id'),
         postdata: 'text=' + urlencode($(event_parent).val()) + '&comment_id=' + urlencode($post.data('comment-id')),
         headers: [['X-CSRF', csRf]],
         error: function() {
