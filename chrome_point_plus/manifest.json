@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Point+",
-    "version": "1.35.0",
+    "version": "1.35.1",
     "default_locale": "ru",
     "author": "__MSG_ext_author__",
     "homepage_url": "https://bitbucket.org/skobkin/chrome_point_plus",
@@ -49,6 +49,8 @@
         "scripts": ["js/background.js"]
     },
     "permissions": [
+        "http://point.im/*",
+        "https://point.im/*",
         "http://*.point.im/*",
         "https://*.point.im/*",
         "https://pleer.com/*",
@@ -56,6 +58,7 @@
         "https://player.soundcloud.com/*",
         "https://api.kanaria.ru/point/*",
         "https://*.twitter.com/*",
+        "https://coub.com/embed/*",
         "storage",
         "notifications",
         "tabs"
