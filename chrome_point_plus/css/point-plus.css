@@ -154,13 +154,31 @@ div#markItUpText-input {
 
 }
 
-/* Шваброточки */
-#comments .post .nesting {
-    height: 24px;
-    float: left;
+/** Индикация вложенности */
+
+#comments.nesting_level {
+    overflow: hidden;
 }
 
-#comments .post:hover .nesting {
-    background-repeat: repeat-x;
+#comments.nesting_level .info::before {
+    position: absolute;
+    top: 0;
+    right: 100%;
+
+    display: block;
+
+    width: 500px;
+    height: 24px;
+
+    content: '';
+
+    opacity: 0;
     background-image: url('chrome-extension://__MSG_@@extension_id__/images/nesting-point.png');
+    background-repeat: repeat-x;
+}
+
+#comments.nesting_level .post:hover .info::before {
+    transition: opacity .2s ease-in;
+
+    opacity: 1;
 }
