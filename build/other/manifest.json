@@ -27,14 +27,15 @@
             ],
             "js": [
                 "vendor/jquery/jquery.min.js",
+                "vendor/bootstrap-markdown/js/bootstrap-markdown.js",
+                "vendor/bootstrap-markdown/js/markdown.js",
                 "js/bquery_ajax.js",
                 "js/wrapper.js",
                 "js/point_sharp_options_list.js",
                 "js/point_sharp_shared_code_additional.js",
                 "js/point_sharp_shared_code_websocket.js",
                 "js/point_sharp_shared_code.js",
-                "vendor/markitup/markitup/jquery.markitup.js",
-                "js/markitup_set.js",
+
                 "vendor/soundcloud/soundcloud.player.api.js",
                 "vendor/fancybox/source/jquery.fancybox.pack.js",
                 "vendor/fancybox/source/helpers/jquery.fancybox-media.js"
@@ -44,10 +45,10 @@
                 "css/additional/fancybox/style.css",
                 "css/additional/modules/at_before_username.css",
 
-                "css/additional/markitup/sets/markdown/style.css",
-                "css/additional/markitup/skins/markitup/style.css",
+                "css/additional/bootstrap-wrapped.css",
 
-                "vendor/fancybox/source/jquery.fancybox.css"
+                "vendor/fancybox/source/jquery.fancybox.css",
+                "vendor/bootstrap-markdown/css/bootstrap-markdown.min.css"
             ],
             "run_at": "document_end"
         }

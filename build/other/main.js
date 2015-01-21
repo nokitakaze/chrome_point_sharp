@@ -38,12 +38,11 @@ exports.main = function() {
         contentStyleFile: [
             self.data.url("css/additional/point-plus.css"),
             self.data.url("css/additional/fancybox/style.css"),
-            self.data.url("css/additional/markitup/sets/markdown/style.css"),
-            self.data.url("css/additional/markitup/skins/markitup/style.css"),
             self.data.url("css/additional/modules/at_before_username.css"),
             self.data.url("vendor/fancybox/source/jquery.fancybox.css"),
             self.data.url("css/additional/fancybox/style.css"),
-            self.data.url("vendor/markitup/markitup/skins/markitup/style.css"),
+            self.data.url("css/additional/bootstrap-wrapped.css"),
+            self.data.url("vendor/bootstrap-markdown/css/bootstrap-markdown.min.css"),
 
             self.data.url("css/additional/point-options.css")// CSS Опций
         ],
@@ -57,9 +56,8 @@ exports.main = function() {
             self.data.url("vendor/soundcloud/soundcloud.player.api.js"),
             self.data.url("vendor/fancybox/source/jquery.fancybox.pack.js"),
             self.data.url("vendor/fancybox/source/helpers/jquery.fancybox-media.js"),
-            self.data.url("vendor/markitup/markitup/jquery.markitup.js"),
-            self.data.url("js/markitup_set.js"),
-
+            self.data.url("vendor/bootstrap-markdown/js/bootstrap-markdown.js"),
+            self.data.url("vendor/bootstrap-markdown/js/markdown.js"),
 
             self.data.url("js/wrapper.js"),
             self.data.url("js/point_sharp_shared_code.js"),

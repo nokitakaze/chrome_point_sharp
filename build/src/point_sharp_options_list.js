@@ -191,26 +191,26 @@ var point_sharp_options_tree = {
         "type": "tree",
         "description": "Другое",
         "children": {
-            "option_ctrl_enter": {
-                "type": "boolean",
-                "default_value": false,
-                "description": "Отправлять текст по CTRL+Enter (устарело)"
-            },
+            /*
             "option_fluid_layout": {
                 "type": "boolean",
                 "default_value": false,
                 "description": "\"Резиновая\" вёрстка (растянуть сайт по горизонтали)"
             },
+            */
             "option_visual_editor_post": {
                 "type": "boolean",
                 "default_value": false,
                 "description": "Визуальный редактор постов"
             },
+            /*
             "option_search_with_google": {
                 "type": "boolean",
                 "default_value": false,
                 "description": "Поиск по сайту с помощью Google"
             },
+            */
+            /*
             "option_enlarge_font": {
                 "type": "boolean",
                 "default_value": false,
@@ -237,6 +237,7 @@ var point_sharp_options_tree = {
                     }
                 }
             },
+            */
             "option_at_before_username": {
                 "type": "boolean",
                 "default_value": false,

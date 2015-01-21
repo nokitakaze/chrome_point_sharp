@@ -85,7 +85,7 @@ function create_image(domain, id, additional) {
         }
     }
     $(a).addClass('booru_pic').addClass('booru-' + domain + '-' + id).addClass('postimg').attr({
-        'id': 'booru_pic_' + booru_picture_count,
+        'id':    'booru_pic_' + booru_picture_count,
         'title': domain + ' image #' + id,
         'target': '_blank'
     });
@@ -831,10 +831,10 @@ function twitter_tweet_embedding_init() {
         js.src = "https://platform.twitter.com/widgets.js";
         fjs.parentNode.insertBefore(js, fjs);
         return window.twttr || (t = {
-            _e: [], ready: function(f) {
-                t._e.push(f);
-            }
-        });
+                _e: [], ready: function(f) {
+                    t._e.push(f);
+                }
+            });
     }(document, "script", "twitter-wjs"));
 }
 
@@ -929,4 +929,30 @@ function instagram_posts_embedding_init(current_options) {
 
         }
     });
+}
+
+/**
+ * Инициализация MarkDown Editor
+ */
+function visual_editor_init() {
+    // Init MarkItUp
+    $('#new-post-form #text-input, .post-content .reply-form textarea, #post-edit-form .post-content #text-input').markdown({
+        'language': 'ru'
+    });
+    $('#new-post-form, .post-content .reply-form, #post-edit-form .post-content .text').addClass('bootstrapped');
+    $('.post-content .reply-form textarea').css({'height': '10em'});
+
+    /*
+     // Send by CTRL+Enter
+     if (options.is('option_ctrl_enter')) {
+     // New post
+     $('#new-post-form #text-input, .post-content #text-input').on('keydown.point_plus', function(e) {
+     if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
+     e.preventDefault();
+     $(this).parents('#new-post-form,#post-edit-form').submit();
+     }
+     });
+     }
+     */
+
 }

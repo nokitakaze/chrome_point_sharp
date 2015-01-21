@@ -249,21 +249,7 @@ function pimp_my_page(options) {
 
     // Visual editor
     if (options.is('option_visual_editor_post')) {
-        // Add classes
-        $('#new-post-form #text-input, .post-content #text-input').addClass('markitup').css('height', '20em');
-        // Init MarkItUp
-        $('.markitup').markItUp(mySettings);
-
-        // Send by CTRL+Enter
-        if (options.is('option_ctrl_enter')) {
-            // New post
-            $('#new-post-form #text-input, .post-content #text-input').on('keydown.point_plus', function(e) {
-                if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
-                    e.preventDefault();
-                    $(this).parents('#new-post-form,#post-edit-form').submit();
-                }
-            });
-        }
+        visual_editor_init();
     }
 
     // Google search
