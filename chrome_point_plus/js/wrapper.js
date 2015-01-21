@@ -84,3 +84,15 @@ function point_sharp_get_version(callback) {
 
 }
 
+
+function console_group(group_name){
+    console.group(group_name);
+}
+
+function console_group_collapsed(group_name){
+    console.groupCollapsed(group_name);
+}
+
+function console_group_end(){
+    console.groupEnd();
+}

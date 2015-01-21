@@ -11,14 +11,14 @@
  */
 function skobkin_websocket_init(options) {
     // SSL or plain
-    ws = new WebSocket(((location.protocol == 'https:') ? 'wss' : 'ws') + '://point.im/ws');
+    var ws = new WebSocket(((location.protocol == 'https:') ? 'wss' : 'ws') + '://point.im/ws');
     console.log('WebSocket created: ', ws);
 
     // Detecting post id if presented
     var postId = $('#top-post').attr('data-id');
     console.log('Current post id detected as #', postId);
     // Detecting view mode
-    treeSwitch = $('#tree-switch a.active').attr('href');
+    var treeSwitch = $('#tree-switch a.active').attr('href');
     console.log('Comments view mode: ', treeSwitch);
 
     // Error handler
@@ -34,32 +34,33 @@ function skobkin_websocket_init(options) {
                 console.info('ws-ping');
             } else {
                 var wsMessage = JSON.parse(evt.data);
+                console.log('WS Message: ', evt, wsMessage);
 
                 if (wsMessage.hasOwnProperty('a') && wsMessage.a != '') {
                     switch (wsMessage.a) {
                         // Comments
                         case 'comment':
-                            console.groupCollapsed('ws-comment', wsMessage.post_id, '/', wsMessage.comment_id);
+                            console_group_collapsed('ws-comment' + wsMessage.post_id + '/' + wsMessage.comment_id);
                             console.log(wsMessage);
 
                             // Check option
                             if (!options.is('option_ws_comments')) {
                                 console.log('Comments processing disabled');
-                                console.groupEnd();
+                                console_group_end();
                                 break;
                             }
 
                             // Check we are in the post
                             if ($('#top-post').length < 1) {
                                 console.log('Not in the post, skipping');
-                                console.groupEnd();
+                                console_group_end();
                                 break;
                             }
 
                             // Check we are in specified post
                             if (wsMessage.post_id != postId) {
                                 console.log('The comment is not for this post');
-                                console.groupEnd();
+                                console_group_end();
                                 break;
                             }
 
@@ -77,8 +78,9 @@ function skobkin_websocket_init(options) {
                                 console.info('Inserting comment');
 
                                 // Search for parent comment
-                                $parentComment =
-                                (wsMessage.to_comment_id) ? ($('.post[data-comment-id="' + wsMessage.to_comment_id + '"]')) : [];
+                                var $parentComment =
+                                    (wsMessage.to_comment_id) ? ($('.post[data-comment-id="' + wsMessage.to_comment_id + '"]'))
+                                        : [];
                                 console.log('Parent comment: ', $parentComment || null);
 
                                 // If list mode or not addressed to other comment
@@ -88,7 +90,7 @@ function skobkin_websocket_init(options) {
                                     $('.content-wrap #comments #post-reply').before($comment);
                                 } else {
                                     // Check for children
-                                    $parentCommentChildren = $parentComment.next('.comments');
+                                    var $parentCommentChildren = $parentComment.next('.comments');
                                     // If child comment already exist
                                     if ($parentCommentChildren.length > 0) {
                                         console.log('Child comments found. Appending...');
@@ -115,7 +117,7 @@ function skobkin_websocket_init(options) {
                                      */
                                 }
 
-                                console.groupEnd();
+                                console_group_end();
                                 again_callback();
                             });
 
@@ -124,7 +126,7 @@ function skobkin_websocket_init(options) {
 
                         // Posts
                         case 'post':
-                            console.groupCollapsed('ws-post #', wsMessage.post_id);
+                            console_group_collapsed('ws-post #' + wsMessage.post_id);
 
                             console.log(wsMessage);
                             if (options.is('option_ws_posts')) {
@@ -144,24 +146,24 @@ function skobkin_websocket_init(options) {
                                  */
                             }
 
-                            console.groupEnd();
+                            console_group_end();
                             break;
 
                         // Recommendation
                         case 'ok':
-                            console.groupCollapsed('ws-recommendation #', wsMessage.post_id, '/', wsMessage.comment_id);
+                            console_group_collapsed('ws-recommendation #' + wsMessage.post_id + '/' + wsMessage.comment_id);
 
                             console.log(wsMessage);
 
-                            console.groupEnd();
+                            console_group_end();
                             break;
 
                         default:
-                            console.groupCollapsed('ws-other');
+                            console_group_collapsed('ws-other');
 
                             console.log(wsMessage);
 
-                            console.groupEnd();
+                            console_group_end();
                             break;
 
                     }
@@ -170,9 +172,7 @@ function skobkin_websocket_init(options) {
 
             }
         } catch (e) {
-            console.log('WebSocket exception:');
-            console.log(e);
-            console.log(evt.data);
+            console.error('WebSocket handler exception: ', e.name, e.message, e.fileName || null, e.lineNumber || null);
         }
 
     };

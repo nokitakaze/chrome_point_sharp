@@ -4,9 +4,7 @@
  * ПЛАТФОРМОНЕЗАВИСИМЫЙ ФАЙЛ
  */
 
-if (typeof(console.group) !== 'undefined') {
-    console.group('point-sharp');
-}
+console_group('point-sharp');
 console.info("shared_code.js");
 
 $(document).ready(function() {

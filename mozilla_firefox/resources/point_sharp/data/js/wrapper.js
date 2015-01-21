@@ -100,3 +100,12 @@ function point_sharp_get_version(callback) {
     self.port.emit('get_extension_version', callback_rand);
 }
 
+
+function console_group(group_name){
+}
+
+function console_group_collapsed(group_name){
+}
+
+function console_group_end(){
+}
