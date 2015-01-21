@@ -173,8 +173,9 @@ div#markItUpText-input {
     content: '';
 
     opacity: 0;
-    background-image: url('chrome-extension://__MSG_@@extension_id__/images/nesting-point.png');
+    background-image: url('chrome-extension://__MSG_@@extension_id__/images/nesting-point.svg');
     background-repeat: repeat-x;
+    background-position: right center;
 }
 
 #comments.nesting_level .post:hover .info::before {
