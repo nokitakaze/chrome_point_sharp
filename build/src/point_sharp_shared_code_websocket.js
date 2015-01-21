@@ -40,6 +40,7 @@ function skobkin_websocket_init(options) {
                     switch (wsMessage.a) {
                         // Comments
                         case 'comment':
+                        case 'ok':
                             console_group_collapsed('ws-comment' + wsMessage.post_id + '/' + wsMessage.comment_id);
                             console.log(wsMessage);
 
@@ -66,13 +67,14 @@ function skobkin_websocket_init(options) {
 
                             // Generating comment from websocket message
                             ajax_get_comments_create_comment_elements({
-                                id: wsMessage.comment_id,
-                                toId: wsMessage.to_comment_id,
+                                id: (wsMessage.a == 'comment') ? wsMessage.comment_id : wsMessage.rcid,
+                                toId: (wsMessage.a == 'comment') ? wsMessage.to_comment_id : wsMessage.comment_id,
                                 postId: wsMessage.post_id,
                                 author: wsMessage.author,
                                 text: wsMessage.text,
                                 options: options,
-                                fadeOut: options.is('option_ws_comments_color_fadeout')
+                                fadeOut: options.is('option_ws_comments_color_fadeout'),
+                                commentType: (wsMessage.a == 'comment') ? 'comment' : 'recommendation'
                             }, function($comment, again_callback) {
                                 // It's time to DOM
                                 console.info('Inserting comment');
@@ -264,7 +266,8 @@ function ajax_get_comments_post_comment($post, csRf, event_parent, options) {
                     author: $('#name h1').text(),
                     text: $(event_parent).val(),
                     options: current_options,
-                    fadeOut: false
+                    fadeOut: false,
+                    commentType: 'comment'
                 },
                 function($comment, callback_again) {
                     // Эта функция добавляет элемент $comment в DOM
@@ -364,6 +367,10 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
         'data-comment-id': commentData.id,
         'data-to-comment-id': commentData.id || ''
     }).html(ajax_get_comments_comment_template);
+
+    if (commentData.commentType == 'recommendation') {
+        $commentTemplate.addClass('recommendation');
+    }
 
     // Date and time of comment
     var date = new Date();
