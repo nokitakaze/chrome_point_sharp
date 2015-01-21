@@ -10,6 +10,8 @@
         "point_sharp/main": {
             "moduleName": "main",
             "packageName": "point_sharp",
+            "docsSHA256": null,
+            "jsSHA256": null,
             "requirements": {
                 "sdk/notifications": "sdk/notifications",
                 "sdk/page-mod": "sdk/page-mod",
@@ -25,6 +27,8 @@
         "point_sharp/urlbar": {
             "moduleName": "urlbar",
             "packageName": "point_sharp",
+            "docsSHA256": null,
+            "jsSHA256": null,
             "requirements": {
                 "sdk/tabs": "sdk/tabs",
                 "sdk/window/utils": "sdk/window/utils",
@@ -61,6 +65,7 @@
             "permissions": {
                 "private-browsing": false,
                 "cross-domain-content": [
+                    "http://pleer.com/",
                     "https://pleer.com/",
                     "http://player.soundcloud.com/",
                     "https://player.soundcloud.com/",
