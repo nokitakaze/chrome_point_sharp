@@ -151,15 +151,6 @@ function skobkin_websocket_init(options) {
                             console_group_end();
                             break;
 
-                        // Recommendation
-                        case 'ok':
-                            console_group_collapsed('ws-recommendation #' + wsMessage.post_id + '/' + wsMessage.comment_id);
-
-                            console.log(wsMessage);
-
-                            console_group_end();
-                            break;
-
                         default:
                             console_group_collapsed('ws-other');
 
