@@ -206,7 +206,6 @@ function ajax_get_comments_init(options) {
 
             var $post = $(this).parents('.post').first();
             var csRf = $('#new-post-wrap input[name="csrf_token"]').val();
-
             ajax_get_comments_post_comment($post, csRf, this, options);
         }
     });
@@ -231,8 +230,11 @@ function ajax_get_comments_post_comment($post, csRf, event_parent, options) {
         error: function() {
             console.error('AJAX request HTTP error while sending the comment');
 
-            // @todo Обработчик
-//            alert(chrome.i18n.getMessage('msg_comment_send_failed') + '\n' + error);
+            smart_form_post('/' + $('#top-post').attr('data-id'), {
+                'text': $(event_parent).val(),
+                'csrf_token': $('#new-post-wrap input[name="csrf_token"]').val(),
+                'comment_id': $post.data('comment-id')
+            });
         },
         /**
          * @param {string} json Response data
@@ -246,9 +248,15 @@ function ajax_get_comments_post_comment($post, csRf, event_parent, options) {
              */
             var data = JSON.parse(json);
 
-            if (typeof(data) == 'undefined') {
-                console.error('AJAX request HTTP error while sending the comment');
-                // @todo Обработчик
+            if (typeof(data.error) !== 'undefined') {
+                console.error('AJAX request HTTP error while sending the comment', data.error);
+
+                smart_form_post('/' + $('#top-post').attr('data-id'), {
+                    'text': $(event_parent).val(),
+                    'csrf_token': $('#new-post-wrap input[name="csrf_token"]').val(),
+                    'comment_id': $post.data('comment-id')
+                });
+
                 return;
             }
 

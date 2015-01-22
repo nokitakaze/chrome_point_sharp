@@ -956,3 +956,34 @@ function visual_editor_init() {
      */
 
 }
+
+/**
+ * Создаём форму на страницу и кидаем её
+ *
+ * @param url Урл, на который мы кидаем запрос
+ * @param data
+ * @param method Метод запроса
+ */
+function smart_form_post(url, data, method) {
+    if (typeof(method) == 'undefined') {
+        method = 'post';
+    }
+
+    console.log('Smart Form Post:', url, data, method);
+    var form = document.createElement('form');
+    $(form).attr({
+        'action': url,
+        'method': method
+    }).hide();
+    for (var key in data) {
+        var input = document.createElement('input');
+        $(input).attr({
+            'name': key,
+            'value': data[key]
+        });
+        form.appendChild(input);
+    }
+
+    document.body.appendChild(form);
+    $(form).submit();
+}
