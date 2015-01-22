@@ -9,6 +9,9 @@
     <em:bootstrap>true</em:bootstrap>
     <em:unpack>false</em:unpack>
 
+    <em:optionsType>3</em:optionsType>
+    <em:optionsURL>https://point.im/point-sharp-settings.html</em:optionsURL>
+
     <!-- Firefox -->
     <em:targetApplication>
       <Description>
