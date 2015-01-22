@@ -21,20 +21,19 @@
       </Description>
     </em:targetApplication>
 
-    <!-- ? -->
-   <em:targetApplication>
-    <Description>
-     <em:id>{aa3c5121-dab2-40e2-81ca-7ea25febc110}</em:id>
-     <em:minVersion>19.0</em:minVersion>
-     <em:maxVersion>22.0a1</em:maxVersion>
-    </Description>
-   </em:targetApplication>
-
     <!-- Front End MetaData -->
     <em:name>%%NAME%%</em:name>
     <em:description>%%DESCRIPTION%%</em:description>
     <em:creator>%%AUTHOR%%</em:creator>
     <em:homepageURL>%%HOMEPAGE%%</em:homepageURL>
+
+    <em:updateURL>https://api.kanaria.ru/point/update-firefox.php</em:updateURL>
+    <em:updateKey>
+    MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC/RLOP9Pou5ziRUE
+    kVFFp4y/G1NsAUZAqgoqiQWepS+1C+CQlkDyLebBO0dUWfssRLP/4G
+    cIUDMD9SJ3eagJmce6HcyWkVd/cAPIUb/qTw//5jVvA8QByNtZhoky
+    OtMqPLuf+qZYIUXgFz4+VvrhwYlOrG7Dc5apQjsevzxkK8sQIDAQAB
+    </em:updateKey>
     
   </Description>
 </RDF>
