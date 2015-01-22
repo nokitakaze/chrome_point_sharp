@@ -265,6 +265,10 @@ function pimp_my_page(options) {
     // WebSocket
     if (options.is('option_ws')) {
         skobkin_websocket_init(options);
+    }
+
+    // Отправлять каменты через Ajax
+    if (options.is('option_send_comments_ajax')) {
         ajax_get_comments_init(options);
     }
 

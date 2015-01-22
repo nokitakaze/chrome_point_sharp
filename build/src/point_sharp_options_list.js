@@ -192,52 +192,52 @@ var point_sharp_options_tree = {
         "description": "Другое",
         "children": {
             /*
-            "option_fluid_layout": {
-                "type": "boolean",
-                "default_value": false,
-                "description": "\"Резиновая\" вёрстка (растянуть сайт по горизонтали)"
-            },
-            */
+             "option_fluid_layout": {
+             "type": "boolean",
+             "default_value": false,
+             "description": "\"Резиновая\" вёрстка (растянуть сайт по горизонтали)"
+             },
+             */
             "option_visual_editor_post": {
                 "type": "boolean",
                 "default_value": false,
                 "description": "Визуальный редактор постов"
             },
             /*
-            "option_search_with_google": {
-                "type": "boolean",
-                "default_value": false,
-                "description": "Поиск по сайту с помощью Google"
-            },
-            */
+             "option_search_with_google": {
+             "type": "boolean",
+             "default_value": false,
+             "description": "Поиск по сайту с помощью Google"
+             },
+             */
             /*
-            "option_enlarge_font": {
-                "type": "boolean",
-                "default_value": false,
-                "description": "Увеличить шрифт ▼",
-                "children": {
-                    "option_enlarge_font_size": {
-                        "type": "enum",
-                        "default_value": "85",
-                        "radio_values": [
-                            {
-                                "text": "0.85 em",
-                                "value": "85"
-                            },
-                            {
-                                "text": "1 em",
-                                "value": "100"
-                            },
-                            {
-                                "text": "1.1 em",
-                                "value": "110"
-                            }
-                        ],
-                        "description": ""
-                    }
-                }
-            },
-            */
+             "option_enlarge_font": {
+             "type": "boolean",
+             "default_value": false,
+             "description": "Увеличить шрифт ▼",
+             "children": {
+             "option_enlarge_font_size": {
+             "type": "enum",
+             "default_value": "85",
+             "radio_values": [
+             {
+             "text": "0.85 em",
+             "value": "85"
+             },
+             {
+             "text": "1 em",
+             "value": "100"
+             },
+             {
+             "text": "1.1 em",
+             "value": "110"
+             }
+             ],
+             "description": ""
+             }
+             }
+             },
+             */
             "option_at_before_username": {
                 "type": "boolean",
                 "default_value": false,
@@ -289,48 +289,46 @@ var point_sharp_options_tree = {
     },
     "tree_websocket": {
         "type": "tree",
-        "description": "Вебсокеты",
+        "description": "Интерактивность",
         "children": {
             "option_ws": {
                 "type": "boolean",
                 "default_value": false,
-                "description": "Включить вебсокеты ▼",
+                "description": "Получать комментарии через Вебсокеты",
                 "children": {
-                    "option_ws_comments": {
-                        "type": "boolean",
-                        "default_value": false,
-                        "description": "Получать комментарии ▼",
-                        "children": {
-                            "option_ws_comments_color_fadeout": {
-                                "type": "boolean",
-                                "default_value": false,
-                                "description": "Затухание подсветки через 20 секунд"
-                            },
-                            "option_ws_comments_notifications": {
-                                "type": "boolean",
-                                "default_value": false,
-                                "description": "Включить уведомления на рабочем столе"
-                            }
-                        }
-                    },
-                    "option_ws_feeds": {
-                        "type": "boolean",
-                        "default_value": false,
-                        "description": "Обрабатывать ленты ▼",
-                        "children": {
-                            "option_ws_feeds_subscriptions": {
-                                "type": "boolean",
-                                "default_value": false,
-                                "description": "Подписки"
-                            },
-                            "option_ws_feeds_blogs": {
-                                "type": "boolean",
-                                "default_value": false,
-                                "description": "Блоги пользователей (только при подписке)"
-                            }
-                        }
-                    }
+                    /*
+                     ,                            "option_ws_comments_notifications": {
+                     "type": "boolean",
+                     "default_value": false,
+                     "description": "Включить уведомления на рабочем столе"
+                     }
+                     */
                 }
+                /*
+                 ,"option_ws_feeds": {
+                 "type": "boolean",
+                 "default_value": false,
+                 "description": "Обрабатывать ленты ▼",
+                 "children": {
+                 "option_ws_feeds_subscriptions": {
+                 "type": "boolean",
+                 "default_value": false,
+                 "description": "Подписки"
+                 },
+                 "option_ws_feeds_blogs": {
+                 "type": "boolean",
+                 "default_value": false,
+                 "description": "Блоги пользователей (только при подписке)"
+                 }
+                 }
+                 }*/
+
+            },
+            'option_send_comments_ajax': {
+                "type": "boolean",
+                "default_value": true,
+                "description": "Отправлять комментарии через Аякс",
+                "children": {}
             }
         }
     }

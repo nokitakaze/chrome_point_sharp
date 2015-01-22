@@ -44,13 +44,6 @@ function skobkin_websocket_init(options) {
                             console_group_collapsed('ws-comment' + wsMessage.post_id + '/' + wsMessage.comment_id);
                             console.log(wsMessage);
 
-                            // Check option
-                            if (!options.is('option_ws_comments')) {
-                                console.log('Comments processing disabled');
-                                console_group_end();
-                                break;
-                            }
-
                             // Check we are in the post
                             if ($('#top-post').length < 1) {
                                 console.log('Not in the post, skipping');
