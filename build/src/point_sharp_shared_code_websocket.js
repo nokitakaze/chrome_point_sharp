@@ -198,17 +198,38 @@ function ajax_get_comments_init(options) {
     // Dirty hack for page context
     $('#comments').replaceWith($('#comments').clone());
 
-    // Binding new
-    $('#comments').on('keypress.pp', '.reply-form textarea', function(evt) {
-        if ((evt.keyCode === 10 || evt.keyCode === 13) && (evt.ctrlKey || evt.metaKey)) {
-            evt.stopPropagation();
-            evt.preventDefault();
+    // Биндим ивенты
 
-            var $post = $(this).parents('.post').first();
-            var csRf = $('#new-post-wrap input[name="csrf_token"]').val();
-            ajax_get_comments_post_comment($post, csRf, this, options);
-        }
+    // on submit
+    $('#comments form.reply-form, .post-content form.reply-form').on('submit', function(evt) {
+        comments_reply_form_submit(evt, options);
     });
+
+
+    // on Ctrl+Enter
+    $('#comments form.reply-form textarea[name="text"], .post-content form.reply-form textarea[name="text"]').
+        on('keypress.pp', comments_reply_form_textarea_ctrl_enter);
+}
+
+function comments_reply_form_submit(evt, options) {
+    var attach = $(evt.target).find('input[name="attach"]');
+    if (attach.val() == '') {
+        evt.stopPropagation();
+        evt.preventDefault();
+
+        var $post = $(evt.target).parents('.post').first();
+        var csRf = $('#new-post-wrap input[name="csrf_token"]').val();
+        ajax_get_comments_post_comment($post, csRf, options);
+    }
+
+}
+
+function comments_reply_form_textarea_ctrl_enter(evt) {
+    if ((evt.keyCode === 10 || evt.keyCode === 13) && (evt.ctrlKey || evt.metaKey)) {
+        evt.stopPropagation();
+        evt.preventDefault();
+        $(evt.target).parents('form').first().submit();
+    }
 }
 
 /**
@@ -216,22 +237,24 @@ function ajax_get_comments_init(options) {
  *
  * @param $post Родительский элемент
  * @param csRf csrf-токен
- * @param event_parent Элемент-формочка
  * @param options Опции
  */
-function ajax_get_comments_post_comment($post, csRf, event_parent, options) {
+function ajax_get_comments_post_comment($post, csRf, options) {
     var current_options = options;
+    var textarea = $post.find('textarea[name="text"]');
+    var raw_text = textarea.val();
+    var comment_id = (typeof($post.data('comment-id')) == 'undefined') ? 0 : $post.data('comment-id');
 
     $ajax({
         type: 'POST',
         url:      '/api/post/' + $post.data('id'),
-        postdata: 'text=' + urlencode($(event_parent).val()) + '&comment_id=' + urlencode($post.data('comment-id')),
+        postdata: 'text=' + urlencode(raw_text) + ((comment_id > 0) ? '&comment_id=' + urlencode(comment_id) : ''),
         headers: [['X-CSRF', csRf]],
         error: function() {
             console.error('AJAX request HTTP error while sending the comment');
 
             smart_form_post('/' + $('#top-post').attr('data-id'), {
-                'text': $(event_parent).val(),
+                'text': raw_text,
                 'csrf_token': $('#new-post-wrap input[name="csrf_token"]').val(),
                 'comment_id': $post.data('comment-id')
             });
@@ -252,7 +275,7 @@ function ajax_get_comments_post_comment($post, csRf, event_parent, options) {
                 console.error('AJAX request HTTP error while sending the comment', data.error);
 
                 smart_form_post('/' + $('#top-post').attr('data-id'), {
-                    'text': $(event_parent).val(),
+                    'text': raw_text,
                     'csrf_token': $('#new-post-wrap input[name="csrf_token"]').val(),
                     'comment_id': $post.data('comment-id')
                 });
@@ -261,7 +284,11 @@ function ajax_get_comments_post_comment($post, csRf, event_parent, options) {
             }
 
             // Hiding form
-            $('#reply-' + $post.data('id') + '_' + $post.data('comment-id')).prop('checked', false);
+            if (typeof($post.data('comment-id')) == 'undefined') {
+                $('#top-post .reply-form').slideUp(300);
+            } else {
+                $('#reply-' + $post.data('id') + '_' + $post.data('comment-id')).prop('checked', false);
+            }
 
             // Creating the comment HTML
             ajax_get_comments_create_comment_elements({
@@ -269,9 +296,8 @@ function ajax_get_comments_post_comment($post, csRf, event_parent, options) {
                     toId: $post.data('comment-id') || null,
                     postId: $post.data('id'),
                     author: $('#name h1').text(),
-                    text: $(event_parent).val(),
+                    text: raw_text,
                     options: current_options,
-                    fadeOut: false,
                     commentType: 'comment'
                 },
                 function($comment, callback_again) {
@@ -286,7 +312,6 @@ function ajax_get_comments_post_comment($post, csRf, event_parent, options) {
                         // Check for children
                         var $parentCommentChildren = $post.next('.comments');
 
-                        // @fixme Find a bug with lost indentation of new comment
                         // If child comment already exist
                         if ($parentCommentChildren.length) {
                             $parentCommentChildren.append($comment);
@@ -300,8 +325,8 @@ function ajax_get_comments_post_comment($post, csRf, event_parent, options) {
             );
 
             // Cleaning textarea
-            $(event_parent).val('');
-        }.bind(event_parent)
+            textarea.val('');
+        }.bind(textarea)
     });
 }
 
@@ -343,7 +368,13 @@ const ajax_get_comments_comment_template =
     '        <input type="hidden" name="comment_id" value="">' + "\n" +
     '        <input type="hidden" name="csrf_token" value="">' + "\n" +
     '        <div class="clearfix">' + "\n" +
-    '            <input type="submit" value="Ответить"/>' + "\n" +
+    '            <div class="attach">' + "\n" +
+    '                <input type="file" name="attach" multiple="">' + "\n" +
+    '                <div class="descr">Вы можете выбрать до 10 файлов общим размером не более 10 МБ.</div>' + "\n" +
+    '            </div>' + "\n" +
+    '            <div class="buttons">' + "\n" +
+    '                <input type="submit" value="Ответить">' + "\n" +
+    '            </div>' +
     '        </div>' + "\n" +
     '    </form>' + "\n" +
     '</div>';
@@ -357,7 +388,7 @@ const ajax_get_comments_comment_template =
  * @param {string} commentData.postId ID of the post
  * @param {string} commentData.author Author of the comment
  * @param {string} commentData.text Text of the comment
- * @param {boolean} commentData.fadeOut Is fadeout enabled or not
+ * @param {string} commentData.options Опции OptionManager
  * @param {function} onCommentCreated Callback which is called when comment is ready.
  * Этот коллбэк добавляет элемент в дом, а потом дёргает коллбэк опять
  *
@@ -408,19 +439,26 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
         // Adding answer label
         .after((commentData.toId !== null) ? (' в ответ на <a href="#' + commentData.toId + '">/' + commentData.toId + '</a>')
             : (''));
+
     // Setting action labels and other attributes
     $commentTemplate.find('.action-labels .reply-label').attr('for', 'reply-' + commentData.postId + '_' + commentData.id);
     $commentTemplate.find('.action-labels .more-label').attr('for', 'action-' + commentData.postId + '_' + commentData.id);
     $commentTemplate.find('.post-content input[name="action-radio"]').attr('id',
         'action-' + commentData.postId + '_' + commentData.id);
+
     // Bookmark link
     $commentTemplate.find('.action-buttons a.bookmark').attr('href',
         $('#top-post .info a').attr('href') + commentData.postId + '/b?comment_id=' + commentData.id + '&csrf_token=' +
         csRfToken);
+
     // Reply form
     $commentTemplate.find('.post-content input.reply-radio').attr('id', 'reply-' + commentData.postId + '_' + commentData.id);
-    $commentTemplate.find('.post-content form.reply-form').attr('action', '/' + commentData.postId);
-    $commentTemplate.find('.post-content form.reply-form textarea[name="text"]').html('@' + commentData.author + ', ');
+    $commentTemplate.find('.post-content form.reply-form').attr('action', '/' + commentData.postId).
+        on('submit', function(evt) {
+            comments_reply_form_submit(evt, commentData.options);
+        });
+    $commentTemplate.find('.post-content form.reply-form textarea[name="text"]').
+        html('@' + commentData.author + ', ').on('keypress.pp', comments_reply_form_textarea_ctrl_enter);
     $commentTemplate.find('.post-content form.reply-form input[name="comment_id"]').val(commentData.id);
     $commentTemplate.find('.post-content form.reply-form input[name="csrf_token"]').val(csRfToken);
 
@@ -429,11 +467,13 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
     $commentTemplate.find('.text').append($('<p>').text(commentData.text));
     // /Filling template
 
-    // Fading out highlight if needed
-    if (commentData.fadeOut) {
-        console.log('Fading out the highlight');
-        $commentTemplate.children('.pp-highlight').delay(250).fadeOut(20000);
-    }
+    /*
+     // Fading out highlight if needed
+     if (commentData.fadeOut) {
+     console.log('Fading out the highlight');
+     $commentTemplate.children('.pp-highlight').delay(250).fadeOut(20000);
+     }
+     */
 
     // Fade in
     $commentTemplate.hide().delay(250).fadeIn(2000);
