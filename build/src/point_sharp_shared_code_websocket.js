@@ -205,7 +205,7 @@ function ajax_get_comments_init(options) {
             evt.preventDefault();
 
             var $post = $(this).parents('.post').first();
-            var csRf = $(this).siblings('input[name="csrf_token"]').val();
+            var csRf = $('#new-post-wrap input[name="csrf_token"]').val();
 
             ajax_get_comments_post_comment($post, csRf, this, options);
         }
@@ -229,7 +229,7 @@ function ajax_get_comments_post_comment($post, csRf, event_parent, options) {
         postdata: 'text=' + urlencode($(event_parent).val()) + '&comment_id=' + urlencode($post.data('comment-id')),
         headers: [['X-CSRF', csRf]],
         error: function() {
-            console.error('AJAX request error while sending the comment');
+            console.error('AJAX request HTTP error while sending the comment');
 
             // @todo Обработчик
 //            alert(chrome.i18n.getMessage('msg_comment_send_failed') + '\n' + error);
@@ -245,6 +245,12 @@ function ajax_get_comments_post_comment($post, csRf, event_parent, options) {
              * @var {string} data.id ID of the post
              */
             var data = JSON.parse(json);
+
+            if (typeof(data) == 'undefined') {
+                console.error('AJAX request HTTP error while sending the comment');
+                // @todo Обработчик
+                return;
+            }
 
             // Hiding form
             $('#reply-' + $post.data('id') + '_' + $post.data('comment-id')).prop('checked', false);
