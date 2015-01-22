@@ -68,6 +68,15 @@ function point_loaded_last(options) {
     if (document.location.href.match(new RegExp('https?://point\\.im/point\\-sharp\\-settings\\.html(\\?.*)?$'))) {
         point_sharp_settings_page_init(options);
     }
+
+    // Добавляем в левое меню пункт настроек
+    var left_menu_point_sharp_settings_item = document.createElement('a');
+    $(left_menu_point_sharp_settings_item).attr({
+        'href': 'https://point.im/point-sharp-settings.html',
+        'target': '_blank'
+    }).text('Point# настройки');
+
+    $('#left-menu')[0].insertBefore(left_menu_point_sharp_settings_item, $('#left-menu #top-link')[0]);
 }
 
 /**
@@ -101,11 +110,11 @@ function point_sharp_get_version(callback) {
 }
 
 
-function console_group(group_name){
+function console_group(group_name) {
 }
 
-function console_group_collapsed(group_name){
+function console_group_collapsed(group_name) {
 }
 
-function console_group_end(){
+function console_group_end() {
 }
