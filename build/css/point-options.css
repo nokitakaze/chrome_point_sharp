@@ -59,6 +59,13 @@
     background: #fff;
 }
 
+@-moz-document url-prefix() {
+    .point-options-wrapper .tabs-content {
+        padding-top: 20px;
+        margin-bottom: 20px;
+    }
+}
+
 .point-options-wrapper .tabs-content::before {
     position: absolute;
     top: 0;

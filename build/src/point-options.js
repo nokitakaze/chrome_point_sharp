@@ -218,6 +218,9 @@ $(document).ready(function() {
         }
 
         $('.content-wrap').addClass('point-options-wrapper').
+            css({
+                'padding':'20px 0px'
+            }).
             html('<nav class="tabs-list"></nav><form class="tabs-content"></form>' +
                  '<p class="saved hidden" data-i18n="options_text_saved"></p><div>' +
                  '<p>Point# <span id="version"></span> by' +
