@@ -174,34 +174,32 @@ var point_sharp_options_tree = {
              "description": "Поиск по сайту с помощью Google"
              },
              */
-            /*
-             "option_enlarge_font": {
-             "type": "boolean",
-             "default_value": false,
-             "description": "Увеличить шрифт ▼",
-             "children": {
-             "option_enlarge_font_size": {
-             "type": "enum",
-             "default_value": "85",
-             "radio_values": [
-             {
-             "text": "0.85 em",
-             "value": "85"
-             },
-             {
-             "text": "1 em",
-             "value": "100"
-             },
-             {
-             "text": "1.1 em",
-             "value": "110"
-             }
-             ],
-             "description": ""
-             }
-             }
-             },
-             */
+            "option_enlarge_font": {
+                "type": "boolean",
+                "default_value": false,
+                "description": "Увеличить шрифт ▼",
+                "children": {
+                    "option_enlarge_font_size": {
+                        "type": "enum",
+                        "default_value": "85",
+                        "radio_values": [
+                            {
+                                "text": "На 13%",
+                                "value": "85"
+                            },
+                            {
+                                "text": "На 33%",
+                                "value": "100"
+                            },
+                            {
+                                "text": "На 46%",
+                                "value": "110"
+                            }
+                        ],
+                        "description": ""
+                    }
+                }
+            },
             "option_at_before_username": {
                 "type": "boolean",
                 "default_value": false,
