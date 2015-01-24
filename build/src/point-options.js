@@ -115,14 +115,21 @@ function draw_option_branch(parent_obj, index, branch) {
         for (var child_index in branch.children) {
             draw_option_branch(item, child_index, branch.children[child_index]);
         }
-    } else if (children_length == 0) {
-        // Одиночный
+    } else if (branch.type == "text") {
+        // Text-input
+        item = document.createElement('label');
+        $(item).addClass('option-node').
+            html('<span></span><br/><input type="text">').
+            find('input').attr('name', index.replace(/_/g, '-'));
+        $(item).find('span').attr('data-i18n', index).text(branch.description);
+    } else if ((branch.type == "boolean") && (children_length == 0)) {
+        // Одиночная галка
         item = document.createElement('label');
         $(item).addClass('option-node').
             html('<input type="checkbox"><span></span>').
             find('input').attr('name', index.replace(/_/g, '-'));
         $(item).find('span').attr('data-i18n', index).text(branch.description);
-    } else if (children_length > 0) {
+    } else if ((branch.type == "boolean") && (children_length > 0)) {
         // Зависимые опции
         item = document.createElement('div');
         $(item).addClass('option-node').
@@ -159,12 +166,27 @@ function redraw_current_options_value() {
         var raw_options = options.getOptions();
 
         // Выставляем галки
-        $('.point-options-wrapper .option-node > input[type="checkbox"]').first().prop('checked', false);
+        $('.point-options-wrapper .option-node > input[type="checkbox"]').prop('checked', false);
         for (var index in raw_options) {
+            if (options.getType(index) != 'boolean') {
+                continue;
+            }
+
             if (options.is(index)) {
                 $('.point-options-wrapper input[type="checkbox"][name="' + (index.replace(/_/g, '-')) + '"]').
                     first().prop('checked', true);
             }
+        }
+
+        // Выставляем текстовые поля
+        $('.point-options-wrapper .option-node > input[type="text"]').val('');
+        for (var index in raw_options) {
+            if (options.getType(index) != 'text') {
+                continue;
+            }
+
+            $('.point-options-wrapper input[type="text"][name="' + (index.replace(/_/g, '-')) + '"]').
+                first().val(options.get(index));
         }
 
         // Выставляем радио-батоны

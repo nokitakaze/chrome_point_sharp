@@ -98,9 +98,11 @@ function create_image(domain, id, additional) {
     return a;
 }
 
-// Помечаем непрочитанные посты более видимо чем каким-то баджем
-// Эта часть написана @RainbowSpike
+/**
+ * Помечаем непрочитанные посты более видимо чем каким-то баджем
+ */
 function mark_unread_post() {
+    // Эта часть написана @RainbowSpike
     var divs = $(".content-wrap > .post").css({'padding-left': '2px'}); // массив постов
     for (var i = 0; i < divs.length; i++) { // обыск постов
         var spans = $(divs[i]).find(".unread"); // поиск метки непрочитанных комментов
@@ -362,8 +364,9 @@ function create_pleercom_ajax(id, current_options) {
 
 }
 
-// Проставляем теги у постов
-// @hint В данный момент эта фича используются для NSFW, потом выборку по тегам можно будет использовать много где
+/**
+ * Проставляем теги и имена пользователей у постов
+ */
 function create_tag_system() {
     $('.content-wrap > .post').each(function() {
         var tags = $(this).find('div.tags a.tag');
@@ -371,6 +374,10 @@ function create_tag_system() {
             var tag_name = $(tags[i]).html().toLowerCase();
             $(this).addClass('post-tag-' + tag_name);
         }
+
+        // @todo Имена пользователей
+
+        // @todo Свои посты
     });
 }
 
@@ -986,4 +993,82 @@ function smart_form_post(url, data, method) {
 
     document.body.appendChild(form);
     $(form).submit();
+}
+
+
+/**
+ * Улучшенная система NSFW
+ */
+function smart_nsfw_init(options) {
+    for (var set_id = 1; set_id <= 4; set_id++) {
+        if (!options.is('option_nsfw' + set_id)) {
+            continue;
+        }
+
+        var ar = options.get('option_nsfw' + set_id + '_tags_set').split(',');
+        var tag_selector = '';
+        var top_post_selector = '';
+        for (var i = 0; i < ar.length; i++) {
+            ar[i] = ar[i].replace(new RegExp('^ *(.*) *$'), '$1');
+            tag_selector += (ar[i].length > 0) ? ',.post-tag-' + ar[i] : '';
+            top_post_selector += (ar[i].length > 0) ? ',#top-post.post-tag-' + ar[i] : '';
+        }
+        tag_selector = tag_selector.substr(1);
+        top_post_selector = top_post_selector.substr(1);
+
+        if (tag_selector == '') {
+            console.info('NSFW set #', set_id, '. Tag selector is null');
+            continue;
+        }
+
+        if (options.is('option_nsfw' + set_id + '_hide_posts')) {
+            // Просто прячем посты
+            var len = $(tag_selector).each(function() {
+                $(this).addClass('hide-nsfw-posts');
+            }).length;
+            console.log('Hide NSFW posts. ', len, ' hided');
+        } else if (options.is('option_nsfw' + set_id + '_black_ant')) {
+            var len = $(tag_selector).each(function() {
+                $(this).addClass('black-ant');
+            }).length;
+            console.log('Add black ants to posts. ', len, ' anted');
+        } else if (options.is('option_nsfw' + set_id + '_blur_posts_entire')) {
+            // Размываем посты полностью
+            var len = $(tag_selector).each(function() {
+                $(this).addClass('blur-nsfw-entire');
+            }).length;
+            console.log('Bluring NSFW posts. ', len, ' blurred');
+        } else if (options.is('option_nsfw' + set_id + '_blur_posts_images')) {
+            // Размываем изображения
+            var len = $(tag_selector).each(function() {
+                $(this).addClass('blur-nsfw-images');
+            }).length;
+            console.log('Bluring images in NSFW posts. ', len, ' posts blurred');
+        }
+
+        if ($('#comments').length > 0) {
+            // Размываем каменты
+            if ($(top_post_selector).length == 0) {
+                continue;
+            }
+
+            if (options.is('option_nsfw' + set_id + '_blur_comments_entire')) {
+                // Блюрим каменты полностью
+                console.log('Bluring comments');
+                $('#comments').addClass('blur-nsfw-entire');
+            } else if (options.is('option_nsfw' + set_id + '_blur_comments_black_ant')) {
+                // Превращаем картинки комментариев в муравьёв
+                console.log('Black anted comments');
+                $('#comments').addClass('black-ant');
+            } else if (options.is('option_nsfw' + set_id + '_blur_comments_images')) {
+                // Блюрим картинки в каментах полностью
+                console.log('Bluring images in comments');
+                $('#comments').addClass('blur-nsfw-images');
+            }
+        } else {
+            $(tag_selector).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'hidden-images');
+        }
+
+    }
+
 }

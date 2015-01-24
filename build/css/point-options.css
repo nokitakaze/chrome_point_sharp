@@ -113,6 +113,10 @@
     color: #999;
 }
 
+.point-options-wrapper .option-node input[type='text']{
+    width: 100%;
+}
+
 .point-options-wrapper .footer {
     margin: 0;
     padding: 10px 15px;

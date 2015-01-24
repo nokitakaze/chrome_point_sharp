@@ -13,6 +13,7 @@ $(document).ready(function() {
     if (point_plus_debug.length > 0) {
         console.info('Point+', point_plus_debug.data('point-plus-version'), 'already loaded');
         urlbar_icon_hide();
+        console_group_end();
         return;
     }
 
@@ -168,39 +169,10 @@ function pimp_my_page(options) {
     }
 
     // NSFW Filtering
-    if (options.is('option_nsfw')) {
-        $('.post-tag-nsfw,.post-tag-сиськи').find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'hidden-images');
-
-        if (options.is('option_nsfw_hide_posts')) {
-            if ($('#comments').length == 0) {
-                console.log('Hide NSFW posts in feed, %i hidden', $('.post').length);
-                $('.post').addClass('hide-nsfw-posts');
-            }
-        }
-
-        // Blurred posts
-        if (options.is('option_nsfw_blur_posts_entire')) {
-            console.log('Bluring NSFW posts');
-            $('.post').addClass('blur-nsfw-entire');
-        } else if (options.is('option_nsfw_blur_posts_images')) {
-            console.log('Bluring images in NSFW posts');
-            $('.post').addClass('blur-nsfw-images');
-        }
-
-        // Blurred comments
-        if ($('.post').hasClass('post-tag-nsfw') || $('.post').hasClass('post-tag-сиськи')) {
-            if (options.is('option_nsfw_blur_comments_entire')) {
-                console.log('Bluring comments');
-                $('#comments').addClass('blur-nsfw-entire');
-            } else if (options.is('option_nsfw_blur_comments_images')) {
-                // @hint Никита Ветров официально складывает с себя все претензии, если у кого-то от этого говна упадёт драйвер видео-карты
-                console.log('Bluring images in comments');
-                $('#comments').addClass('blur-nsfw-images');
-            }
-        }
-    }
+    smart_nsfw_init(options);
 
     // Hotkeys
+    /*
     // Send by CTRL+Enter
     if (options.is('option_ctrl_enter')) {
         // Reply
@@ -208,17 +180,18 @@ function pimp_my_page(options) {
         $('.content-wrap #comments').on('keydown.point_plus', '.reply-form textarea', function(e) {
             if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
                 e.preventDefault();
-                $(this).parent('.reply-form').submit();
+                $(this).parent('.reply-form').first().submit();
             }
         });
         // New post
         $('#new-post-form #text-input,#new-post-form #tags-input').on('keydown.point_plus', function(e) {
             if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
                 e.preventDefault();
-                $(this).parent('#new-post-form').submit();
+                $(this).parent('#new-post-form').first().submit();
             }
         });
     }
+    */
 
     // Look and feel
     // Fluid #main layout

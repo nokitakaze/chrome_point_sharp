@@ -4,14 +4,13 @@
  * ПЛАТФОРМОНЕЗАВИМИСЫЙ ФАЙЛ
  */
 
-
 /* MarkItUp margin fix */
 div#markItUpText-input {
     margin-top: 30px;
 }
 
 /* MarkItUp override */
-.markItUp  {
+.markItUp {
     width: 770px;
 }
 
@@ -62,33 +61,41 @@ div#markItUpText-input {
 }
 
 /* NSFW-content */
-.post-tag-nsfw.blur-nsfw-images a.postimg img,
-.post-tag-сиськи.blur-nsfw-images a.postimg img,
+.blur-nsfw-images a.postimg img,
 #comments.blur-nsfw-images a.postimg img {
     margin-top: 5px;
     -webkit-filter: blur(30px);
 }
 
-.post-tag-nsfw.blur-nsfw-images a.postimg:hover img,
-.post-tag-сиськи.blur-nsfw-images a.postimg:hover img,
+.blur-nsfw-images a.postimg:hover img,
 #comments.blur-nsfw-images a.postimg:hover img {
     -webkit-filter: none;
 }
 
-.post-tag-nsfw.hide-nsfw-posts,
-.post-tag-сиськи.hide-nsfw-posts {
+.hide-nsfw-posts {
     display: none;
 }
 
-.post-tag-nsfw.blur-nsfw-entire .post-content .text,
-.post-tag-сиськи.blur-nsfw-entire .post-content .text,
+.blur-nsfw-entire .post-content .text,
 #comments.blur-nsfw-entire .post-content .text {
     -webkit-filter: blur(30px);
 }
 
-.post-tag-nsfw.hide-nsfw-posts,
-.post-tag-сиськи.hide-nsfw-posts {
-    display: none;
+img.black-ant, .black-ant a.postimg {
+    background: #FFF;
+    border: 1px dashed #ccc;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+img.black-ant, .black-ant a.postimg img {
+    -webkit-filter: opacity(0);
+    filter: opacity(0);
+}
+
+img.black-ant:hover, .black-ant a.postimg:hover img {
+    -webkit-filter: none;
+    filter: none;
 }
 
 /* Черновики */

@@ -148,42 +148,6 @@ var point_sharp_options_tree = {
                         "description": "Встраиваем посты из Instagram"
                     }
                 }
-            },
-            "option_nsfw": {
-                "type": "boolean",
-                "default_value": false,
-                "description": "Фильтрация NSFW-контента",
-                "children": {
-                    "option_nsfw_hide_posts": {
-                        "type": "boolean",
-                        "default_value": false,
-                        "description": "Скрывать посты из ленты"
-                    },
-                    "option_nsfw_blur_posts_images": {
-                        "type": "boolean",
-                        "default_value": false,
-                        "description": "Размытие картинок в постах",
-                        "children": {
-                            "option_nsfw_blur_posts_entire": {
-                                "type": "boolean",
-                                "default_value": false,
-                                "description": "Размытие постов полностью"
-                            }
-                        }
-                    },
-                    "option_nsfw_blur_comments_images": {
-                        "type": "boolean",
-                        "default_value": false,
-                        "description": "Размытие картинок в комментариях",
-                        "children": {
-                            "option_nsfw_blur_comments_entire": {
-                                "type": "boolean",
-                                "default_value": false,
-                                "description": "Размытие комментариев целиком"
-                            }
-                        }
-                    }
-                }
             }
         }
     },
@@ -331,6 +295,230 @@ var point_sharp_options_tree = {
                 "children": {}
             }
         }
+    },
+    "tree_nsfw": {
+        "type": "tree",
+        "description": "NSFW",
+        "children": {
+
+            "option_nsfw1": {
+                "type": "boolean",
+                "default_value": false,
+                "description": "Фильтрация NSFW-контента (Набор 1)",
+                "children": {
+                    "option_nsfw1_tags_set": {
+                        "type": "text",
+                        "default_value": "сиськи,nsfw,18+,эротика",
+                        "description": "Теги, разделённые запятыми"
+                    },
+                    "option_nsfw1_hide_posts": {
+                        "type": "boolean",
+                        "default_value": false,
+                        "description": "Скрывать посты из ленты"
+                    },
+                    "option_nsfw1_blur_posts_images": {
+                        "type": "boolean",
+                        "default_value": false,
+                        "description": "Размытие картинок в постах",
+                        "children": {
+                            "option_nsfw1_blur_posts_entire": {
+                                "type": "boolean",
+                                "default_value": false,
+                                "description": "Размытие постов полностью"
+                            },
+                            "option_nsfw1_black_ant": {
+                                "type": "boolean",
+                                "default_value": false,
+                                "description": "Превращать картинки в муравьёв"
+                            }
+                        }
+                    },
+                    "option_nsfw1_blur_comments_images": {
+                        "type": "boolean",
+                        "default_value": false,
+                        "description": "Размытие картинок в комментариях",
+                        "children": {
+                            "option_nsfw1_blur_comments_entire": {
+                                "type": "boolean",
+                                "default_value": false,
+                                "description": "Размытие комментариев целиком"
+                            },
+                            "option_nsfw1_blur_comments_black_ant": {
+                                "type": "boolean",
+                                "default_value": false,
+                                "description": "Превращать картинки комментариев в муравьёв"
+                            }
+                        }
+                    }
+
+
+                }
+            },
+
+            "option_nsfw2": {
+                "type": "boolean",
+                "default_value": false,
+                "description": "Фильтрация NSFW-контента (Набор 2)",
+                "children": {
+                    "option_nsfw2_tags_set": {
+                        "type": "text",
+                        "default_value": "anime_art",
+                        "description": "Теги, разделённые запятыми"
+                    },
+                    "option_nsfw2_hide_posts": {
+                        "type": "boolean",
+                        "default_value": false,
+                        "description": "Скрывать посты из ленты"
+                    },
+                    "option_nsfw2_blur_posts_images": {
+                        "type": "boolean",
+                        "default_value": false,
+                        "description": "Размытие картинок в постах",
+                        "children": {
+                            "option_nsfw2_blur_posts_entire": {
+                                "type": "boolean",
+                                "default_value": false,
+                                "description": "Размытие постов полностью"
+                            },
+                            "option_nsfw2_black_ant": {
+                                "type": "boolean",
+                                "default_value": true,
+                                "description": "Превращать картинки в муравьёв"
+                            }
+                        }
+                    },
+                    "option_nsfw2_blur_comments_images": {
+                        "type": "boolean",
+                        "default_value": false,
+                        "description": "Размытие картинок в комментариях",
+                        "children": {
+                            "option_nsfw2_blur_comments_entire": {
+                                "type": "boolean",
+                                "default_value": false,
+                                "description": "Размытие комментариев целиком"
+                            },
+                            "option_nsfw2_blur_comments_black_ant": {
+                                "type": "boolean",
+                                "default_value": false,
+                                "description": "Превращать картинки комментариев в муравьёв"
+                            }
+                        }
+                    }
+
+
+                }
+            },
+
+            "option_nsfw3": {
+                "type": "boolean",
+                "default_value": false,
+                "description": "Фильтрация NSFW-контента (Набор 3)",
+                "children": {
+                    "option_nsfw3_tags_set": {
+                        "type": "text",
+                        "default_value": "",
+                        "description": "Теги, разделённые запятыми"
+                    },
+                    "option_nsfw3_hide_posts": {
+                        "type": "boolean",
+                        "default_value": false,
+                        "description": "Скрывать посты из ленты"
+                    },
+                    "option_nsfw3_blur_posts_images": {
+                        "type": "boolean",
+                        "default_value": false,
+                        "description": "Размытие картинок в постах",
+                        "children": {
+                            "option_nsfw3_blur_posts_entire": {
+                                "type": "boolean",
+                                "default_value": false,
+                                "description": "Размытие постов полностью"
+                            },
+                            "option_nsfw3_black_ant": {
+                                "type": "boolean",
+                                "default_value": false,
+                                "description": "Превращать картинки в муравьёв"
+                            }
+                        }
+                    },
+                    "option_nsfw3_blur_comments_images": {
+                        "type": "boolean",
+                        "default_value": false,
+                        "description": "Размытие картинок в комментариях",
+                        "children": {
+                            "option_nsfw3_blur_comments_entire": {
+                                "type": "boolean",
+                                "default_value": false,
+                                "description": "Размытие комментариев целиком"
+                            },
+                            "option_nsfw3_blur_comments_black_ant": {
+                                "type": "boolean",
+                                "default_value": false,
+                                "description": "Превращать картинки комментариев в муравьёв"
+                            }
+                        }
+                    }
+
+
+                }
+            },
+
+            "option_nsfw4": {
+                "type": "boolean",
+                "default_value": false,
+                "description": "Фильтрация NSFW-контента (Набор 4)",
+                "children": {
+                    "option_nsfw4_tags_set": {
+                        "type": "text",
+                        "default_value": "",
+                        "description": "Теги, разделённые запятыми"
+                    },
+                    "option_nsfw4_hide_posts": {
+                        "type": "boolean",
+                        "default_value": false,
+                        "description": "Скрывать посты из ленты"
+                    },
+                    "option_nsfw4_blur_posts_images": {
+                        "type": "boolean",
+                        "default_value": false,
+                        "description": "Размытие картинок в постах",
+                        "children": {
+                            "option_nsfw4_blur_posts_entire": {
+                                "type": "boolean",
+                                "default_value": false,
+                                "description": "Размытие постов полностью"
+                            },
+                            "option_nsfw4_black_ant": {
+                                "type": "boolean",
+                                "default_value": false,
+                                "description": "Превращать картинки в муравьёв"
+                            }
+                        }
+                    },
+                    "option_nsfw4_blur_comments_images": {
+                        "type": "boolean",
+                        "default_value": false,
+                        "description": "Размытие картинок в комментариях",
+                        "children": {
+                            "option_nsfw4_blur_comments_entire": {
+                                "type": "boolean",
+                                "default_value": false,
+                                "description": "Размытие комментариев целиком"
+                            },
+                            "option_nsfw4_blur_comments_black_ant": {
+                                "type": "boolean",
+                                "default_value": false,
+                                "description": "Превращать картинки комментариев в муравьёв"
+                            }
+                        }
+                    }
+
+
+                }
+            }
+
+
+        }
     }
 };
 
@@ -361,9 +549,9 @@ function point_sharp_options_branch_view(branch, callback) {
 function point_sharp_options_init(callback) {
     // Перебор всех веток в point_sharp_options_tree, превращаем их в список с default value
     /**
-     * @type {Array} Неструктурированный сырой список опций
+     * @type {object} Неструктурированный сырой список опций
      */
-    var options_plain_list = [];
+    var options_plain_list = {};
     for (var index in point_sharp_options_tree) {
         point_sharp_options_branch_view(point_sharp_options_tree[index], function(name, item) {
             options_plain_list[name] = item;
