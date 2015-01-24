@@ -411,22 +411,11 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
     // Filling template
     // Date and time
     if (true) {
-        // @todo переписать на хер
-        var html_date1 = $('<span>').html(((date.getDate().toString.length < 2) ? ('0' + date.getDate().toString())
-            : (date.getDate().toString())) + '&nbsp;' + months[date.getMonth()]);
-        // @todo блядьпоменять http://blog.stevenlevithan.com/archives/date-time-format
-        var html_date2 = date.getHours() + ':' + (
-                (date.getMinutes().toString().length < 2)
-                    ? ('0' + date.getMinutes().toString())
-                    : date.getMinutes().toString()
-            );
-
         $commentTemplate.find('.info .created')
-            .append(html_date1)
-            // Crutchy fix
+            .append($('<span>').text(date.format('dd mmm')))
             .append($('<br>'))
-            ///Crutchy fix
-            .append($('<span>').html(html_date2));
+            .append($('<span>').text(date.format('HH:MM')))
+            .find('span').css('white-space', 'nowrap');
     }
     // Author
     $commentTemplate.find('.author a.user').attr('href', userLink).text(commentData.author);
@@ -463,8 +452,7 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
     $commentTemplate.find('.post-content form.reply-form input[name="csrf_token"]').val(csRfToken);
 
     // И самое главное: Текст комментария
-    // @todo Поправить переходы строки
-    $commentTemplate.find('.text').append($('<p>').text(commentData.text));
+    safe_saned_text(commentData.text, $commentTemplate.find('.text'));
     // /Filling template
 
     /*

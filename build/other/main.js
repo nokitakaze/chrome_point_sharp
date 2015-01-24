@@ -41,6 +41,7 @@ exports.main = function() {
         contentScriptFile: [
             self.data.url("vendor/jquery/jquery.min.js"),
             self.data.url("js/bquery_ajax.js"),
+            self.data.url("js/date.format.js"),
             self.data.url("js/point_sharp_options_list.js"),
             self.data.url("js/point_sharp_shared_code_additional.js"),
             self.data.url("js/point_sharp_shared_code_websocket.js"),

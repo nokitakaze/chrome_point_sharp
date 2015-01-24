@@ -663,7 +663,13 @@ function hints_draw_main_user_hint(items) {
     current_user_hint_block.appendChild(change_hint_block);
 }
 
-// Nokita Kaze снимает с себя все претензии по этому коду, обращайтесь к фаундеру проекта
+/**
+ * Превращаем текст в параграфы и добавляем в jquery-объект
+ * Safe code, херли
+ *
+ * @param {string} text
+ * @param {object} object
+ */
 function safe_saned_text(text, object) {
     var n = text.split(/\r?\n/);
     object.text('');
