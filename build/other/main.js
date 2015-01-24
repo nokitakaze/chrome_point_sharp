@@ -7,20 +7,12 @@ var notify = require("sdk/notifications");
 //var tabs = require("sdk/tabs");
 var data = require("sdk/self").data;
 var self = this;
-var utils = require('sdk/window/utils');
-var urlbar = require('point_sharp/urlbar');
 var simplestore = require("sdk/simple-storage");
 
 //main
 exports.main = function() {
     console.group('point-sharp');
     console.info("main.js");
-
-    // Создаём иконку в адресной строке
-    urlbar.url_icon_init(utils.getMostRecentBrowserWindow(), function() {
-        utils.getMostRecentBrowserWindow().gBrowser.selectedTab =
-        utils.getMostRecentBrowserWindow().gBrowser.addTab("https://point.im/point-sharp-settings.html");
-    });
 
     // Инициализируем Storage, если его не существовало
     if (typeof(simplestore.storage) == 'undefined') {
@@ -102,7 +94,7 @@ exports.main = function() {
 
             // Версия Extension'а
             worker.port.on('get_extension_version', function(callback_rand) {
-                worker.port.emit('set_extension_version' + callback_rand, '%%VERSION%%');
+                worker.port.emit('set_extension_version' + callback_rand, '2.0.4.150');
             });
 
         }

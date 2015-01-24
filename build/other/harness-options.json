@@ -18,21 +18,7 @@
                 "sdk/self": "sdk/self",
                 "sdk/simple-storage": "sdk/simple-storage",
                 "sdk/tabs": "sdk/tabs",
-                "sdk/window/utils": "sdk/window/utils",
-                "point_sharp/urlbar": "point_sharp/urlbar",
                 "sdk/simple-storage": "sdk/simple-storage"
-            },
-            "sectionName": "lib"
-        },
-        "point_sharp/urlbar": {
-            "moduleName": "urlbar",
-            "packageName": "point_sharp",
-            "docsSHA256": null,
-            "jsSHA256": null,
-            "requirements": {
-                "sdk/tabs": "sdk/tabs",
-                "sdk/window/utils": "sdk/window/utils",
-                "sdk/windows": "sdk/windows"
             },
             "sectionName": "lib"
         }

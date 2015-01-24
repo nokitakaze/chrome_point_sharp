@@ -27,13 +27,5 @@
     <em:creator>%%AUTHOR%%</em:creator>
     <em:homepageURL>%%HOMEPAGE%%</em:homepageURL>
 
-    <em:updateURL>https://api.kanaria.ru/point/update-firefox.php</em:updateURL>
-    <em:updateKey>
-    MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC/RLOP9Pou5ziRUE
-    kVFFp4y/G1NsAUZAqgoqiQWepS+1C+CQlkDyLebBO0dUWfssRLP/4G
-    cIUDMD9SJ3eagJmce6HcyWkVd/cAPIUb/qTw//5jVvA8QByNtZhoky
-    OtMqPLuf+qZYIUXgFz4+VvrhwYlOrG7Dc5apQjsevzxkK8sQIDAQAB
-    </em:updateKey>
-    
   </Description>
 </RDF>
