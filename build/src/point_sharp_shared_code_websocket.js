@@ -410,17 +410,24 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
 
     // Filling template
     // Date and time
-    $commentTemplate.find('.info .created')
-        .append($('<span>').html(((date.getDate().toString.length < 2) ? ('0' + date.getDate().toString())
-            : (date.getDate().toString())) + '&nbsp;' + months[date.getMonth()]))
-        // Crutchy fix
-        .append($('<br>'))
-        ///Crutchy fix
-        .append($('<span>').html(
-            // @todo блядьпоменять http://blog.stevenlevithan.com/archives/date-time-format
-            date.getHours() + ':' + ((date.getMinutes().toString().length < 2)
-                ? ('0' + date.getMinutes().toString())
-                : (date.getMinutes().toString()))));
+    if (true) {
+        // @todo переписать на хер
+        var html_date1 = $('<span>').html(((date.getDate().toString.length < 2) ? ('0' + date.getDate().toString())
+            : (date.getDate().toString())) + '&nbsp;' + months[date.getMonth()]);
+        // @todo блядьпоменять http://blog.stevenlevithan.com/archives/date-time-format
+        var html_date2 = date.getHours() + ':' + (
+                (date.getMinutes().toString().length < 2)
+                    ? ('0' + date.getMinutes().toString())
+                    : date.getMinutes().toString()
+            );
+
+        $commentTemplate.find('.info .created')
+            .append(html_date1)
+            // Crutchy fix
+            .append($('<br>'))
+            ///Crutchy fix
+            .append($('<span>').html(html_date2));
+    }
     // Author
     $commentTemplate.find('.author a.user').attr('href', userLink).text(commentData.author);
     // Avatar and link
@@ -451,7 +458,7 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
             comments_reply_form_submit(evt, commentData.options);
         });
     $commentTemplate.find('.post-content form.reply-form textarea[name="text"]').
-        html('@' + commentData.author + ', ').on('keypress.pp', comments_reply_form_textarea_ctrl_enter);
+        text('@' + commentData.author + ', ').on('keypress.pp', comments_reply_form_textarea_ctrl_enter);
     $commentTemplate.find('.post-content form.reply-form input[name="comment_id"]').val(commentData.id);
     $commentTemplate.find('.post-content form.reply-form input[name="csrf_token"]').val(csRfToken);
 

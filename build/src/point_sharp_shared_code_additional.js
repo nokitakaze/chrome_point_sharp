@@ -126,11 +126,11 @@ function parse_webm(current_options) {
         if (obj.href.match(new RegExp('^https?:\\/\\/([a-z0-9.-]+)\\/[a-z0-9_\\/.%-]+\\.webm(\\?.+)?$', 'i'))) {
             var player = document.createElement('video');
             // Там может быть не vp8+vorbis, но мы этого никак не узнаем
-            $(player).html('<source src="' + obj.href + '" type=\'video/webm; codecs="vp8, vorbis"\' />').
+            $(player).html('<source src="" type=\'video/webm; codecs="vp8, vorbis"\' />').
                 attr('controls', 'controls').css({
                     'display': 'block',
                     'max-width': '95%'
-                }).addClass('parsed-webm-link');
+                }).addClass('parsed-webm-link').find('source').attr('src', obj.href);
 
             obj.parentElement.insertBefore(player, obj);
 
@@ -151,13 +151,17 @@ function parse_all_videos(current_options) {
         var href = obj.href;
         var n;
 
-        if (n = href.match(new RegExp('^https?:\\/\\/([a-z0-9.-]+)\\/[a-z0-9_\\/.%-]+\\.(webm|avi|mp4|mpg|mpeg)(\\?.+)?$', 'i'))) {
+        if (n =
+            href.match(new RegExp('^https?:\\/\\/([a-z0-9.-]+)\\/[a-z0-9_\\/.%-]+\\.(webm|avi|mp4|mpg|mpeg)(\\?.+)?$', 'i'))) {
             var player = document.createElement('video');
             var mime = video_extension_to_mime(n[2]);
-            $(player).html('<source src="' + href + '" type=\'' + mime + '\' />').attr('controls', 'controls').css({
+            $(player).html('<source src="" type="" />').attr('controls', 'controls').css({
                 'display': 'block',
                 'max-width': '95%'
-            }).addClass('parsed-webm-link');
+            }).addClass('parsed-webm-link').find('source').attr({
+                'src': href,
+                'type': mime
+            });
 
             obj.parentElement.insertBefore(player, obj);
 
@@ -208,10 +212,13 @@ function parse_all_audios(current_options) {
 
             var player = document.createElement('audio');
             var mime = audio_extension_to_mime(n[2]);
-            $(player).html('<source src="' + href + '" type=\'' + mime + '\' />').attr('controls', 'controls').css({
+            $(player).html('<source src="" type="" />').attr('controls', 'controls').css({
                 'display': 'block',
                 'max-width': '350px'
-            }).addClass('parsed-audio-link');
+            }).addClass('parsed-audio-link').find('source').attr({
+                'src': href,
+                'type': mime
+            });
 
             obj.parentElement.insertBefore(player, obj);
 
