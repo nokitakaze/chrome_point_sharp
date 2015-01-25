@@ -391,15 +391,14 @@ function set_space_key_skip_handler() {
         return;
     }
 
-    // @todo Свериться с Best-practice биндинга функций. Мб там on или bind
-    $(document.body).keydown(function(e) {
+    $(document.body).on('keydown', function(e) {
         // @todo Я хотел по отпусканию кнопки, но там уже скролл срабатывает
         // проверяем фокус
         if ($(':focus').length > 0) {
             return;
         }
 
-        var k = event.keyCode;
+        var k = e.keyCode;
         if (k == 32) {
             space_key_event();
             return false;
@@ -408,13 +407,14 @@ function set_space_key_skip_handler() {
 }
 
 function space_key_event() {
-    var scroll_current = Math.floor($('body').scrollTop());
+    var body_selector = (navigator.appVersion.match(/.*chrome.*/i) == null) ? 'html' : 'body';
+    var scroll_current = Math.floor($(body_selector).scrollTop());
 
     var posts = $('.content-wrap > .post');
     for (var i = 0; i < posts.length; i++) {
         var this_top_px = Math.floor($(posts[i]).offset().top);
         if (this_top_px > scroll_current) {
-            $('body').animate({
+            $(body_selector).animate({
                 'scrollTop': this_top_px
             }, 200);
             return;
