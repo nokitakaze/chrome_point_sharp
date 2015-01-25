@@ -65,11 +65,13 @@ div#markItUpText-input {
 #comments.blur-nsfw-images a.postimg img {
     margin-top: 5px;
     -webkit-filter: blur(30px);
+    filter: blur(30px);
 }
 
 .blur-nsfw-images a.postimg:hover img,
 #comments.blur-nsfw-images a.postimg:hover img {
     -webkit-filter: none;
+    filter: none;
 }
 
 .hide-nsfw-posts {
@@ -79,6 +81,7 @@ div#markItUpText-input {
 .blur-nsfw-entire .post-content .text,
 #comments.blur-nsfw-entire .post-content .text {
     -webkit-filter: blur(30px);
+    filter: blur(30px);
 }
 
 img.black-ant, .black-ant a.postimg {
