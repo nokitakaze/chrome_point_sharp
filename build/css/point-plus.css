@@ -98,6 +98,10 @@ img.black-ant:hover, .black-ant a.postimg:hover img {
     filter: none;
 }
 
+a.postimg.sharp-preblur{
+    display: none;
+}
+
 /* Черновики */
 #new-post-form #text-input {
     height: 30em !important;

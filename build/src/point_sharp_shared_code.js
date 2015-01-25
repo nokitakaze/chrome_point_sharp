@@ -22,6 +22,9 @@ $(document).ready(function() {
     }).text('Point# loading...')
         .insertBefore('#user-menu-cb');
 
+    // Защита от долгой загрузки. Скрываем все изображения
+    $('a.postimg').addClass('sharp-preblur');
+
     // Дёргаем все опции и версию заодно
     point_sharp_options_init(pimp_my_page);
 });// document.ready
@@ -169,29 +172,8 @@ function pimp_my_page(options) {
     }
 
     // NSFW Filtering
+    $('a.sharp-preblur').removeClass('sharp-preblur');
     smart_nsfw_init(options);
-
-    // Hotkeys
-    /*
-    // Send by CTRL+Enter
-    if (options.is('option_ctrl_enter')) {
-        // Reply
-        // Delegated event for all comments
-        $('.content-wrap #comments').on('keydown.point_plus', '.reply-form textarea', function(e) {
-            if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
-                e.preventDefault();
-                $(this).parent('.reply-form').first().submit();
-            }
-        });
-        // New post
-        $('#new-post-form #text-input,#new-post-form #tags-input').on('keydown.point_plus', function(e) {
-            if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
-                e.preventDefault();
-                $(this).parent('#new-post-form').first().submit();
-            }
-        });
-    }
-    */
 
     // Look and feel
     // Fluid #main layout
