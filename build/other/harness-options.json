@@ -11,7 +11,7 @@
             "moduleName": "main",
             "packageName": "point_sharp",
             "docsSHA256": null,
-            "jsSHA256": null,
+            "jsSHA256": "%%MAINJS_SHA256%%",
             "requirements": {
                 "sdk/notifications": "sdk/notifications",
                 "sdk/page-mod": "sdk/page-mod",
