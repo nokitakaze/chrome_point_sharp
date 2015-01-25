@@ -10,8 +10,8 @@
  * @param callback Функция, которую дёрнем, когда получим значение
  */
 function local_storage_get(key, callback) {
-    console.log("Content code. local_storage_get %s %O", key, callback);
-    chrome.storage.sync.get(key, function (sync_data) {
+    console.log("Content code. local_storage_get", key);
+    chrome.storage.sync.get(key, function(sync_data) {
         callback((typeof(key) == 'string') ? sync_data[key] : sync_data);
     });
     console.log("Content code. local_storage_get end");
@@ -24,8 +24,8 @@ function local_storage_get(key, callback) {
  * @param success_callback Функция, которую дёрнем, когда сохраним значение
  */
 function local_storage_set(data, success_callback) {
-    console.log("Content code. local_storage_set %O", data);
-    chrome.storage.sync.set(data, function () {
+    console.log("Content code. local_storage_set", data);
+    chrome.storage.sync.set(data, function() {
         success_callback();
     });
     console.log("Content code. local_storage_set end");
@@ -64,7 +64,7 @@ function urlbar_icon_hide() {
 function urlbar_icon_show() {
     chrome.runtime.sendMessage({
         type: 'showPageAction'
-    }, null, function (response) {
+    }, null, function(response) {
         console.debug('showPageAction response: %O', response);
     });
 }
@@ -77,7 +77,7 @@ function urlbar_icon_show() {
 function point_sharp_get_version(callback) {
     chrome.runtime.sendMessage(null, {
         type: 'getManifestVersion'
-    }, null, function (response) {
+    }, null, function(response) {
         var ppVersion = response.version || 'undefined';
         callback(ppVersion);
     });
@@ -85,14 +85,25 @@ function point_sharp_get_version(callback) {
 }
 
 
-function console_group(group_name){
+function console_group(group_name) {
     console.group(group_name);
 }
 
-function console_group_collapsed(group_name){
+function console_group_collapsed(group_name) {
     console.groupCollapsed(group_name);
 }
 
-function console_group_end(){
+function console_group_end() {
     console.groupEnd();
+}
+
+/**
+ * Создаём HTML5 notification
+ *
+ * @param {object} settings
+ * @param {function} response
+ */
+function html5_notification(settings, response) {
+    settings.type = 'showNotification';
+    chrome.runtime.sendMessage(settings, response);
 }

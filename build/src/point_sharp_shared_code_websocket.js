@@ -42,7 +42,6 @@ function skobkin_websocket_init(options) {
                         case 'comment':
                         case 'ok':
                             console_group_collapsed('ws-comment' + wsMessage.post_id + '/' + wsMessage.comment_id);
-                            console.log(wsMessage);
 
                             // Check we are in the post
                             if ($('#top-post').length < 1) {
@@ -98,18 +97,13 @@ function skobkin_websocket_init(options) {
 
                                 // Desktop notifications
                                 if (options.is('option_ws_comments_notifications')) {
-                                    // @todo Переписать под Mozilla Firefox
-                                    console.warn('Option `option_ws_comments_notifications` does not ready for production use');
-                                    /*
-                                     console.log('Showing desktop notification');
-                                     chrome.runtime.sendMessage({
-                                     type: 'showNotification',
-                                     notificationId: 'comment_' + wsMessage.post_id + '#' + wsMessage.comment_id,
-                                     avatarUrl: getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
-                                     title: '@' + wsMessage.author + ' #' + wsMessage.post_id + '/' + wsMessage.comment_id,
-                                     text: wsMessage.text
-                                     }, function(response) {});
-                                     */
+                                    html5_notification({
+                                        notificationId: 'comment_' + wsMessage.post_id + '#' + wsMessage.comment_id,
+                                        avatarUrl:      getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
+                                        title:          '@' + wsMessage.author + ' #' + wsMessage.post_id + '/' +
+                                                        wsMessage.comment_id,
+                                        text: wsMessage.text
+                                    }, function(response) {});
                                 }
 
                                 console_group_end();
@@ -123,33 +117,19 @@ function skobkin_websocket_init(options) {
                         case 'post':
                             console_group_collapsed('ws-post #' + wsMessage.post_id);
 
-                            console.log(wsMessage);
-                            if (options.is('option_ws_posts')) {
-                                console.warn('Option `option_ws_posts` does not ready for production use');
-                                // @todo Переписать под Mozilla Firefox
-                                /*
-                                 if (options.is('option_ws_posts_notifications')) {
-                                 console.log('Showing desktop notification');
-                                 chrome.runtime.sendMessage({
-                                 type: 'showNotification',
-                                 notificationId: 'post_' + wsMessage.post_id,
-                                 avatarUrl: getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
-                                 title: 'Post by @' + wsMessage.author + ' #' + wsMessage.post_id,
-                                 text: wsMessage.text
-                                 }, function(response) {});
-                                 }
-                                 */
+                            if (options.is('option_ws_posts_notifications')) {
+                                html5_notification({
+                                    notificationId: 'post_' + wsMessage.post_id,
+                                    avatarUrl:      getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
+                                    title:          'Post by @' + wsMessage.author + ' #' + wsMessage.post_id,
+                                    text: wsMessage.text
+                                }, function(response) {});
                             }
-
+                            
                             console_group_end();
                             break;
 
                         default:
-                            console_group_collapsed('ws-other');
-
-                            console.log(wsMessage);
-
-                            console_group_end();
                             break;
 
                     }

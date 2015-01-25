@@ -6,8 +6,8 @@
 /**
  * Получаем значение из Local Storage
  *
- * @param key Название элемента. Если передаётся строка, до будет возвращено одно значение, иначе array
- * @param callback Функция, которую дёрнем, когда получим значение
+ * @param {string} key Название элемента. Если передаётся строка, до будет возвращено одно значение, иначе array
+ * @param {function} callback Функция, которую дёрнем, когда получим значение
  */
 function local_storage_get(key, callback) {
     // @todo Удалять старые прослушивальщики
@@ -27,8 +27,8 @@ function local_storage_get(key, callback) {
 /**
  * Сохраняем значение в Local Storage
  *
- * @param data object из значений
- * @param success_callback Функция, которую дёрнем, когда сохраним значение
+ * @param {object} data object из значений
+ * @param {function} success_callback Функция, которую дёрнем, когда сохраним значение
  */
 function local_storage_set(data, success_callback) {
     // @todo Удалять старые прослушивальщики
@@ -52,16 +52,25 @@ function local_storage_set(data, success_callback) {
 /**
  * Функция, которая выполняется перед всеми улучшениями
  *
- * @param options Опции
+ * @param {object} options Опции
  */
 function point_loaded_first(options) {
-
+    if (options.is('option_ws_posts_notifications') || options.is('option_ws_comments_notifications')) {
+        // Включаем HTML5 Notification
+        if (!("Notification" in window)) {
+            console.error("This browser does not support desktop notification");
+        } else if (Notification.permission === "granted") {
+            // Всё в порядке, уже разрешено
+        } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission(function(permission) {});
+        }
+    }
 }
 
 /**
  * Функция, которая выполняется после всех улучшений
  *
- * @param options Опции
+ * @param {object} options Опции
  */
 function point_loaded_last(options) {
     // Запуск страницы Settings
@@ -98,7 +107,7 @@ function urlbar_icon_show() {
 /**
  * Версия расширения
  *
- * @param callback function callback с версией
+ * @param {function} callback function callback с версией
  */
 function point_sharp_get_version(callback) {
     // @todo Удалять старые прослушивальщики
@@ -109,6 +118,9 @@ function point_sharp_get_version(callback) {
     self.port.emit('get_extension_version', callback_rand);
 }
 
+/**
+ * Функции для console
+ */
 
 function console_group(group_name) {
 }
@@ -117,4 +129,20 @@ function console_group_collapsed(group_name) {
 }
 
 function console_group_end() {
+}
+
+/**
+ * Создаём HTML5 notification
+ *
+ * @param {object} settings
+ * @param {function} response
+ */
+function html5_notification(settings, response) {
+    var current_notification = new Notification(settings.title, {
+        'lang': 'ru',
+        'icon': settings.avatarUrl,
+        'tag': settings.notificationId,
+        'body': settings.text
+    });
+    
 }

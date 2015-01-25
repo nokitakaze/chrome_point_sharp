@@ -258,13 +258,11 @@ var point_sharp_options_tree = {
                 "default_value": false,
                 "description": "Получать комментарии через Вебсокеты",
                 "children": {
-                    /*
-                     ,                            "option_ws_comments_notifications": {
-                     "type": "boolean",
-                     "default_value": false,
-                     "description": "Включить уведомления на рабочем столе"
-                     }
-                     */
+                    "option_ws_comments_notifications": {
+                        "type": "boolean",
+                        "default_value": false,
+                        "description": "Включить уведомления на рабочем столе"
+                    }
                 }
                 /*
                  ,"option_ws_feeds": {
@@ -291,6 +289,11 @@ var point_sharp_options_tree = {
                 "default_value": true,
                 "description": "Отправлять комментарии через Аякс",
                 "children": {}
+            },
+            "option_ws_posts_notifications": {
+                "type": "boolean",
+                "default_value": false,
+                "description": "Включить уведомления о новых постах на рабочем столе"
             }
         }
     },
