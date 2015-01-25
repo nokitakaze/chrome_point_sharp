@@ -185,7 +185,7 @@ img.black-ant:hover, .black-ant a.postimg:hover img {
     content: '';
 
     opacity: 0;
-    background-image: url('chrome-extension://__MSG_@@extension_id__/images/nesting-point.png');
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAPCAYAAAGq+G6YAAAACXBIWXMAAAsTAAALEwEAmpwYAAABNmlDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjarY6xSsNQFEDPi6LiUCsEcXB4kygotupgxqQtRRCs1SHJ1qShSmkSXl7VfoSjWwcXd7/AyVFwUPwC/0Bx6uAQIYODCJ7p3MPlcsGo2HWnYZRhEGvVbjrS9Xw5+8QMUwDQCbPUbrUOAOIkjvjB5ysC4HnTrjsN/sZ8mCoNTIDtbpSFICpA/0KnGsQYMIN+qkHcAaY6addAPAClXu4vQCnI/Q0oKdfzQXwAZs/1fDDmADPIfQUwdXSpAWpJOlJnvVMtq5ZlSbubBJE8HmU6GmRyPw4TlSaqo6MukP8HwGK+2G46cq1qWXvr/DOu58vc3o8QgFh6LFpBOFTn3yqMnd/n4sZ4GQ5vYXpStN0ruNmAheuirVahvAX34y/Axk/96FpPYgAAACBjSFJNAAB6JQAAgIMAAPn/AACA6AAAUggAARVYAAA6lwAAF2/XWh+QAAAAz0lEQVR42mL5//8/AwMDAwMLAxQAAAAA//9i+f//P4QHAAAA//9igcnB5c0ia/+fWt7MCAAAAP//YsHUBWeYRdaKMTAwPAMAAAD//0LRjaEMQ9AsspaBgYFBh4GB4cqp5c0oKkOg9BUAAAAA//8i0UwKBaFOEmNgYHiF7KQ/DAwMzAwMDOIMDAyvYIIGUHe+YmBgYAAAAAD//8LqTqItH6wKoeFxkIGBwQYqdISBgcH+1PJmDBPFGBgYRBgYGBihfBFYQDIwMDAAAAAA//8DAEBHLj2MJ4JPAAAAAElFTkSuQmCC);
     background-repeat: repeat-x;
 }
 
