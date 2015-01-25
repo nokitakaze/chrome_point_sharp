@@ -1107,3 +1107,62 @@ function smart_nsfw_init(options) {
     }
 
 }
+
+/**
+ * Сворачивание постов. Инициализация
+ */
+function wrap_posts_init(options) {
+    if ($('#comments').length > 0) {
+        return;
+    }
+
+    var body_selector = (navigator.appVersion.match(/.*chrome.*/i) == null) ? 'html' : 'body';
+
+    // Сворачивание всех длинных простыней
+    if (options.is('option_wrap_long_posts')) {
+        $('.content-wrap').addClass('wrap-long-posts').find('.post').each(function() {
+            var div = document.createElement('div');
+            $(div).addClass('wrap-splitter').on('click', function() {
+                var this_post = $(this).parents('.post').first();
+                if (this_post.hasClass('post-manual-unwrapped')) {
+                    this_post.removeClass('post-manual-unwrapped');
+                    $(body_selector).animate({
+                        'scrollTop': Math.min(this_post.offset().top + 900, $(body_selector).prop('scrollTop'))
+                    }, 500);
+                } else {
+                    this_post.addClass('post-manual-unwrapped');
+                }
+            });
+
+            var tags_element = $(this).find('.tags')[0];
+            try {
+                // @todo Исправить
+                tags_element.parentElement.insertBefore(div, tags_element);
+            } catch (e) {
+                console.error('Error in tags_element: ', e);
+            }
+        });
+
+
+        // @todo Переписать это!
+        setInterval(wrap_posts_remove_unused_wrap_splitters, 3000);
+        wrap_posts_remove_unused_wrap_splitters();
+    }
+
+    // @todo Скрытие постов руками
+
+
+}
+
+/**
+ * Удаляем неиспользующися Wrap Splitter'ы у постов
+ */
+function wrap_posts_remove_unused_wrap_splitters() {
+    $('.content-wrap .post').each(function() {
+        if (parseInt($(this).find('.text-content').prop('scrollHeight')) < 1000) {
+            $(this).find('.wrap-splitter').hide();
+        } else {
+            $(this).find('.wrap-splitter').show();
+        }
+    });
+}

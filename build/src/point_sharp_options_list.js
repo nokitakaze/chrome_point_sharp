@@ -246,6 +246,11 @@ var point_sharp_options_tree = {
                 "type": "boolean",
                 "default_value": true,
                 "description": "Сохранение и восстановление черновиков постов"
+            },
+            "option_wrap_long_posts": {
+                "type": "boolean",
+                "default_value": true,
+                "description": "Сворачивать огромные простыни"
             }
         }
     },

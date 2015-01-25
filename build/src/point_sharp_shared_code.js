@@ -271,6 +271,8 @@ function pimp_my_page(options) {
         draft_restore();
     }
 
+    // Сворачивание постов. Как длинных, так и любых
+    wrap_posts_init(options);
 
     // Выполняем последние платформозависимые функции
     point_loaded_last(options);

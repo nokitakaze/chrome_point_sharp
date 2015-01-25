@@ -101,7 +101,7 @@ img.black-ant:hover, .black-ant a.postimg:hover img {
     filter: none;
 }
 
-a.postimg.sharp-preblur{
+a.postimg.sharp-preblur {
     display: none;
 }
 
@@ -200,4 +200,33 @@ a.postimg.sharp-preblur{
     transition: opacity .2s ease-in;
 
     opacity: 1;
+}
+
+/**
+ * Сворачивание постов
+ */
+
+.content-wrap.wrap-long-posts .post .post-content .text {
+    transition: all 0.5s;
+    overflow-y: hidden;
+    max-height: 1000px;
+}
+
+.content-wrap.wrap-long-posts .post.post-manual-unwrapped .post-content .text {
+    transition: all 0.5s;
+    max-height: none;
+}
+
+/* полосочка для сжимания */
+.content-wrap.wrap-long-posts .post .post-content .wrap-splitter {
+    height: 17px;
+    background-repeat: no-repeat;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIcAAAARCAYAAAD32L9UAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAAN1wAADdcBQiibeAAAAAd0SU1FB9sDEBIRO17k1ikAAALgSURBVGje7VlNSFRRFP7Onae+yfwrEfoDzQQhzIooCIoWLQwp3MxYluDPSNlCUChcRUTLsNnYjzoakZDOpkWZgVArFyWEYxFiOhJWUm4cFWemefe0aGacbPyjpGm63+rd8+7Pe9/53jnn3kcIoqbFvVcKecZkoLnlfO4HKPz3EABw4fb7LMPEzwC6HNCQpWhRCIvDn2iyEyOLCV9mUna+VrQoAICwtY5sJ+ZSABASvU4rGYoWBQAQTKI8FEGk4EFFiUJEWqGjoQYxbVOUKIT1YGsdczGhINj+7NWN/M5zeR4AOPtgJDV0vRwsTf3mBH2jvtbFvT5NJwTMsUSIJqUmNZESc46SyFj3SEE8Y2wdHqCP+QYAaEyYjbi/Jcmn3bF0c7nTSobu1WqrHG69vSr7Gog42oSn7YOHJKgn4MemNTuCAjH3tbBJIPqb/m11rP8SEgT6lD9KgkuY6Q1Vt401A7i46El6mOg6sbwCoAhAlyc1odJp3TEf2evY1edaVvrmdwB2qSAcT/kEQ911BYVU3eYuAvjpiv0ZfdNp88VO625/OJ3cHCom4sfBHg/B7FDMxqCvaXUpiYEyACUAwGzap3n1QL/uNfkAJC07kHA8bdp8A0DdwqKyMBTvCDzeVb+nT7ni30Wp3bWfw/WHkSc6z+V5mKhxVcoi1Npax3MiNCkUpXEKxqwGAO3VOfYqx+hXYrIDyFxmyLiQUxMRNdIwL4QkveyWK0Ox+nv45vFLZ+OB6T8552r9EvAjvOOUwvT2pxq4osOdLiQ3EKMBQPKisT5iKmqryXkRMpy8O7DBPJ84AUCJIr7wCsDBqBukig53tpDoJObDQdMcwKUOW+6TX844fhSljwBoitM4ySjEJ4ipd8ndc/n9yeRE/9xLgFIBccphy17yh5ylyVVABAsIicw8QxSDBxgKixTAmSCaWsJ+acWjFVvr2JGARiP3KnMmFZvxB6vdFU006K4vBAB8B4GB9mPhwVcgAAAAAElFTkSuQmCC);
+    background-position-x: center;
+    cursor: pointer;
+}
+
+/* Посты, скрытые пользователем */
+.content-wrap.wrap-long-posts .post.post-manual-hidden .post-content .wrap-splitter {
+    display: none;
 }
