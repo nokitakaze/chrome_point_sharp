@@ -118,9 +118,3 @@ dateFormat.i18n = {
 		"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
 	]
 };
-
-// For convenience...
-Date.prototype.format = function (mask, utc) {
-	return dateFormat(this, mask, utc);
-};
-

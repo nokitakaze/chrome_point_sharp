@@ -412,9 +412,9 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
     // Date and time
     if (true) {
         $commentTemplate.find('.info .created')
-            .append($('<span>').text(date.format('dd mmm')))
+            .append($('<span>').text(dateFormat(date, 'dd mmm')))
             .append($('<br>'))
-            .append($('<span>').text(date.format('HH:MM')))
+            .append($('<span>').text(dateFormat(date, 'HH:MM')))
             .find('span').css('white-space', 'nowrap');
     }
     // Author
