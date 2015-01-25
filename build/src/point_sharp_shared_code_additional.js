@@ -722,6 +722,9 @@ function set_comments_refresh_tick(current_options) {
     if ($('#main #left-menu #menu-comments .unread').length == 0) {
         $('#main #left-menu #menu-comments').append('<span class="unread" style="display: none;">0</span>');
     }
+    if ($('#main #left-menu #menu-messages .unread').length == 0) {
+        $('#main #left-menu #menu-messages').append('<span class="unread" style="display: none;">0</span>');
+    }
 
     // Ставим тик
     setInterval(function() {
@@ -746,6 +749,9 @@ function set_comments_refresh_tick(current_options) {
     }
 }
 
+/**
+ * @type {boolean} Мышь внутри окна или нет
+ */
 var window_focused = true;
 
 // Очищаем [0; 0]
@@ -763,10 +769,12 @@ function comments_count_refresh_tick(current_options) {
     $(iframe).on('load', function() {
         var a = $(iframe.contentDocument.body).find('#main #left-menu #menu-recent .unread');
         var b = $(iframe.contentDocument.body).find('#main #left-menu #menu-comments .unread');
+        var c = $(iframe.contentDocument.body).find('#main #left-menu #menu-messages .unread');
         var count_recent = (a.length == 0) ? 0 : parseInt(a.text());
         var count_comments = (b.length == 0) ? 0 : parseInt(b.text());
+        var count_messages = (c.length == 0) ? 0 : parseInt(c.text());
 
-        console.log('Comments: ', count_comments, ', Recent: ', count_recent);
+        console.log('Comments: ', count_comments, ', Recent: ', count_recent, ', Messages: ', count_messages);
         if (count_recent > 0) {
             if (parseInt($('#main #left-menu #menu-recent .unread').text()) != count_recent) {
                 $('#main #left-menu #menu-recent .unread').text(count_recent).show().css({
@@ -801,11 +809,28 @@ function comments_count_refresh_tick(current_options) {
             $('#main #left-menu #menu-comments .unread').text('0').hide();
         }
 
+        if (count_messages > 0) {
+            if (parseInt($('#main #left-menu #menu-messages .unread').text()) != count_messages) {
+                $('#main #left-menu #menu-messages .unread').text(count_messages).show().css({
+                    'background-color': '#f2ebee',
+                    'color': '#7c3558'
+                });
+                setTimeout(function() {
+                    $('#main #left-menu #menu-messages .unread').css({
+                        'background-color': '',
+                        'color': ''
+                    });
+                }, 15000);
+            }
+        } else {
+            $('#main #left-menu #menu-messages .unread').text('0').hide();
+        }
+
         if ((current_options.is('option_other_comments_count_refresh_title')) &&
             (!window_focused)) {
-            var new_title = document.title.replace(new RegExp('^\\[[0-9]+\\; [0-9]+\\] '), '');
+            var new_title = document.title.replace(new RegExp('^\\[[0-9]+\\; [0-9]+\\; [0-9]+\\] '), '');
             if ((count_recent > 0) || (count_comments > 0)) {
-                new_title = '[' + count_recent + '; ' + count_comments + '] ' + new_title;
+                new_title = '[' + count_recent + '; ' + count_comments + '; ' + count_messages + '] ' + new_title;
             }
             document.title = new_title;
         }
