@@ -378,6 +378,7 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
         html(ajax_get_comments_comment_template).on('mouseover', function() {
             var current_post = $(this);
             if (current_post.hasClass('readed')) { return; }
+            // @todo Снимать лисенер
 
             current_post.addClass('readed');
             setTimeout(function() {
