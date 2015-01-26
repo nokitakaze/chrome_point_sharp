@@ -1,58 +1,23 @@
+var messenger = new MessageSender();
+
 // Showing page action
-chrome.runtime.sendMessage({
+messenger.sendMessage({
     type: 'showPageAction'
-}, null, function(response) {
+}, function(response) {
     console.debug('showPageAction response: %O', response);
 });
 
-// @todo Move OptionsManager to the separate file
-/**
- * Объект для получения опций
- * @param {Object} options Хеш настроек
- * @constructor
- */
-function OptionsManager(options) {
-    this._options = options || {};
-}
-
-/**
- * @param {String} optionName Имя опции
- * @returns {Boolean|String|Null} Значение опции
- */
-OptionsManager.prototype.get = function(optionName) {
-    return this._options.hasOwnProperty(optionName) ? this._options[optionName].value : null;
-};
-
-/**
- * Проверяет, равна ли опция значению value. Если value не переданно, проверяет задана ли она и не равна ли false/''
- * @param {String} optionName Имя опции
- * @param {Boolean|String} [value=true] Значение опции
- * @returns {Boolean}
- */
-OptionsManager.prototype.is = function(optionName, value) {
-    if (typeof value !== 'undefined') {
-        return this.get(optionName) === value;
-    } else {
-        return Boolean(this.get(optionName));
-    }
-};
-
-/**
- * @returns {Object} Хеш опций
- */
-OptionsManager.prototype.getOptions = function() {
-    return this._options;
-};
-
-var ppVersion;
-
-chrome.runtime.sendMessage(null, {
-    type: 'getManifestVersion'
-}, null, function(response) {
-    ppVersion = response.version || 'undefined';
+messenger.sendMessage({
+        type: 'getManifestVersion'
+}, function(response) {
+    $(document).ready(function() {
+        PointPlus(response.version || 'undefined')
+    });
 });
 
-$(document).ready(function() {
+
+function PointPlus(ppVersion) {
+
     // Grouping console log
     console.group('point-plus');
     console.info('Point+ %s', ppVersion);
@@ -71,6 +36,7 @@ $(document).ready(function() {
     // Черновики. Ставим хандлер и восстанавливаем предыдущее состояние
     draft_set_save_handler();
     draft_restore();
+
 
     // Loading options
     chrome.storage.sync.get('options', function(sync_data) {
@@ -106,13 +72,10 @@ $(document).ready(function() {
             // Soundcloud
             if (options.is('option_embedding_soundcloud')) {
                 // Executing Soundcloud player JS API
-                chrome.runtime.sendMessage({
-                    type: 'executeJSFiles',
-                    files: [{
-                        file: 'vendor/soundcloud/soundcloud.player.api.js',
-                        runAt: 'document_end'
-                    }]
-                }, null, function(response) {
+                messenger.js({
+                    file: 'vendor/soundcloud/soundcloud.player.api.js',
+                    runAt: 'document_end'
+                }, function(response) {
                     console.debug('Soundcloud injection response: %O', response);
                     // If scripts are executed
                     if (response) {
@@ -161,28 +124,25 @@ $(document).ready(function() {
             // Injecting Fancybox to the page
             // CSS
             // @todo message response callback processing
-            chrome.runtime.sendMessage({
-                type: 'injectCSSFile',
-                file: 'vendor/fancybox/source/jquery.fancybox.css'
-            });
-            // @todo message response callback processing
-            chrome.runtime.sendMessage({
-                type: 'injectCSSFile',
-                file: 'css/fancybox/style.css'
-            });
+            messenger.css([
+                'vendor/fancybox/source/jquery.fancybox.css',
+                'css/fancybox/style.css'
+            ]);
+
             // JS
-            chrome.runtime.sendMessage(null, {
-                type: 'executeJSFiles',
-                files: [{
+            messenger.js([
+                {
                     file: 'vendor/fancybox/source/jquery.fancybox.pack.js',
                     runAt: 'document_end'
-                }, {
+                },
+                {
                     // @todo Move to the option_fancybox_videos section
                     file: 'vendor/fancybox/source/helpers/jquery.fancybox-media.js',
                     runAt: 'document_end'
-                }]
-            }, null, function(response) {
+                }
+            ], function(response) {
                 // If all JS are executed
+
                 console.debug('Fancybox injection response: %O', response);
                 if (response) {
                     console.log('Fancybox executed. Processing...');
@@ -321,32 +281,23 @@ $(document).ready(function() {
 
             // CSS
             // @todo message response callback processing
-            chrome.runtime.sendMessage({
-                type: 'injectCSSFile',
-                file: 'vendor/markitup/markitup/skins/markitup/style.css'
-            });
-            // Fixes for extension
-            // @todo message response callback processing
-            chrome.runtime.sendMessage({
-                type: 'injectCSSFile',
-                file: 'css/markitup/skins/markitup/style.css'
-            });
-            // @todo message response callback processing
-            chrome.runtime.sendMessage({
-                type: 'injectCSSFile',
-                file: 'css/markitup/sets/markdown/style.css'
-            });
+            messenger.css([
+                'vendor/markitup/markitup/skins/markitup/style.css',
+                'css/markitup/skins/markitup/style.css',
+                'css/markitup/sets/markdown/style.css'
+            ]);
+
             // JS
-            chrome.runtime.sendMessage({
-                type: 'executeJSFiles',
-                files: [{
+            messenger.js([
+                {
                     file: 'vendor/markitup/markitup/jquery.markitup.js',
                     runAt: 'document_end'
-                }, {
+                },
+                {
                     file: 'js/markitup/sets/markdown/set.js',
                     runAt: 'document_end'
-                }]
-            }, null, function(response) {
+                }
+            ], function(response) {
                 console.debug('MarkItUp injection response: %O', response);
                 // If scripts are executed
                 if (response) {
@@ -466,7 +417,7 @@ $(document).ready(function() {
                                         // Desktop notifications
                                         if (options.is('option_ws_comments_notifications')) {
                                             console.log('Showing desktop notification');
-                                            chrome.runtime.sendMessage({
+                                            messenger.sendMessage({
                                                 type: 'showNotification',
                                                 notificationId: 'comment_' + wsMessage.post_id + '#' + wsMessage.comment_id,
                                                 avatarUrl: getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
@@ -539,10 +490,7 @@ $(document).ready(function() {
         // @ before username
         if (options.is('option_at_before_username')) {
             // @todo message response callback processing
-            chrome.runtime.sendMessage({
-                type: 'injectCSSFile',
-                file: 'css/modules/at_before_username.css'
-            });
+            messenger.css('css/modules/at_before_username.css');
         }
         
         if (options.is('option_ajax')) {
@@ -666,7 +614,7 @@ $(document).ready(function() {
 
         $('#point-plus-debug').fadeOut(1000);
     });
-});
+}
 
 function getProtocol() {
     return ((location.protocol == 'http:') ? 'http:' : 'https:');

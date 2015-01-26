@@ -1,10 +1,185 @@
+var VERSION = (function() {
+    /**
+     * @deprecated XMLHttpRequest in the background worker is deprecated
+     * according to the Chrome warning. But we definitely need synchronous
+     * AJAX here
+     */
+    var xhr = new XMLHttpRequest(),
+        manifest;
+
+    xhr.open('GET', chrome.extension.getURL('manifest.json'), false);
+    xhr.send(null);
+
+    manifest = JSON.parse(xhr.responseText);
+
+    return manifest.version;
+})();
+
+/**
+ * Вставка нескольких файлов друг за другом
+ * @param {Array} files Список файлов
+ * @param {Function} injectOne Функция вставки одного файла. Должна принимать file и callback
+ * @param {Function} [onAllInjected] Функция обработки ответа
+ * @param {Array} [results] Результаты вставки (их не нужно передавать при запуске извне)
+ */
+function injectFiles(files, injectOne, onAllInjected, results) {
+    results = results || [];
+
+    if (files.length) {
+        injectOne(files.shift(), function(res) {
+            if (res) {
+                results.unshift(res[0]);
+            }
+
+            injectFiles(files, injectOne, onAllInjected, results);
+        });
+    } else {
+        onAllInjected(results);
+    }
+}
+
+/**
+ * @constructor Менеджер сообщений
+ */
+function MessageListener() {
+    chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+        if (this.isMethodAvailable(message)) {
+            console.info('Call #%s() method for tab #%s', message.type, this.getTabId(sender));
+            this[message.type].apply(this, arguments);
+
+            return true;
+        } else {
+            console.warn('Method #%s() called from tab #%s does not exists', message.type, this.getTabId(sender));
+
+            return false;
+        }
+    }.bind(this));
+}
+
+/**
+ * @param {Object} message Сообщение
+ * @returns {Boolean} Есть ли необходимый метод в MessageListener
+ */
+MessageListener.prototype.isMethodAvailable = function(message) {
+    return message && message.type && typeof this[message.type] === 'function';
+};
+
+/**
+ * @param {Object} sender
+ * @returns {Number|Null} Идентификатор вкладки, с которой пришло сообщение
+ */
+MessageListener.prototype.getTabId = function(sender) {
+    return sender.tab && sender.tab.id || null;
+};
+
+/**
+ * @param {Object} message Сообщение
+ * @param {Object} sender Отправитель
+ * @param {Function} sendResponse Коллбек для обработки результата
+ */
+MessageListener.prototype.showPageAction = function(message, sender, sendResponse) {
+    chrome.pageAction.show(this.getTabId(sender));
+    sendResponse(true);
+};
+
+/**
+ * Показывает нотификацию
+ * @param {Object} message Сообщение
+ * @param {Object} sender Отправитель
+ * @param {Function} sendResponse Коллбек для обработки результата
+ */
+MessageListener.prototype.showNotification = function(message, sender, sendResponse) {
+    chrome.notifications.create(
+        message.notificationId, {
+            type: 'basic',
+            iconUrl: message.avatarUrl,
+            title: message.title,
+            message: message.text,
+            priority: 0,
+            isClickable: true
+        }, function(notificationId) {
+            console.info('Notification "%s" created', notificationId);
+
+            sendResponse(true);
+        }
+    );
+};
+
+/**
+ * Получает версию плагина из манифеста
+ * @param {Object} message Сообщение
+ * @param {Object} sender Отправитель
+ * @param {Function} sendResponse Коллбек для обработки результата
+ */
+MessageListener.prototype.getManifestVersion = function(message, sender, sendResponse) {
+    sendResponse({ version: VERSION });
+};
+
+/**
+ * @param {Object} message Сообщение
+ */
+MessageListener.prototype.getFiles = function(message, defaultRunAt) {
+    var files;
+
+    if ( ! message.files) {
+        return false;
+    } else {
+        files = Array.isArray(message.files) ? message.files : [ message.files ];
+
+        return files.map(function(file) {
+            return {
+                file: typeof file === 'string' ? file : file.file,
+                runAt: file.runAt || defaultRunAt
+            };
+        });
+    }
+};
+
+/**
+ * Вставляет JS-файлы во вкладку
+ * @param {Object} message Сообщение
+ * @param {Object} sender Отправитель
+ * @param {Function} sendResponse Коллбек для обработки результата
+ */
+MessageListener.prototype.executeJSFiles = function(message, sender, sendResponse) {
+    var tabId = this.getTabId(sender);
+
+    injectFiles(
+        this.getFiles(message, 'document_end'),
+        function(file, callback) {
+            chrome.tabs.executeScript(tabId, file, callback)
+        },
+        sendResponse
+    );
+};
+
+/**
+ * Вставляет CSS-файлы во вкладку
+ * @param {Object} message Сообщение
+ * @param {Object} sender Отправитель
+ * @param {Function} sendResponse Коллбек для обработки результата
+ */
+MessageListener.prototype.injectCSSFiles = function(message, sender, sendResponse) {
+    var tabId = this.getTabId(sender);
+
+    injectFiles(
+        this.getFiles(message),
+        function(file, callback) {
+            chrome.tabs.insertCSS(tabId, file, callback);
+        },
+        sendResponse
+    );
+
+};
+
+new MessageListener();
+
 // Maintaining options version
 chrome.storage.sync.get('options_version', function(data) {
-    var pp_version = getVersion();
-    console.info('Point+ %s. Options are for %s.', pp_version, data.options_version);
-    
-    if (data.options_version != pp_version) {
-        chrome.tabs.create({url: 'options.html'});
+    console.info('Point+ %s. Options are for %s.', VERSION, data.options_version);
+
+    if (data.options_version !== VERSION) {
+        chrome.tabs.create({ url: 'options.html' });
     }
 });
 
@@ -24,175 +199,3 @@ chrome.notifications.onClicked.addListener(function(notificationId) {
         });
     }
 });
-
-// Crutches and bikes
-/**
- * Inject several JS files
- * @param {number} tabId Unique ID of tab which requested injection
- * @param {Object[]} files Array of objects of files to inject
- * @param {function} onAllInjected allback function running when injection ends
- */
-function injectJS(tabId, files, onAllInjected) {
-    var item = files.shift();
-    if (item) {
-        console.log('Injecting JS "%s" to the tab #%s', item.file, tabId);
-        
-        if ('file' in item) {
-            chrome.tabs.executeScript(tabId ? tabId : null, {
-                file: item.file,
-                runAt: item.runAt || 'document_start'
-            }, function(result) {
-                console.info('"%s" injected to the tab #%s', item.file, tabId);
-                
-                injectJS(tabId, files, onAllInjected);
-            });
-        }
-    } else {
-        onAllInjected();
-    }
-}
-
-// @todo Implement injectCSS (because JS execution working always after CSS injection)
-
-// Message listener
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-    // @todo Check if sender.tab may be undefined in some cases
-    console.log('Received message from tab #%s: %O', sender.tab ? sender.tab.id : 'undefined', message);
-    
-    if (message) {
-        switch (message.type) {
-            case 'showPageAction':
-                chrome.pageAction.show(sender.tab.id);
-                sendResponse(true);
-                
-                console.log('Showed pageAction for tab #%s', sender.tab.id);
-                
-                // Fuck You, Chrome API documentation!!11
-                return true;
-                break;
-                
-            case 'showNotification':
-                chrome.notifications.create(
-                    message.notificationId, {   
-                        type: 'basic', 
-                        iconUrl: message.avatarUrl, 
-                        title: message.title, 
-                        message: message.text,
-                        priority: 0,
-                        isClickable: true
-                    }, function(notificationId) {
-                        console.info('Notification "%s" created', notificationId);
-
-                        sendResponse(true);
-                    } 
-                );
-                
-                // Fuck You, Chrome API documentation!!11
-                return true;
-                break;
-                
-            case 'getManifestVersion':
-                sendResponse({version: getVersion()});
-                return true;
-                break;
-                
-            /**
-             * @deprecated since 1.19.1
-             */
-            case 'injectJSFile':
-                console.log('Executing JS: %s', message.file);
-                chrome.tabs.executeScript(sender.tab.id ? sender.tab.id : null, {
-                    file: message.file,
-                    runAt: message.runAt || 'document_start'
-                }, function() {
-                    sendResponse(true);
-
-                    console.info('JS file executed: "%s"', message.file);
-                    return true;
-                });
-                
-                // Fuck You, Chrome API documentation!
-                return true;
-                break;
-                
-            // Inject several files
-            case 'executeJSFiles':
-                //console.debug('Received JS file list: %O', message.files);
-                
-                if (message.files.length) {
-                    injectJS(sender.tab.id ? sender.tab.id : null, message.files, function() {
-                        // @fixme does not sending response now!
-                        console.info('All scripts executed');
-                        
-                        sendResponse(true);
-                        return true;
-                    });
-                } else {
-                    /* 
-                     * May be not?
-                     * But I don't want to block some shit-code execution
-                     */
-                    sendResponse(false);
-                    
-                    console.warn('No scripts executed (empty script array)');
-                }
-                
-                // Fuck You, Chrome API documentation!
-                return true;
-                break;
-
-            /**
-             * @deprecated since 1.19.1
-             */
-            case 'injectCSSFile':
-                console.log('Injecting CSS: "%s"', message.file);
-                chrome.tabs.insertCSS(sender.tab.id ? sender.tab.id : null, {
-                    file: message.file
-                }, function() {
-                    // @todo message response callback processing
-                    //sendResponse(true);
-
-                    console.info('CSS file "%s" injected', message.file);
-                });
-                
-                // Fuck You, Chrome API documentation!
-                return true;
-                break;
-                
-            case 'injectCSSCode':
-                if (message.code !== undefined) {
-                    chrome.tabs.insertCSS(sender.tab.id ? sender.tab.id : null, {
-                        code: message.code
-                    }, function() {
-                        // @todo message response callback processing
-                        //sendResponse(true);
-                        
-                        console.info('CSS code injected: \n%s', message.file);
-                    });
-                }
-
-                // Fuck You, Chrome API documentation!
-                return true;
-                break;
-                
-            default:
-                sendResponse(false);
-                return true;
-                break;
-        }
-    }   
-});
-
-// Getting version from manifest.json
-function getVersion() {
-    /**
-     * @deprecated XMLHttpRequest in the background worker is deprecated
-     * according to the Chrome warning. But we definitely need synchronous
-     * AJAX here
-     */
-    var xhr = new XMLHttpRequest(); 
-    xhr.open('GET', chrome.extension.getURL('manifest.json'), false); 
-    xhr.send(null); 
-    var manifest = JSON.parse(xhr.responseText); 
-    return manifest.version; 
-} 
