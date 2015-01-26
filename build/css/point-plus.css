@@ -14,24 +14,6 @@ div#markItUpText-input {
     width: 770px;
 }
 
-/* Point+ */
-
-/* Post and comments highlights */
-.pp-highlight {
-    z-index: 1;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #FFFFBB;
-}
-
-.post .info, .post .post-content {
-    z-index: 2;
-    position: relative;
-}
-
 /* Auto-loaded Booru pictures */
 .booru_pic, .instagram-post-embedded {
     display: block !important;
@@ -253,4 +235,16 @@ a.postimg.sharp-preblur {
 .content-wrap .post.post-manual-hidden {
     overflow-y: hidden;
     max-height: 27px;
+}
+
+/**
+ *
+ */
+.post.pp-highlight{
+    background-color: rgb(255, 255, 187);
+}
+
+.post.pp-highlight.readed{
+    background-color: inherit;
+    transition: all 1s;
 }

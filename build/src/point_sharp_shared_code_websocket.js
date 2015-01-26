@@ -125,7 +125,7 @@ function skobkin_websocket_init(options) {
                                     text: wsMessage.text
                                 }, function(response) {});
                             }
-                            
+
                             console_group_end();
                             break;
 
@@ -308,7 +308,6 @@ function ajax_get_comments_post_comment($post, csRf, options) {
  * @type {string} Шаблон комментария
  */
 const ajax_get_comments_comment_template =
-    '<div class="pp-highlight"></div>' + "\n" +
     '<div class="info">' + "\n" +
     '    <a href="#"><img class="avatar" src="#author-avatar" alt=""/></a>' + "\n" +
     '    <div class="created">' + "\n\n" +
@@ -375,7 +374,16 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
         'data-id': commentData.postId,
         'data-comment-id': commentData.id,
         'data-to-comment-id': commentData.id || ''
-    }).html(ajax_get_comments_comment_template);
+    }).addClass('pp-highlight').
+        html(ajax_get_comments_comment_template).on('mouseover', function() {
+            var current_post = $(this);
+            if (current_post.hasClass('readed')) { return; }
+
+            current_post.addClass('readed');
+            setTimeout(function() {
+                current_post.removeClass('pp-highlight').removeClass('readed');
+            }, 1000);
+        });
 
     if (commentData.commentType == 'recommendation') {
         $commentTemplate.addClass('recommendation');
