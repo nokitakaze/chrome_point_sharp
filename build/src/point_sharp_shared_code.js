@@ -25,6 +25,22 @@ $(document).ready(function() {
     // Защита от долгой загрузки. Скрываем все изображения
     $('a.postimg').addClass('sharp-preblur');
 
+    // Эпический костыль
+    if (location.protocol == 'https') {
+        var point_i_image_http = 0;
+        $('img').each(function() {
+            var href = $(this).attr('href');
+            if (href.match(new RegExp('^http://i\\.point\\.im/'))) {
+                point_i_image_http++;
+                $(this).attr('href', href.replace(new RegExp('http://i\\.point\\.im/'), 'https://i.point.im/'));
+            }
+        });
+
+        if (point_i_image_http > 0) {
+            console.log(point_i_image_http, ' images should be loaded via secure version of i.point.im');
+        }
+    }
+
     // Дёргаем все опции и версию заодно
     point_sharp_options_init(pimp_my_page);
 });// document.ready
