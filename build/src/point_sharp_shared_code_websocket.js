@@ -258,7 +258,7 @@ function ajax_get_comments_post_comment($post, csRf, options) {
 
             // Hiding form
             if (typeof($post.data('comment-id')) == 'undefined') {
-                $('#top-post .reply-form').slideUp(300);
+                $('#top-post .reply-form').val('');
             } else {
                 $('#reply-' + $post.data('id') + '_' + $post.data('comment-id')).prop('checked', false);
             }
