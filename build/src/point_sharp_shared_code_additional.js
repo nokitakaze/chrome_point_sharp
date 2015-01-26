@@ -1135,8 +1135,10 @@ function wrap_posts_init(options) {
             });
 
             var tags_element = $(this).find('.tags')[0];
+            if (typeof(tags_element) == 'undefined') {
+                tags_element = $(this).find('.clearfix')[0];
+            }
             try {
-                // @todo Исправить
                 tags_element.parentElement.insertBefore(div, tags_element);
             } catch (e) {
                 console.error('Error in tags_element: ', e);
@@ -1149,9 +1151,52 @@ function wrap_posts_init(options) {
         wrap_posts_remove_unused_wrap_splitters();
     }
 
-    // @todo Скрытие постов руками
+    // Скрытие постов руками
+    if ($('#comments').length > 0) {return;}
 
+    // Добавляем кнопки
+    $('.content-wrap .post').each(function() {
+        var hide_button = document.createElement('a');
+        // Вешаем лисенеры
+        $(hide_button).addClass('post-manual-hide-button').on('click', function() {
+            var this_post = $(this).parents('.post').first();
+            var post_id = this_post.attr('data-id');
 
+            local_storage_get('post_manual_hidden_list', function(list) {
+                if ((typeof(list) == 'undefined') || (list === null)) {
+                    list = [];
+                } else {
+                    var index = list.indexOf(post_id);
+                    if (index > -1) {
+                        list.splice(index, 1);
+                    }
+                }
+
+                if (!this_post.hasClass('post-manual-hidden')) {
+                    list.push(post_id);
+                }
+
+                // Сохраняем
+                local_storage_set({'post_manual_hidden_list': list}, function() {});
+                this_post.toggleClass('post-manual-hidden');
+            });
+        }).attr({'href': 'javascript:'});
+
+        // Добавляем кнопку
+        $(this).find('.post-content a.user').first().after(hide_button);
+    });
+
+    // Скрываем посты, список коих взят из Локал Сторожа
+    local_storage_get('post_manual_hidden_list', function(list) {
+        if ((typeof(list) == 'undefined') || (list === null)) {
+            local_storage_set({'post_manual_hidden_list': []}, function(data) {});
+            return;
+        }
+
+        for (var index in list) {
+            $('.content-wrap .post[data-id="' + list[index] + '"]').addClass('post-manual-hidden');
+        }
+    });
 }
 
 /**
