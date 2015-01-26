@@ -54,6 +54,11 @@ function PointPlus(ppVersion) {
             if (options.is('option_images_load_booru')) {
                 load_all_booru_images();
             }
+            
+            // Instagram
+            if (options.is('option_embedding_instagram_posts')){
+                instagram_posts_embedding_init(options);
+            }
 
             // Parse webm-links and create video instead
             if (options.is('option_videos_parse_links')) {
@@ -1545,6 +1550,53 @@ function twitter_tweet_embedding_parse_links() {
                 }
             );
             twitter_tweet_count++;
+        }
+    });
+}
+
+/**
+ * Instagram posts
+ * 
+ * @param {OptionsManager} options OptionsManager with current options
+ */
+function instagram_posts_embedding_init(options) {
+    var regex = new RegExp('^https?://(www\\.)?instagram\\.com/p/([\\w-]+)/?', 'i');
+    
+    $('.post-content a').not('.booru_pic').each(function(num, $link) {
+        var href = $link.href;
+        var n;
+
+        if (n = href.match(regex)) {
+            $ajax({
+                'url': 'https://api.instagram.com/oembed?url=' + urlencode('http://instagram.com/p/' + n[2] + '/'),
+                'success': function(text) {
+                    var answer = JSON.parse(text);
+                    var new_post = document.createElement('a');
+                    $(new_post).attr({
+                        'id': 'instagram-' + num,
+                        'href': answer.thumbnail_url,
+                        'title': answer.title,
+                        'target': '_blank',
+                        'data-fancybox-group': (options.is('option_fancybox_bind_images_to_one_flow'))
+                            ? 'one_flow_gallery' : '',
+                        'data-fancybox-title': (options.is('option_fancybox_smart_hints'))
+                            ? answer.title : ' '
+                    }).addClass('postimg instagram-post-embedded');
+
+                    var image = document.createElement('img');
+                    image.alt = new_post.title;
+                    image.src = new_post.href;
+                    new_post.appendChild(image);
+
+                    // Leave or replace
+                    if (options.is('option_embedding_instagram_posts_orig_link')) {
+                        $link.parentElement.insertBefore(new_post, $link);
+                    } else {
+                        $($link).replaceWith(new_post);
+                    }
+                }
+            });
+
         }
     });
 }

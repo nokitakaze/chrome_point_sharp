@@ -95,6 +95,12 @@
     "option_embedding_twitter_tweets": {
         "message": "Twitter"
     },
+    "option_embedding_instagram_posts": {
+        "message": "Instagram"
+    },
+    "option_embedding_instagram_posts_orig_link": {
+        "message": "Не убирать ссылку"
+    },
     "option_nsfw": {
         "message": "Фильтрация NSFW-контента"
     },
