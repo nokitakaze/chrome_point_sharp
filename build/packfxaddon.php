@@ -53,6 +53,24 @@
         file_put_contents($full_file_name, $buf);
     }
 
+
+    /**
+     * SHA256-хеш с файла для harness-options.json
+     */
+    $main_js_sha256_hash = null;
+
+    exec('openssl dgst -sha256 -hex "'.$root_folder.'/mozilla_firefox_pack/resources/point_sharp/lib/main.js"', $buf);
+    if (preg_match('|([a-z0-9]{64,64})|', implode("\n", $buf), $a)) {
+        $main_js_sha256_hash = $a[1];
+    } else {
+        echo "Can not get 256 hash for file main.js\n";
+        die();
+    }
+
+    $buf = file_get_contents($root_folder.'/mozilla_firefox_pack/harness-options.json');
+    $buf = str_replace('%%MAINJS_SHA256%%', $main_js_sha256_hash, $buf);
+    file_put_contents($root_folder.'/mozilla_firefox_pack/harness-options.json', $buf);
+
     // Пакуем
     $old_folder = getcwd();
     chdir($root_folder.'/mozilla_firefox_pack/');

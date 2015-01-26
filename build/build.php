@@ -21,11 +21,6 @@
         'version' => $build_version->version
     )));
 
-    /**
-     * SHA256-хеш с файла для harness-options.json
-     */
-    $main_js_sha256_hash = null;
-
     // Меняем контент
     foreach (
         array(
@@ -45,22 +40,8 @@
         $content = str_replace('%%NAME%%', $json->name, $content);
         $content = str_replace('%%HOMEPAGE%%', 'https://bitbucket.org/NokitaKaze/chrome_point_plus-nokita-version', $content);
 
-        if ($main_js_sha256_hash !== null) {
-            $content = str_replace('%%MAINJS_SHA256%%', $main_js_sha256_hash, $content);
-        }
-
         // Сохраняем контент
         file_put_contents($root_folder.'/'.$pair[1], $content);
-
-        if ($pair[0] == 'other/main.js') {
-            exec('openssl dgst -sha256 -hex "'.$root_folder.'/'.$pair[1].'"', $buf);
-            if (preg_match('|([a-z0-9]{64,64})|', implode("\n", $buf), $a)) {
-                $main_js_sha256_hash = $a[1];
-            } else {
-                echo "Can not get 256 hash for file main.js\n";
-                die();
-            }
-        }
     }
 
     // Копируем Javscript исходники
