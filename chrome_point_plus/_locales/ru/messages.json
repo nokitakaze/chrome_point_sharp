@@ -6,9 +6,12 @@
         "message": "Алексей Скобкин"
     },
     "ext_page_action_title": {
-        "message": "Настройки Point+"
+        "message": "Настройки"
     },
     
+    "options_page_title": {
+        "message": "Настройки Point+"
+    },
     
     "options_text_saved": {
         "message": "Для применения изменений перезагрузите страницу."

@@ -6,9 +6,12 @@
         "message": "Alexey Skobkin"
     },
     "ext_page_action_title": {
-        "message": "Point+ settings"
+        "message": "Settings"
     },
     
+    "options_page_title": {
+        "message": "Point+ settings"
+    },
     
     "options_text_saved": {
         "message": "Reload page to apply changes."
