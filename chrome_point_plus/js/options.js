@@ -80,6 +80,7 @@ OptionsPage.prototype.restore = function() {
                         break;
 
                     case 'enum':
+                    case 'plain':
                         input.value = data.value;
                         break;
 
@@ -122,6 +123,11 @@ OptionsPage.prototype.updateOptionFromInput = function(input) {
             type: 'enum',
             value: input.value
         };
+    } else {
+        this._options[key] = {
+            type: 'plain',
+            value: input.value
+        }
     }
 };
 
