@@ -4,7 +4,7 @@
  * При создании сохраняет версию, восстанавливает настройки, слушает изменения на инпутах.
  * @constructor
  */
-function Options() {
+function OptionsPage() {
     this.form = document.querySelector('form');
 
     this.listenTabs();
@@ -25,7 +25,7 @@ function Options() {
  * Получает версию настроек. Если она не равна версии приложения, записывает в сторедж плагина настройки из инпутов
  * и версию приложения.
  */
-Options.prototype.updateOptionsFromFrom = function() {
+OptionsPage.prototype.updateOptionsFromFrom = function() {
     chrome.storage.sync.get('options_version', function(data) {
         this.logVersion(data.options_version);
 
@@ -51,7 +51,7 @@ Options.prototype.updateOptionsFromFrom = function() {
 /**
  * Сохраняет настройки
  */
-Options.prototype.save = function() {
+OptionsPage.prototype.save = function() {
     var ppOptions = this.getValues();
 
     console.log('Saving options: %O', ppOptions);
@@ -62,7 +62,7 @@ Options.prototype.save = function() {
 /**
  * Получает настройки из стореджа плагина, устанавливает соответствующим инпутам соответствующие значения.
  */
-Options.prototype.restore = function() {
+OptionsPage.prototype.restore = function() {
     this.checkOldStyle();
 
     chrome.storage.sync.get('options', function(data) {
@@ -97,19 +97,19 @@ Options.prototype.restore = function() {
 /**
  * @returns {Object} Хеш настроек вида { имя_настроки: значение_настройки }
  */
-Options.prototype.getValues = function() {
+OptionsPage.prototype.getValues = function() {
     return this._options;
 };
 
 /**
  * @param {Event} event Событие изменения
  */
-Options.prototype._onChange = function(event) {
+OptionsPage.prototype._onChange = function(event) {
     this.updateOptionFromInput(event.target);
     this.save();
 };
 
-Options.prototype.updateOptionFromInput = function(input) {
+OptionsPage.prototype.updateOptionFromInput = function(input) {
     var key = this.getOptionKey(input.name);
 
     if (this.isBoolean(input)) {
@@ -129,7 +129,7 @@ Options.prototype.updateOptionFromInput = function(input) {
  * @param {HTMLElement} option Элемент опции
  * @returns {Boolean} Является ли настройка булевой
  */
-Options.prototype.isBoolean = function(option) {
+OptionsPage.prototype.isBoolean = function(option) {
     return option.getAttribute('type') === 'checkbox';
 };
 
@@ -138,7 +138,7 @@ Options.prototype.isBoolean = function(option) {
  * @param {HTMLElement} option Элемент опции
  * @returns {Boolean} Является ли настройка енумом
  */
-Options.prototype.isEnum = function(option) {
+OptionsPage.prototype.isEnum = function(option) {
     return option.getAttribute('type') === 'radio';
 };
 
@@ -146,7 +146,7 @@ Options.prototype.isEnum = function(option) {
  * @param {String} name Имя инпута
  * @returns {String} Ключ для хеша настроек
  */
-Options.prototype.getOptionKey = function(name) {
+OptionsPage.prototype.getOptionKey = function(name) {
     return name.replace(/-/g, '_');
 };
 
@@ -154,7 +154,7 @@ Options.prototype.getOptionKey = function(name) {
  * @param {String} Ключ хеша настроек
  * @returns {String} Имя инпута
  */
-Options.prototype.getOptionName = function(key) {
+OptionsPage.prototype.getOptionName = function(key) {
     return key.replace(/_/g, '-');
 };
 
@@ -162,21 +162,21 @@ Options.prototype.getOptionName = function(key) {
  * Выводит в консоль версию настроек и версию плагина
  * @param {String} optionsVersion
  */
-Options.prototype.logVersion = function(optionsVersion) {
+OptionsPage.prototype.logVersion = function(optionsVersion) {
     console.info('Point+ %s, local options are for %s', this.version, optionsVersion);
 };
 
 /**
  * Добавляет номер версии в подвал
  */
-Options.prototype.showVersion = function() {
+OptionsPage.prototype.showVersion = function() {
     document.querySelector('#version').innerHTML = this.version;
 };
 
 /**
  * Проверяет, не старого ли формата настройки. И если старого, то удаляет их.
  */
-Options.prototype.checkOldStyle = function() {
+OptionsPage.prototype.checkOldStyle = function() {
     chrome.storage.sync.get('option_fancybox', function(data) {
         if ((data.option_fancybox === true) || (data.option_fancybox === false)) {
             console.log('Found old-style options. Cleaning...');
@@ -198,7 +198,7 @@ Options.prototype.checkOldStyle = function() {
 /**
  * Показывает плашку про то, что настройки сохранились и надо обновить страницу
  */
-Options.prototype.updateStatus = function() {
+OptionsPage.prototype.updateStatus = function() {
     this.status = this.status || document.querySelector('.saved');
 
     this.status.classList.remove('hidden');
@@ -207,7 +207,7 @@ Options.prototype.updateStatus = function() {
 /**
  * Слушает события на табах
  */
-Options.prototype.listenTabs = function() {
+OptionsPage.prototype.listenTabs = function() {
     var options = this;
 
     options._selectedItem = document.querySelector('.tabs-item.selected');
@@ -229,4 +229,4 @@ Options.prototype.listenTabs = function() {
     });
 };
 
-new Options();
+new OptionsPage();
