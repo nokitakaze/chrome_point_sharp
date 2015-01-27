@@ -1089,14 +1089,12 @@ function set_space_key_skip_handler() {
 }
 
 function space_key_event() {
-    var scroll_current = $('body').scrollTop();
-    var scroll_step_size = 0;
-    var scroll_real = Math.max(scroll_current - scroll_step_size, 0);
+    var scroll_current = Math.floor($('body').scrollTop());
 
     var posts = $('.content-wrap > .post');
     for (var i = 0; i < posts.length; i++) {
-        var this_top_px = $(posts[i]).offset().top;
-        if (this_top_px > scroll_real) {
+        var this_top_px = Math.floor($(posts[i]).offset().top);
+        if (this_top_px > scroll_current) {
             $('body').animate({
                 'scrollTop': this_top_px
             }, 200);
