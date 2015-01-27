@@ -1,8 +1,12 @@
-/* @ before username */
-#main #content a.user:before {
+/* Posts */
+#content .post-content a.user:before,
+/* Subscribers */
+#content .users span.user:before,
+/* Subscriptions */
+#content .users .info a.user:before {
     content: "@";
 }
-/* Fix for recommendations in the feed */
-#main #content .rec .user:before {
-    margin-right: -4px;
+/* Fix for recommendations */
+#content .post-content .rec .user:before {
+    margin-right: -3px;
 }
