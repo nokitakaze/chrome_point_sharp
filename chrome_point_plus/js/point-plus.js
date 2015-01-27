@@ -1592,25 +1592,21 @@ function twitter_tweet_embedding_wait_for_ready_injected() {
 function twitter_tweet_embedding_parse_links() {
     // Обрабатываем все твиты
     var twitter_tweet_count = 0;
-    $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('booru_pic')) {
-            return;
-        }
-
+    $('.post-content a').not('.booru_pic').each(function(num, obj) {
         var href = obj.href;
         var n;
 
         if (n = href.match(new RegExp('^https?://(www\\.)?twitter\\.com/[^/]+/status/([0-9]+)', 'i'))) {
-            var image = document.createElement('div');
-            $(image).attr({
+            var tweet = document.createElement('div');
+            $(tweet).attr({
                 'id': 'tweet-' + twitter_tweet_count,
                 'data-tweet-id': n[2]
             }).addClass('twitter-tweet-embedded');
-            obj.parentElement.insertBefore(image, obj);
+            obj.parentElement.insertBefore(tweet, obj);
 
             window.twttr.widgets.createTweet(
                 n[2],
-                image,
+                tweet,
                 {
                     'lang': 'ru'
                 }
