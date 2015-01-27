@@ -178,10 +178,13 @@
         "message": "Заметки о пользователях на полях"
     },
     "option_other_comments_count_refresh":{
-        "message": "Обновляем количество непрочитанных комментариев и постов в ленте"
+        "message": "Обновление количества непрочитанных постов и комментариев в сайдбаре"
     },
     "option_other_comments_count_refresh_title":{
-        "message": "Указываем кол-во комментариев и сообщений в заголовке страницы"
+        "message": "В заголовке страницы"
+    },
+    "option_other_post_draft_save":{
+        "message": "Сохранение черновика поста"
     },
 
 
@@ -192,5 +195,8 @@
     
     "msg_comment_send_failed":{
         "message": "Ошибка отправки комментария:"
+    },
+    "msg_saving_post_draft":{
+        "message": "Сохранение поста..."
     }
 }

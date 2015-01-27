@@ -33,11 +33,6 @@ function PointPlus(ppVersion) {
     }).text('Point+ ' + ppVersion + ' loading...')
             .insertBefore('#user-menu-cb');
 
-    // Черновики. Ставим хандлер и восстанавливаем предыдущее состояние
-    draft_set_save_handler();
-    draft_restore();
-
-
     // Loading options
     chrome.storage.sync.get('options', function(sync_data) {
         var options = new OptionsManager(sync_data.options);
@@ -616,6 +611,12 @@ function PointPlus(ppVersion) {
         if (options.is('option_embedding_twitter_tweets')) {
             twitter_tweet_embedding_init();
         }
+        
+        // Post drafts
+        if (options.is('option_other_post_draft_save')) {
+            draft_set_save_handler();
+            draft_restore();
+        }
 
         $('#point-plus-debug').fadeOut(1000);
     });
@@ -1104,50 +1105,115 @@ function space_key_event() {
     }
 }
 
-/* Автосохранение черновиков */
-var draft_last_text = ''; // Последний зафиксированный текст
-// Восстанавливаем черновик
+/**
+ * Last draft text
+ * @type {string}
+ */
+var draft_last_text = '';
+
+/**
+ * Last draft tags
+ * @type {string}
+ */
+var draft_last_tags = '';
+
+/**
+ * Is extension now saving draft
+ * @type {boolean}
+ */
+var draft_save_busy = false;
+
+/**
+ * Last draft saving time
+ * @type {Date|null}
+ */
+var draft_save_last_time = null;
+
+/**
+ * Is draft now saving or not
+ * @type {boolean}
+ */
+var draft_save_busy = false;
+
+/**
+ * Is there any setTimeout'ed handlers
+ * @type {boolean}
+ */
+var draft_waiting = false;
+
+/**
+ * Restore draft from localStorage
+ */
 function draft_restore() {
-    chrome.storage.local.get('point_draft_text', function(items) {
-        if ($('#new-post-form #text-input').val() == '') {
+    chrome.storage.local.get(['point_draft_text', 'point_draft_tags'], function(items) {
+        if ($('#new-post-form #text-input').val() === '') {
             $('#new-post-form #text-input').val(items.point_draft_text);
             draft_last_text = items.point_draft_text;
+        }
+        if ($('#new-post-form #tags-input').val() === '') {
+            $('#new-post-form #tags-input').val(items.point_draft_tags);
+            draft_last_tags = items.point_draft_tags;
         }
     });
 }
 
-// Установка хандлера
+/**
+ * Set draft save handler
+ */
 function draft_set_save_handler() {
-    // Господи, прости меня грешного за эту строку. Меня вынудили
-    $('#text-input').on('keyup', function(){
+    $('#text-input, #tags-input').on('keyup', function() {
         draft_save_check();
+        // For last keyup
+        if (!draft_waiting) {
+            setTimeout(draft_save_check, 3000);
+            draft_waiting = true;
+        }
     });
+    // Adding span indicator
     $('#new-post-wrap .footnote').append($('<span id="draft-save-status">'));
 }
 
-var draft_save_busy = false;
-// Фукнция, дёргающаяся по крону, проверяющая надо ли сохранять черновик
+/**
+ * Check if we can save the draft now
+ */
 function draft_save_check() {
     if (draft_save_busy) {
         return;
     }
-    draft_save_busy = true;
+    
+    if (draft_save_last_time !== null) {
+        if ((new Date()).getTime() < draft_save_last_time.getTime() + 3000) {
+            return;
+        }
+    }
 
     var current_text = $('#new-post-form #text-input').val();
-    if (draft_last_text == current_text) {
+    var current_tags = $('#new-post-form #tags-input').val();
+    
+    if ((draft_last_text === current_text) && (draft_last_tags === current_tags)) {
         draft_save_busy = false;
         return;
     }
+    
+    draft_save_busy = true;
+    draft_save_last_time = new Date();
+    
     // @todo i18n
-    $('#draft-save-status').text('Сохраняем черновик...').show();
+    $('#draft-save-status').text(chrome.i18n.getMessage('msg_saving_post_draft')).show();
 
-    // Сохраняем
+    // Saving current data
     draft_last_text = current_text;
+    draft_last_tags = current_tags;
+    
     // Save it using the Chrome extension storage API.
-    chrome.storage.local.set({'point_draft_text': draft_last_text}, function() {
+    chrome.storage.local.set({
+        point_draft_text: draft_last_text,
+        point_draft_tags: draft_last_tags
+    }, function() {
         // Notify that we saved.
         draft_save_busy = false;
-        $('#draft-save-status').text('Черновик сохранён...');
+        draft_waiting = false;
+        
         setTimeout(function() {
             $('#draft-save-status').fadeOut(1000);
         }, 1000);

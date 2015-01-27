@@ -178,10 +178,13 @@
         "message": "Your hints about users"
     },
     "option_other_comments_count_refresh":{
-        "message": "Refresh unread posts and comments count in left menu"
+        "message": "Refresh unread posts and comments count in the sidebar"
     },
     "option_other_comments_count_refresh_title":{
-        "message": "Show counts in the title of tabs"
+        "message": "Page title"
+    },
+    "option_other_post_draft_save":{
+        "message": "Save post drafts"
     },
 
     "options_feedback_text": {
@@ -191,5 +194,8 @@
     
     "msg_comment_send_failed":{
         "message": "Comment send error:"
+    },
+    "msg_saving_post_draft":{
+        "message": "Saving the post..."
     }
 }
