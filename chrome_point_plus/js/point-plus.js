@@ -348,17 +348,26 @@ function PointPlus(ppVersion) {
             ws.onmessage = function(evt) {
                 try {
                     // ping :)
-                    if (evt.data == 'ping') {
+                    if (evt.data === 'ping') {
                         console.info('ws-ping');
                     } else {
                         var wsMessage = JSON.parse(evt.data);
 
-                        if (wsMessage.hasOwnProperty('a') && wsMessage.a != '') {
+                        if (wsMessage.hasOwnProperty('a') && wsMessage.a !== '') {
+                            console.log(wsMessage);
+                            
                             switch (wsMessage.a) {
+                                // Recommendation comment
+                                case 'ok':
+                                   // Do not break here. Using next case for this message
+                                
                                 // Comments
                                 case 'comment':
-                                    console.groupCollapsed('ws-comment #%s/%s', wsMessage.post_id, wsMessage.comment_id);
-                                    console.debug(wsMessage);
+                                    if (wsMessage.a === 'comment') {
+                                        console.groupCollapsed('WS comment #%s/%s', wsMessage.post_id, wsMessage.comment_id);
+                                    } else if (wsMessage.a === 'ok') {
+                                        console.groupCollapsed('WS comment rec #%s/%s', wsMessage.post_id, wsMessage.comment_id);
+                                    }
 
                                     // Check option
                                     if ( ! options.is('option_ws_comments')) {
@@ -383,12 +392,13 @@ function PointPlus(ppVersion) {
                                     
                                     // Generating comment from websocket message
                                     create_comment_elements({
-                                        id: wsMessage.comment_id,
+                                        id: (wsMessage.a === 'ok') ? wsMessage.rcid : wsMessage.comment_id,
                                         toId: wsMessage.to_comment_id,
                                         postId: wsMessage.post_id,
                                         author: wsMessage.author,
                                         text: wsMessage.text,
-                                        fadeOut: options.is('option_ws_comments_color_fadeout')
+                                        fadeOut: options.is('option_ws_comments_color_fadeout'),
+                                        isRec: (wsMessage.a === 'ok') ? true : false
                                     }, function($comment) {
                                         // It's time to DOM
                                         console.info('Inserting comment');
@@ -434,9 +444,8 @@ function PointPlus(ppVersion) {
 
                                 // Posts
                                 case 'post':
-                                    console.groupCollapsed('ws-post #%s', wsMessage.post_id);
-
-                                    console.debug(wsMessage);
+                                    console.groupCollapsed('WS post #%s', wsMessage.post_id);
+                                    
                                     if (options.is('option_ws_posts')) {
                                         if (options.is('option_ws_posts_notifications')) {
                                             console.log('Showing desktop notification');
@@ -452,20 +461,16 @@ function PointPlus(ppVersion) {
 
                                     console.groupEnd();
                                     break;
-
+                                    
                                 // Recommendation
-                                case 'ok':
-                                    console.groupCollapsed('ws-recommendation #%s/%s', wsMessage.post_id, wsMessage.comment_id);
-
-                                    console.debug(wsMessage);
+                                case 'rec':
+                                    console.groupCollapsed('WS recommendation');
 
                                     console.groupEnd();
                                     break;
 
                                 default:
-                                    console.groupCollapsed('ws-other');
-
-                                    console.log(wsMessage);
+                                    console.groupCollapsed('WS other');
 
                                     console.groupEnd();
                                     break;
@@ -636,6 +641,7 @@ var months = [
  * @param {string} commentData.author Author of the comment
  * @param {string} commentData.text Text of the comment
  * @param {boolean} commentData.fadeOut Is fadeout enabled or not
+ * @param {boolean|null} commentData.isRec Is comment also a recommendation
  * @param {function} onCommentCreated Callback which is called when comment is ready
  * 
  */
@@ -649,6 +655,11 @@ function create_comment_elements(commentData, onCommentCreated) {
         'data-comment-id': commentData.id,
         'data-to-comment-id': commentData.id || ''
     });
+    
+    // If comment is also a recommendation
+    if (commentData.isRec || false) {
+        $commentTemplate.addClass('recommendation');
+    }
 
     // Loading HTML template
     $commentTemplate.load(chrome.extension.getURL('includes/comment.html'), function() {
@@ -665,7 +676,7 @@ function create_comment_elements(commentData, onCommentCreated) {
         // Filling template
         // Date and time
         $commentTemplate.find('.info .created')
-            .append($('<span>').html(((date.getDate().toString.length < 2) ? ('0' + date.getDate().toString()) : (date.getDate().toString())) + '&nbsp;' + months[date.getMonth()]))
+            .append($('<span>').html((date.getDate().toString()) + '&nbsp;' + months[date.getMonth()]))
             // Crutchy fix
             .append($('<br>'))
             ///Crutchy fix
@@ -679,7 +690,8 @@ function create_comment_elements(commentData, onCommentCreated) {
         // Post and comment ID's link
         $commentTemplate.find('.clearfix .post-id a').attr('href', '//point.im/' + commentData.postId + '#' + commentData.id).text('#' + commentData.postId + '/' + commentData.id)
             // Adding answer label
-            .after((commentData.toId !== null) ? (' в ответ на <a href="#' + commentData.toId + '">/' + commentData.toId + '</a>') : (''));
+            // @todo i18n
+            .after((commentData.toId != null) ? (' в ответ на <a href="#' + commentData.toId + '">/' + commentData.toId + '</a>') : '');
         // Setting action labels and other attributes
         $commentTemplate.find('.action-labels .reply-label').attr('for', 'reply-' + commentData.postId + '_' + commentData.id);
         $commentTemplate.find('.action-labels .more-label').attr('for', 'action-' + commentData.postId + '_' + commentData.id);
