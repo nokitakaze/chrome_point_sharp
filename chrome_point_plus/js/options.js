@@ -8,15 +8,15 @@ function OptionsPage() {
     this.form = document.querySelector('form');
 
     this.listenTabs();
-    
+
     chrome.runtime.sendMessage(null, {
         type: 'getManifestVersion'
     }, null, function(response) {
         this.version = response.version || 'undefined';
-        
+
         this.showVersion();
         this.restore();
-        
+
         this.form.addEventListener('change', this._onChange.bind(this));
     }.bind(this));
 }
@@ -40,7 +40,8 @@ OptionsPage.prototype.updateOptionsFromFrom = function() {
             }, function() {
                 console.log('Default options initialized. Version upgraded to %s.', this.version);
 
-                if ( ! confirm(chrome.i18n.getMessage('options_text_new_version'))) {
+                /* global confirm */
+                if (! confirm(chrome.i18n.getMessage('options_text_new_version'))) {
                     window.close();
                 }
             });
@@ -127,7 +128,7 @@ OptionsPage.prototype.updateOptionFromInput = function(input) {
         this._options[key] = {
             type: 'plain',
             value: input.value
-        }
+        };
     }
 };
 
@@ -188,11 +189,14 @@ OptionsPage.prototype.checkOldStyle = function() {
             console.log('Found old-style options. Cleaning...');
 
             chrome.storage.sync.get(null, function(data) {
+                var option;
 
                 console.log('Old data: %O', data);
 
                 for (option in data) {
-                    chrome.storage.sync.remove(option);
+                    if (data.hasOwnProperty(option)) {
+                        chrome.storage.sync.remove(option);
+                    }
                 }
 
                 console.log('All old data removed');
