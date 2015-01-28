@@ -8,7 +8,7 @@ messenger.sendMessage({
 });
 
 messenger.sendMessage({
-        type: 'getManifestVersion'
+    type: 'getManifestVersion'
 }, function(response) {
     $(document).ready(function() {
         PointPlus(response.version || 'undefined')
@@ -937,48 +937,41 @@ function audio_extension_to_mime(extension) {
     }
 }
 
-// Плашки с кол-вом уникальных пользователей и рекомендаций у постов
+/**
+ * Показывает количество рекомендаций и комментаторов у постов
+ */
 function set_posts_count_label() {
-    var ids = [];
-    $('.content-wrap > .post .post-id a .cn').addClass('changed_background');
+    var posts = {};
+    var ids;
+    
+    $('.content-wrap > .post').each(function(n, post) {
+        var $post = $(post);
+        var postId = $post.data('id');
 
-    $('.content-wrap > .post').each(function(num, obj) {
-        var t = $(obj).attr('data-comment-id');
-        if (typeof(t) !== 'undefined') {
-            return;
-        }
-        var id = $(obj).attr('data-id');
-        ids.push(id);
+        posts[postId] = $post;
     });
 
-    $ajax({
-        'url': 'https://api.kanaria.ru/point/get_post_info.php?list=' + urlencode(ids.join(',')),
-        'success': function(a) {
-            var answer = JSON.parse(a);
+    ids = Object.keys(posts);
 
-            $('.content-wrap > .post').each(function(num, obj) {
-                var id = $(obj).attr('data-id');
-                var postid = $(obj).find('.post-id a')[0];
-                var t = $(obj).attr('data-comment-id');
-                if (typeof(t) !== 'undefined') {
-                    return;
+    $('.content-wrap > .post .post-id a .cn').addClass('changed_background');
+
+    $.ajax('https://api.kanaria.ru/point/get_post_info.php?list=' + encodeURIComponent(ids.join(',')), {
+        dataType: 'json',
+        success: function(data) {
+            ids.forEach(function(id) {
+                var postInfo = data.list[id];
+
+                if (postInfo) {
+                    posts[id].find('.post-id').after(
+                        '<div class="pp-post-counters">' +
+                        '<span class="pp-unique-comments">' + postInfo.count_comment_unique + '</span> ' +
+                        '<span class="pp-recommendation-count">' + postInfo.count_recommendation + '</span> ' +
+                        '</div>'
+                    )
                 }
-
-                var e1 = document.createElement('span');
-                if (typeof(answer.list[id]) == 'undefined') {
-                    return;
-                }
-                $(e1).addClass('authors_unique_count').text(answer.list[id].count_comment_unique).attr('title', 'Количество комментаторов');
-                postid.appendChild(e1);
-
-                var e2 = document.createElement('span');
-                $(e2).addClass('recommendation_count').text('~' + answer.list[id].count_recommendation).attr('title', 'Количество рекомендаций. Работает криво, спасибо @arts\'у за это');
-                postid.appendChild(e2);
             });
         }
-
-    })
-
+    });
 }
 
 function parse_pleercom_links(current_options) {
