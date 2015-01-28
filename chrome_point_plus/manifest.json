@@ -30,7 +30,10 @@
                     "vendor/jquery/jquery.min.js",
 
                     "js/bquery_ajax.js",
-                    
+
+                    "js/options-manager.js",
+                    "js/message-sender.js",
+
                     "js/point-plus.js"
                     ],
             "css": [

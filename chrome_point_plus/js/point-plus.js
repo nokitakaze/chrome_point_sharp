@@ -1,58 +1,23 @@
+var messenger = new MessageSender();
+
 // Showing page action
-chrome.runtime.sendMessage({
+messenger.sendMessage({
     type: 'showPageAction'
-}, null, function(response) {
+}, function(response) {
     console.debug('showPageAction response: %O', response);
 });
 
-// @todo Move OptionsManager to the separate file
-/**
- * Объект для получения опций
- * @param {Object} options Хеш настроек
- * @constructor
- */
-function OptionsManager(options) {
-    this._options = options || {};
-}
-
-/**
- * @param {String} optionName Имя опции
- * @returns {Boolean|String|Null} Значение опции
- */
-OptionsManager.prototype.get = function(optionName) {
-    return this._options.hasOwnProperty(optionName) ? this._options[optionName].value : null;
-};
-
-/**
- * Проверяет, равна ли опция значению value. Если value не переданно, проверяет задана ли она и не равна ли false/''
- * @param {String} optionName Имя опции
- * @param {Boolean|String} [value=true] Значение опции
- * @returns {Boolean}
- */
-OptionsManager.prototype.is = function(optionName, value) {
-    if (typeof value !== 'undefined') {
-        return this.get(optionName) === value;
-    } else {
-        return Boolean(this.get(optionName));
-    }
-};
-
-/**
- * @returns {Object} Хеш опций
- */
-OptionsManager.prototype.getOptions = function() {
-    return this._options;
-};
-
-var ppVersion;
-
-chrome.runtime.sendMessage(null, {
-    type: 'getManifestVersion'
-}, null, function(response) {
-    ppVersion = response.version || 'undefined';
+messenger.sendMessage({
+        type: 'getManifestVersion'
+}, function(response) {
+    $(document).ready(function() {
+        PointPlus(response.version || 'undefined')
+    });
 });
 
-$(document).ready(function() {
+
+function PointPlus(ppVersion) {
+
     // Grouping console log
     console.group('point-plus');
     console.info('Point+ %s', ppVersion);
@@ -71,6 +36,7 @@ $(document).ready(function() {
     // Черновики. Ставим хандлер и восстанавливаем предыдущее состояние
     draft_set_save_handler();
     draft_restore();
+
 
     // Loading options
     chrome.storage.sync.get('options', function(sync_data) {
@@ -106,13 +72,10 @@ $(document).ready(function() {
             // Soundcloud
             if (options.is('option_embedding_soundcloud')) {
                 // Executing Soundcloud player JS API
-                chrome.runtime.sendMessage({
-                    type: 'executeJSFiles',
-                    files: [{
-                        file: 'vendor/soundcloud/soundcloud.player.api.js',
-                        runAt: 'document_end'
-                    }]
-                }, null, function(response) {
+                messenger.js({
+                    file: 'vendor/soundcloud/soundcloud.player.api.js',
+                    runAt: 'document_end'
+                }, function(response) {
                     console.debug('Soundcloud injection response: %O', response);
                     // If scripts are executed
                     if (response) {
@@ -161,28 +124,25 @@ $(document).ready(function() {
             // Injecting Fancybox to the page
             // CSS
             // @todo message response callback processing
-            chrome.runtime.sendMessage({
-                type: 'injectCSSFile',
-                file: 'vendor/fancybox/source/jquery.fancybox.css'
-            });
-            // @todo message response callback processing
-            chrome.runtime.sendMessage({
-                type: 'injectCSSFile',
-                file: 'css/fancybox/style.css'
-            });
+            messenger.css([
+                'vendor/fancybox/source/jquery.fancybox.css',
+                'css/fancybox/style.css'
+            ]);
+
             // JS
-            chrome.runtime.sendMessage(null, {
-                type: 'executeJSFiles',
-                files: [{
+            messenger.js([
+                {
                     file: 'vendor/fancybox/source/jquery.fancybox.pack.js',
                     runAt: 'document_end'
-                }, {
+                },
+                {
                     // @todo Move to the option_fancybox_videos section
                     file: 'vendor/fancybox/source/helpers/jquery.fancybox-media.js',
                     runAt: 'document_end'
-                }]
-            }, null, function(response) {
+                }
+            ], function(response) {
                 // If all JS are executed
+
                 console.debug('Fancybox injection response: %O', response);
                 if (response) {
                     console.log('Fancybox executed. Processing...');
@@ -321,32 +281,23 @@ $(document).ready(function() {
 
             // CSS
             // @todo message response callback processing
-            chrome.runtime.sendMessage({
-                type: 'injectCSSFile',
-                file: 'vendor/markitup/markitup/skins/markitup/style.css'
-            });
-            // Fixes for extension
-            // @todo message response callback processing
-            chrome.runtime.sendMessage({
-                type: 'injectCSSFile',
-                file: 'css/markitup/skins/markitup/style.css'
-            });
-            // @todo message response callback processing
-            chrome.runtime.sendMessage({
-                type: 'injectCSSFile',
-                file: 'css/markitup/sets/markdown/style.css'
-            });
+            messenger.css([
+                'vendor/markitup/markitup/skins/markitup/style.css',
+                'css/markitup/skins/markitup/style.css',
+                'css/markitup/sets/markdown/style.css'
+            ]);
+
             // JS
-            chrome.runtime.sendMessage({
-                type: 'executeJSFiles',
-                files: [{
+            messenger.js([
+                {
                     file: 'vendor/markitup/markitup/jquery.markitup.js',
                     runAt: 'document_end'
-                }, {
+                },
+                {
                     file: 'js/markitup/sets/markdown/set.js',
                     runAt: 'document_end'
-                }]
-            }, null, function(response) {
+                }
+            ], function(response) {
                 console.debug('MarkItUp injection response: %O', response);
                 // If scripts are executed
                 if (response) {
@@ -397,17 +348,26 @@ $(document).ready(function() {
             ws.onmessage = function(evt) {
                 try {
                     // ping :)
-                    if (evt.data == 'ping') {
+                    if (evt.data === 'ping') {
                         console.info('ws-ping');
                     } else {
                         var wsMessage = JSON.parse(evt.data);
 
-                        if (wsMessage.hasOwnProperty('a') && wsMessage.a != '') {
+                        if (wsMessage.hasOwnProperty('a') && wsMessage.a !== '') {
+                            console.log(wsMessage);
+                            
                             switch (wsMessage.a) {
+                                // Recommendation comment
+                                case 'ok':
+                                   // Do not break here. Using next case for this message
+                                
                                 // Comments
                                 case 'comment':
-                                    console.groupCollapsed('ws-comment #%s/%s', wsMessage.post_id, wsMessage.comment_id);
-                                    console.debug(wsMessage);
+                                    if (wsMessage.a === 'comment') {
+                                        console.groupCollapsed('WS comment #%s/%s', wsMessage.post_id, wsMessage.comment_id);
+                                    } else if (wsMessage.a === 'ok') {
+                                        console.groupCollapsed('WS comment rec #%s/%s', wsMessage.post_id, wsMessage.comment_id);
+                                    }
 
                                     // Check option
                                     if ( ! options.is('option_ws_comments')) {
@@ -432,12 +392,13 @@ $(document).ready(function() {
                                     
                                     // Generating comment from websocket message
                                     create_comment_elements({
-                                        id: wsMessage.comment_id,
+                                        id: (wsMessage.a === 'ok') ? wsMessage.rcid : wsMessage.comment_id,
                                         toId: wsMessage.to_comment_id,
                                         postId: wsMessage.post_id,
                                         author: wsMessage.author,
                                         text: wsMessage.text,
-                                        fadeOut: options.is('option_ws_comments_color_fadeout')
+                                        fadeOut: options.is('option_ws_comments_color_fadeout'),
+                                        isRec: (wsMessage.a === 'ok') ? true : false
                                     }, function($comment) {
                                         // It's time to DOM
                                         console.info('Inserting comment');
@@ -466,7 +427,7 @@ $(document).ready(function() {
                                         // Desktop notifications
                                         if (options.is('option_ws_comments_notifications')) {
                                             console.log('Showing desktop notification');
-                                            chrome.runtime.sendMessage({
+                                            messenger.sendMessage({
                                                 type: 'showNotification',
                                                 notificationId: 'comment_' + wsMessage.post_id + '#' + wsMessage.comment_id,
                                                 avatarUrl: getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
@@ -483,9 +444,8 @@ $(document).ready(function() {
 
                                 // Posts
                                 case 'post':
-                                    console.groupCollapsed('ws-post #%s', wsMessage.post_id);
-
-                                    console.debug(wsMessage);
+                                    console.groupCollapsed('WS post #%s', wsMessage.post_id);
+                                    
                                     if (options.is('option_ws_posts')) {
                                         if (options.is('option_ws_posts_notifications')) {
                                             console.log('Showing desktop notification');
@@ -501,20 +461,16 @@ $(document).ready(function() {
 
                                     console.groupEnd();
                                     break;
-
+                                    
                                 // Recommendation
-                                case 'ok':
-                                    console.groupCollapsed('ws-recommendation #%s/%s', wsMessage.post_id, wsMessage.comment_id);
-
-                                    console.debug(wsMessage);
+                                case 'rec':
+                                    console.groupCollapsed('WS recommendation');
 
                                     console.groupEnd();
                                     break;
 
                                 default:
-                                    console.groupCollapsed('ws-other');
-
-                                    console.log(wsMessage);
+                                    console.groupCollapsed('WS other');
 
                                     console.groupEnd();
                                     break;
@@ -539,10 +495,7 @@ $(document).ready(function() {
         // @ before username
         if (options.is('option_at_before_username')) {
             // @todo message response callback processing
-            chrome.runtime.sendMessage({
-                type: 'injectCSSFile',
-                file: 'css/modules/at_before_username.css'
-            });
+            messenger.css('css/modules/at_before_username.css');
         }
         
         if (options.is('option_ajax')) {
@@ -666,7 +619,7 @@ $(document).ready(function() {
 
         $('#point-plus-debug').fadeOut(1000);
     });
-});
+}
 
 function getProtocol() {
     return ((location.protocol == 'http:') ? 'http:' : 'https:');
@@ -688,6 +641,7 @@ var months = [
  * @param {string} commentData.author Author of the comment
  * @param {string} commentData.text Text of the comment
  * @param {boolean} commentData.fadeOut Is fadeout enabled or not
+ * @param {boolean|null} commentData.isRec Is comment also a recommendation
  * @param {function} onCommentCreated Callback which is called when comment is ready
  * 
  */
@@ -701,6 +655,11 @@ function create_comment_elements(commentData, onCommentCreated) {
         'data-comment-id': commentData.id,
         'data-to-comment-id': commentData.id || ''
     });
+    
+    // If comment is also a recommendation
+    if (commentData.isRec || false) {
+        $commentTemplate.addClass('recommendation');
+    }
 
     // Loading HTML template
     $commentTemplate.load(chrome.extension.getURL('includes/comment.html'), function() {
@@ -717,7 +676,7 @@ function create_comment_elements(commentData, onCommentCreated) {
         // Filling template
         // Date and time
         $commentTemplate.find('.info .created')
-            .append($('<span>').html(((date.getDate().toString.length < 2) ? ('0' + date.getDate().toString()) : (date.getDate().toString())) + '&nbsp;' + months[date.getMonth()]))
+            .append($('<span>').html((date.getDate().toString()) + '&nbsp;' + months[date.getMonth()]))
             // Crutchy fix
             .append($('<br>'))
             ///Crutchy fix
@@ -731,7 +690,8 @@ function create_comment_elements(commentData, onCommentCreated) {
         // Post and comment ID's link
         $commentTemplate.find('.clearfix .post-id a').attr('href', '//point.im/' + commentData.postId + '#' + commentData.id).text('#' + commentData.postId + '/' + commentData.id)
             // Adding answer label
-            .after((commentData.toId !== null) ? (' в ответ на <a href="#' + commentData.toId + '">/' + commentData.toId + '</a>') : (''));
+            // @todo i18n
+            .after((commentData.toId != null) ? (' в ответ на <a href="#' + commentData.toId + '">/' + commentData.toId + '</a>') : '');
         // Setting action labels and other attributes
         $commentTemplate.find('.action-labels .reply-label').attr('for', 'reply-' + commentData.postId + '_' + commentData.id);
         $commentTemplate.find('.action-labels .more-label').attr('for', 'action-' + commentData.postId + '_' + commentData.id);
