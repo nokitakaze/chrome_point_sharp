@@ -98,8 +98,8 @@
     "option_embedding_instagram_posts": {
         "message": "Instagram"
     },
-    "option_embedding_instagram_posts_orig_link": {
-        "message": "Leave original link"
+    "option_embedding_remove_original_link": {
+        "message": "Remove original link"
     },
     "option_nsfw": {
         "message": "NSFW content filtering"
