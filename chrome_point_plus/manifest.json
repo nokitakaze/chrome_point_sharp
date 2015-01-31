@@ -61,6 +61,7 @@
         "https://player.soundcloud.com/*",
         "https://api.kanaria.ru/point/*",
         "https://*.twitter.com/*",
+        "https://api.instagram.com/*",
         "https://coub.com/embed/*",
         "storage",
         "notifications",

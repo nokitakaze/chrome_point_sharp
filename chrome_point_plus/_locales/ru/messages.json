@@ -6,9 +6,12 @@
         "message": "Алексей Скобкин"
     },
     "ext_page_action_title": {
-        "message": "Настройки Point+"
+        "message": "Настройки"
     },
     
+    "options_page_title": {
+        "message": "Настройки Point+"
+    },
     
     "options_text_saved": {
         "message": "Для применения изменений перезагрузите страницу."
@@ -95,6 +98,12 @@
     "option_embedding_twitter_tweets": {
         "message": "Twitter"
     },
+    "option_embedding_instagram_posts": {
+        "message": "Instagram"
+    },
+    "option_embedding_instagram_posts_orig_link": {
+        "message": "Не убирать ссылку"
+    },
     "option_nsfw": {
         "message": "Фильтрация NSFW-контента"
     },
@@ -172,10 +181,13 @@
         "message": "Заметки о пользователях на полях"
     },
     "option_other_comments_count_refresh":{
-        "message": "Обновляем количество непрочитанных комментариев и постов в ленте"
+        "message": "Обновление количества непрочитанных постов и комментариев в сайдбаре"
     },
     "option_other_comments_count_refresh_title":{
-        "message": "Указываем кол-во комментариев и сообщений в заголовке страницы"
+        "message": "В заголовке страницы"
+    },
+    "option_other_post_draft_save":{
+        "message": "Сохранение черновика поста"
     },
 
 
@@ -186,5 +198,8 @@
     
     "msg_comment_send_failed":{
         "message": "Ошибка отправки комментария:"
+    },
+    "msg_saving_post_draft":{
+        "message": "Сохранение поста..."
     }
 }

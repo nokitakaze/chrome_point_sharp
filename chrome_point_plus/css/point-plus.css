@@ -28,12 +28,12 @@ div#markItUpText-input {
 }
 
 /* Auto-loaded Booru pictures */
-.booru_pic {
+.booru_pic, .instagram-post-embedded {
     display: block !important;
     float: none !important;
 }
 
-.booru_pic img {
+.booru_pic img, .instagram-post-embedded img {
     border: none;
     max-width: 60%;
     max-height: 300px;

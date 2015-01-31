@@ -33,11 +33,6 @@ function PointPlus(ppVersion) {
     }).text('Point+ ' + ppVersion + ' loading...')
             .insertBefore('#user-menu-cb');
 
-    // Черновики. Ставим хандлер и восстанавливаем предыдущее состояние
-    draft_set_save_handler();
-    draft_restore();
-
-
     // Loading options
     chrome.storage.sync.get('options', function(sync_data) {
         var options = new OptionsManager(sync_data.options);
@@ -53,6 +48,11 @@ function PointPlus(ppVersion) {
             // Load pictures from Booru, Tumblr and some other sites
             if (options.is('option_images_load_booru')) {
                 load_all_booru_images();
+            }
+            
+            // Instagram
+            if (options.is('option_embedding_instagram_posts')){
+                instagram_posts_embedding_init(options);
             }
 
             // Parse webm-links and create video instead
@@ -616,6 +616,12 @@ function PointPlus(ppVersion) {
         if (options.is('option_embedding_twitter_tweets')) {
             twitter_tweet_embedding_init();
         }
+        
+        // Post drafts
+        if (options.is('option_other_post_draft_save')) {
+            draft_set_save_handler();
+            draft_restore();
+        }
 
         $('#point-plus-debug').fadeOut(1000);
     });
@@ -725,10 +731,7 @@ function create_comment_elements(commentData, onCommentCreated) {
 // Картинки с бурятников
 var booru_picture_count = 0;
 function load_all_booru_images() {
-    $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('booru_pic')) {
-            return;
-        }
+    $('.post-content a:not(.booru_pic)').each(function(num, obj) {
 
         var href = obj.href;
         var n = null;
@@ -828,10 +831,7 @@ function mark_unread_post() {
 
 // Webm
 function parse_webm(current_options) {
-    $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('booru_pic')) {
-            return;
-        }
+    $('.post-content a:not(.booru_pic)').each(function(num, obj) {
 
         var href = obj.href;
         var n = null;
@@ -855,10 +855,7 @@ function parse_webm(current_options) {
 
 // Видео
 function parse_all_videos(current_options) {
-    $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('booru_pic')) {
-            return;
-        }
+    $('.post-content a:not(.booru_pic)').each(function(num, obj) {
 
         var href = obj.href;
         var n = null;
@@ -1095,14 +1092,12 @@ function set_space_key_skip_handler() {
 }
 
 function space_key_event() {
-    var scroll_current = $('body').scrollTop();
-    var scroll_step_size = 0;
-    var scroll_real = Math.max(scroll_current - scroll_step_size, 0);
+    var scroll_current = Math.floor($('body').scrollTop());
 
     var posts = $('.content-wrap > .post');
     for (var i = 0; i < posts.length; i++) {
-        var this_top_px = $(posts[i]).offset().top;
-        if (this_top_px > scroll_real) {
+        var this_top_px = Math.floor(posts.eq(i).offset().top);
+        if (this_top_px > scroll_current) {
             $('body').animate({
                 'scrollTop': this_top_px
             }, 200);
@@ -1111,50 +1106,109 @@ function space_key_event() {
     }
 }
 
-/* Автосохранение черновиков */
-var draft_last_text = ''; // Последний зафиксированный текст
-// Восстанавливаем черновик
+/**
+ * Last draft text
+ * @type {string}
+ */
+var draft_last_text = '';
+
+/**
+ * Last draft tags
+ * @type {string}
+ */
+var draft_last_tags = '';
+
+/**
+ * Is extension now saving draft
+ * @type {boolean}
+ */
+var draft_save_busy = false;
+
+/**
+ * Last draft saving time
+ * @type {Date|null}
+ */
+var draft_save_last_time = null;
+
+/**
+ * Is there any setTimeout'ed handlers
+ * @type {boolean}
+ */
+var draft_waiting = false;
+
+/**
+ * Restore draft from localStorage
+ */
 function draft_restore() {
-    chrome.storage.local.get('point_draft_text', function(items) {
-        if ($('#new-post-form #text-input').val() == '') {
+    chrome.storage.local.get(['point_draft_text', 'point_draft_tags'], function(items) {
+        if ($('#new-post-form #text-input').val() === '') {
             $('#new-post-form #text-input').val(items.point_draft_text);
             draft_last_text = items.point_draft_text;
+        }
+        if ($('#new-post-form #tags-input').val() === '') {
+            $('#new-post-form #tags-input').val(items.point_draft_tags);
+            draft_last_tags = items.point_draft_tags;
         }
     });
 }
 
-// Установка хандлера
+/**
+ * Set draft save handler
+ */
 function draft_set_save_handler() {
-    // Господи, прости меня грешного за эту строку. Меня вынудили
-    $('#text-input').on('keyup', function(){
+    $('#text-input, #tags-input').on('keyup', function() {
         draft_save_check();
+        // For last keyup
+        if (!draft_waiting) {
+            setTimeout(draft_save_check, 3000);
+            draft_waiting = true;
+        }
     });
+    // Adding span indicator
     $('#new-post-wrap .footnote').append($('<span id="draft-save-status">'));
 }
 
-var draft_save_busy = false;
-// Фукнция, дёргающаяся по крону, проверяющая надо ли сохранять черновик
+/**
+ * Check if we can save the draft now
+ */
 function draft_save_check() {
     if (draft_save_busy) {
         return;
     }
-    draft_save_busy = true;
+    
+    if (draft_save_last_time !== null) {
+        if ((new Date()).getTime() < draft_save_last_time.getTime() + 3000) {
+            return;
+        }
+    }
 
     var current_text = $('#new-post-form #text-input').val();
-    if (draft_last_text == current_text) {
+    var current_tags = $('#new-post-form #tags-input').val();
+    
+    if ((draft_last_text === current_text) && (draft_last_tags === current_tags)) {
         draft_save_busy = false;
         return;
     }
+    
+    draft_save_busy = true;
+    draft_save_last_time = new Date();
+    
     // @todo i18n
-    $('#draft-save-status').text('Сохраняем черновик...').show();
+    $('#draft-save-status').text(chrome.i18n.getMessage('msg_saving_post_draft')).show();
 
-    // Сохраняем
+    // Saving current data
     draft_last_text = current_text;
+    draft_last_tags = current_tags;
+    
     // Save it using the Chrome extension storage API.
-    chrome.storage.local.set({'point_draft_text': draft_last_text}, function() {
+    chrome.storage.local.set({
+        point_draft_text: draft_last_text,
+        point_draft_tags: draft_last_tags
+    }, function() {
         // Notify that we saved.
         draft_save_busy = false;
-        $('#draft-save-status').text('Черновик сохранён...');
+        draft_waiting = false;
+        
         setTimeout(function() {
             $('#draft-save-status').fadeOut(1000);
         }, 1000);
@@ -1533,30 +1587,73 @@ function twitter_tweet_embedding_wait_for_ready_injected() {
 function twitter_tweet_embedding_parse_links() {
     // Обрабатываем все твиты
     var twitter_tweet_count = 0;
-    $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('booru_pic')) {
-            return;
-        }
-
+    $('.post-content a:not(.booru_pic)').each(function(num, obj) {
         var href = obj.href;
         var n;
 
         if (n = href.match(new RegExp('^https?://(www\\.)?twitter\\.com/[^/]+/status/([0-9]+)', 'i'))) {
-            var image = document.createElement('div');
-            $(image).attr({
+            var tweet = document.createElement('div');
+            $(tweet).attr({
                 'id': 'tweet-' + twitter_tweet_count,
                 'data-tweet-id': n[2]
             }).addClass('twitter-tweet-embedded');
-            obj.parentElement.insertBefore(image, obj);
+            obj.parentElement.insertBefore(tweet, obj);
 
             window.twttr.widgets.createTweet(
                 n[2],
-                image,
+                tweet,
                 {
                     'lang': 'ru'
                 }
             );
             twitter_tweet_count++;
+        }
+    });
+}
+
+/**
+ * Instagram posts
+ * 
+ * @param {OptionsManager} options OptionsManager with current options
+ */
+function instagram_posts_embedding_init(options) {
+    var regex = new RegExp('^https?://(www\\.)?instagram\\.com/p/([\\w-]+)/?', 'i');
+    
+    $('.post-content a:not(.booru_pic)').each(function(num, $link) {
+        var href = $link.href;
+        var n;
+
+        if (n = href.match(regex)) {
+            $ajax({
+                'url': 'https://api.instagram.com/oembed?url=' + urlencode('http://instagram.com/p/' + n[2] + '/'),
+                'success': function(text) {
+                    var answer = JSON.parse(text);
+                    var new_post = document.createElement('a');
+                    $(new_post).attr({
+                        'id': 'instagram-' + num,
+                        'href': answer.thumbnail_url,
+                        'title': answer.title,
+                        'target': '_blank',
+                        'data-fancybox-group': (options.is('option_fancybox_bind_images_to_one_flow'))
+                            ? 'one_flow_gallery' : '',
+                        'data-fancybox-title': (options.is('option_fancybox_smart_hints'))
+                            ? answer.title : ' '
+                    }).addClass('postimg instagram-post-embedded');
+
+                    var image = document.createElement('img');
+                    image.alt = new_post.title;
+                    image.src = new_post.href;
+                    new_post.appendChild(image);
+
+                    // Leave or replace
+                    if (options.is('option_embedding_instagram_posts_orig_link')) {
+                        $link.parentElement.insertBefore(new_post, $link);
+                    } else {
+                        $($link).replaceWith(new_post);
+                    }
+                }
+            });
+
         }
     });
 }

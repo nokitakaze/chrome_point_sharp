@@ -1,3 +1,6 @@
+/**
+ * @deprecated since 1.36.0
+ */
 function $ajax_prot(settings){
  if (settings==undefined){return;}
  if (settings['url']      ==undefined){return;}this.url=settings['url'];
@@ -46,8 +49,14 @@ $ajax_prot.prototype={
 
 $ajax=function (settings){return new $ajax_prot(settings);}
 
+/**
+ * @deprecated since 1.36.0
+ */
 function urlencode(text){return encodeURIComponent(text);}
 
+/**
+ * @deprecated since 1.36.0
+ */
 function sad_safe_reg(text){
  var ar='.-\\/[]{}?+';
  var s=''; for (var i=0;i<text.length;i++){
@@ -60,6 +69,9 @@ function sad_safe_reg(text){
  return s;
 }
 
+/**
+ * @deprecated since 1.36.0
+ */
 function sad_xml_getnode(node,path){//node as domNode
  if ('' ==path){return node;}
  if ('#'==path){return node.textContent || node.text;}
@@ -81,6 +93,9 @@ function sad_xml_getnode(node,path){//node as domNode
  return undefined;
 }
 
+/**
+ * @deprecated since 1.36.0
+ */
 function sad_xml_attribute(node,name){
  if (node==undefined){return undefined;}
  var r=new RegExp('^'+sad_safe_reg(name)+'$','i');
@@ -90,6 +105,9 @@ function sad_xml_attribute(node,name){
  return '';
 }
 
+/**
+ * @deprecated since 1.36.0
+ */
 function sad_x2n(xml){
  return xml.responseXML.childNodes[xml.responseXML.childNodes.length-1];
 }
