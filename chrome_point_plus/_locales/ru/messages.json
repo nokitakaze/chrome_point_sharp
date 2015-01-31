@@ -78,13 +78,10 @@
         "message": "Оставлять ссылку на видео"
     },
     "option_embedding_soundcloud": {
-        "message": "Soundcloud &#9660;"
-    },
-    "option_embedding_soundcloud_orig_link": {
-        "message": "Не убирать ссылку"
+        "message": "Soundcloud"
     },
     "option_embedding_pleercom": {
-        "message": "Pleer.com &#9660;"
+        "message": "Pleer.com"
     },
     "option_embedding_coubcom": {
         "message": "Coub.com"
