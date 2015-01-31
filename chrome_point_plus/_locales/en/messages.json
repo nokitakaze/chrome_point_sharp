@@ -74,9 +74,6 @@
     "option_videos_parse_all_links": {
         "message": "Parse all links"
     },
-    "option_videos_parse_leave_links": {
-        "message": "Leave original link"
-    },
     "option_embedding_soundcloud": {
         "message": "Soundcloud"
     },

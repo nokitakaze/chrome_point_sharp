@@ -844,7 +844,7 @@ function parse_webm(current_options) {
 
             obj.parentElement.insertBefore(player, obj);
 
-            if (current_options.is('option_videos_parse_leave_links', false)) {
+            if (current_options.is('option_embedding_remove_original_link')) {
                 $(obj).hide();
             }
         }
@@ -868,7 +868,7 @@ function parse_all_videos(current_options) {
 
             obj.parentElement.insertBefore(player, obj);
 
-            if (current_options.is('option_videos_parse_leave_links', false)) {
+            if (current_options.is('option_embedding_remove_original_link')) {
                 $(obj).hide();
             }
         }
