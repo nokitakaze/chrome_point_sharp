@@ -66,7 +66,7 @@
         "message": "Аудио по прямой ссылке"
     },
     "option_videos_parse_links": {
-        "message": "Видео по прямой ссылке"
+        "message": "Видео по прямой ссылке &#9660;"
     },
     "option_videos_parse_webm": {
         "message": "Только webm"
@@ -74,23 +74,14 @@
     "option_videos_parse_all_links": {
         "message": "Все ссылки на видео"
     },
-    "option_videos_parse_leave_links": {
-        "message": "Оставлять ссылку на видео"
-    },
     "option_embedding_soundcloud": {
-        "message": "Soundcloud &#9660;"
-    },
-    "option_embedding_soundcloud_orig_link": {
-        "message": "Не убирать ссылку"
+        "message": "Soundcloud"
     },
     "option_embedding_pleercom": {
-        "message": "Pleer.com &#9660;"
+        "message": "Pleer.com"
     },
     "option_embedding_coubcom": {
-        "message": "Coub.com &#9660;"
-    },
-    "option_embedding_coubcom_orig_link": {
-        "message": "Не убирать ссылку"
+        "message": "Coub.com"
     },
     "option_embedding_twitter_tweets": {
         "message": "Twitter"
@@ -98,8 +89,8 @@
     "option_embedding_instagram_posts": {
         "message": "Instagram"
     },
-    "option_embedding_instagram_posts_orig_link": {
-        "message": "Не убирать ссылку"
+    "option_embedding_remove_original_link": {
+        "message": "Удалять оригинальную ссылку"
     },
     "option_nsfw": {
         "message": "Фильтрация NSFW-контента"

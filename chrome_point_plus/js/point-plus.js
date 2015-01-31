@@ -96,12 +96,10 @@ function PointPlus(ppVersion) {
                                         </div>');
 
                             // Replace or prepend
-                            if (options.is('option_embedding_soundcloud_orig_link')) {
-                                // Before
-                                $(this).before($player);
-                            } else {
-                                // Replace
+                            if (options.is('option_embedding_remove_original_link')) {
                                 $(this).replaceWith($player);
+                            } else {
+                                $(this).before($player);
                             }
                         });
                     }
@@ -846,7 +844,7 @@ function parse_webm(current_options) {
 
             obj.parentElement.insertBefore(player, obj);
 
-            if (current_options.is('option_videos_parse_leave_links', false)) {
+            if (current_options.is('option_embedding_remove_original_link')) {
                 $(obj).hide();
             }
         }
@@ -870,7 +868,7 @@ function parse_all_videos(current_options) {
 
             obj.parentElement.insertBefore(player, obj);
 
-            if (current_options.is('option_videos_parse_leave_links', false)) {
+            if (current_options.is('option_embedding_remove_original_link')) {
                 $(obj).hide();
             }
         }
@@ -919,7 +917,7 @@ function parse_all_audios(current_options){
 
             obj.parentElement.insertBefore(player, obj);
 
-            if (current_options.is('option_audios_parse_leave_links', false)) {
+            if (current_options.is('option_embedding_remove_original_link')) {
                 $(obj).hide();
             }
         }
@@ -984,7 +982,7 @@ function parse_pleercom_links(current_options) {
             '<embed src="' + trackHref + '" type="application/x-shockwave-flash" width="578" height="60">' +
             '</embed></object>');
 
-            if ( ! current_options.is('option_embedding_pleercom_orig_link')) {
+            if (current_options.is('option_embedding_remove_original_link')) {
                 $link.remove();
             }
         }
@@ -1171,7 +1169,7 @@ function parse_coub_links(current_options) {
 
             obj.parentElement.insertBefore(player, obj);
 
-            if (current_options.is('option_embedding_coubcom_orig_link', false)) {
+            if (current_options.is('option_embedding_remove_original_link')) {
                 $(obj).hide();
             }
         }
@@ -1578,7 +1576,7 @@ function instagram_posts_embedding_init(options) {
 
                     $link.before($imgLink);
 
-                    if ( ! options.is('option_embedding_instagram_posts_orig_link')) {
+                    if (options.is('option_embedding_remove_original_link')) {
                        $link.remove();
                     }
                 }

@@ -66,7 +66,7 @@
         "message": "Audio from direct links"
     },
     "option_videos_parse_links": {
-        "message": "Video from direct links"
+        "message": "Video from direct links &#9660;"
     },
     "option_videos_parse_webm": {
         "message": "Only webm"
@@ -74,23 +74,14 @@
     "option_videos_parse_all_links": {
         "message": "Parse all links"
     },
-    "option_videos_parse_leave_links": {
-        "message": "Leave original link"
-    },
     "option_embedding_soundcloud": {
-        "message": "Soundcloud &#9660;"
-    },
-    "option_embedding_soundcloud_orig_link": {
-        "message": "Leave original link"
+        "message": "Soundcloud"
     },
     "option_embedding_pleercom": {
-        "message": "Pleer.com &#9660;"
+        "message": "Pleer.com"
     },
     "option_embedding_coubcom": {
-        "message": "Coub.com &#9660;"
-    },
-    "option_embedding_coubcom_orig_link": {
-        "message": "Leave original link"
+        "message": "Coub.com"
     },
     "option_embedding_twitter_tweets": {
         "message": "Twitter"
@@ -98,8 +89,8 @@
     "option_embedding_instagram_posts": {
         "message": "Instagram"
     },
-    "option_embedding_instagram_posts_orig_link": {
-        "message": "Leave original link"
+    "option_embedding_remove_original_link": {
+        "message": "Remove original link"
     },
     "option_nsfw": {
         "message": "NSFW content filtering"
