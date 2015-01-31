@@ -16,6 +16,7 @@ function Booru($links, options) {
  */
 Booru.baseUrl = 'https://api.kanaria.ru/point/get_booru_picture.php';
 
+/* jshint maxlen:false */
 Booru.services = {
     danbooru: {
         mask: new RegExp('^https?://danbooru\\.donmai\\.us/posts/([0-9]+)', 'i'),
@@ -50,13 +51,14 @@ Booru.services = {
     },
     pixiv: {
         mask: new RegExp('^https?://(www\\.)?pixiv\\.net\\/member_illust\\.php\\?mode\\=medium\\&illust_id\\=([0-9]+)', 'i'),
-        matchNumber: 2,
+        matchNumber: 2
     },
     animepicturesnet: {
         mask: new RegExp('^http\\:\\/\\/anime\\-pictures\\.net\\/pictures\\/view_post\\/([0-9]+)', 'i'),
         matchNumber: 1
     }
 };
+/* jshint maxlen:120 */
 
 /**
  * Обрабатывает все картинки
@@ -86,7 +88,7 @@ Booru.prototype.loadAllImages = function($links, removeOriginal) {
             this.count++;
 
             if (removeOriginal) {
-               $link.remove();
+                $link.remove();
             }
         }
     });
@@ -110,7 +112,7 @@ Booru.prototype.createImageFromService = function(service, href) {
         if (serviceInfo.params) {
             for (key in serviceInfo.params) {
                 if (serviceInfo.params.hasOwnProperty(key)) {
-                    params[key] = mathes[serviceInfo.params[key]];
+                    params[key] = matches[serviceInfo.params[key]];
                 }
             }
 
@@ -165,7 +167,6 @@ Booru.prototype.createImage = function(service, id, params) {
 Booru.prototype.getImageLink = function(service, id, params) {
     return this.constructor.baseUrl + '?' + $.param($.extend({
         domain: service,
-        id: id,
+        id: id
     }, params));
 };
-
