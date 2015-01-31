@@ -1578,7 +1578,7 @@ function instagram_posts_embedding_init(options) {
 
                     $link.before($imgLink);
 
-                    if ( ! options.is('option_embedding_instagram_posts_orig_link')) {
+                    if (options.is('option_embedding_remove_original_link')) {
                        $link.remove();
                     }
                 }
