@@ -972,82 +972,23 @@ function set_posts_count_label() {
 }
 
 function parse_pleercom_links(current_options) {
-    if (current_options.is('option_embedding_pleercom_nokita_server')) {
-        parse_pleercom_links_nokita();
-    } else {
-        parse_pleercom_links_ajax(current_options);
-    }
-}
-/**
- * @deprecated since 1.19
- */
-function parse_pleercom_links_nokita() {
-    $('.post-content a').each(function(num, obj) {
-        var href = obj.href;
-        var n = null;
+    $('.post-content a').each(function(num, link) {
+        var $link = $(link);
+        var href = link.href;
+        var matches = href.match(new RegExp('^https?:\\/\\/pleer\\.com\\/tracks\\/([0-9a-z]+)', 'i'));
 
-        if (n = href.match(new RegExp('^https?:\\/\\/pleer\\.com\\/tracks\\/([0-9a-z]+)', 'i'))) {
-            var player = document.createElement('audio');
-            $(player).attr({
-                'src': 'https://api.kanaria.ru/point/get_pleer_file.php?id=' + n[1],
-                'controls': 'controls',
-                'preload': 'none'
-            });
+        if (matches) {
+            trackHref = 'http://embed.pleer.com/normal/track?id=' + matches[1] + '&t=grey';
 
-            var player_div = document.createElement('div');
-            $(player_div).addClass('embeded_audio').addClass('embeded_audio_' + n[1]);
-            player_div.appendChild(player);
+            $link.before('<object width="578" height="60"><param name="movie" value="' + trackHref + '"></param>' +
+            '<embed src="' + trackHref + '" type="application/x-shockwave-flash" width="578" height="60">' +
+            '</embed></object>');
 
-            obj.parentElement.insertBefore(player_div, obj);
-        }
-    });
-}
-
-function parse_pleercom_links_ajax(current_options) {
-    $('.post-content a').each(function(num, obj) {
-        var href = obj.href;
-        var n = null;
-
-        if (n = href.match(new RegExp('^https?:\\/\\/pleer\\.com\\/tracks\\/([0-9a-z]+)', 'i'))) {
-            var player_div = document.createElement('div');
-            $(player_div).addClass('embeded_audio').addClass('embeded_audio_' + n[1]);
-            $(obj).addClass('pleercom_original_link_'+n[1]);
-            obj.parentElement.insertBefore(player_div, obj);
-            create_pleercom_ajax(n[1], current_options);
-        }
-    });
-}
-
-function create_pleercom_ajax(id, current_options) {
-    $ajax({
-        'url': 'https://pleer.com/site_api/files/get_url',
-        'type': 'post',
-        'postdata': 'action=download&id=' + id,
-        'dont_set_content_type': true,
-        'pleer_id': id,
-        'headers': [['Accept', '*'], ['Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8']],
-        'success': function(a) {
-            var answer = JSON.parse(a);
-            var player = document.createElement('audio');
-            // @todo Проверять существование track_link
-            $(player).attr({
-                'src': answer.track_link,
-                'controls': 'controls',
-                'preload': 'auto'
-            });
-            $('.embeded_audio_' + this.settings.pleer_id)[0].appendChild(player);
-
-            if (current_options.is('option_embedding_pleercom_orig_link', false)){
-                $('.pleercom_original_link_'+this.settings.pleer_id).hide();
+            if ( ! current_options.is('option_embedding_pleercom_orig_link')) {
+                $link.remove();
             }
-        },
-        'error': function() {
-            console.log('Can not get pleer.com url');
-            setTimeout(new Function('create_pleercom_ajax("' + this.settings.pleer_id + '");'), 1000);
         }
-
     });
-
 }
 
 // Проставляем теги у постов
@@ -1612,41 +1553,36 @@ function twitter_tweet_embedding_parse_links() {
 function instagram_posts_embedding_init(options) {
     var regex = new RegExp('^https?://(www\\.)?instagram\\.com/p/([\\w-]+)/?', 'i');
     
-    $('.post-content a:not(.booru_pic)').each(function(num, $link) {
-        var href = $link.href;
-        var n;
+    $('.post-content a:not(.booru_pic)').each(function(num, link) {
+        var $link = $(link);
+        var href = link.href;
+        var matches = href.match(regex);
 
-        if (n = href.match(regex)) {
-            $ajax({
-                'url': 'https://api.instagram.com/oembed?url=' + urlencode('http://instagram.com/p/' + n[2] + '/'),
-                'success': function(text) {
-                    var answer = JSON.parse(text);
-                    var new_post = document.createElement('a');
-                    $(new_post).attr({
-                        'id': 'instagram-' + num,
-                        'href': answer.thumbnail_url,
-                        'title': answer.title,
-                        'target': '_blank',
-                        'data-fancybox-group': (options.is('option_fancybox_bind_images_to_one_flow'))
-                            ? 'one_flow_gallery' : '',
-                        'data-fancybox-title': (options.is('option_fancybox_smart_hints'))
-                            ? answer.title : ' '
-                    }).addClass('postimg instagram-post-embedded');
+        if (matches) {
+            $.ajax('https://api.instagram.com/oembed?url=' + 'http://instagr.am/p/' + matches[2] + '/', {
+                dataType: 'json',
+                success: function(response) {
+                    var $imgLink = $('<a><img src="' + response.thumbnail_url +
+                        '" + alt="' + response.title + '"></a>');
 
-                    var image = document.createElement('img');
-                    image.alt = new_post.title;
-                    image.src = new_post.href;
-                    new_post.appendChild(image);
+                    $imgLink
+                        .addClass('postimg instagram-post-embedded')
+                        .attr({
+                            id: 'instagram-' + num,
+                            href: 'http://instagram.com/p/' + matches[2] + '/media/?size=l',
+                            title: response.title,
+                            traget: '_blank',
+                            'data-fancybox-group': (options.is('option_fancybox_bind_images_to_one_flow')) ? 'one_flow_gallery' : '',
+                            'data-fancybox-title': (options.is('option_fancybox_smart_hints')) ? response.title : ''
+                        });
 
-                    // Leave or replace
-                    if (options.is('option_embedding_instagram_posts_orig_link')) {
-                        $link.parentElement.insertBefore(new_post, $link);
-                    } else {
-                        $($link).replaceWith(new_post);
+                    $link.before($imgLink);
+
+                    if ( ! options.is('option_embedding_instagram_posts_orig_link')) {
+                       $link.remove();
                     }
                 }
             });
-
         }
     });
 }

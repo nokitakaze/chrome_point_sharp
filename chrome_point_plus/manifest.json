@@ -27,18 +27,16 @@
         {
             "matches": ["http://*.point.im/*", "https://*.point.im/*"],
             "js": [
-                    "vendor/jquery/jquery.min.js",
+                "vendor/jquery/jquery.min.js",
 
-                    "js/bquery_ajax.js",
+                "js/options-manager.js",
+                "js/message-sender.js",
 
-                    "js/options-manager.js",
-                    "js/message-sender.js",
-
-                    "js/point-plus.js"
-                    ],
+                "js/point-plus.js"
+            ],
             "css": [
-                    "css/point-plus.css"
-                    ],
+                "css/point-plus.css"
+            ],
             "run_at": "document_end"
         }
     ],

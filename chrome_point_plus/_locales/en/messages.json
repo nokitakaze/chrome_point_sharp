@@ -86,9 +86,6 @@
     "option_embedding_pleercom": {
         "message": "Pleer.com &#9660;"
     },
-    "option_embedding_pleercom_nokita_server": {
-        "message": "Use Nokita's server (deprecated)"
-    },
     "option_embedding_coubcom": {
         "message": "Coub.com &#9660;"
     },
