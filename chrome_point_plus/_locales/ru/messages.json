@@ -87,10 +87,7 @@
         "message": "Pleer.com &#9660;"
     },
     "option_embedding_coubcom": {
-        "message": "Coub.com &#9660;"
-    },
-    "option_embedding_coubcom_orig_link": {
-        "message": "Не убирать ссылку"
+        "message": "Coub.com"
     },
     "option_embedding_twitter_tweets": {
         "message": "Twitter"

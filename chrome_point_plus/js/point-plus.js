@@ -1171,7 +1171,7 @@ function parse_coub_links(current_options) {
 
             obj.parentElement.insertBefore(player, obj);
 
-            if (current_options.is('option_embedding_coubcom_orig_link', false)) {
+            if (current_options.is('option_embedding_remove_original_link')) {
                 $(obj).hide();
             }
         }
