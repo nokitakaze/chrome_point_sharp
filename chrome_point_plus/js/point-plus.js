@@ -719,10 +719,7 @@ function create_comment_elements(commentData, onCommentCreated) {
 // Картинки с бурятников
 var booru_picture_count = 0;
 function load_all_booru_images() {
-    $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('booru_pic')) {
-            return;
-        }
+    $('.post-content a:not(.booru_pic)').each(function(num, obj) {
 
         var href = obj.href;
         var n = null;
@@ -822,10 +819,7 @@ function mark_unread_post() {
 
 // Webm
 function parse_webm(current_options) {
-    $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('booru_pic')) {
-            return;
-        }
+    $('.post-content a:not(.booru_pic)').each(function(num, obj) {
 
         var href = obj.href;
         var n = null;
@@ -849,10 +843,7 @@ function parse_webm(current_options) {
 
 // Видео
 function parse_all_videos(current_options) {
-    $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('booru_pic')) {
-            return;
-        }
+    $('.post-content a:not(.booru_pic)').each(function(num, obj) {
 
         var href = obj.href;
         var n = null;
@@ -1093,7 +1084,7 @@ function space_key_event() {
 
     var posts = $('.content-wrap > .post');
     for (var i = 0; i < posts.length; i++) {
-        var this_top_px = Math.floor($(posts[i]).offset().top);
+        var this_top_px = Math.floor(posts.eq(i).offset().top);
         if (this_top_px > scroll_current) {
             $('body').animate({
                 'scrollTop': this_top_px
@@ -1126,12 +1117,6 @@ var draft_save_busy = false;
  * @type {Date|null}
  */
 var draft_save_last_time = null;
-
-/**
- * Is draft now saving or not
- * @type {boolean}
- */
-var draft_save_busy = false;
 
 /**
  * Is there any setTimeout'ed handlers
@@ -1590,7 +1575,7 @@ function twitter_tweet_embedding_wait_for_ready_injected() {
 function twitter_tweet_embedding_parse_links() {
     // Обрабатываем все твиты
     var twitter_tweet_count = 0;
-    $('.post-content a').not('.booru_pic').each(function(num, obj) {
+    $('.post-content a:not(.booru_pic)').each(function(num, obj) {
         var href = obj.href;
         var n;
 
@@ -1622,7 +1607,7 @@ function twitter_tweet_embedding_parse_links() {
 function instagram_posts_embedding_init(options) {
     var regex = new RegExp('^https?://(www\\.)?instagram\\.com/p/([\\w-]+)/?', 'i');
     
-    $('.post-content a').not('.booru_pic').each(function(num, $link) {
+    $('.post-content a:not(.booru_pic)').each(function(num, $link) {
         var href = $link.href;
         var n;
 
