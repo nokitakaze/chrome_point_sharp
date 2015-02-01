@@ -281,7 +281,7 @@ function create_tag_system() {
     $('.content-wrap > .post, #comments .post').each(function() {
         var tags = $(this).find('div.tags a.tag');
         for (var i = 0; i < tags.length; i++) {
-            var tag_name = $(tags[i]).html().toLowerCase();
+            var tag_name = tags.eq(i).html().toLowerCase();
             $(this).addClass('post-tag-' + tag_name);
         }
 
@@ -323,7 +323,7 @@ function space_key_event() {
 
     var posts = $('.content-wrap > .post');
     for (var i = 0; i < posts.length; i++) {
-        var this_top_px = Math.floor($(posts[i]).offset().top);
+        var this_top_px = Math.floor(posts.eq(i).offset().top);
         if (this_top_px > scroll_current) {
             $(body_selector).animate({
                 'scrollTop': this_top_px
@@ -446,7 +446,7 @@ function fancybox_set_smart_hints() {
         var default_hint_text = '';// Дефолтный текст для хинта в FancyBox, если не нашлость другого
         // Сначала теги
         for (var i = 0; i < tags.length; i++) {
-            var tag_name = $(tags[i]).html().toLowerCase();
+            var tag_name = tags.eq(i).html().toLowerCase();
             default_hint_text += ' ' + tag_name;
         }
 
