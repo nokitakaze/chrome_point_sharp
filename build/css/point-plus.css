@@ -98,6 +98,11 @@ a.postimg.sharp-preblur {
     color: green;
 }
 
+/* Увеличиваем размер edit form */
+#post-edit-form .post-content #text-input {
+    height: 30em !important;
+}
+
 /* point-plus-debug */
 #point-plus-debug {
     float: right;
@@ -265,3 +270,4 @@ a.postimg.sharp-preblur {
 .post.comment-topic-starter {
     background-color: #eef;
 }
+

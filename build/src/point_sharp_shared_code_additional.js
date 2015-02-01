@@ -982,7 +982,7 @@ function visual_editor_init() {
         'language': 'ru'
     });
     $('#new-post-form, .post-content .reply-form, #post-edit-form .post-content .text').addClass('bootstrapped');
-    $('.post-content .reply-form textarea').css({'height': '10em'});
+    $('.post-content .reply-form textarea').css({'height': '15em'});
 
     /*
      // Send by CTRL+Enter
