@@ -43,13 +43,6 @@ function skobkin_websocket_init(options) {
                         case 'ok':
                             console_group_collapsed('ws-comment' + wsMessage.post_id + '/' + wsMessage.comment_id);
 
-                            // Check we are in the post
-                            if ($('#top-post').length < 1) {
-                                console.log('Not in the post, skipping');
-                                console_group_end();
-                                break;
-                            }
-
                             // Desktop notifications
                             if (options.is('option_ws_comments_notifications')) {
                                 html5_notification({
@@ -59,6 +52,13 @@ function skobkin_websocket_init(options) {
                                                     wsMessage.comment_id,
                                     text: wsMessage.text
                                 }, function(response) {});
+                            }
+
+                            // Check we are in the post
+                            if ($('#top-post').length < 1) {
+                                console.log('Not in the post, skipping');
+                                console_group_end();
+                                break;
                             }
 
                             // Check we are in specified post
