@@ -238,13 +238,24 @@ a.postimg.sharp-preblur {
 }
 
 /**
- *
+ * Новые каменты
  */
-.post.pp-highlight{
-    background-color: rgb(255, 255, 187);
+.post.pp-highlight {
+    background-color: #ffb;
 }
 
-.post.pp-highlight.readed{
+.post.pp-highlight.readed {
     background-color: inherit;
     transition: all 1s;
 }
+
+.post.new_comments {
+    background-color: #efe;
+    border-radius: 5px;
+}
+
+.post.new_post_itself {
+    background-color: #ffb;
+    border-radius: 5px;
+}
+

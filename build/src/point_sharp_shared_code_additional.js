@@ -100,20 +100,15 @@ function create_image(domain, id, additional) {
 
 /**
  * Помечаем непрочитанные посты более видимо чем каким-то баджем
+ *
+ * Первая версия написана @RainbowSpike
  */
 function mark_unread_post() {
-    // Эта часть написана @RainbowSpike
-    var divs = $(".content-wrap > .post").css({'padding-left': '2px'}); // массив постов
-    for (var i = 0; i < divs.length; i++) { // обыск постов
-        var spans = $(divs[i]).find(".unread"); // поиск метки непрочитанных комментов
-        if (spans.length > 0) { // если в посте есть непрочитанные комменты...
-            $(divs[i]).css({//...залить пост зеленоватым и скруглить
-                'background-color': '#EEFFEE',
-                'border-radius': '10px'
-            });
+    $(".content-wrap > .post").css({'padding-left': '2px'}).each(function() {
+        if ($(this).find(".unread").length > 0) {
+            $(this).addClass('new_comments');
         }
-    }
-
+    });
 }
 
 // Webm
@@ -293,9 +288,7 @@ function parse_pleercom_links(current_options) {
         parse_pleercom_links_ajax(current_options);
     }
 }
-/**
- * @deprecated since 1.19
- */
+
 function parse_pleercom_links_nokita() {
     $('.post-content a').each(function(num, obj) {
         var href = obj.href;
@@ -372,6 +365,8 @@ function create_pleercom_ajax(id, current_options) {
  * Проставляем теги и имена пользователей у постов
  */
 function create_tag_system() {
+    var my_nick = get_my_nick();
+
     $('.content-wrap > .post').each(function() {
         var tags = $(this).find('div.tags a.tag');
         for (var i = 0; i < tags.length; i++) {
@@ -379,9 +374,14 @@ function create_tag_system() {
             $(this).addClass('post-tag-' + tag_name);
         }
 
-        // @todo Имена пользователей
+        // Имена пользователей
+        var nick = $(this).find('.post-content a.author').text().toLowerCase();
+        $(this).attr('data-author-id', nick).addClass('post-author-' + nick);
 
-        // @todo Свои посты
+        // Свои посты
+        if (nick == my_nick) {
+            $(this).addClass('is-my-post');
+        }
     });
 }
 
@@ -1210,4 +1210,48 @@ function wrap_posts_remove_unused_wrap_splitters() {
             $(this).find('.wrap-splitter').show();
         }
     });
+}
+
+
+/**
+ * Сохраняем знание о постах
+ *
+ * @param options
+ */
+function viewed_post_system_save(options) {
+    var my_nick = get_my_nick();
+
+    local_storage_get('post_viewed_list', function(list) {
+        if ((typeof(list) == 'undefined') || (list === null)) {
+            list = [];
+        }
+
+        var need_update_ids = false;
+        $('.content-wrap .post').each(function() {
+            var post_id = $(this).attr('data-id');
+            var author_id = $(this).attr('data-author-id');
+
+            if ((post_id !== '') && ($.inArray(post_id, list) == -1) && (author_id !== my_nick)) {
+                list.push(post_id);
+                need_update_ids = true;
+                if (options.is('option_other_hightlight_post_unviewed')) {
+                    $(this).addClass('new_post_itself');
+                }
+            }
+        });
+
+        if (need_update_ids) {
+            local_storage_set({'post_viewed_list': list}, function() {});
+        }
+    });
+}
+
+
+/**
+ * Мой ник
+ *
+ * @returns {string}
+ */
+function get_my_nick() {
+    return $('#name h1').text().toLowerCase();
 }

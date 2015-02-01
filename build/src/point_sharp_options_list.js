@@ -210,6 +210,11 @@ var point_sharp_options_tree = {
                 "default_value": true,
                 "description": "Подсвечивать посты с новыми комментариями"
             },
+            "option_other_hightlight_post_unviewed": {
+                "type": "boolean",
+                "default_value": true,
+                "description": "Подсвечивать новые посты"
+            },
             "option_other_show_recommendation_count": {
                 "type": "boolean",
                 "default_value": true,

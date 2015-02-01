@@ -290,6 +290,9 @@ function pimp_my_page(options) {
     // Сворачивание постов. Как длинных, так и любых
     wrap_posts_init(options);
 
+    // Сохраняем список просмотренных постов
+    viewed_post_system_save(options);
+
     // Выполняем последние платформозависимые функции
     point_loaded_last(options);
 
