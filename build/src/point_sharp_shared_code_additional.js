@@ -1044,9 +1044,17 @@ function smart_nsfw_init(options) {
         var tag_selector = '';
         var top_post_selector = '';
         for (var i = 0; i < ar.length; i++) {
-            ar[i] = ar[i].replace(new RegExp('^ *(.*) *$'), '$1');
-            tag_selector += (ar[i].length > 0) ? ',.post-tag-' + ar[i] : '';
-            top_post_selector += (ar[i].length > 0) ? ',#top-post.post-tag-' + ar[i] : '';
+            var n;
+            if (n = ar[i].match(new RegExp('^ *(@([a-z0-9_-]+)\\:)?(.+)? *$'))) {
+                var author_id = n[2];
+                var tag_id = n[3];
+                if ((typeof(tag_id) == 'undefined') && (typeof(author_id) == 'undefined')) {continue;}
+
+                var inner_selector = ((typeof(tag_id) !== 'undefined') ? '.post-tag-' + tag_id : '') +
+                                     ((typeof(author_id) !== 'undefined') ? '[data-author-id="' + author_id + '"]' : '');
+                tag_selector += ',.content-wrap > .post' + inner_selector;
+                top_post_selector += ',#top-post' + inner_selector;
+            }
         }
         tag_selector = tag_selector.substr(1);
         top_post_selector = top_post_selector.substr(1);
@@ -1082,11 +1090,12 @@ function smart_nsfw_init(options) {
         }
 
         if ($('#comments').length > 0) {
-            // Размываем каменты
+            // Мы внутри поста
             if ($(top_post_selector).length == 0) {
                 continue;
             }
 
+            // Размываем каменты
             if (options.is('option_nsfw' + set_id + '_blur_comments_entire')) {
                 // Блюрим каменты полностью
                 console.log('Bluring comments');
@@ -1253,8 +1262,7 @@ function comments_mark_topic_starter() {
     if ($('#comments').length == 0) {return;}
 
     var topic_starter_nick = $('.content-wrap > .post a.author').first().text().toLowerCase();
-    $('#comments .post[data-author-id="'+topic_starter_nick+'"]').addClass('comment-topic-starter');
-
+    $('#comments .post[data-author-id="' + topic_starter_nick + '"]').addClass('comment-topic-starter');
 }
 
 /**

@@ -64,6 +64,12 @@ function draw_option_tree(tree) {
         this_page_change_keyvalue(name, new_value);
     });
 
+    // Смена текста в text-боксах
+    $('.point-options-wrapper .tabs-content .option-node input[type="text"]').on('change', function() {
+        var name = $(this).prop('name').replace(new RegExp('\\-', 'g'), '_');
+        this_page_change_keyvalue(name, $(this).val());
+    });
+
 }
 
 function this_page_change_keyvalue(key, value) {
@@ -219,7 +225,7 @@ $(document).ready(function() {
 
         $('.content-wrap').addClass('point-options-wrapper').
             css({
-                'padding':'20px 0px'
+                'padding': '20px 0px'
             }).
             html('<nav class="tabs-list"></nav><form class="tabs-content"></form>' +
                  '<p class="saved hidden" data-i18n="options_text_saved"></p><div>' +

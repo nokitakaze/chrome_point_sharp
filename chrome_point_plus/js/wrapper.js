@@ -26,7 +26,9 @@ function local_storage_get(key, callback) {
 function local_storage_set(data, success_callback) {
     console.log("Content code. local_storage_set", data);
     chrome.storage.sync.set(data, function() {
-        success_callback();
+        if (typeof(success_callback) == 'function') {
+            success_callback();
+        }
     });
     console.log("Content code. local_storage_set end");
 }
