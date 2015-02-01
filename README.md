@@ -4,17 +4,17 @@
 
 ### Что это за репозиторий? ###
 
-В данном репозитории располагаются исходные коды расширения Point+, которое предназначено для расширения функциональности сайта [Point.im](https://point.im/).
+В данном репозитории располагаются исходные коды расширения Point#, 
+которое предназначено для расширения функциональности сайта [Point.im](https://point.im/) и является идейным 
+ответвлением расширения [Point+](https://bitbucket.org/skobkin/chrome_point_plus).
 
 ### Как заставить его работать? ###
 
 Есть несколько вариантов. Выбирайте на свой вкус:
 
-* Установить расширение из [репозитория Opera addons](https://addons.opera.com/en/extensions/details/point/?display=en)
-* Установить расширение из [репозитория Google Chrome Extensions](https://chrome.google.com/webstore/detail/point%2B/ghaddonhnchkdjaciggjijhophciboam?hl=ru)
-* Установить расширение из [раздела Downloads на Bitbucket](https://bitbucket.org/skobkin/chrome_point_plus/downloads) (*.nex - Opera, *.crx - Chrome)
-* Собрать самостоятельно из исходников ([Chrome](https://developer.chrome.com/extensions/packaging), [Opera](https://dev.opera.com/extensions/tut_basics.html))
-
+* Установить расширение для Google Chrome из [Google Web Store](https://chrome.google.com/webstore/detail/point/jebkkkanbjkflnhgnleeecjekccclnak)
+* Установить расширение для Mozilla Firefox из [Mozilla Addons](https://addons.mozilla.org/ru/firefox/addon/point-sharp/)
+* Установить расширение из [раздела Downloads на Bitbucket](https://bitbucket.org/NokitaKaze/chrome_point_plus-nokita-version/downloads)
 
 ### Как настраивать? ###
 
@@ -22,9 +22,8 @@
 
 ![Настройки расширения](https://storage4.static.itmages.ru/i/15/0107/h_1420652338_6632200_307d80b672.png "Окно настроек расширения")
 
-### Хочу помочь, ШТОДЕЛОЦ? ###
+### Мне не хватает функций/я нашёл ошибку ###
 
-* Писать мне [в поинте](https://skobkin-ru.point.im/) или [куда-нибудь ещё](https://skobk.in/contacts/)
-* Сразу присылать пулл-реквесты с шашкой наголо
-* Поставить в магазинах Opera и Chrome оценку расширению
-* Задонатить (см. таб Feedback в настройках)
+* Милости прошу к [нашему шалашу](https://bitbucket.org/NokitaKaze/chrome_point_plus-nokita-version/issues?status=new&status=open)
+* Присылать пулл-реквесты с язвительными замечаниями
+* Поставить в магазинах приложений оценку
