@@ -130,13 +130,17 @@ Booru.prototype.createImageFromService = function(service, href) {
  * @returns {jQuery} Элемент ссылки
  */
 Booru.prototype.createImage = function(service, id, params) {
-    var $link = document.createElement('a');
-    var $img = document.createElement('img');
+    var link = document.createElement('a');
+    var img = document.createElement('img');
     var title = service + ' image #' + id;
     var imageSource = this.getImageLink(service, id, params);
 
-    $link
-        .addClass('booru_pic')
+    $(img).attr({
+        alt: title,
+        src: imageSource
+    });
+
+    $(link).addClass('booru_pic')
         .addClass('booru-' + service + '-' + id)
         .addClass('postimg')
         .attr({
@@ -144,16 +148,9 @@ Booru.prototype.createImage = function(service, id, params) {
             id: 'booru_pic_' + this.count,
             title: title,
             target: '_blank'
-        });
+        }).append(img);
 
-    $img.attr({
-        alt: title,
-        src: imageSource
-    });
-
-    $link.append($img);
-
-    return $link;
+    return $(link);
 };
 
 /**

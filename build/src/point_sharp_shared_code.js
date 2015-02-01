@@ -26,13 +26,13 @@ $(document).ready(function() {
     $('a.postimg').addClass('sharp-preblur');
 
     // Эпический костыль
-    if (location.protocol == 'https') {
+    if (location.protocol == 'https:') {
         var point_i_image_http = 0;
         $('img').each(function() {
-            var href = $(this).attr('href');
-            if (href.match(new RegExp('^http://i\\.point\\.im/'))) {
+            var src = $(this).attr('src');
+            if ((typeof(src) !== 'undefined') && src.match(new RegExp('^http://i\\.point\\.im/'))) {
                 point_i_image_http++;
-                $(this).attr('href', href.replace(new RegExp('http://i\\.point\\.im/'), 'https://i.point.im/'));
+                $(this).attr('src', src.replace(new RegExp('^http://i\\.point\\.im/'), 'https://i.point.im/'));
             }
         });
 
