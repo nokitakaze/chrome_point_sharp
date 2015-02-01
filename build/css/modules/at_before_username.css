@@ -1,0 +1,9 @@
+/* @ before username */
+body.at_before_username #main #content a.user:before {
+    content: "@";
+}
+
+/* Fix for recommendations in the feed */
+body.at_before_username #main #content .rec .user:before {
+    margin-right: -4px;
+}

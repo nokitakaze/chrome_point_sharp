@@ -1,0 +1,250 @@
+/**
+ * Point.Im
+ *
+ * ПЛАТФОРМОНЕЗАВИМИСЫЙ ФАЙЛ
+ */
+
+/* MarkItUp margin fix */
+div#markItUpText-input {
+    margin-top: 30px;
+}
+
+/* MarkItUp override */
+.markItUp {
+    width: 770px;
+}
+
+/* Auto-loaded Booru pictures */
+.booru_pic, .instagram-post-embedded {
+    display: block !important;
+    float: none !important;
+}
+
+.booru_pic img, .instagram-post-embedded img {
+    border: none;
+    max-width: 60%;
+    max-height: 300px;
+}
+
+/* Labels in post */
+.post .post-id a .cn.changed_background {
+}
+
+.post .post-id a .authors_unique_count, .post .post-id a .recommendation_count {
+    padding: 0 .5em;
+    font-weight: normal;
+    color: #35587c;
+    background-color: #f2f2eb;
+}
+
+.post .post-id a .recommendation_count {
+    margin-left: 0.2em;
+    background-color: #f2eceb;
+}
+
+/* NSFW-content */
+.blur-nsfw-images a.postimg img,
+#comments.blur-nsfw-images a.postimg img {
+    margin-top: 5px;
+    -webkit-filter: blur(30px);
+    filter: blur(30px);
+}
+
+.blur-nsfw-images a.postimg:hover img,
+#comments.blur-nsfw-images a.postimg:hover img {
+    -webkit-filter: none;
+    filter: none;
+}
+
+.hide-nsfw-posts {
+    display: none;
+}
+
+.blur-nsfw-entire .post-content .text,
+#comments.blur-nsfw-entire .post-content .text {
+    -webkit-filter: blur(30px);
+    filter: blur(30px);
+}
+
+img.black-ant, .black-ant a.postimg {
+    background: #FFF;
+    border: 1px dashed #ccc;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+img.black-ant, .black-ant a.postimg img {
+    -webkit-filter: opacity(0);
+    filter: opacity(0);
+}
+
+img.black-ant:hover, .black-ant a.postimg:hover img {
+    -webkit-filter: none;
+    filter: none;
+}
+
+a.postimg.sharp-preblur {
+    display: none;
+}
+
+/* Черновики */
+#new-post-form #text-input {
+    height: 30em !important;
+}
+
+#new-post-form #draft-save-status {
+    display: none;
+    padding: 3px 5px;
+    color: green;
+}
+
+/* point-plus-debug */
+#point-plus-debug {
+    float: right;
+    display: block;
+    color: rgba(255, 255, 255, .75);
+    padding: 10px 0px;
+}
+
+/* User hints */
+.current-user-hint {
+    min-height: 30px;
+    position: relative;
+}
+
+.current-user-hint .edit {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    display: none;
+    background-image: url("https://point.im/img/btn-edit.png");
+    background-size: 100% 100%;
+    width: 16px;
+    height: 16px;
+}
+
+.current-user-hint:hover .edit {
+    display: block;
+}
+
+.current-user-hint > .text {
+    margin: 1em 0;
+    color: green;
+    font-style: italic;
+}
+
+.aside .aside-content #counters {
+    clear: both;
+}
+
+.current-user-hint .change_hint_block {
+
+}
+
+.current-user-hint .change_hint_block textarea {
+    width: 98%;
+    max-width: 98%;
+    margin-bottom: 10px;
+    height: 140px;
+}
+
+.current-user-hint .change_hint_block .button_save {
+    margin-right: 10px;
+}
+
+.current-user-hint .change_hint_block .button_cancel {
+
+}
+
+/** Индикация вложенности */
+#comments.nesting_level {
+    overflow: hidden;
+}
+
+#comments.nesting_level .info::before {
+    position: absolute;
+    top: 0;
+    right: 100%;
+
+    display: block;
+
+    width: 500px;
+    height: 24px;
+
+    content: '';
+
+    opacity: 0;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAPCAYAAAGq+G6YAAAACXBIWXMAAAsTAAALEwEAmpwYAAABNmlDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjarY6xSsNQFEDPi6LiUCsEcXB4kygotupgxqQtRRCs1SHJ1qShSmkSXl7VfoSjWwcXd7/AyVFwUPwC/0Bx6uAQIYODCJ7p3MPlcsGo2HWnYZRhEGvVbjrS9Xw5+8QMUwDQCbPUbrUOAOIkjvjB5ysC4HnTrjsN/sZ8mCoNTIDtbpSFICpA/0KnGsQYMIN+qkHcAaY6addAPAClXu4vQCnI/Q0oKdfzQXwAZs/1fDDmADPIfQUwdXSpAWpJOlJnvVMtq5ZlSbubBJE8HmU6GmRyPw4TlSaqo6MukP8HwGK+2G46cq1qWXvr/DOu58vc3o8QgFh6LFpBOFTn3yqMnd/n4sZ4GQ5vYXpStN0ruNmAheuirVahvAX34y/Axk/96FpPYgAAACBjSFJNAAB6JQAAgIMAAPn/AACA6AAAUggAARVYAAA6lwAAF2/XWh+QAAAAz0lEQVR42mL5//8/AwMDAwMLAxQAAAAA//9i+f//P4QHAAAA//9igcnB5c0ia/+fWt7MCAAAAP//YsHUBWeYRdaKMTAwPAMAAAD//0LRjaEMQ9AsspaBgYFBh4GB4cqp5c0oKkOg9BUAAAAA//8i0UwKBaFOEmNgYHiF7KQ/DAwMzAwMDOIMDAyvYIIGUHe+YmBgYAAAAAD//8LqTqItH6wKoeFxkIGBwQYqdISBgcH+1PJmDBPFGBgYRBgYGBihfBFYQDIwMDAAAAAA//8DAEBHLj2MJ4JPAAAAAElFTkSuQmCC);
+    background-repeat: repeat-x;
+}
+
+#comments.nesting_level .post:hover .info::before {
+    transition: opacity .2s ease-in;
+
+    opacity: 1;
+}
+
+/**
+ * Сворачивание постов
+ */
+
+.content-wrap.wrap-long-posts .post .post-content .text {
+    transition: all 0.5s;
+    overflow-y: hidden;
+    max-height: 1000px;
+}
+
+.content-wrap.wrap-long-posts .post.post-manual-unwrapped .post-content .text {
+    transition: all 0.5s;
+    max-height: none;
+}
+
+/* полосочка для сжимания */
+.content-wrap.wrap-long-posts .post .post-content .wrap-splitter {
+    height: 17px;
+    background-repeat: no-repeat;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIcAAAARCAYAAAD32L9UAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAAN1wAADdcBQiibeAAAAAd0SU1FB9sDEBIRO17k1ikAAALgSURBVGje7VlNSFRRFP7Onae+yfwrEfoDzQQhzIooCIoWLQwp3MxYluDPSNlCUChcRUTLsNnYjzoakZDOpkWZgVArFyWEYxFiOhJWUm4cFWemefe0aGacbPyjpGm63+rd8+7Pe9/53jnn3kcIoqbFvVcKecZkoLnlfO4HKPz3EABw4fb7LMPEzwC6HNCQpWhRCIvDn2iyEyOLCV9mUna+VrQoAICwtY5sJ+ZSABASvU4rGYoWBQAQTKI8FEGk4EFFiUJEWqGjoQYxbVOUKIT1YGsdczGhINj+7NWN/M5zeR4AOPtgJDV0vRwsTf3mBH2jvtbFvT5NJwTMsUSIJqUmNZESc46SyFj3SEE8Y2wdHqCP+QYAaEyYjbi/Jcmn3bF0c7nTSobu1WqrHG69vSr7Gog42oSn7YOHJKgn4MemNTuCAjH3tbBJIPqb/m11rP8SEgT6lD9KgkuY6Q1Vt401A7i46El6mOg6sbwCoAhAlyc1odJp3TEf2evY1edaVvrmdwB2qSAcT/kEQ911BYVU3eYuAvjpiv0ZfdNp88VO625/OJ3cHCom4sfBHg/B7FDMxqCvaXUpiYEyACUAwGzap3n1QL/uNfkAJC07kHA8bdp8A0DdwqKyMBTvCDzeVb+nT7ni30Wp3bWfw/WHkSc6z+V5mKhxVcoi1Npax3MiNCkUpXEKxqwGAO3VOfYqx+hXYrIDyFxmyLiQUxMRNdIwL4QkveyWK0Ox+nv45vFLZ+OB6T8552r9EvAjvOOUwvT2pxq4osOdLiQ3EKMBQPKisT5iKmqryXkRMpy8O7DBPJ84AUCJIr7wCsDBqBukig53tpDoJObDQdMcwKUOW+6TX844fhSljwBoitM4ySjEJ4ipd8ndc/n9yeRE/9xLgFIBccphy17yh5ylyVVABAsIicw8QxSDBxgKixTAmSCaWsJ+acWjFVvr2JGARiP3KnMmFZvxB6vdFU006K4vBAB8B4GB9mPhwVcgAAAAAElFTkSuQmCC);
+    background-position-x: center;
+    cursor: pointer;
+}
+
+/* Посты, скрытые пользователем */
+.content-wrap.wrap-long-posts .post.post-manual-hidden .post-content .wrap-splitter {
+    display: none;
+}
+
+.content-wrap .post a.post-manual-hide-button {
+    display: none;
+    width: 32px;
+    height: 15px;
+    margin-left: 3px;
+    margin-bottom: -0.25em;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAARCAIAAAA61ZnRAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NTg0MUYwMEJDQURGMTFFMTk5QTVBN0FGMzRDNjQ5QjkiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NTg0MUYwMENDQURGMTFFMTk5QTVBN0FGMzRDNjQ5QjkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo1ODQxRjAwOUNBREYxMUUxOTlBNUE3QUYzNEM2NDlCOSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo1ODQxRjAwQUNBREYxMUUxOTlBNUE3QUYzNEM2NDlCOSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PoifyqgAAAFWSURBVHjaYrzz8uPWCw8fvf3CQEsgJ8zjaSDDsuToLX9jRQM5YZpaduHR22VH7zJ9/vGb1jYBAdAKoEVMDHQE6Jb9B4MTd16ULD++79qT/zgAdSyDgIuP3gnzsJ+8+4q6PmPBFPr268/tlx/THDVn7b/+5N1XGSFuiPja0/dOwKwPMVWyUBGngmUn774EektVnB+ILj1+C7cs2FQJiICM/defAhF1LLv94pOeLCh9qkrwAUPSS18OKv7y4/5rz4AkphZgBGMK9kRaErAMEoYgc68/g4jAQ3LJkdtA67sjLIBeX3P6Pn5zifIZJAwrfAwhXGCWh4fkt99/VCX4IdZTJzXCwxACpIW4gZZB2F76skAPla44QbZlDMXLjiFnoH/Egf+kA6BF6MHIyMhIvxKEtsUVPyfb1afvaW0N0AqgRYzXn71feeIOsEimqWW8HKzhFioAAQYA+vQc8jlmpZAAAAAASUVORK5CYII=);
+    background-size: 100%;
+}
+
+.content-wrap .post.post-manual-hidden a.post-manual-hide-button {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAARCAIAAAA61ZnRAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RTdDMzRFNTRDQURFMTFFMTk5QTVBN0FGMzRDNjQ5QjkiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RTdDMzRFNTVDQURFMTFFMTk5QTVBN0FGMzRDNjQ5QjkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpFN0MzNEU1MkNBREUxMUUxOTlBNUE3QUYzNEM2NDlCOSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpFN0MzNEU1M0NBREUxMUUxOTlBNUE3QUYzNEM2NDlCOSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PnXBASEAAAFvSURBVHjaYrzz8uPWCw8fvf3CQEsgJ8zjaSDDsuToLX9jRQM5YZpaduHR22VH7zJ9/vGb1jYBAdAKoEVMDHQE6Jb9B4MTd16ULD++79qT/zgAdSyDgIuP3gnzsJ+8+4pU44BOxCPLgin07def2y8/pjlqztp//cm7rzJC3BDxtafvnYBZH2KqZKEiTqpTsFh28u5LoLdUxfmB6NLjt3DLgk2VgAjI2H/9KRBRx7LbLz7pyYLSp6oEHzAkvfTloOIvP+6/9gxI4g89OLsn0pKAZZAwBJl7/RlEBB6SS47cBlrfHWEB9Pqa0/eRdcHNBdqEaQdOyyBhWOFjCOECszw8JL/9/qMqwQ+xnjqpER6GECAtxA20DML20pcFeqh0xQmyLWMoXnYMOQP9Iw78Jx0ALUIPRkZGRjJc/PfvXzQRZmZmolIjGQCr0VjijJ+T7erT97QuFYFWAC1ivP7s/coTd4BFMk0t4+VgDbdQAQgwADV+JsEi0wu0AAAAAElFTkSuQmCC);
+    display: inline-block;
+}
+
+.content-wrap .post:hover a.post-manual-hide-button {
+    display: inline-block;
+}
+
+.content-wrap .post.post-manual-hidden {
+    overflow-y: hidden;
+    max-height: 27px;
+}
+
+/**
+ *
+ */
+.post.pp-highlight{
+    background-color: rgb(255, 255, 187);
+}
+
+.post.pp-highlight.readed{
+    background-color: inherit;
+    transition: all 1s;
+}

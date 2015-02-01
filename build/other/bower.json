@@ -1,14 +1,14 @@
 {
-    "name": "Point#",
-    "version": "2.0.12.237",
+    "name": "%%NAME%%",
+    "version": "%%VERSION%%",
     "authors": [
         "Alexey Skobkin",
         "Nikita Vetrov",
         "isqua"
     ],
-    "description": "Browser extension for point.im",
+    "description": "%%DESCRIPTION%%",
     "license": "MIT",
-    "homepage": "https://bitbucket.org/NokitaKaze/chrome_point_plus-nokita-version",
+    "homepage": "%%HOMEPAGE%%",
     "private": true,
     "ignore": [
         "**/.*",

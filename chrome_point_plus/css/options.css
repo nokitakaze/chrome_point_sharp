@@ -1,12 +1,9 @@
 /* Options page */
-body
-{
+body {
     font-family: Arial;
     font-size: 14px;
     line-height: 20px;
 
-    width: 450px;
-    height: 450px;
     margin: 0;
     padding: 5px;
 
@@ -14,149 +11,12 @@ body
     background: #eee;
 }
 
-a
-{
-    color: #1abef1;
+body.point-options-castrate {
+    width: 450px;
+    height: 450px;
 }
 
-p
-{
-    margin: 0;
-    padding: 0;
-}
-
-.tabs-list
-{
-    position: relative;
-    z-index: 1;
-
-    display: block;
-
-    margin: 0 0 -1px;
-    padding: 0;
-}
-
-.tabs-item
-{
-    display: inline-block;
-
-    padding: 7px 15px 3px;
-
-    list-style-type: none;
-
-    text-decoration: none;
-
-    border: 1px solid transparent;
-}
-
-.tabs-item.selected
-{
-    cursor: default;
-
-    border-color: #dedede;
-    border-bottom-color: #fff;
-    background: #fff;
-}
-
-.tabs-content
-{
-    position: relative;
-
+.point-options-castrate.point-options-wrapper .tabs-content,
+.point-options-castrate .point-options-wrapper .tabs-content {
     height: 345px;
-    margin: 0;
-    padding: 0;
-
-    border: 1px solid #dedede;
-    border-radius: 0 0 3px 3px;
-    background: #fff;
-}
-
-.tabs-content::before
-{
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-
-    height: 20px;
-
-    content: '';
-
-    background-image: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 30%, rgba(255,255,255,0) 100%);
-    background-size: 20px 20px;
-}
-
-.tabs-content-item
-{
-    display: none;
-    overflow: auto;
-
-    box-sizing: border-box;
-    max-height: 100%;
-    margin: 0;
-    padding: 10px 15px 5px;
-
-    border: none;
-    background: transparent;
-}
-
-.tabs-content-item.selected
-{
-    display: block;
-}
-
-input[type='checkbox']
-{
-    margin-right: 5px;
-    margin-left: 0;
-
-    vertical-align: 1px;
-}
-.option-node
-{
-    display: block;
-
-    padding: 0 0 5px 21px;
-
-    text-indent: -21px;
-}
-
-.option-node input[type='checkbox']:not(:checked) ~ .option-node
-{
-    display: none;
-}
-
-.option-node input[type='checkbox']:not(:checked) ~ .option-node label
-{
-    color: #999;
-}
-
-.footer
-{
-    margin: 0;
-    padding: 10px 15px;
-}
-
-.saved
-{
-    position: relative;
-    z-index: 1;
-
-    margin: -2px 1px 0;
-    padding: 10px 15px;
-
-    transition: all .2s;
-    transform-origin: 50% 0;
-
-    color: #fff;
-    border-top: 1px solid #dedede;
-    border-radius: 0 0 2px 2px;
-    background: #4caf50;
-}
-
-.saved.hidden
-{
-    transform: scaleY(.5);
-
-    opacity: 0;
 }
