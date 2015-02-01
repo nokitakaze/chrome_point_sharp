@@ -50,6 +50,17 @@ function skobkin_websocket_init(options) {
                                 break;
                             }
 
+                            // Desktop notifications
+                            if (options.is('option_ws_comments_notifications')) {
+                                html5_notification({
+                                    notificationId: 'comment_' + wsMessage.post_id + '#' + wsMessage.comment_id,
+                                    avatarUrl:      getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
+                                    title:          '@' + wsMessage.author + ' #' + wsMessage.post_id + '/' +
+                                                    wsMessage.comment_id,
+                                    text: wsMessage.text
+                                }, function(response) {});
+                            }
+
                             // Check we are in specified post
                             if (wsMessage.post_id != postId) {
                                 console.log('The comment is not for this post');
@@ -93,17 +104,6 @@ function skobkin_websocket_init(options) {
                                         console.log('No child comments found. Creating...');
                                         $parentComment.after($('<div>').addClass('comments').append($comment));
                                     }
-                                }
-
-                                // Desktop notifications
-                                if (options.is('option_ws_comments_notifications')) {
-                                    html5_notification({
-                                        notificationId: 'comment_' + wsMessage.post_id + '#' + wsMessage.comment_id,
-                                        avatarUrl:      getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
-                                        title:          '@' + wsMessage.author + ' #' + wsMessage.post_id + '/' +
-                                                        wsMessage.comment_id,
-                                        text: wsMessage.text
-                                    }, function(response) {});
                                 }
 
                                 console_group_end();
