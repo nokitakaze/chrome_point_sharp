@@ -215,6 +215,11 @@ var point_sharp_options_tree = {
                 "default_value": true,
                 "description": "Подсвечивать новые посты"
             },
+            "option_other_hightlight_comment_topic_starter": {
+                "type": "boolean",
+                "default_value": true,
+                "description": "Подсвечивать комментарии топик стартера"
+            },
             "option_other_show_recommendation_count": {
                 "type": "boolean",
                 "default_value": true,

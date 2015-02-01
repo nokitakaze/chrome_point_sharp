@@ -367,7 +367,7 @@ function create_pleercom_ajax(id, current_options) {
 function create_tag_system() {
     var my_nick = get_my_nick();
 
-    $('.content-wrap > .post').each(function() {
+    $('.content-wrap > .post, #comments .post').each(function() {
         var tags = $(this).find('div.tags a.tag');
         for (var i = 0; i < tags.length; i++) {
             var tag_name = $(tags[i]).html().toLowerCase();
@@ -375,7 +375,7 @@ function create_tag_system() {
         }
 
         // Имена пользователей
-        var nick = $(this).find('.post-content a.author').text().toLowerCase();
+        var nick = $(this).find('.post-content a.user').first().text().toLowerCase();
         $(this).attr('data-author-id', nick).addClass('post-author-' + nick);
 
         // Свои посты
@@ -1194,7 +1194,7 @@ function wrap_posts_init(options) {
         }
 
         for (var index in list) {
-            $('.content-wrap .post[data-id="' + list[index] + '"]').addClass('post-manual-hidden');
+            $('.content-wrap > .post[data-id="' + list[index] + '"]').addClass('post-manual-hidden');
         }
     });
 }
@@ -1203,7 +1203,7 @@ function wrap_posts_init(options) {
  * Удаляем неиспользующися Wrap Splitter'ы у постов
  */
 function wrap_posts_remove_unused_wrap_splitters() {
-    $('.content-wrap .post').each(function() {
+    $('.content-wrap > .post').each(function() {
         if (parseInt($(this).find('.text-content').prop('scrollHeight')) < 1000) {
             $(this).find('.wrap-splitter').hide();
         } else {
@@ -1227,7 +1227,7 @@ function viewed_post_system_save(options) {
         }
 
         var need_update_ids = false;
-        $('.content-wrap .post').each(function() {
+        $('.content-wrap > .post').each(function() {
             var post_id = $(this).attr('data-id');
             var author_id = $(this).attr('data-author-id');
 
@@ -1246,6 +1246,16 @@ function viewed_post_system_save(options) {
     });
 }
 
+/**
+ * Маркируем каменты от топик-стартера
+ */
+function comments_mark_topic_starter() {
+    if ($('#comments').length == 0) {return;}
+
+    var topic_starter_nick = $('.content-wrap > .post a.author').first().text().toLowerCase();
+    $('#comments .post[data-author-id="'+topic_starter_nick+'"]').addClass('comment-topic-starter');
+
+}
 
 /**
  * Мой ник

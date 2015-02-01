@@ -257,10 +257,17 @@ function pimp_my_page(options) {
     if (options.is('option_other_hightlight_post_comments')) {
         mark_unread_post();
     }
+
+    // Подсвечиваем каменты топик-стартера
+    if (options.is('option_other_hightlight_comment_topic_starter')) {
+        comments_mark_topic_starter();
+    }
+
     // Show recommendation count and unique commentators count
     if (options.is('option_other_show_recommendation_count')) {
         set_posts_count_label();
     }
+
     // `Space` key scroll handler
     if (options.is('option_other_scroll_space_key')) {
         set_space_key_skip_handler();
