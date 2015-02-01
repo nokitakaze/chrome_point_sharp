@@ -1050,8 +1050,9 @@ function smart_nsfw_init(options) {
                 var tag_id = n[3];
                 if ((typeof(tag_id) == 'undefined') && (typeof(author_id) == 'undefined')) {continue;}
 
-                var inner_selector = ((typeof(tag_id) !== 'undefined') ? '.post-tag-' + tag_id : '') +
-                                     ((typeof(author_id) !== 'undefined') ? '[data-author-id="' + author_id + '"]' : '');
+                var inner_selector =
+                    ((typeof(tag_id) !== 'undefined') ? '.post-tag-' + tag_id : '') +
+                    ((typeof(author_id) !== 'undefined') ? '[data-author-id="' + author_id.toLowerCase() + '"]' : '');
                 tag_selector += ',.content-wrap > .post' + inner_selector;
                 top_post_selector += ',#top-post' + inner_selector;
             }
