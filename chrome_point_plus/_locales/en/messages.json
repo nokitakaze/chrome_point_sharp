@@ -6,9 +6,12 @@
         "message": "Alexey Skobkin"
     },
     "ext_page_action_title": {
-        "message": "Point+ settings"
+        "message": "Settings"
     },
     
+    "options_page_title": {
+        "message": "Point+ settings"
+    },
     
     "options_text_saved": {
         "message": "Reload page to apply changes."
@@ -63,7 +66,7 @@
         "message": "Audio from direct links"
     },
     "option_videos_parse_links": {
-        "message": "Video from direct links"
+        "message": "Video from direct links &#9660;"
     },
     "option_videos_parse_webm": {
         "message": "Only webm"
@@ -71,29 +74,23 @@
     "option_videos_parse_all_links": {
         "message": "Parse all links"
     },
-    "option_videos_parse_leave_links": {
-        "message": "Leave original link"
-    },
     "option_embedding_soundcloud": {
-        "message": "Soundcloud &#9660;"
-    },
-    "option_embedding_soundcloud_orig_link": {
-        "message": "Leave original link"
+        "message": "Soundcloud"
     },
     "option_embedding_pleercom": {
-        "message": "Pleer.com &#9660;"
-    },
-    "option_embedding_pleercom_nokita_server": {
-        "message": "Use Nokita's server (deprecated)"
+        "message": "Pleer.com"
     },
     "option_embedding_coubcom": {
-        "message": "Coub.com &#9660;"
-    },
-    "option_embedding_coubcom_orig_link": {
-        "message": "Leave original link"
+        "message": "Coub.com"
     },
     "option_embedding_twitter_tweets": {
         "message": "Twitter"
+    },
+    "option_embedding_instagram_posts": {
+        "message": "Instagram"
+    },
+    "option_embedding_remove_original_link": {
+        "message": "Remove original link"
     },
     "option_nsfw": {
         "message": "NSFW content filtering"
@@ -172,10 +169,13 @@
         "message": "Your hints about users"
     },
     "option_other_comments_count_refresh":{
-        "message": "Refresh unread posts and comments count in left menu"
+        "message": "Refresh unread posts and comments count in the sidebar"
     },
     "option_other_comments_count_refresh_title":{
-        "message": "Show counts in the title of tabs"
+        "message": "Page title"
+    },
+    "option_other_post_draft_save":{
+        "message": "Save post drafts"
     },
 
     "options_feedback_text": {
@@ -185,5 +185,8 @@
     
     "msg_comment_send_failed":{
         "message": "Comment send error:"
+    },
+    "msg_saving_post_draft":{
+        "message": "Saving the post..."
     }
 }

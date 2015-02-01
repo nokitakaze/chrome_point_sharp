@@ -8,7 +8,7 @@ messenger.sendMessage({
 });
 
 messenger.sendMessage({
-        type: 'getManifestVersion'
+    type: 'getManifestVersion'
 }, function(response) {
     $(document).ready(function() {
         PointPlus(response.version || 'undefined')
@@ -33,11 +33,6 @@ function PointPlus(ppVersion) {
     }).text('Point+ ' + ppVersion + ' loading...')
             .insertBefore('#user-menu-cb');
 
-    // Черновики. Ставим хандлер и восстанавливаем предыдущее состояние
-    draft_set_save_handler();
-    draft_restore();
-
-
     // Loading options
     chrome.storage.sync.get('options', function(sync_data) {
         var options = new OptionsManager(sync_data.options);
@@ -53,6 +48,11 @@ function PointPlus(ppVersion) {
             // Load pictures from Booru, Tumblr and some other sites
             if (options.is('option_images_load_booru')) {
                 load_all_booru_images();
+            }
+            
+            // Instagram
+            if (options.is('option_embedding_instagram_posts')){
+                instagram_posts_embedding_init(options);
             }
 
             // Parse webm-links and create video instead
@@ -96,12 +96,10 @@ function PointPlus(ppVersion) {
                                         </div>');
 
                             // Replace or prepend
-                            if (options.is('option_embedding_soundcloud_orig_link')) {
-                                // Before
-                                $(this).before($player);
-                            } else {
-                                // Replace
+                            if (options.is('option_embedding_remove_original_link')) {
                                 $(this).replaceWith($player);
+                            } else {
+                                $(this).before($player);
                             }
                         });
                     }
@@ -616,6 +614,12 @@ function PointPlus(ppVersion) {
         if (options.is('option_embedding_twitter_tweets')) {
             twitter_tweet_embedding_init();
         }
+        
+        // Post drafts
+        if (options.is('option_other_post_draft_save')) {
+            draft_set_save_handler();
+            draft_restore();
+        }
 
         $('#point-plus-debug').fadeOut(1000);
     });
@@ -725,10 +729,7 @@ function create_comment_elements(commentData, onCommentCreated) {
 // Картинки с бурятников
 var booru_picture_count = 0;
 function load_all_booru_images() {
-    $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('booru_pic')) {
-            return;
-        }
+    $('.post-content a:not(.booru_pic)').each(function(num, obj) {
 
         var href = obj.href;
         var n = null;
@@ -828,10 +829,7 @@ function mark_unread_post() {
 
 // Webm
 function parse_webm(current_options) {
-    $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('booru_pic')) {
-            return;
-        }
+    $('.post-content a:not(.booru_pic)').each(function(num, obj) {
 
         var href = obj.href;
         var n = null;
@@ -846,7 +844,7 @@ function parse_webm(current_options) {
 
             obj.parentElement.insertBefore(player, obj);
 
-            if (current_options.is('option_videos_parse_leave_links', false)) {
+            if (current_options.is('option_embedding_remove_original_link')) {
                 $(obj).hide();
             }
         }
@@ -855,10 +853,7 @@ function parse_webm(current_options) {
 
 // Видео
 function parse_all_videos(current_options) {
-    $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('booru_pic')) {
-            return;
-        }
+    $('.post-content a:not(.booru_pic)').each(function(num, obj) {
 
         var href = obj.href;
         var n = null;
@@ -873,7 +868,7 @@ function parse_all_videos(current_options) {
 
             obj.parentElement.insertBefore(player, obj);
 
-            if (current_options.is('option_videos_parse_leave_links', false)) {
+            if (current_options.is('option_embedding_remove_original_link')) {
                 $(obj).hide();
             }
         }
@@ -922,7 +917,7 @@ function parse_all_audios(current_options){
 
             obj.parentElement.insertBefore(player, obj);
 
-            if (current_options.is('option_audios_parse_leave_links', false)) {
+            if (current_options.is('option_embedding_remove_original_link')) {
                 $(obj).hide();
             }
         }
@@ -937,127 +932,61 @@ function audio_extension_to_mime(extension) {
     }
 }
 
-// Плашки с кол-вом уникальных пользователей и рекомендаций у постов
+/**
+ * Показывает количество рекомендаций и комментаторов у постов
+ */
 function set_posts_count_label() {
-    var ids = [];
-    $('.content-wrap > .post .post-id a .cn').addClass('changed_background');
+    var posts = {};
+    var ids;
+    
+    $('.content-wrap > .post').each(function(n, post) {
+        var $post = $(post);
+        var postId = $post.data('id');
 
-    $('.content-wrap > .post').each(function(num, obj) {
-        var t = $(obj).attr('data-comment-id');
-        if (typeof(t) !== 'undefined') {
-            return;
-        }
-        var id = $(obj).attr('data-id');
-        ids.push(id);
+        posts[postId] = $post;
     });
 
-    $ajax({
-        'url': 'https://api.kanaria.ru/point/get_post_info.php?list=' + urlencode(ids.join(',')),
-        'success': function(a) {
-            var answer = JSON.parse(a);
+    ids = Object.keys(posts);
 
-            $('.content-wrap > .post').each(function(num, obj) {
-                var id = $(obj).attr('data-id');
-                var postid = $(obj).find('.post-id a')[0];
-                var t = $(obj).attr('data-comment-id');
-                if (typeof(t) !== 'undefined') {
-                    return;
+    $('.content-wrap > .post .post-id a .cn').addClass('changed_background');
+
+    $.ajax('https://api.kanaria.ru/point/get_post_info.php?list=' + encodeURIComponent(ids.join(',')), {
+        dataType: 'json',
+        success: function(data) {
+            ids.forEach(function(id) {
+                var postInfo = data.list[id];
+
+                if (postInfo) {
+                    posts[id].find('.post-id').after(
+                        '<div class="pp-post-counters">' +
+                        '<span class="pp-unique-comments">' + postInfo.count_comment_unique + '</span> ' +
+                        '<span class="pp-recommendation-count">' + postInfo.count_recommendation + '</span> ' +
+                        '</div>'
+                    )
                 }
-
-                var e1 = document.createElement('span');
-                if (typeof(answer.list[id]) == 'undefined') {
-                    return;
-                }
-                $(e1).addClass('authors_unique_count').text(answer.list[id].count_comment_unique).attr('title', 'Количество комментаторов');
-                postid.appendChild(e1);
-
-                var e2 = document.createElement('span');
-                $(e2).addClass('recommendation_count').text('~' + answer.list[id].count_recommendation).attr('title', 'Количество рекомендаций. Работает криво, спасибо @arts\'у за это');
-                postid.appendChild(e2);
             });
         }
-
-    })
-
+    });
 }
 
 function parse_pleercom_links(current_options) {
-    if (current_options.is('option_embedding_pleercom_nokita_server')) {
-        parse_pleercom_links_nokita();
-    } else {
-        parse_pleercom_links_ajax(current_options);
-    }
-}
-/**
- * @deprecated since 1.19
- */
-function parse_pleercom_links_nokita() {
-    $('.post-content a').each(function(num, obj) {
-        var href = obj.href;
-        var n = null;
+    $('.post-content a').each(function(num, link) {
+        var $link = $(link);
+        var href = link.href;
+        var matches = href.match(new RegExp('^https?:\\/\\/pleer\\.com\\/tracks\\/([0-9a-z]+)', 'i'));
 
-        if (n = href.match(new RegExp('^https?:\\/\\/pleer\\.com\\/tracks\\/([0-9a-z]+)', 'i'))) {
-            var player = document.createElement('audio');
-            $(player).attr({
-                'src': 'https://api.kanaria.ru/point/get_pleer_file.php?id=' + n[1],
-                'controls': 'controls',
-                'preload': 'none'
-            });
+        if (matches) {
+            trackHref = 'http://embed.pleer.com/normal/track?id=' + matches[1] + '&t=grey';
 
-            var player_div = document.createElement('div');
-            $(player_div).addClass('embeded_audio').addClass('embeded_audio_' + n[1]);
-            player_div.appendChild(player);
+            $link.before('<object width="578" height="60"><param name="movie" value="' + trackHref + '"></param>' +
+            '<embed src="' + trackHref + '" type="application/x-shockwave-flash" width="578" height="60">' +
+            '</embed></object>');
 
-            obj.parentElement.insertBefore(player_div, obj);
-        }
-    });
-}
-
-function parse_pleercom_links_ajax(current_options) {
-    $('.post-content a').each(function(num, obj) {
-        var href = obj.href;
-        var n = null;
-
-        if (n = href.match(new RegExp('^https?:\\/\\/pleer\\.com\\/tracks\\/([0-9a-z]+)', 'i'))) {
-            var player_div = document.createElement('div');
-            $(player_div).addClass('embeded_audio').addClass('embeded_audio_' + n[1]);
-            $(obj).addClass('pleercom_original_link_'+n[1]);
-            obj.parentElement.insertBefore(player_div, obj);
-            create_pleercom_ajax(n[1], current_options);
-        }
-    });
-}
-
-function create_pleercom_ajax(id, current_options) {
-    $ajax({
-        'url': 'https://pleer.com/site_api/files/get_url',
-        'type': 'post',
-        'postdata': 'action=download&id=' + id,
-        'dont_set_content_type': true,
-        'pleer_id': id,
-        'headers': [['Accept', '*'], ['Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8']],
-        'success': function(a) {
-            var answer = JSON.parse(a);
-            var player = document.createElement('audio');
-            // @todo Проверять существование track_link
-            $(player).attr({
-                'src': answer.track_link,
-                'controls': 'controls',
-                'preload': 'auto'
-            });
-            $('.embeded_audio_' + this.settings.pleer_id)[0].appendChild(player);
-
-            if (current_options.is('option_embedding_pleercom_orig_link', false)){
-                $('.pleercom_original_link_'+this.settings.pleer_id).hide();
+            if (current_options.is('option_embedding_remove_original_link')) {
+                $link.remove();
             }
-        },
-        'error': function() {
-            console.log('Can not get pleer.com url');
-            setTimeout(new Function('create_pleercom_ajax("' + this.settings.pleer_id + '");'), 1000);
         }
-
     });
-
 }
 
 // Проставляем теги у постов
@@ -1095,14 +1024,12 @@ function set_space_key_skip_handler() {
 }
 
 function space_key_event() {
-    var scroll_current = $('body').scrollTop();
-    var scroll_step_size = 0;
-    var scroll_real = Math.max(scroll_current - scroll_step_size, 0);
+    var scroll_current = Math.floor($('body').scrollTop());
 
     var posts = $('.content-wrap > .post');
     for (var i = 0; i < posts.length; i++) {
-        var this_top_px = $(posts[i]).offset().top;
-        if (this_top_px > scroll_real) {
+        var this_top_px = Math.floor(posts.eq(i).offset().top);
+        if (this_top_px > scroll_current) {
             $('body').animate({
                 'scrollTop': this_top_px
             }, 200);
@@ -1111,50 +1038,109 @@ function space_key_event() {
     }
 }
 
-/* Автосохранение черновиков */
-var draft_last_text = ''; // Последний зафиксированный текст
-// Восстанавливаем черновик
+/**
+ * Last draft text
+ * @type {string}
+ */
+var draft_last_text = '';
+
+/**
+ * Last draft tags
+ * @type {string}
+ */
+var draft_last_tags = '';
+
+/**
+ * Is extension now saving draft
+ * @type {boolean}
+ */
+var draft_save_busy = false;
+
+/**
+ * Last draft saving time
+ * @type {Date|null}
+ */
+var draft_save_last_time = null;
+
+/**
+ * Is there any setTimeout'ed handlers
+ * @type {boolean}
+ */
+var draft_waiting = false;
+
+/**
+ * Restore draft from localStorage
+ */
 function draft_restore() {
-    chrome.storage.local.get('point_draft_text', function(items) {
-        if ($('#new-post-form #text-input').val() == '') {
+    chrome.storage.local.get(['point_draft_text', 'point_draft_tags'], function(items) {
+        if ($('#new-post-form #text-input').val() === '') {
             $('#new-post-form #text-input').val(items.point_draft_text);
             draft_last_text = items.point_draft_text;
+        }
+        if ($('#new-post-form #tags-input').val() === '') {
+            $('#new-post-form #tags-input').val(items.point_draft_tags);
+            draft_last_tags = items.point_draft_tags;
         }
     });
 }
 
-// Установка хандлера
+/**
+ * Set draft save handler
+ */
 function draft_set_save_handler() {
-    // Господи, прости меня грешного за эту строку. Меня вынудили
-    $('#text-input').on('keyup', function(){
+    $('#text-input, #tags-input').on('keyup', function() {
         draft_save_check();
+        // For last keyup
+        if (!draft_waiting) {
+            setTimeout(draft_save_check, 3000);
+            draft_waiting = true;
+        }
     });
+    // Adding span indicator
     $('#new-post-wrap .footnote').append($('<span id="draft-save-status">'));
 }
 
-var draft_save_busy = false;
-// Фукнция, дёргающаяся по крону, проверяющая надо ли сохранять черновик
+/**
+ * Check if we can save the draft now
+ */
 function draft_save_check() {
     if (draft_save_busy) {
         return;
     }
-    draft_save_busy = true;
+    
+    if (draft_save_last_time !== null) {
+        if ((new Date()).getTime() < draft_save_last_time.getTime() + 3000) {
+            return;
+        }
+    }
 
     var current_text = $('#new-post-form #text-input').val();
-    if (draft_last_text == current_text) {
+    var current_tags = $('#new-post-form #tags-input').val();
+    
+    if ((draft_last_text === current_text) && (draft_last_tags === current_tags)) {
         draft_save_busy = false;
         return;
     }
+    
+    draft_save_busy = true;
+    draft_save_last_time = new Date();
+    
     // @todo i18n
-    $('#draft-save-status').text('Сохраняем черновик...').show();
+    $('#draft-save-status').text(chrome.i18n.getMessage('msg_saving_post_draft')).show();
 
-    // Сохраняем
+    // Saving current data
     draft_last_text = current_text;
+    draft_last_tags = current_tags;
+    
     // Save it using the Chrome extension storage API.
-    chrome.storage.local.set({'point_draft_text': draft_last_text}, function() {
+    chrome.storage.local.set({
+        point_draft_text: draft_last_text,
+        point_draft_tags: draft_last_tags
+    }, function() {
         // Notify that we saved.
         draft_save_busy = false;
-        $('#draft-save-status').text('Черновик сохранён...');
+        draft_waiting = false;
+        
         setTimeout(function() {
             $('#draft-save-status').fadeOut(1000);
         }, 1000);
@@ -1183,7 +1169,7 @@ function parse_coub_links(current_options) {
 
             obj.parentElement.insertBefore(player, obj);
 
-            if (current_options.is('option_embedding_coubcom_orig_link', false)) {
+            if (current_options.is('option_embedding_remove_original_link')) {
                 $(obj).hide();
             }
         }
@@ -1533,30 +1519,68 @@ function twitter_tweet_embedding_wait_for_ready_injected() {
 function twitter_tweet_embedding_parse_links() {
     // Обрабатываем все твиты
     var twitter_tweet_count = 0;
-    $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('booru_pic')) {
-            return;
-        }
-
+    $('.post-content a:not(.booru_pic)').each(function(num, obj) {
         var href = obj.href;
         var n;
 
         if (n = href.match(new RegExp('^https?://(www\\.)?twitter\\.com/[^/]+/status/([0-9]+)', 'i'))) {
-            var image = document.createElement('div');
-            $(image).attr({
+            var tweet = document.createElement('div');
+            $(tweet).attr({
                 'id': 'tweet-' + twitter_tweet_count,
                 'data-tweet-id': n[2]
             }).addClass('twitter-tweet-embedded');
-            obj.parentElement.insertBefore(image, obj);
+            obj.parentElement.insertBefore(tweet, obj);
 
             window.twttr.widgets.createTweet(
                 n[2],
-                image,
+                tweet,
                 {
                     'lang': 'ru'
                 }
             );
             twitter_tweet_count++;
+        }
+    });
+}
+
+/**
+ * Instagram posts
+ * 
+ * @param {OptionsManager} options OptionsManager with current options
+ */
+function instagram_posts_embedding_init(options) {
+    var regex = new RegExp('^https?://(www\\.)?instagram\\.com/p/([\\w-]+)/?', 'i');
+    
+    $('.post-content a:not(.booru_pic)').each(function(num, link) {
+        var $link = $(link);
+        var href = link.href;
+        var matches = href.match(regex);
+
+        if (matches) {
+            $.ajax('https://api.instagram.com/oembed?url=' + 'http://instagr.am/p/' + matches[2] + '/', {
+                dataType: 'json',
+                success: function(response) {
+                    var $imgLink = $('<a><img src="' + response.thumbnail_url +
+                        '" + alt="' + response.title + '"></a>');
+
+                    $imgLink
+                        .addClass('postimg instagram-post-embedded')
+                        .attr({
+                            id: 'instagram-' + num,
+                            href: 'http://instagram.com/p/' + matches[2] + '/media/?size=l',
+                            title: response.title,
+                            traget: '_blank',
+                            'data-fancybox-group': (options.is('option_fancybox_bind_images_to_one_flow')) ? 'one_flow_gallery' : '',
+                            'data-fancybox-title': (options.is('option_fancybox_smart_hints')) ? response.title : ''
+                        });
+
+                    $link.before($imgLink);
+
+                    if (options.is('option_embedding_remove_original_link')) {
+                       $link.remove();
+                    }
+                }
+            });
         }
     });
 }

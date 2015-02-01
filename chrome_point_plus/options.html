@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Point Plus options</title>
         <meta charset="utf-8">
+        <title data-i18n="options_page_title"></title>
         <link rel="stylesheet" href="css/options.css" type="text/css">
     </head>
 
@@ -75,61 +75,41 @@
                                     <span data-i18n="option_videos_parse_all_links"></span>
                                 </label>
                             </div>
-
-                            <label class="option-node">
-                                <input type="checkbox" name="option-videos-parse-leave-links">
-                                <span data-i18n="option_videos_parse_leave_links"></span>
-                            </label>
                         </div>
 
-                        <div class="option-node">
-                            <input type="checkbox" name="option-audios-parse-links" id="option-audios-parse-links">
-                            <label for="option-audios-parse-links" data-i18n="option_audios_parse_links"></label>
+                        <label class="option-node">
+                            <input type="checkbox" name="option-audios-parse-links">
+                            <span data-i18n="option_audios_parse_links"></span>
+                        </label>
 
-                            <label class="option-node">
-                                <input type="checkbox" name="option-audios-parse-leave-links">
-                                <span data-i18n="option_embedding_soundcloud_orig_link"></span>
-                            </label>
-                        </div>
+                        <label class="option-node">
+                            <input type="checkbox" name="option-embedding-soundcloud">
+                            <span data-i18n="option_embedding_soundcloud"></span>
+                        </label>
 
-                        <div class="option-node">
-                            <input type="checkbox" name="option-embedding-soundcloud" id="option-embedding-soundcloud">
-                            <label for="option-embedding-soundcloud" data-i18n="option_embedding_soundcloud"></label>
+                        <label class="option-node">
+                            <input type="checkbox" name="option-embedding-pleercom">
+                            <span data-i18n="option_embedding_pleercom"></span>
+                        </label>
 
-                            <label class="option-node">
-                                <input type="checkbox" name="option-embedding-soundcloud-orig-link">
-                                <span data-i18n="option_embedding_soundcloud_orig_link"></span>
-                            </label>
-                        </div>
-
-                        <div class="option-node">
-                            <input type="checkbox" name="option-embedding-pleercom" id="option-embedding-pleercom">
-                            <label for="option-embedding-pleercom" data-i18n="option_embedding_pleercom"></label>
-
-                            <label class="option-node">
-                                <input type="checkbox" name="option-embedding-pleercom-nokita-server">
-                                <span data-i18n="option_embedding_pleercom_nokita_server"></span>
-                            </label>
-
-                            <label class="option-node">
-                                <input type="checkbox" name="option-embedding-pleercom-orig-link">
-                                <span data-i18n="option_embedding_soundcloud_orig_link"></span>
-                            </label>
-                        </div>
-
-                        <div class="option-node">
-                            <input type="checkbox" name="option-embedding-coubcom" id="option-embedding-coubcom">
-                            <label for="option-embedding-coubcom" data-i18n="option_embedding_coubcom"></label>
-
-                            <label class="option-node">
-                                <input type="checkbox" name="option-embedding-coubcom-orig-link">
-                                <span data-i18n="option_embedding_coubcom_orig_link"></span>
-                            </label>
-                        </div>
+                        <label class="option-node">
+                            <input type="checkbox" name="option-embedding-coubcom">
+                            <span data-i18n="option_embedding_coubcom"></span>
+                        </label>
 
                         <label class="option-node">
                             <input type="checkbox" name="option-embedding-twitter-tweets">
                             <span data-i18n="option_embedding_twitter_tweets"></span>
+                        </label>
+
+                        <label class="option-node">
+                            <input type="checkbox" name="option-embedding-instagram-posts">
+                            <span data-i18n="option_embedding_instagram_posts"></span>
+                        </label>
+
+                        <label class="option-node">
+                            <input type="checkbox" name="option-embedding-remove-original-link">
+                            <span data-i18n="option_embedding_remove_original_link">
                         </label>
                     </div>
 
@@ -245,6 +225,11 @@
                     <label class="option-node">
                         <input type="checkbox" name="option-other-comments-user-system">
                         <span data-i18n="option_other_comments_user_system"></span>
+                    </label>
+
+                    <label class="option-node">
+                        <input type="checkbox" name="option-other-post-draft-save">
+                        <span data-i18n="option_other_post_draft_save"></span>
                     </label>
                 </section>
 
