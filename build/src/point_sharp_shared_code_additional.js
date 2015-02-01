@@ -1154,6 +1154,8 @@ function wrap_posts_init(options) {
             }
         });
 
+        // Удаляем wrap-splitter на странице редактирования поста
+        $('#post-edit-form .wrap-splitter').remove();
 
         // @todo Переписать это!
         setInterval(wrap_posts_remove_unused_wrap_splitters, 3000);
@@ -1164,7 +1166,7 @@ function wrap_posts_init(options) {
     if ($('#comments').length > 0) {return;}
 
     // Добавляем кнопки
-    $('.content-wrap .post').each(function() {
+    $('.content-wrap > .post').each(function() {
         var hide_button = document.createElement('a');
         // Вешаем лисенеры
         $(hide_button).addClass('post-manual-hide-button').on('click', function() {
@@ -1198,7 +1200,7 @@ function wrap_posts_init(options) {
     // Скрываем посты, список коих взят из Локал Сторожа
     local_storage_get('post_manual_hidden_list', function(list) {
         if ((typeof(list) == 'undefined') || (list === null)) {
-            local_storage_set({'post_manual_hidden_list': []}, function(data) {});
+            local_storage_set({'post_manual_hidden_list': []});
             return;
         }
 
@@ -1209,7 +1211,7 @@ function wrap_posts_init(options) {
 }
 
 /**
- * Удаляем неиспользующися Wrap Splitter'ы у постов
+ * Скрываем неиспользующися Wrap Splitter'ы у постов
  */
 function wrap_posts_remove_unused_wrap_splitters() {
     $('.content-wrap > .post').each(function() {
@@ -1240,7 +1242,8 @@ function viewed_post_system_save(options) {
             var post_id = $(this).attr('data-id');
             var author_id = $(this).attr('data-author-id');
 
-            if ((post_id !== '') && ($.inArray(post_id, list) == -1) && (author_id !== my_nick)) {
+            if ((post_id !== '') && (typeof(post_id) !== 'undefined') &&
+                ($.inArray(post_id, list) == -1) && (author_id !== my_nick)) {
                 list.push(post_id);
                 need_update_ids = true;
                 if (options.is('option_other_hightlight_post_unviewed')) {
