@@ -55,7 +55,14 @@ var point_sharp_options_tree = {
                     "option_images_load_booru": {
                         "type": "boolean",
                         "default_value": true,
-                        "description": "Загружать картинки с Booru, Tumblr и т.п."
+                        "description": "Загружать картинки с Booru, Tumblr и т.п.",
+                        "children": {
+                            "option_images_load_booru_remove_original_link": {
+                                "type": "boolean",
+                                "default_value": false,
+                                "description": "Удалять ссылку"
+                            }
+                        }
                     },
                     "option_videos_parse_links": {
                         "type": "boolean",

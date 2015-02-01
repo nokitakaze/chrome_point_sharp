@@ -47,6 +47,7 @@
     // Копируем Javscript исходники
     foreach (array(
                  'point_sharp_shared_code.js',
+                 'point_sharp_shared_code_booru.js',
                  'point_sharp_shared_code_additional.js',
                  'point_sharp_shared_code_websocket.js',
                  'point_sharp_options_list.js',

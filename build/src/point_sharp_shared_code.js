@@ -69,7 +69,7 @@ function pimp_my_page(options) {
     if (options.is('option_embedding')) {
         // Load pictures from Booru, Tumblr and some other sites
         if (options.is('option_images_load_booru')) {
-            load_all_booru_images();
+            new Booru($('.post-content .text a:not(.booru_pic)'), options);
         }
 
         // Посты из Инстаграма
