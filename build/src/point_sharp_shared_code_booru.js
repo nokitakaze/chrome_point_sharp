@@ -1,8 +1,8 @@
 /**
  * Подгружает картинки через сервер Никиты
  * @constructor
- * @param {jQuery} Коллекция ссылок
- * @param {OptionsManager} Опции
+ * @param {jQuery} $links Коллекция ссылок
+ * @param {OptionsManager} options Опции
  */
 function Booru($links, options) {
     this.count = 0;
@@ -62,8 +62,8 @@ Booru.services = {
 
 /**
  * Обрабатывает все картинки
- * @param {jQuery} Коллекция ссылок
- * @param {Boolean} Удалять ли оригинальную ссылку
+ * @param {jQuery} $links Коллекция ссылок
+ * @param {Boolean} removeOriginal Удалять ли оригинальную ссылку
  */
 Booru.prototype.loadAllImages = function($links, removeOriginal) {
     var booru = this;
@@ -73,7 +73,7 @@ Booru.prototype.loadAllImages = function($links, removeOriginal) {
         var href = link.href;
         var $image;
 
-        if ($link.hasClass('booru_pic')) {
+        if ($link.hasClass('point-sharp-processed') || $link.hasClass('point-sharp-added')) {
             return;
         }
 
@@ -84,11 +84,12 @@ Booru.prototype.loadAllImages = function($links, removeOriginal) {
         });
 
         if ($image) {
-            $link.before($image);
+            $image.addClass('point-sharp-added');
+            $link.addClass('point-sharp-processed').before($image);
             this.count++;
 
             if (removeOriginal) {
-                $link.remove();
+                $link.hide();
             }
         }
     });
@@ -102,15 +103,13 @@ Booru.prototype.loadAllImages = function($links, removeOriginal) {
 Booru.prototype.createImageFromService = function(service, href) {
     var serviceInfo = this.constructor.services[service];
     var matches = href.match(serviceInfo.mask);
-    var imageArgs;
-    var params;
-    var key;
 
     if (matches) {
-        imageArgs = [service, matches[serviceInfo.matchNumber]];
+        var imageArgs = [service, matches[serviceInfo.matchNumber]];
+        var params = {};
 
         if (serviceInfo.params) {
-            for (key in serviceInfo.params) {
+            for (var key in serviceInfo.params) {
                 if (serviceInfo.params.hasOwnProperty(key)) {
                     params[key] = matches[serviceInfo.params[key]];
                 }

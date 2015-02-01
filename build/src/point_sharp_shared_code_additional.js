@@ -10,6 +10,8 @@
  * Первая версия написана @RainbowSpike
  */
 function mark_unread_post() {
+    if ($('#comments').length > 0) {return;}
+
     $(".content-wrap > .post").css({'padding-left': '2px'}).each(function() {
         if ($(this).find(".unread").length > 0) {
             $(this).addClass('new_comments');
@@ -20,7 +22,7 @@ function mark_unread_post() {
 // Webm
 function parse_webm(current_options) {
     $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('booru_pic')) {
+        if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
             return;
         }
 
@@ -31,9 +33,10 @@ function parse_webm(current_options) {
                 attr('controls', 'controls').css({
                     'display': 'block',
                     'max-width': '95%'
-                }).addClass('parsed-webm-link').find('source').attr('src', obj.href);
+                }).addClass('parsed-webm-link').addClass('point-sharp-added').find('source').attr('src', obj.href);
 
             obj.parentElement.insertBefore(player, obj);
+            $(obj).addClass('point-sharp-processed');
 
             if (current_options.is('option_videos_parse_leave_links', false)) {
                 $(obj).hide();
@@ -45,7 +48,7 @@ function parse_webm(current_options) {
 // Видео
 function parse_all_videos(current_options) {
     $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('booru_pic')) {
+        if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
             return;
         }
 
@@ -59,12 +62,13 @@ function parse_all_videos(current_options) {
             $(player).html('<source src="" type="" />').attr('controls', 'controls').css({
                 'display': 'block',
                 'max-width': '95%'
-            }).addClass('parsed-webm-link').find('source').attr({
+            }).addClass('parsed-webm-link').addClass('point-sharp-added').find('source').attr({
                 'src': href,
                 'type': mime
             });
 
             obj.parentElement.insertBefore(player, obj);
+            $(obj).addClass('point-sharp-processed');
 
             if (current_options.is('option_videos_parse_leave_links', false)) {
                 $(obj).hide();
@@ -91,12 +95,12 @@ function video_extension_to_mime(extension) {
 // Аудио
 function parse_all_audios(current_options) {
     $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('booru_pic')) {
+        if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
             return;
         }
 
         var href = obj.href;
-        var n = null;
+        var n;
 
         if (n = href.match(new RegExp('^https?:\\/\\/([a-z0-9.-]+)\\/[a-z0-9_\\/.%-]+\\.(mp3|ogg|wav)(\\?.+)?$', 'i'))) {
             var domain = n[1];
@@ -198,7 +202,7 @@ function parse_pleercom_links(current_options) {
 function parse_pleercom_links_nokita() {
     $('.post-content a').each(function(num, obj) {
         var href = obj.href;
-        var n = null;
+        var n;
 
         if (n = href.match(new RegExp('^https?:\\/\\/pleer\\.com\\/tracks\\/([0-9a-z]+)', 'i'))) {
             var player = document.createElement('audio');
@@ -220,7 +224,7 @@ function parse_pleercom_links_nokita() {
 function parse_pleercom_links_ajax(current_options) {
     $('.post-content a').each(function(num, obj) {
         var href = obj.href;
-        var n = null;
+        var n;
 
         if (n = href.match(new RegExp('^https?:\\/\\/pleer\\.com\\/tracks\\/([0-9a-z]+)', 'i'))) {
             var player_div = document.createElement('div');
@@ -248,8 +252,9 @@ function create_pleercom_ajax(id, current_options) {
                 'src': answer.track_link,
                 'controls': 'controls',
                 'preload': 'auto'
-            });
+            }).addClass('point-sharp-added');
             $('.embeded_audio_' + this.settings.pleer_id)[0].appendChild(player);
+            $('.pleercom_original_link_' + this.settings.pleer_id).addClass('point-sharp-processed');
 
             if (current_options.is('option_embedding_pleercom_orig_link', false)) {
                 $('.pleercom_original_link_' + this.settings.pleer_id).hide();
@@ -298,7 +303,7 @@ function set_space_key_skip_handler() {
     }
 
     $(document.body).on('keydown', function(e) {
-        // @todo Я хотел по отпусканию кнопки, но там уже скролл срабатывает
+        // @hint Я хотел по отпусканию кнопки, но там уже скролл срабатывает
         // проверяем фокус
         if ($(':focus').length > 0) {
             return;
@@ -808,7 +813,7 @@ function twitter_tweet_embedding_parse_links() {
     // Обрабатываем все твиты
     var twitter_tweet_count = 0;
     $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('booru_pic')) {
+        if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
             return;
         }
 
@@ -841,7 +846,7 @@ function twitter_tweet_embedding_parse_links() {
 function instagram_posts_embedding_init(current_options) {
     var insagram_post_count = 0;
     $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('booru_pic')) {
+        if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
             return;
         }
 
@@ -863,7 +868,7 @@ function instagram_posts_embedding_init(current_options) {
                             ? 'one_flow_gallery' : '',
                         'data-fancybox-title': (current_options.is('option_fancybox_smart_hints'))
                             ? answer.title : ' '
-                    }).addClass('instagram-post-embedded').addClass('postimg');
+                    }).addClass('instagram-post-embedded').addClass('point-sharp-added').addClass('postimg');
 
                     var image = document.createElement('img');
                     image.alt = new_post.title;
@@ -871,6 +876,7 @@ function instagram_posts_embedding_init(current_options) {
                     new_post.appendChild(image);
 
                     obj.parentElement.insertBefore(new_post, obj);
+                    $(obj).addClass('point-sharp-processed');
                     insagram_post_count++;
                 }
             });
