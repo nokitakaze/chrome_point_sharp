@@ -861,7 +861,7 @@ function instagram_posts_embedding_init(current_options) {
                     var new_post = document.createElement('a');
                     $(new_post).attr({
                         'id': 'instagram-' + insagram_post_count,
-                        'href': answer.thumbnail_url,
+                        'href': 'http://instagram.com/p/' + n[2] + '/media/?size=l',
                         'title': answer.title,
                         'target': '_blank',
                         'data-fancybox-group': (current_options.is('option_fancybox_bind_images_to_one_flow'))
