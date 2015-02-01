@@ -130,8 +130,8 @@ Booru.prototype.createImageFromService = function(service, href) {
  * @returns {jQuery} Элемент ссылки
  */
 Booru.prototype.createImage = function(service, id, params) {
-    var $link = $('<a>');
-    var $img = $('<img>');
+    var $link = document.createElement('a');
+    var $img = document.createElement('img');
     var title = service + ' image #' + id;
     var imageSource = this.getImageLink(service, id, params);
 
