@@ -509,18 +509,28 @@ function PointPlus(ppVersion) {
 
                 // Binding new
                 $('#comments').on('keypress.pp', '.reply-form textarea', function (evt) {
+                    var $textarea = $(this);
+                    var $post;
+                    var $form;
+                    var processClass = 'pp-progress'
+                    var csRf;
+
                     if ((evt.keyCode === 10 || evt.keyCode === 13) && (evt.ctrlKey || evt.metaKey)) {
                         evt.stopPropagation();
                         evt.preventDefault();
 
-                        var $post = $(this).parents('.post').first();
-                        var csRf = $(this).siblings('input[name="csrf_token"]').val();
+                        $post = $textarea.parents('.post').first();
+                        csRf = $textarea.siblings('input[name="csrf_token"]').val();
+
+                        $textarea.prop('disabled', true);
+                        $form = $textarea.parent();
+                        $form.addClass(processClass);
 
                         $.ajax({
                             type: 'POST',
                             url: '/api/post/' + $post.data('id'),
                             data: {
-                                text: $(this).val(),
+                                text: $textarea.val(),
                                 comment_id: $post.data('comment-id')
                             },
                             error: function(req, status, error) {
@@ -528,6 +538,9 @@ function PointPlus(ppVersion) {
                                 console.log('Status: %s', status);
 
                                 alert(chrome.i18n.getMessage('msg_comment_send_failed') + '\n' + error);
+
+                                $textarea.prop('disabled', false);
+                                $form.removeClass(processClass);
                             }, 
                             /**
                              * @param {object} data Response data
@@ -549,7 +562,7 @@ function PointPlus(ppVersion) {
                                         toId: $post.data('comment-id') || null,
                                         postId: $post.data('id'),
                                         author: $('#name h1').text(),
-                                        text: $(this).val(),
+                                        text: $textarea.val(),
                                         fadeOut: true
                                     }, function($comment) {
                                         // If list mode or not addressed to other comment
@@ -573,10 +586,12 @@ function PointPlus(ppVersion) {
                                     });
 
                                     // Cleaning textarea
-                                    $(this).val('');
+                                    $textarea.val('');
+                                    $textarea.prop('disabled', false);
 
+                                    $form.removeClass(processClass);
                                 }
-                            }.bind(this),
+                            },
                             beforeSend: function (xhr) {
                                 xhr.setRequestHeader('X-CSRF', csRf);
                             }
