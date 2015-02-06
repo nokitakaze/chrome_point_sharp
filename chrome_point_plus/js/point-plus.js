@@ -503,100 +503,10 @@ function PointPlus(ppVersion) {
         if (options.is('option_ajax')) {
             // Comments
             if (options.is('option_ajax_comments')) {
-                // Removing old bindings
-                // Dirty hack for page context
-                $('#comments').replaceWith($('#comments').clone());
-
-                // Binding new
-                $('#comments').on('keypress.pp', '.reply-form textarea', function (evt) {
-                    var $textarea = $(this);
-                    var $post;
-                    var $form;
-                    var processClass = 'pp-progress'
-                    var csRf;
-
-                    if ((evt.keyCode === 10 || evt.keyCode === 13) && (evt.ctrlKey || evt.metaKey)) {
-                        evt.stopPropagation();
-                        evt.preventDefault();
-
-                        $post = $textarea.parents('.post').first();
-                        csRf = $textarea.siblings('input[name="csrf_token"]').val();
-
-                        $textarea.prop('disabled', true);
-                        $form = $textarea.parent();
-                        $form.addClass(processClass);
-
-                        $.ajax({
-                            type: 'POST',
-                            url: '/api/post/' + $post.data('id'),
-                            data: {
-                                text: $textarea.val(),
-                                comment_id: $post.data('comment-id')
-                            },
-                            error: function(req, status, error) {
-                                console.error('AJAX request error while sending the comment: %s', error);
-                                console.log('Status: %s', status);
-
-                                alert(chrome.i18n.getMessage('msg_comment_send_failed') + '\n' + error);
-
-                                $textarea.prop('disabled', false);
-                                $form.removeClass(processClass);
-                            }, 
-                            /**
-                             * @param {object} data Response data
-                             * @param {number} data.comment_id ID of the created comment
-                             * @param {string} data.id ID of the post
-                             * @param {string} textStatus Text of request status
-                             */
-                            success: function(data, textStatus) {
-                                console.log('data %O', data);
-                                console.log('status %O', textStatus);
-
-                                if (textStatus === 'success') {
-                                    // Hiding form
-                                    $('#reply-' + $post.data('id') + '_' + $post.data('comment-id')).prop('checked', false);
-
-                                    // Creating the comment HTML
-                                    create_comment_elements({
-                                        id: data.comment_id,
-                                        toId: $post.data('comment-id') || null,
-                                        postId: $post.data('id'),
-                                        author: $('#name h1').text(),
-                                        text: $textarea.val(),
-                                        fadeOut: true
-                                    }, function($comment) {
-                                        // If list mode or not addressed to other comment
-                                        if ($('#comments #tree-switch a').eq(0).hasClass('active') || ($post.data('comment-id') === undefined)) {
-                                            // Adding to the end of the list
-                                            $('.content-wrap #comments #post-reply').before($comment);
-                                        } else {
-                                            // Check for children
-                                            $parentCommentChildren = $post.next('.comments');
-
-                                            // @fixme Find a bug with lost indentation of new comment
-                                            // If child comment already exist
-                                            if ($parentCommentChildren.length) {
-                                                console.log('Child comments found. Appending...');
-                                                $parentCommentChildren.append($comment);
-                                            } else {
-                                                console.log('No child comments found. Creating...');
-                                                $post.after($('<div>').addClass('comments').append($comment));
-                                            }
-                                        }
-                                    });
-
-                                    // Cleaning textarea
-                                    $textarea.val('');
-                                    $textarea.prop('disabled', false);
-
-                                    $form.removeClass(processClass);
-                                }
-                            },
-                            beforeSend: function (xhr) {
-                                xhr.setRequestHeader('X-CSRF', csRf);
-                            }
-                        });
-                    }
+                messenger.js({
+                    file: 'modules/ajax-comments.js'
+                }, function() {
+                    var ajaxComments = new AjaxComments();
                 });
             }
         }
