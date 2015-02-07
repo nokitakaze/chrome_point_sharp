@@ -103,7 +103,7 @@ AjaxCommentProcessor.prototype.sendComment = function() {
 
     $.ajax({
         type: 'POST',
-        url: '/api/post/' + this._postId,
+        url: '/api/post' + this._$form.attr('action'),
         data: {
             text: this._text,
             comment_id: this._commentId
