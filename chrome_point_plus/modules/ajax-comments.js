@@ -8,9 +8,9 @@ function AjaxComments() {
     if (comments) {
         this._comments = comments;
         this.listen(comments);
-    }
 
-    this.listenFirstComments();
+        this.listenFirstComments();
+    }
 }
 
 /**
