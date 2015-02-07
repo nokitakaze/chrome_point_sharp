@@ -38,12 +38,25 @@ AjaxComments.prototype.listenFirstComments = function() {
  */
 AjaxComments.prototype.onSubmit = function(event) {
     var $form = $(event.target);
-    var proc;
 
     event.preventDefault();
     event.stopPropagation();
 
     if ($form.hasClass('reply-form')) {
+        this.submit($form);
+    }
+};
+
+/**
+ * Проверяет, выбран ли файл. Если да — отправляет форму с перезагрузкой, иначе — аяксом 
+ * @param  {jQuery} $form Элемент формы
+ */
+AjaxComments.prototype.submit = function($form) {
+    var proc;
+
+    if (this.isFileSelected($form)) {
+        $form.submit();
+    } else {
         proc = new AjaxCommentProcessor($form);
     }
 };
@@ -63,7 +76,7 @@ AjaxComments.prototype.onKeypress = function(event) {
         $form = $(event.target).closest('.reply-form');
         
         if ($form.length) {
-            proc = new AjaxCommentProcessor($form);
+            this.submit($form);
         }
     }
 };
@@ -75,6 +88,16 @@ AjaxComments.prototype.onKeypress = function(event) {
  */
 AjaxComments.prototype.isProperKeys = function(event) {
     return (event.keyCode === 10 || event.keyCode === 13) && (event.ctrlKey || event.metaKey);
+};
+
+/**
+ * @param  {jQuery} $form
+ * @return {Boolean} Выбран ли файл
+ */
+AjaxComments.prototype.isFileSelected = function($form) {
+    var files = $form.get(0).elements.attach.files;
+
+    return Boolean(files && files.length);
 };
 
 /**
@@ -139,21 +162,25 @@ AjaxCommentProcessor.prototype.onSuccess = function(data, textStatus) {
     var $textarea = this._$textarea;
 
     if (textStatus === 'success') {
-        this.hideForm();
-        
-        // Creating the comment HTML
-        create_comment_elements({
-            id: data.comment_id,
-            toId: this._commentId || null,
-            postId: this._postId,
-            author: $('#name h1').text(),
-            text: this._text,
-            fadeOut: true
-        }, this.insertComment.bind(this));
+        if (data.error) {
+            this.onError(null, null, data.error);
+        } else {
+            // Creating the comment HTML
+            create_comment_elements({
+                id: data.comment_id,
+                toId: this._commentId || null,
+                postId: this._postId,
+                author: $('#name h1').text(),
+                text: this._text,
+                fadeOut: true
+            }, this.insertComment.bind(this));
 
-        // Cleaning textarea
-        $textarea.val('');
-        this.setProgress(false);
+            this.hideForm();
+
+            // Cleaning textarea
+            $textarea.val('');
+            this.setProgress(false);
+        }
     }
 };
 
