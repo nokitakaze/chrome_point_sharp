@@ -38,12 +38,25 @@ AjaxComments.prototype.listenFirstComments = function() {
  */
 AjaxComments.prototype.onSubmit = function(event) {
     var $form = $(event.target);
-    var proc;
 
     event.preventDefault();
     event.stopPropagation();
 
     if ($form.hasClass('reply-form')) {
+        this.submit($form);
+    }
+};
+
+/**
+ * Проверяет, выбран ли файл. Если да — отправляет форму с перезагрузкой, иначе — аяксом 
+ * @param  {jQuery} $form Элемент формы
+ */
+AjaxComments.prototype.submit = function($form) {
+    var proc;
+
+    if (this.isFileSelected($form)) {
+        $form.submit();
+    } else {
         proc = new AjaxCommentProcessor($form);
     }
 };
@@ -63,7 +76,7 @@ AjaxComments.prototype.onKeypress = function(event) {
         $form = $(event.target).closest('.reply-form');
         
         if ($form.length) {
-            proc = new AjaxCommentProcessor($form);
+            this.submit($form);
         }
     }
 };
@@ -75,6 +88,16 @@ AjaxComments.prototype.onKeypress = function(event) {
  */
 AjaxComments.prototype.isProperKeys = function(event) {
     return (event.keyCode === 10 || event.keyCode === 13) && (event.ctrlKey || event.metaKey);
+};
+
+/**
+ * @param  {jQuery} $form
+ * @return {Boolean} Выбран ли файл
+ */
+AjaxComments.prototype.isFileSelected = function($form) {
+    var files = $form.get(0).elements.attach.files;
+
+    return Boolean(files && files.length);
 };
 
 /**
