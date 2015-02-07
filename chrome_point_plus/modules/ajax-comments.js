@@ -8,9 +8,9 @@ function AjaxComments() {
     if (comments) {
         this._comments = comments;
         this.listen(comments);
-    }
 
-    this.listenFirstComments();
+        this.listenFirstComments();
+    }
 }
 
 /**
@@ -165,15 +165,7 @@ AjaxCommentProcessor.prototype.onSuccess = function(data, textStatus) {
         if (data.error) {
             this.onError(null, null, data.error);
         } else {
-            // Creating the comment HTML
-            create_comment_elements({
-                id: data.comment_id,
-                toId: this._commentId || null,
-                postId: this._postId,
-                author: $('#name h1').text(),
-                text: this._text,
-                fadeOut: true
-            }, this.insertComment.bind(this));
+            this.createComment(data);
 
             this.hideForm();
 
@@ -182,6 +174,17 @@ AjaxCommentProcessor.prototype.onSuccess = function(data, textStatus) {
             this.setProgress(false);
         }
     }
+};
+
+AjaxCommentProcessor.prototype.createComment = function(data) {
+    create_comment_elements({
+        id: data.comment_id,
+        toId: this._commentId || null,
+        postId: this._postId,
+        author: $('#name h1').text(),
+        text: this._text,
+        fadeOut: true
+    }, this.insertComment.bind(this));
 };
 
 /**
@@ -212,6 +215,14 @@ AjaxCommentProcessor.prototype.insertComment = function($comment) {
             );
         }
     }
+
+    this.showComment($comment);
+};
+
+AjaxCommentProcessor.prototype.showComment = function($comment) {
+    $('body').animate({
+        scrollTop: $comment.offset().top
+    }, 500);
 };
 
 /**
