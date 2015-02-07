@@ -139,21 +139,25 @@ AjaxCommentProcessor.prototype.onSuccess = function(data, textStatus) {
     var $textarea = this._$textarea;
 
     if (textStatus === 'success') {
-        this.hideForm();
-        
-        // Creating the comment HTML
-        create_comment_elements({
-            id: data.comment_id,
-            toId: this._commentId || null,
-            postId: this._postId,
-            author: $('#name h1').text(),
-            text: this._text,
-            fadeOut: true
-        }, this.insertComment.bind(this));
+        if (data.error) {
+            this.onError(null, null, data.error);
+        } else {
+            // Creating the comment HTML
+            create_comment_elements({
+                id: data.comment_id,
+                toId: this._commentId || null,
+                postId: this._postId,
+                author: $('#name h1').text(),
+                text: this._text,
+                fadeOut: true
+            }, this.insertComment.bind(this));
 
-        // Cleaning textarea
-        $textarea.val('');
-        this.setProgress(false);
+            this.hideForm();
+
+            // Cleaning textarea
+            $textarea.val('');
+            this.setProgress(false);
+        }
     }
 };
 
