@@ -503,6 +503,9 @@ function PointPlus(ppVersion) {
         if (options.is('option_ajax')) {
             // Comments
             if (options.is('option_ajax_comments')) {
+                messenger.css({
+                    file: 'modules/ajax-comments.css'
+                });
                 messenger.js({
                     file: 'modules/ajax-comments.js'
                 }, function() {

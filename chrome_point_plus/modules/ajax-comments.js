@@ -194,8 +194,11 @@ AjaxCommentProcessor.prototype.onSuccess = function(data, textStatus) {
         if (data.error) {
             this.onError(null, null, data.error);
         } else {
-            this.createComment(data);
-
+            if (this.isRecommendation() && this._text.trim().length === 0) {
+                this.showSuccessRecommendation();
+            } else {
+                this.createComment(data);
+            }
             this.hideForm();
 
             // Cleaning textarea
@@ -276,4 +279,33 @@ AjaxCommentProcessor.prototype.onError = function(req, status, error) {
 AjaxCommentProcessor.prototype.setProgress = function(isProgress) {
     this._$textarea.prop('disabled', isProgress);
     this._$form.toggleClass('pp-progress', isProgress);
+};
+
+AjaxCommentProcessor.prototype.getRecommendationLink = function() {
+    var url = '//point.im/' + this._postId;
+    var text = '#' + this._postId;
+
+    if (this._commentId) {
+        url += '#' + this._commentId;
+        text += '/' + this._commentId;
+    }
+
+    return '<a href="' + url + '">' + text + '</a>';
+};
+
+AjaxCommentProcessor.prototype.showSuccessRecommendation = function() {
+    var $notification = $('<div>')
+        .addClass('pp-notification pp-notification-success');
+
+    $notification.html(this.getRecommendationLink() + ' ' + chrome.i18n.getMessage('msg_success_recommendation'));
+
+    $notification.on('transitionend', function() {
+        $notification.remove();
+    });
+
+    $('body').append($notification);
+
+    window.requestAnimationFrame(function() {
+        $notification.addClass('pp-fade');
+    });
 };
