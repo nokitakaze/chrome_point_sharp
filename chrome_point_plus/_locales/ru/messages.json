@@ -60,7 +60,7 @@
         "message": "Включить встраивание &#9660;"
     },
     "option_images_load_booru": {
-        "message": "Загружать картинки с Booru, Tumblr и т.п. через сервер Никиты"
+        "message": "Загружать картинки с Booru, Tumblr и т.п. через сервер @NokitaKaze"
     },
     "option_audios_parse_links": {
         "message": "Аудио по прямой ссылке"
