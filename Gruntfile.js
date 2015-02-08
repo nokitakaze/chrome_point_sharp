@@ -18,7 +18,10 @@ var vendorCopy = [
 
 vendorCopy.push({
     expand: true,
-    src: [ 'vendor/fancybox/source/*.png' ],
+    src: [ 
+        'vendor/fancybox/source/*.png',
+        'vendor/fancybox/source/*.gif'
+    ],
     dest: 'chrome_point_plus/'
 });
 
