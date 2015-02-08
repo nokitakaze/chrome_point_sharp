@@ -213,7 +213,8 @@ AjaxCommentProcessor.prototype.createComment = function(data) {
         postId: this._postId,
         author: $('#name h1').text(),
         text: this._text,
-        fadeOut: true
+        fadeOut: true,
+        isRec: this.isRecommendation()
     }, this.insertComment.bind(this));
 };
 
