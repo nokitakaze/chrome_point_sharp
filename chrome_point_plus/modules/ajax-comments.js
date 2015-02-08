@@ -95,9 +95,13 @@ AjaxComments.prototype.isProperKeys = function(event) {
  * @return {Boolean} Выбран ли файл
  */
 AjaxComments.prototype.isFileSelected = function($form) {
-    var files = $form.get(0).elements.attach.files;
+    var attach = $form.get(0).elements.attach;
 
-    return Boolean(files && files.length);
+    if (attach) {
+        return Boolean(attach.files && attach.files.length);
+    } else {
+        return false;
+    }
 };
 
 /**
