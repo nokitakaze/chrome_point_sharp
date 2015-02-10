@@ -1,7 +1,7 @@
 .pp-notification {
     display: block;
     position: fixed;
-    top: 40px;
+    bottom: 40px;
     right: 40px;
     padding: 20px;
     border-radius: 2px;
@@ -12,7 +12,7 @@
 }
 
 .pp-notification a,
-.pp-notification a:visited, {
+.pp-notification a:visited {
     color: #fff;
     text-decoration: none;
     font-weight: bold;
