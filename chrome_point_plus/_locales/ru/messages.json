@@ -189,5 +189,8 @@
     },
     "msg_saving_post_draft":{
         "message": "Сохранение поста..."
+    },
+    "msg_success_recommendation": {
+        "message": "рекомендовано"
     }
 }

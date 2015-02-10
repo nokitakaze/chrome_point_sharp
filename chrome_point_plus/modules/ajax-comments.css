@@ -1,0 +1,27 @@
+.pp-notification {
+    display: block;
+    position: fixed;
+    top: 40px;
+    right: 40px;
+    padding: 20px;
+    border-radius: 2px;
+    font-size: 15px;
+    line-height: 20px;
+    transition: all 10s ease-in;
+    color: #fff;
+}
+
+.pp-notification a,
+.pp-notification a:visited, {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.pp-notification-success {
+    background: #4CAF50;
+}
+
+.pp-notification.pp-fade {
+    opacity: 0;
+}

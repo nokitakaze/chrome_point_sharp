@@ -188,5 +188,8 @@
     },
     "msg_saving_post_draft":{
         "message": "Saving the post..."
+    },
+    "msg_success_recommendation": {
+        "message": "is recommended"
     }
 }
