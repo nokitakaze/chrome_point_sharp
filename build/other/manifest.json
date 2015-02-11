@@ -74,6 +74,7 @@
         "https://api.instagram.com/*",
         "https://*.twitter.com/*",
         "storage",
+        "unlimitedStorage",
         "notifications",
         "tabs"
     ]
