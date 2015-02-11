@@ -12,7 +12,7 @@
 function mark_unread_post() {
     if ($('#comments').length > 0) {return;}
 
-    $(".content-wrap > .post").css({'padding-left': '2px'}).each(function() {
+    $(".content-wrap > div.post").css({'padding-left': '2px'}).each(function() {
         if ($(this).find(".unread").length > 0) {
             $(this).addClass('new_comments');
         }
@@ -148,9 +148,9 @@ function audio_extension_to_mime(extension) {
 // Плашки с кол-вом уникальных пользователей и рекомендаций у постов
 function set_posts_count_label() {
     var ids = [];
-    $('.content-wrap > .post .post-id a .cn').addClass('changed_background');
+    $('.content-wrap > div.post .post-id a .cn').addClass('changed_background');
 
-    $('.content-wrap > .post').each(function(num, obj) {
+    $('.content-wrap > div.post').each(function(num, obj) {
         var t = $(obj).attr('data-comment-id');
         if (typeof(t) !== 'undefined') {
             return;
@@ -164,7 +164,7 @@ function set_posts_count_label() {
         'success': function(a) {
             var answer = JSON.parse(a);
 
-            $('.content-wrap > .post').each(function(num, obj) {
+            $('.content-wrap > div.post').each(function(num, obj) {
                 var id = $(obj).attr('data-id');
                 var postid = $(obj).find('.post-id a')[0];
                 var t = $(obj).attr('data-comment-id');
@@ -278,7 +278,7 @@ function create_pleercom_ajax(id, current_options) {
 function create_tag_system() {
     var my_nick = get_my_nick();
 
-    $('.content-wrap > .post, #comments .post').each(function() {
+    $('.content-wrap > div.post, #comments div.post').each(function() {
         var tags = $(this).find('div.tags a.tag');
         for (var i = 0; i < tags.length; i++) {
             var tag_name = tags.eq(i).html().toLowerCase();
@@ -321,7 +321,7 @@ function space_key_event() {
     var body_selector = (navigator.appVersion.match(/.*chrome.*/i) == null) ? 'html' : 'body';
     var scroll_current = Math.floor($(body_selector).scrollTop());
 
-    var posts = $('.content-wrap > .post');
+    var posts = $('.content-wrap > div.post');
     for (var i = 0; i < posts.length; i++) {
         var this_top_px = Math.floor(posts.eq(i).offset().top);
         if (this_top_px > scroll_current) {
@@ -436,7 +436,7 @@ function parse_coub_links(current_options) {
 
 // Правим хинт в FancyBox
 function fancybox_set_smart_hints() {
-    $('.post').each(function() {
+    $('div.post').each(function() {
         var all_post_images = $(this).find('.postimg');
         if (all_post_images.length == 0) {
             return;
@@ -965,7 +965,7 @@ function smart_nsfw_init(options) {
                 var inner_selector =
                     ((typeof(tag_id) !== 'undefined') ? '.post-tag-' + tag_id : '') +
                     ((typeof(author_id) !== 'undefined') ? '[data-author-id="' + author_id.toLowerCase() + '"]' : '');
-                tag_selector += ',.content-wrap > .post' + inner_selector;
+                tag_selector += ',.content-wrap > div.post' + inner_selector;
                 top_post_selector += ',#top-post' + inner_selector;
             }
         }
@@ -1042,7 +1042,7 @@ function wrap_posts_init(options) {
 
     // Сворачивание всех длинных простыней
     if (options.is('option_wrap_long_posts')) {
-        $('.content-wrap').addClass('wrap-long-posts').find('.post').each(function() {
+        $('.content-wrap').addClass('wrap-long-posts').find('div.post').each(function() {
             var div = document.createElement('div');
             $(div).addClass('wrap-splitter').on('click', function() {
                 var this_post = $(this).parents('.post').first();
@@ -1079,7 +1079,7 @@ function wrap_posts_init(options) {
     if ($('#comments').length > 0) {return;}
 
     // Добавляем кнопки
-    $('.content-wrap > .post').each(function() {
+    $('.content-wrap > div.post').each(function() {
         var hide_button = document.createElement('a');
         // Вешаем лисенеры
         $(hide_button).addClass('post-manual-hide-button').on('click', function() {
@@ -1127,7 +1127,7 @@ function wrap_posts_init(options) {
  * Скрываем неиспользующися Wrap Splitter'ы у постов
  */
 function wrap_posts_remove_unused_wrap_splitters() {
-    $('.content-wrap > .post').each(function() {
+    $('.content-wrap > div.post').each(function() {
         if (parseInt($(this).find('.text-content').prop('scrollHeight')) < 1000) {
             $(this).find('.wrap-splitter').hide();
         } else {
@@ -1151,7 +1151,7 @@ function viewed_post_system_save(options) {
         }
 
         var need_update_ids = false;
-        $('.content-wrap > .post').each(function() {
+        $('.content-wrap > div.post').each(function() {
             var post_id = $(this).attr('data-id');
             var author_id = $(this).attr('data-author-id');
 
@@ -1177,7 +1177,7 @@ function viewed_post_system_save(options) {
 function comments_mark_topic_starter() {
     if ($('#comments').length == 0) {return;}
 
-    var topic_starter_nick = $('.content-wrap > .post a.author').first().text().toLowerCase();
+    var topic_starter_nick = $('.content-wrap > div.post a.author').first().text().toLowerCase();
     $('#comments .post[data-author-id="' + topic_starter_nick + '"]').addClass('comment-topic-starter');
 }
 

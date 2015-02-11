@@ -94,7 +94,7 @@ function pimp_my_page(options) {
         // Soundcloud
         if (options.is('option_embedding_soundcloud')) {
             // Processing links
-            $('.post .post-content a[href*="\\:\\/\\/soundcloud\\.com\\/"]').each(function(index) {
+            $('div.post .post-content a[href*="\\:\\/\\/soundcloud\\.com\\/"]').each(function(index) {
                 // @todo: переписать это дерьмо на нормальный HTML5 плеер
                 var $player = $('<div class="pp-soundcloud">\
                                             <object height="81" width="100%" id="pp-soundcloud-' + index + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">\
@@ -160,7 +160,7 @@ function pimp_my_page(options) {
         if (options.is('option_fancybox_smart_hints')) {
             fancybox_set_smart_hints();
         } else {
-            $('.post .postimg').attr('data-fancybox-title', ' ');
+            $('div.post .postimg').attr('data-fancybox-title', ' ');
         }
 
         // Videos

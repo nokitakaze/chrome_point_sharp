@@ -56,14 +56,14 @@ function skobkin_websocket_init(options) {
 
                             // Check we are in the post
                             if ($('#top-post').length < 1) {
-                                console.log('Not in the post, skipping');
                                 console_group_end();
                                 break;
                             }
 
                             // Check we are in specified post
                             if (wsMessage.post_id != postId) {
-                                console.log('The comment is not for this post');
+                                var unread_count = $('#menu-comments .unread').val();
+                                $('#menu-comments .unread').val(unread_count + 1);
                                 console_group_end();
                                 break;
                             }
@@ -125,6 +125,9 @@ function skobkin_websocket_init(options) {
                                     text: wsMessage.text
                                 }, function(response) {});
                             }
+
+                            var unread_count = $('#menu-recent .unread').val();
+                            $('#menu-recent .unread').val(unread_count + 1);
 
                             console_group_end();
                             break;
