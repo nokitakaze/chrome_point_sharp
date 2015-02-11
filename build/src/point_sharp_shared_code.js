@@ -139,12 +139,12 @@ function pimp_my_page(options) {
     if (options.is('option_fancybox')) {
         if (options.is('option_fancybox_bind_images_to_one_flow')) {
             // Linking images in posts to the galleries
-            $('.post-content .text').each(function() {
-                $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'one_flow_gallery');
-            });
+            $('.post-content .text a.postimg:not(.youtube),.post-content .files a.postimg:not(.youtube)').
+                attr('data-fancybox-group', 'one_flow_gallery');
         } else {
-            $('.post-content .text').each(function(idxPost) {
-                $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'post' + idxPost);
+            $('.post-content .text, .post-content .files').each(function() {
+                var post_id = $(this).parent('div.post').attr('data-id');
+                $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'post' + post_id);
             });
         }
 
