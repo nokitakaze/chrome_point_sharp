@@ -614,7 +614,12 @@ function hints_set_titles_on_users(items) {
     });
 }
 
-// Сохраняем новый хинт
+/**
+ * Сохраняем новый хинт
+ *
+ * @param {string} username Имя пользователя
+ * @param {string} new_hint Новый текст с хинтом
+ */
 function hints_save_new_hint(username, new_hint) {
     local_storage_get('point_user_hints', function(point_user_hints) {
         point_user_hints[username] = new_hint;
@@ -623,10 +628,9 @@ function hints_save_new_hint(username, new_hint) {
 }
 
 /**
- * Обновляем кол-во комментариев и непрочитанных новых постов в ленте
+ * Проверяем, чтобы были баджи в левом меню
  */
-function set_comments_refresh_tick(current_options) {
-    // Проверяем, чтобы были баджи
+function create_left_menu_badges() {
     if ($('#main #left-menu #menu-recent .unread').length == 0) {
         $('#main #left-menu #menu-recent').append('<span class="unread" style="display: none;">0</span>');
     }
@@ -636,7 +640,12 @@ function set_comments_refresh_tick(current_options) {
     if ($('#main #left-menu #menu-messages .unread').length == 0) {
         $('#main #left-menu #menu-messages').append('<span class="unread" style="display: none;">0</span>');
     }
+}
 
+/**
+ * Обновляем кол-во комментариев и непрочитанных новых постов в ленте
+ */
+function set_comments_refresh_tick(current_options) {
     // Ставим тик
     setInterval(function() {
         comments_count_refresh_tick(current_options);
@@ -860,7 +869,7 @@ function instagram_posts_embedding_init(current_options) {
                     var answer = JSON.parse(text);
                     var new_post = document.createElement('a');
                     $(new_post).attr({
-                        'id': 'instagram-' + insagram_post_count,
+                        'id':   'instagram-' + insagram_post_count,
                         'href': 'http://instagram.com/p/' + n[2] + '/media/?size=l',
                         'title': answer.title,
                         'target': '_blank',

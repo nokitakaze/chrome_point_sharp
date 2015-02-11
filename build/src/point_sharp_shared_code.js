@@ -284,6 +284,7 @@ function pimp_my_page(options) {
     }
 
     // Обновляем кол-во постов и непрочитанных комментариев
+    create_left_menu_badges();
     if (options.is('option_other_comments_count_refresh')) {
         set_comments_refresh_tick(options);
     }

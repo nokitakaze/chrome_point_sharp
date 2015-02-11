@@ -55,15 +55,10 @@ function skobkin_websocket_init(options) {
                             }
 
                             // Check we are in the post
-                            if ($('#top-post').length < 1) {
-                                console_group_end();
-                                break;
-                            }
-
                             // Check we are in specified post
-                            if (wsMessage.post_id != postId) {
-                                var unread_count = $('#menu-comments .unread').val();
-                                $('#menu-comments .unread').val(unread_count + 1);
+                            if (($('#top-post').length < 1) || (wsMessage.post_id != postId)) {
+                                var unread_count = parseInt($('#main #left-menu #menu-comments .unread').text());
+                                $('#main #left-menu #menu-comments .unread').text(unread_count + 1).show();
 
                                 var new_comment_post = $('div.post[data-id="' + wsMessage.post_id + '"]');
                                 if (new_comment_post.length > 0) {
@@ -71,12 +66,13 @@ function skobkin_websocket_init(options) {
                                     if (post_id_block.find('unread').length == 0) {
                                         post_id_block.append('<span class="unread">1</span>');
                                     } else {
-                                        post_id_block.find('unread').val(post_id_block.find('unread').val() + 1);
+                                        post_id_block.find('unread').
+                                            text(parseInt(post_id_block.find('unread').text()) + 1).show();
                                     }
-                                }
 
-                                if (options.is('option_other_hightlight_post_comments')) {
-                                    $(this).addClass('new_comments');
+                                    if (options.is('option_other_hightlight_post_comments')) {
+                                        $(new_comment_post).addClass('new_comments');
+                                    }
                                 }
 
                                 console_group_end();
@@ -133,16 +129,24 @@ function skobkin_websocket_init(options) {
                             console_group_collapsed('ws-post #' + wsMessage.post_id);
 
                             if (options.is('option_ws_posts_notifications')) {
+                                var tags_text = '';
+                                for (var i = 0; i < wsMessage.tags.length; i++) {
+                                    tags_text += ' ' + wsMessage.tags[i];
+                                }
+                                if (tags_text != '') {
+                                    tags_text = tags_text.substr(1) + "\r\n";
+                                }
+
                                 html5_notification({
                                     notificationId: 'post_' + wsMessage.post_id,
                                     avatarUrl:      getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
                                     title:          'Post by @' + wsMessage.author + ' #' + wsMessage.post_id,
-                                    text: wsMessage.text
+                                    text:           tags_text + wsMessage.text
                                 }, function(response) {});
                             }
 
-                            var unread_count = $('#menu-recent .unread').val();
-                            $('#menu-recent .unread').val(unread_count + 1);
+                            var unread_count = parseInt($('#main #left-menu #menu-recent .unread').text());
+                            $('#main #left-menu #menu-recent .unread').text(unread_count + 1).show();
 
                             console_group_end();
                             break;
