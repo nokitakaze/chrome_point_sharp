@@ -637,7 +637,7 @@ function create_comment_elements(commentData, onCommentCreated) {
         // Reply form
         $commentTemplate.find('.post-content input.reply-radio').attr('id', 'reply-' + commentData.postId + '_' + commentData.id);
         $commentTemplate.find('.post-content form.reply-form').attr('action', '/' + commentData.postId);
-        $commentTemplate.find('.post-content form.reply-form textarea[name="text"]').html('@' + commentData.author + ', ');
+        $commentTemplate.find('.post-content form.reply-form textarea[name="text"]').text('@' + commentData.author + ', ');
         $commentTemplate.find('.post-content form.reply-form input[name="comment_id"]').val(commentData.id);
         $commentTemplate.find('.post-content form.reply-form input[name="csrf_token"]').val(csRfToken);
         ///Filling template
@@ -806,10 +806,13 @@ function set_posts_count_label() {
                 if (postInfo) {
                     posts[id].find('.post-id').after(
                         '<div class="pp-post-counters">' +
-                        '<span class="pp-unique-comments">' + postInfo.count_comment_unique + '</span> ' +
-                        '<span class="pp-recommendation-count">' + postInfo.count_recommendation + '</span> ' +
+                        '<span class="pp-unique-comments"></span> ' +
+                        '<span class="pp-recommendation-count"></span> ' +
                         '</div>'
                     )
+
+                    posts[id].find('.pp-unique-comments').text(postInfo.count_comment_unique);
+                    posts[id].find('.pp-recommendation-count').text(postInfo.count_recommendation);
                 }
             });
         }
@@ -1407,8 +1410,13 @@ function instagram_posts_embedding_init(options) {
             $.ajax('https://api.instagram.com/oembed?url=' + 'http://instagr.am/p/' + matches[2] + '/', {
                 dataType: 'json',
                 success: function(response) {
-                    var $imgLink = $('<a><img src="' + response.thumbnail_url +
-                        '" + alt="' + response.title + '"></a>');
+                    var $imgLink = $('<a>');
+                    var $img = $('<img>');
+
+                    $img.attr({
+                        src: response.thumbnail_url,
+                        alt: response.title
+                    });
 
                     $imgLink
                         .addClass('postimg instagram-post-embedded')
@@ -1419,7 +1427,8 @@ function instagram_posts_embedding_init(options) {
                             traget: '_blank',
                             'data-fancybox-group': (options.is('option_fancybox_bind_images_to_one_flow')) ? 'one_flow_gallery' : '',
                             'data-fancybox-title': (options.is('option_fancybox_smart_hints')) ? response.title : ''
-                        });
+                        })
+                        .append($img);
 
                     $link.before($imgLink);
 
