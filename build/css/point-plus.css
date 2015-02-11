@@ -255,7 +255,7 @@ a.postimg.sharp-preblur {
 }
 
 /* Подгруженные Вебсокетами комментарии */
-.post.new_comments, .post.comment-topic-starter.new_comments {
+.post.new_comments, .post.new_post_itself.new_comments, .post.comment-topic-starter.new_comments {
     background-color: #efe;
     border-radius: 5px;
 }

@@ -64,6 +64,21 @@ function skobkin_websocket_init(options) {
                             if (wsMessage.post_id != postId) {
                                 var unread_count = $('#menu-comments .unread').val();
                                 $('#menu-comments .unread').val(unread_count + 1);
+
+                                var new_comment_post = $('div.post[data-id="' + wsMessage.post_id + '"]');
+                                if (new_comment_post.length > 0) {
+                                    var post_id_block = new_comment_post.find('.post-id');
+                                    if (post_id_block.find('unread').length == 0) {
+                                        post_id_block.append('<span class="unread">1</span>');
+                                    } else {
+                                        post_id_block.find('unread').val(post_id_block.find('unread').val() + 1);
+                                    }
+                                }
+
+                                if (options.is('option_other_hightlight_post_comments')) {
+                                    $(this).addClass('new_comments');
+                                }
+
                                 console_group_end();
                                 break;
                             }
