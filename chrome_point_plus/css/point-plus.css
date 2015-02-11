@@ -192,3 +192,27 @@ div#markItUpText-input {
 
     opacity: 1;
 }
+
+.pp-progress.reply-form {
+    margin-top: 8px;
+    padding-top: 4px;
+}
+
+.pp-progress.reply-form::before {
+    content: '';
+    display: block;
+    height: 4px;
+    background: linear-gradient(to right, #fff, #9aacbe, #fff);
+    -webkit-animation: loading 1s;
+    -webkit-animation-iteration-count: infinite;
+}
+
+@-webkit-keyframes loading {
+    from {
+        background-position: -640px 0;
+    }
+
+    to {
+        background-position: 0 0;
+    }
+}

@@ -47,7 +47,11 @@ function PointPlus(ppVersion) {
         if (options.is('option_embedding')) {
             // Load pictures from Booru, Tumblr and some other sites
             if (options.is('option_images_load_booru')) {
-                load_all_booru_images();
+                messenger.js({
+                    file: 'modules/booru.js'
+                }, function() {
+                    var booru = new Booru($('.post-content .text a:not(.booru_pic)'), options);
+                });
             }
             
             // Instagram
@@ -499,85 +503,13 @@ function PointPlus(ppVersion) {
         if (options.is('option_ajax')) {
             // Comments
             if (options.is('option_ajax_comments')) {
-                // Removing old bindings
-                // Dirty hack for page context
-                $('#comments').replaceWith($('#comments').clone());
-
-                // Binding new
-                $('#comments').on('keypress.pp', '.reply-form textarea', function (evt) {
-                    if ((evt.keyCode === 10 || evt.keyCode === 13) && (evt.ctrlKey || evt.metaKey)) {
-                        evt.stopPropagation();
-                        evt.preventDefault();
-
-                        var $post = $(this).parents('.post').first();
-                        var csRf = $(this).siblings('input[name="csrf_token"]').val();
-
-                        $.ajax({
-                            type: 'POST',
-                            url: '/api/post/' + $post.data('id'),
-                            data: {
-                                text: $(this).val(),
-                                comment_id: $post.data('comment-id')
-                            },
-                            error: function(req, status, error) {
-                                console.error('AJAX request error while sending the comment: %s', error);
-                                console.log('Status: %s', status);
-
-                                alert(chrome.i18n.getMessage('msg_comment_send_failed') + '\n' + error);
-                            }, 
-                            /**
-                             * @param {object} data Response data
-                             * @param {number} data.comment_id ID of the created comment
-                             * @param {string} data.id ID of the post
-                             * @param {string} textStatus Text of request status
-                             */
-                            success: function(data, textStatus) {
-                                console.log('data %O', data);
-                                console.log('status %O', textStatus);
-
-                                if (textStatus === 'success') {
-                                    // Hiding form
-                                    $('#reply-' + $post.data('id') + '_' + $post.data('comment-id')).prop('checked', false);
-
-                                    // Creating the comment HTML
-                                    create_comment_elements({
-                                        id: data.comment_id,
-                                        toId: $post.data('comment-id') || null,
-                                        postId: $post.data('id'),
-                                        author: $('#name h1').text(),
-                                        text: $(this).val(),
-                                        fadeOut: true
-                                    }, function($comment) {
-                                        // If list mode or not addressed to other comment
-                                        if ($('#comments #tree-switch a').eq(0).hasClass('active') || ($post.data('comment-id') === undefined)) {
-                                            // Adding to the end of the list
-                                            $('.content-wrap #comments #post-reply').before($comment);
-                                        } else {
-                                            // Check for children
-                                            $parentCommentChildren = $post.next('.comments');
-
-                                            // @fixme Find a bug with lost indentation of new comment
-                                            // If child comment already exist
-                                            if ($parentCommentChildren.length) {
-                                                console.log('Child comments found. Appending...');
-                                                $parentCommentChildren.append($comment);
-                                            } else {
-                                                console.log('No child comments found. Creating...');
-                                                $post.after($('<div>').addClass('comments').append($comment));
-                                            }
-                                        }
-                                    });
-
-                                    // Cleaning textarea
-                                    $(this).val('');
-
-                                }
-                            }.bind(this),
-                            beforeSend: function (xhr) {
-                                xhr.setRequestHeader('X-CSRF', csRf);
-                            }
-                        });
-                    }
+                messenger.css({
+                    file: 'modules/ajax-comments.css'
+                });
+                messenger.js({
+                    file: 'modules/ajax-comments.js'
+                }, function() {
+                    var ajaxComments = new AjaxComments();
                 });
             }
         }
@@ -724,91 +656,6 @@ function create_comment_elements(commentData, onCommentCreated) {
         // Triggering callback
         onCommentCreated($anchor.add($commentTemplate));
     });
-}
-
-// Картинки с бурятников
-var booru_picture_count = 0;
-function load_all_booru_images() {
-    $('.post-content a:not(.booru_pic)').each(function(num, obj) {
-
-        var href = obj.href;
-        var n = null;
-
-        if (n = href.match(new RegExp('^https?://danbooru\\.donmai\\.us/posts/([0-9]+)', 'i'))) {
-            var image = create_image('danbooru', n[1]);
-            obj.parentElement.insertBefore(image, obj);
-            booru_picture_count++;
-        } else if (n = href.match(new RegExp('^https?\\://(www\\.)?gelbooru\\.com\\/index\\.php\\?page\\=post&s\\=view&id=([0-9]+)', 'i'))) {
-            var image = create_image('gelbooru', n[2]);
-            obj.parentElement.insertBefore(image, obj);
-            booru_picture_count++;
-        } else if (n = href.match(new RegExp('^https?\\://(www\\.)?safebooru\\.org\\/index\\.php\\?page\\=post&s\\=view&id=([0-9]+)', 'i'))) {
-            var image = create_image('safebooru', n[2]);
-            obj.parentElement.insertBefore(image, obj);
-            booru_picture_count++;
-        } else if (n = href.match(new RegExp('^https?\\://(www\\.)?([a-z0-9-]+\\.)?deviantart\\.com\\/art/[0-9a-z-]+?\\-([0-9]+)(\\?.+)?$', 'i'))) {
-            var image = create_image('deviantart', n[3]);
-            obj.parentElement.insertBefore(image, obj);
-            booru_picture_count++;
-        } else if (n = href.match(new RegExp('^https?\\://(www\\.)?e621\\.net\\/post\\/show\\/([0-9]+)\\/', 'i'))) {
-            var image = create_image('e621', n[2]);
-            obj.parentElement.insertBefore(image, obj);
-            booru_picture_count++;
-        } else if (n = href.match(new RegExp('^https?\\://derpiboo\\.ru\\/([0-9]+)', 'i'))) {
-            var image = create_image('derpibooru', n[1]);
-            obj.parentElement.insertBefore(image, obj);
-            booru_picture_count++;
-        } else if (n = href.match(new RegExp('^https?\\://([0-9a-z-]+)\\.tumblr\\.com\\/post\\/([0-9]+)', 'i'))) {
-            var image = create_image('tumblr', n[2], {'username': n[1]});
-            obj.parentElement.insertBefore(image, obj);
-            booru_picture_count++;
-            /*
-             } else if (n = href.match(new RegExp('^https?\\://(www\\.)?konachan\\.net\\/post\\/show\\/([0-9]+)\\/', 'i'))) {
-             var image = create_image('konachannet', n[2]);
-             obj.parentElement.insertBefore(image, obj);
-             booru_picture_count++;
-             } else if (n = href.match(new RegExp('^https?\\://(www\\.)?konachan\\.com\\/post\\/show\\/([0-9]+)\\/', 'i'))) {
-             var image=create_image('konachancom', n[2]);
-             obj.parentElement.insertBefore(image, obj);
-             booru_picture_count++;
-             */
-        } else if (n = href.match(new RegExp('^https?://(www\\.)?pixiv\\.net\\/member_illust\\.php\\?mode\\=medium\\&illust_id\\=([0-9]+)', 'i'))) {
-            var image = create_image('pixiv', n[2]);
-            obj.parentElement.insertBefore(image, obj);
-            booru_picture_count++;
-        } else if (n = href.match(new RegExp('^http\\:\\/\\/anime\\-pictures\\.net\\/pictures\\/view_post\\/([0-9]+)', 'i'))) {
-            var image = create_image('animepicturesnet', n[1]);
-            obj.parentElement.insertBefore(image, obj);
-            booru_picture_count++;
-        } else if (false) {
-
-
-        }
-
-    });
-
-}
-
-function create_image(domain, id, additional) {
-    var a = document.createElement('a');
-    a.href = 'https://api.kanaria.ru/point/get_booru_picture.php?domain=' + domain + '&id=' + id;
-    if (typeof(additional) != 'undefined') {
-        for (var index in additional) {
-            a.href += '&add_' + encodeURIComponent(index) + '=' + encodeURIComponent(additional[index]);
-        }
-    }
-    $(a).addClass('booru_pic').addClass('booru-' + domain + '-' + id).addClass('postimg').attr({
-        'id': 'booru_pic_' + booru_picture_count,
-        'title': domain + ' image #' + id,
-        'target': '_blank'
-    });
-
-    var image = document.createElement('img');
-    image.alt = a.title;
-    image.src = a.href;
-    a.appendChild(image);
-
-    return a;
 }
 
 // Помечаем непрочитанные посты более видимо чем каким-то баджем

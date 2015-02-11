@@ -16,6 +16,11 @@
     background-image: url('chrome-extension://__MSG_@@extension_id__/vendor/fancybox/source/fancybox_overlay.png');
 }
 
+.fancybox-nav {
+    /* To supress errors */
+    background-image: url('chrome-extension://__MSG_@@extension_id__/vendor/fancybox/source/blank.gif'); /* helps IE */
+}
+
 @media only screen and (min-device-pixel-ratio: 1.5) {
     #fancybox-loading, .fancybox-close, .fancybox-prev span, .fancybox-next span {
         background-image: url('chrome-extension://__MSG_@@extension_id__/vendor/fancybox/source/fancybox_sprite@2x.png');

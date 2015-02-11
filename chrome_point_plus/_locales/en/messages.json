@@ -60,7 +60,7 @@
         "message": "Enable embedding &#9660;"
     },
     "option_images_load_booru": {
-        "message": "Load pictures from Booru, Tumblr, etc"
+        "message": "Load pictures from Booru, Tumblr, etc via @NokitaKaze server"
     },
     "option_audios_parse_links": {
         "message": "Audio from direct links"
@@ -188,5 +188,8 @@
     },
     "msg_saving_post_draft":{
         "message": "Saving the post..."
+    },
+    "msg_success_recommendation": {
+        "message": "is recommended"
     }
 }

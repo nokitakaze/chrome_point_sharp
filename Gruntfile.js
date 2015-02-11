@@ -18,12 +18,15 @@ var vendorCopy = [
 
 vendorCopy.push({
     expand: true,
-    src: [ 'vendor/fancybox/source/*.png' ],
+    src: [ 
+        'vendor/fancybox/source/*.png',
+        'vendor/fancybox/source/*.gif'
+    ],
     dest: 'chrome_point_plus/'
 });
 
+/* global module */
 module.exports = function(grunt) {
-
     // Настройки
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -46,7 +49,7 @@ module.exports = function(grunt) {
                 gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d',
                 globalReplace: true
             }
-        },
+        }
     });
 
     // Загрузить плагины

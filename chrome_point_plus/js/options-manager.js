@@ -1,7 +1,7 @@
 /**
  * Объект для получения опций
+ * @constructor {OptionsManager}
  * @param {Object} options Хеш настроек
- * @constructor
  */
 function OptionsManager(options) {
     this._options = options || {};

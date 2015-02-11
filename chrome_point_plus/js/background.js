@@ -42,6 +42,7 @@ function injectFiles(files, injectOne, onAllInjected, results) {
  * @constructor Менеджер сообщений
  */
 function MessageListener() {
+    /* jshint unused:false */
     chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         if (this.isMethodAvailable(message)) {
             console.info('Call #%s() method for tab #%s', message.type, this.getTabId(sender));
@@ -54,6 +55,7 @@ function MessageListener() {
             return false;
         }
     }.bind(this));
+    /* jshint unused:true */
 }
 
 /**
@@ -121,7 +123,7 @@ MessageListener.prototype.getManifestVersion = function(message, sender, sendRes
 MessageListener.prototype.getFiles = function(message, defaultRunAt) {
     var files;
 
-    if ( ! message.files) {
+    if (! message.files) {
         return false;
     } else {
         files = Array.isArray(message.files) ? message.files : [ message.files ];
@@ -147,7 +149,7 @@ MessageListener.prototype.executeJSFiles = function(message, sender, sendRespons
     injectFiles(
         this.getFiles(message, 'document_end'),
         function(file, callback) {
-            chrome.tabs.executeScript(tabId, file, callback)
+            chrome.tabs.executeScript(tabId, file, callback);
         },
         sendResponse
     );
@@ -169,7 +171,6 @@ MessageListener.prototype.injectCSSFiles = function(message, sender, sendRespons
         },
         sendResponse
     );
-
 };
 
 new MessageListener();
@@ -185,6 +186,8 @@ chrome.storage.sync.get('options_version', function(data) {
 
 // Adding notification click event listener
 chrome.notifications.onClicked.addListener(function(notificationId) {
+    var tab_url;
+
     // Detecting notification type
     if (notificationId.indexOf('comment_') === 0) {
         tab_url = 'https://point.im/' + notificationId.replace(/comment_/g, '');
