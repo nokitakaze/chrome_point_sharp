@@ -151,6 +151,21 @@ function skobkin_websocket_init(options) {
                             console_group_end();
                             break;
 
+                        case 'sub':
+                            console_group_collapsed('ws-subscription ' + wsMessage.from + '/' + wsMessage.comment_id);
+                            var subscription_user_name = wsMessage.from.toLowerCase();
+
+                            // Desktop notifications
+                            if (options.is('option_ws_subscription')) {
+                                html5_notification({
+                                    notificationId: 'subscription_' + subscription_user_name,
+                                    avatarUrl:      getProtocol() + '//point.im/avatar/' + subscription_user_name + '/80',
+                                    title:          '@' + wsMessage.from + ' подписался на вас',
+                                    text: ''
+                                }, function(response) {});
+                            }
+                            break;
+
                         default:
                             break;
 

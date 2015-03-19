@@ -316,6 +316,11 @@ var point_sharp_options_tree = {
                 "type": "boolean",
                 "default_value": false,
                 "description": "Включить уведомления о новых постах на рабочем столе"
+            },
+            "option_ws_subscription": {
+                "type": "boolean",
+                "default_value": false,
+                "description": "Включить уведомления о подписавшихся пользователях на рабочем столе"
             }
         }
     },
