@@ -86,7 +86,6 @@ Booru.prototype.loadAllImages = function($links, removeOriginal) {
         if ($image) {
             $image.addClass('point-sharp-added');
             $link.addClass('point-sharp-processed').before($image);
-            this.count++;
 
             if (removeOriginal) {
                 $link.hide();
@@ -133,22 +132,55 @@ Booru.prototype.createImage = function(service, id, params) {
     var link = document.createElement('a');
     var img = document.createElement('img');
     var title = service + ' image #' + id;
-    var imageSource = this.getImageLink(service, id, params);
+    params = (typeof(params) == 'undefined') ? [] : params;
 
     $(img).attr({
         alt: title,
-        src: imageSource
+        src: this.getImageLink(service, id, params, 'thumb')
+    }).on('error', function() {
+        var this_image = $(this);
+        var link = this_image.parents('.booru_pic').first();
+        $ajax({
+            'url': link.attr('data-booru-mime-url'),
+            'success': function(ans) {
+                /**
+                 * @var {String} json.content_type
+                 */
+                var json = JSON.parse(ans);
+                if (json.content_type.match(new RegExp('^video/'))) {
+                    var player = document.createElement('video');
+                    $(player).html('<source src="" type="" />').attr('controls', 'controls').css({
+                        'display': 'block',
+                        'max-width': '95%'
+                    }).addClass('parsed-webm-link').addClass('point-sharp-added').find('source').attr({
+                        'src': Booru.prototype.getImageLink(
+                            link.attr('data-booru-service'),
+                            link.attr('data-booru-id'),
+                            JSON.parse(link.attr('data-booru-params'))
+                        ),
+                        'type': json.content_type
+                    });
+
+                    link.html('').append(player);
+                }
+            }
+        });
     });
 
     $(link).addClass('booru_pic')
         .addClass('booru-' + service + '-' + id)
         .addClass('postimg')
         .attr({
-            href: imageSource,
+            href: this.getImageLink(service, id, params, 'normal'),
             id: 'booru_pic_' + this.count,
             title: title,
-            target: '_blank'
+            target: '_blank',
+            'data-booru-service': service,
+            'data-booru-id': id,
+            'data-booru-params': JSON.stringify(params),
+            'data-booru-mime-url': this.getImageLink(service, id, params, 'mime')
         }).append(img);
+    this.count++;
 
     return $(link);
 };
@@ -157,12 +189,14 @@ Booru.prototype.createImage = function(service, id, params) {
  * Генерирует ссылку на картинку
  * @param {String} service Ключевое имя сервиса для Никиты
  * @param {String} id Идентификатор картинки
- * @param {Object} [params] Дополнительные параметры, которые надо добавить в url
+ * @param {Object} params Дополнительные параметры, которые надо добавить в url
+ * @param {String} [mode=normal] Это Thumbnail или полноценная картинка?
  * @returns {String} Ссылка на картинку
  */
-Booru.prototype.getImageLink = function(service, id, params) {
+Booru.prototype.getImageLink = function(service, id, params, mode) {
+    mode = (typeof(mode) == 'undefined') ? 'normal' : mode;
     return this.constructor.baseUrl + '?' + $.param($.extend({
             domain: service,
             id: id
-        }, params));
+        }, params)) + '&mode=' + mode;
 };
