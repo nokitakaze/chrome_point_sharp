@@ -862,7 +862,7 @@ function instagram_posts_embedding_init(current_options) {
         var href = obj.href;
         var n;
 
-        if (n = href.match(new RegExp('^https?://(www\\.)?instagram\\.com/p/([a-z0-9_]+)', 'i'))) {
+        if (n = href.match(new RegExp('^https?://(www\\.)?instagram\\.com/p/([a-z0-9_-]+)', 'i'))) {
             $ajax({
                 'url': 'https://api.instagram.com/oembed?url=' + urlencode('http://instagram.com/p/' + n[2] + '/'),
                 'success': function(text) {
