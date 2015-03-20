@@ -135,14 +135,22 @@ function console_group_end() {
  * Создаём HTML5 notification
  *
  * @param {object} settings
- * @param {function} response
+ * @param {Function} response
  */
 function html5_notification(settings, response) {
+    if (typeof(settings.url) != 'undefined') {
+        var onclick = function() {
+            window.open(settings.url);
+        };
+    } else {
+        onclick = function() { };
+    }
+
     var current_notification = new Notification(settings.title, {
         'lang': 'ru',
         'icon': settings.avatarUrl,
         'tag': settings.notificationId,
-        'body': settings.text
+        'body': settings.text,
+        'onclick': onclick
     });
-    
 }

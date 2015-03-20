@@ -50,7 +50,9 @@ function skobkin_websocket_init(options) {
                                     avatarUrl:      getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
                                     title:          '@' + wsMessage.author + ' #' + wsMessage.post_id + '/' +
                                                     wsMessage.comment_id,
-                                    text: wsMessage.text
+                                    text: wsMessage.text,
+                                    url:            'https://' + wsMessage.author.toLowerCase() + '.point.im/' +
+                                                    wsMessage.post_id + '#' + wsMessage.comment_id
                                 }, function(response) {});
                             }
 
@@ -141,7 +143,8 @@ function skobkin_websocket_init(options) {
                                     notificationId: 'post_' + wsMessage.post_id,
                                     avatarUrl:      getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
                                     title:          'Post by @' + wsMessage.author + ' #' + wsMessage.post_id,
-                                    text:           tags_text + wsMessage.text
+                                    text:           tags_text + wsMessage.text,
+                                    url:            'https://' + wsMessage.author.toLowerCase() + '.point.im/' + wsMessage.post_id
                                 }, function(response) {});
                             }
 
@@ -161,7 +164,8 @@ function skobkin_websocket_init(options) {
                                     notificationId: 'subscription_' + subscription_user_name,
                                     avatarUrl:      getProtocol() + '//point.im/avatar/' + subscription_user_name + '/80',
                                     title:          '@' + wsMessage.from + ' подписался на вас',
-                                    text: ''
+                                    text: '',
+                                    url:            'https://' + subscription_user_name + '.point.im/'
                                 }, function(response) {});
                             }
                             break;
