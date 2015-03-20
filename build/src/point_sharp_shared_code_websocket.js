@@ -416,7 +416,7 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
         'data-id': commentData.postId,
         'data-comment-id': commentData.id,
         'data-to-comment-id': commentData.id || ''
-    }).addClass('pp-highlight').
+    }).addClass('unread').
         html(ajax_get_comments_comment_template).on('mouseover', function() {
             var current_post = $(this);
             if (current_post.hasClass('readed')) { return; }
@@ -424,7 +424,7 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
 
             current_post.addClass('readed');
             setTimeout(function() {
-                current_post.removeClass('pp-highlight').removeClass('readed');
+                current_post.removeClass('unread');
             }, 1000);
         });
 
@@ -485,14 +485,6 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
     // И самое главное: Текст комментария
     safe_saned_text(commentData.text, $commentTemplate.find('.text'));
     // /Filling template
-
-    /*
-     // Fading out highlight if needed
-     if (commentData.fadeOut) {
-     console.log('Fading out the highlight');
-     $commentTemplate.children('.pp-highlight').delay(250).fadeOut(20000);
-     }
-     */
 
     // Fade in
     $commentTemplate.hide().delay(250).fadeIn(2000);

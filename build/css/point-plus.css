@@ -242,22 +242,15 @@ a.postimg.sharp-preblur {
     max-height: 27px;
 }
 
-/**
- * Новые каменты
- */
-.post.pp-highlight {
-    background-color: #ffb;
-}
-
-.post.pp-highlight.readed {
-    background-color: inherit;
-    transition: all 1s;
-}
-
 /* Подгруженные Вебсокетами комментарии */
 .post.new_comments, .post.new_post_itself.new_comments, .post.comment-topic-starter.new_comments {
     background-color: #efe;
     border-radius: 5px;
+}
+
+.post.unread.readed {
+    background-color: inherit;
+    transition: all 1s;
 }
 
 /* Новые посты в ленте */
