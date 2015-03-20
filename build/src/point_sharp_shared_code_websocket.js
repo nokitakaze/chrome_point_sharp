@@ -59,17 +59,18 @@ function skobkin_websocket_init(options) {
                             // Check we are in the post
                             // Check we are in specified post
                             if (($('#top-post').length < 1) || (wsMessage.post_id != postId)) {
-                                var unread_count = parseInt($('#main #left-menu #menu-comments .unread').text());
+                                var unread_count = parseInt($('#main #left-menu #menu-comments .unread').text(), 10);
                                 $('#main #left-menu #menu-comments .unread').text(unread_count + 1).show();
 
                                 var new_comment_post = $('div.post[data-id="' + wsMessage.post_id + '"]');
                                 if (new_comment_post.length > 0) {
                                     var post_id_block = new_comment_post.find('.post-id');
-                                    if (post_id_block.find('unread').length == 0) {
-                                        post_id_block.append('<span class="unread">1</span>');
+                                    var unread_block = post_id_block.find('.unread');
+                                    if (unread_block.length == 0) {
+                                        post_id_block.find('a').first().
+                                            append('<span class="unread" style="margin-left: 3px;">1</span>');
                                     } else {
-                                        post_id_block.find('unread').
-                                            text(parseInt(post_id_block.find('unread').text()) + 1).show();
+                                        unread_block.text(parseInt(unread_block.text(), 10) + 1).show();
                                     }
 
                                     if (options.is('option_other_hightlight_post_comments')) {
