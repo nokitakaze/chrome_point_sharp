@@ -149,7 +149,7 @@ function skobkin_websocket_init(options) {
                                 }, function(response) {});
                             }
 
-                            var unread_count = parseInt($('#main #left-menu #menu-recent .unread').text());
+                            var unread_count = parseInt($('#main #left-menu #menu-recent .unread').text(), 10);
                             $('#main #left-menu #menu-recent .unread').text(unread_count + 1).show();
 
                             console_group_end();

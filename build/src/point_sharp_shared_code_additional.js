@@ -690,13 +690,13 @@ function comments_count_refresh_tick(current_options) {
         var a = $(iframe.contentDocument.body).find('#main #left-menu #menu-recent .unread');
         var b = $(iframe.contentDocument.body).find('#main #left-menu #menu-comments .unread');
         var c = $(iframe.contentDocument.body).find('#main #left-menu #menu-messages .unread');
-        var count_recent = (a.length == 0) ? 0 : parseInt(a.text());
-        var count_comments = (b.length == 0) ? 0 : parseInt(b.text());
-        var count_messages = (c.length == 0) ? 0 : parseInt(c.text());
+        var count_recent = (a.length == 0) ? 0 : parseInt(a.text(), 10);
+        var count_comments = (b.length == 0) ? 0 : parseInt(b.text(), 10);
+        var count_messages = (c.length == 0) ? 0 : parseInt(c.text(), 10);
 
         console.log('Comments: ', count_comments, ', Recent: ', count_recent, ', Messages: ', count_messages);
         if (count_recent > 0) {
-            if (parseInt($('#main #left-menu #menu-recent .unread').text()) != count_recent) {
+            if (parseInt($('#main #left-menu #menu-recent .unread').text(), 10) != count_recent) {
                 $('#main #left-menu #menu-recent .unread').text(count_recent).show().css({
                     'background-color': '#f2ebee',
                     'color': '#7c3558'
@@ -713,7 +713,7 @@ function comments_count_refresh_tick(current_options) {
         }
 
         if (count_comments > 0) {
-            if (parseInt($('#main #left-menu #menu-comments .unread').text()) != count_comments) {
+            if (parseInt($('#main #left-menu #menu-comments .unread').text(), 10) != count_comments) {
                 $('#main #left-menu #menu-comments .unread').text(count_comments).show().css({
                     'background-color': '#f2ebee',
                     'color': '#7c3558'
@@ -730,7 +730,7 @@ function comments_count_refresh_tick(current_options) {
         }
 
         if (count_messages > 0) {
-            if (parseInt($('#main #left-menu #menu-messages .unread').text()) != count_messages) {
+            if (parseInt($('#main #left-menu #menu-messages .unread').text(), 10) != count_messages) {
                 $('#main #left-menu #menu-messages .unread').text(count_messages).show().css({
                     'background-color': '#f2ebee',
                     'color': '#7c3558'
@@ -1137,7 +1137,7 @@ function wrap_posts_init(options) {
  */
 function wrap_posts_remove_unused_wrap_splitters() {
     $('.content-wrap > div.post').each(function() {
-        if (parseInt($(this).find('.text-content').prop('scrollHeight')) < 1000) {
+        if (parseInt($(this).find('.text-content').prop('scrollHeight'), 10) < 1000) {
             $(this).find('.wrap-splitter').hide();
         } else {
             $(this).find('.wrap-splitter').show();
