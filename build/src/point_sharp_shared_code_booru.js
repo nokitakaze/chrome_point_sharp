@@ -7,6 +7,10 @@
 function Booru($links, options) {
     this.count = 0;
 
+    if (options.is('option_embedding_tumblr')) {
+        delete(Booru.services.tumblr);
+    }
+
     this.loadAllImages($links, options.is('option_images_load_booru_remove_original_link'));
 }
 
@@ -14,7 +18,7 @@ function Booru($links, options) {
  * Откуда тянуть картинки
  * @type {String}
  */
-Booru.baseUrl = 'https://api.kanaria.ru/point/get_booru_picture.php';
+Booru.baseUrl = 'https://test.g.kanaria.ru/point/get_booru_picture.php';
 
 /* jshint maxlen:false */
 Booru.services = {

@@ -264,3 +264,52 @@ a.postimg.sharp-preblur {
     background-color: #eef;
 }
 
+/* Tumblr Embedded */
+.tumblr-embedded {
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(238, 238, 238) rgb(221, 221, 221) rgb(187, 187, 187);
+    max-width: 99%;
+    min-width: 220px;
+    margin: 10px 0;
+    padding: 0;
+    display: block;
+    position: static;
+    visibility: visible;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.14902) 0 1px 3px;
+    width: 98%;
+}
+
+.tumblr-embedded .head {
+    padding: 10px 5px 5px;
+}
+
+.tumblr-embedded .body {
+    padding: 10px 10px;
+}
+
+.tumblr-embedded .head .blog_link {
+    text-decoration: none;
+    font-size: 10px;
+}
+
+.tumblr-embedded .head .blog_title {
+    font-size: 10px;
+}
+
+.tumblr-embedded .body a.tumblr-image img {
+    width: 98%;
+    max-width: 98%;
+}
+
+.tumblr-embedded .tumblr-timestamp {
+    border-top: 1px solid #e8e8e8;
+    margin-top: 10px;
+    padding: 5px 5px;
+}
+
+.tumblr-embedded .body a.tumblr-image {
+    margin: 5px 3px 5px 0;
+    float: none;
+}

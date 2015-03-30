@@ -153,6 +153,18 @@ var point_sharp_options_tree = {
                         "type": "boolean",
                         "default_value": true,
                         "description": "Встраиваем посты из Instagram"
+                    },
+                    "option_embedding_tumblr": {
+                        "type": "boolean",
+                        "default_value": true,
+                        "description": "Встраиваем посты из Tumblr",
+                        "children": {
+                            "option_embedding_tumblr_remove_original_link": {
+                                "type": "boolean",
+                                "default_value": false,
+                                "description": "Удалять ссылку"
+                            }
+                        }
                     }
                 }
             }

@@ -133,6 +133,11 @@ function pimp_my_page(options) {
         if (options.is('option_embedding_twitter_tweets')) {
             twitter_tweet_embedding_init();
         }
+
+        // Посты из Tumblr
+        if (options.is('option_embedding_instagram_posts')) {
+            tumblr_posts_embedding_init(options);
+        }
     }
 
     // Fancybox

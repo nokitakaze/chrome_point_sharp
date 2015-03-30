@@ -801,6 +801,98 @@ function twitter_tweet_embedding_init() {
 }
 
 /**
+ * Встраиваем посты из Tumblr
+ *
+ * @param {Object} options
+ */
+function tumblr_posts_embedding_init(options) {
+    const open_tumblr_key = 'fuiKNFp9vQFvjLNvx4sUwti4Yb5yGutBN4Xh10LXZhhRKjWlV4';
+
+    var tumblr_post_count = 0;
+    $('.post-content a').each(function(num, obj) {
+        if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
+            return;
+        }
+
+        var n;
+        if (n = obj.href.match(new RegExp('^https?://([a-z0-9_-]+)\\.tumblr\\.com/post/([0-9]+)', 'i'))) {
+            var tweet = document.createElement('div');
+            $(tweet).attr({
+                'id': 'tumblr-' + tumblr_post_count,
+                'data-tumblr-url': obj.href,
+                'data-tumblr-login': n[1],
+                'data-tumblr-post-id': parseInt(n[2], 10)
+            }).addClass('tumblr-embedded').addClass('point-sharp-added').html(
+                '<div class="head"><a href="" class="blog_link"></a><div class="blog_title"></div></div>' +
+                '<div class="body"></div><div class="tumblr-timestamp"></div>'
+            );
+            obj.parentElement.insertBefore(tweet, obj);
+            $(obj).addClass('point-sharp-processed');
+
+            $ajax({
+                'url': 'https://api.tumblr.com/v2/blog/' + n[1] + '.tumblr.com/posts?id=' +
+                       n[2] + '&api_key=' + open_tumblr_key,
+                'tumblr_post_count': tumblr_post_count,
+                'success': function(ans) {
+                    var json = JSON.parse(ans);
+                    // Kumashocking костыль
+                    var tweet = $('#tumblr-' + this.settings.tumblr_post_count)[0];
+                    var body = $(tweet).find('.body');
+                    console.info('Tumblr', n[1], n[2], json, tweet, body);
+
+                    $(tweet).find('.head .blog_link').attr({
+                        'href': json.response.blog.url,
+                        'target': '_blank'
+                    }).text(json.response.blog.name);
+                    $(tweet).find('.head .blog_title').text(json.response.blog.title);
+
+                    var post = json.response.posts[0];
+                    $(tweet).find('.tumblr-timestamp').text(
+                        (new Date(post.timestamp * 1000)).toLocaleString()
+                    );
+
+                    if (post.type == 'quote') {
+                        body.append('<div class="quote"></div><div class="quote_source"></div>');
+                        body.find('.quote').text(post.text);
+                        body.find('.quote_source').text(post.source);
+                    } else if (post.type == 'photo') {
+                        body.append('<div class="tumblr-text"></div>').find('.tumblr-text').html(post.caption);
+                        for (var i = 0; i < post.photos.length; i++) {
+                            var photo = post.photos[i];
+                            var a = document.createElement('a');
+                            var image_link = photo.original_size.url.replace('http://', 'https://');
+                            $(a).html('<img>').attr({
+                                'href': image_link,
+                                'title': photo.caption,
+                                'data-fancybox-group': 'one_flow_gallery',
+                                'target': '_blank'
+                            }).addClass('tumblr-image').find('img').addClass('postimg').attr({
+                                'src': image_link,
+                                'alt': photo.caption,
+                                'max-width': photo.original_size.width
+                            });
+                            body.append(a);
+                        }
+                    } else if (post.type == 'audio') {
+                        body.append('<div class="tumblr-text"></div>').find('.tumblr-text').html(post.caption);
+                        body.append('<img class="postimg album-art">').find('.album-art').attr({
+                            'src': post.album_art,
+                            'alt': 'Обложка альбома ' + post.album
+                        });
+                        body.append('<div class="track-name"></div>').find('.track_name').
+                            text(post.artist + ' — ' + post.track_name);
+                        body.append('<div class="tumblr-player"></div>').find('.tumblr-player').html(post.player);
+                    }
+
+                }
+            });
+
+            tumblr_post_count++;
+        }
+    });
+}
+
+/**
  * Проверяем загрузились ли мы. Эта функция запускается из page scope
  */
 function twitter_tweet_embedding_wait_for_ready_injected() {

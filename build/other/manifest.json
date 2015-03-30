@@ -73,6 +73,7 @@
         "https://api.kanaria.ru/point/*",
         "https://api.instagram.com/*",
         "https://*.twitter.com/*",
+        "https://api.tumblr.com/*",
         "storage",
         "unlimitedStorage",
         "notifications",
