@@ -58,7 +58,8 @@
                     "https://api.kanaria.ru/point/",
                     "https://api.instagram.com/",
                     "https://api.twitter.com/",
-                    "https://www.twitter.com/"
+                    "https://www.twitter.com/",
+                    "https://api.tumblr.com/"
                 ]
             },
             "version": "%%VERSION%%"

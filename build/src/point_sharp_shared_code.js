@@ -309,6 +309,9 @@ function pimp_my_page(options) {
     // Выполняем последние платформозависимые функции
     point_loaded_last(options);
 
+    // All external links
+    external_links_target_blank();
+
     // Закрываем значок
     $('#point-plus-debug').fadeOut(500);
     console.log("pimp_my_page stop");

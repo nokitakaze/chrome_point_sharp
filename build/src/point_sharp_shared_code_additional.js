@@ -825,7 +825,7 @@ function tumblr_posts_embedding_init(options) {
             }).addClass('tumblr-embedded').addClass('point-sharp-added').html(
                 '<div class="head"><a href="" class="blog_link"></a><div class="blog_title"></div></div>' +
                 '<div class="body"></div><div class="tumblr-timestamp"></div>'
-            );
+            ).hide();
             obj.parentElement.insertBefore(tweet, obj);
             $(obj).addClass('point-sharp-processed');
 
@@ -836,7 +836,7 @@ function tumblr_posts_embedding_init(options) {
                 'success': function(ans) {
                     var json = JSON.parse(ans);
                     // Kumashocking костыль
-                    var tweet = $('#tumblr-' + this.settings.tumblr_post_count)[0];
+                    var tweet = $('#tumblr-' + this.settings.tumblr_post_count).show()[0];
                     var body = $(tweet).find('.body');
                     console.info('Tumblr', n[1], n[2], json, tweet, body);
 
@@ -863,14 +863,20 @@ function tumblr_posts_embedding_init(options) {
                             var image_link = photo.original_size.url.replace('http://', 'https://');
                             $(a).html('<img>').attr({
                                 'href': image_link,
-                                'title': photo.caption,
                                 'data-fancybox-group': 'one_flow_gallery',
                                 'target': '_blank'
-                            }).addClass('tumblr-image').find('img').addClass('postimg').attr({
+                            }).addClass('tumblr-image').addClass('postimg').find('img').attr({
                                 'src': image_link,
-                                'alt': photo.caption,
                                 'max-width': photo.original_size.width
                             });
+                            if (photo.caption.length > 0) {
+                                $(a).attr({
+                                    'title': photo.caption
+                                }).find('img').attr({
+                                    'alt': photo.caption
+                                });
+                            }
+
                             body.append(a);
                         }
                     } else if (post.type == 'audio') {
@@ -1289,4 +1295,24 @@ function comments_mark_topic_starter() {
  */
 function get_my_nick() {
     return $('#name h1').text().toLowerCase();
+}
+
+/**
+ * Все исходящие ссылки должны быть с target=_blank
+ */
+function external_links_target_blank() {
+    $('.post-content a').each(function(num, obj) {
+        if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
+            return;
+        }
+
+        var n;
+        if (n = obj.href.match(new RegExp('^https?://(.+?)/', 'i'))) {
+            if (n[1].match(new RegExp('^(.+?\\.)?point\\.im$'))) {
+                return;
+            }
+
+            obj.target = '_blank';
+        }
+    });
 }
