@@ -838,7 +838,10 @@ function tumblr_posts_embedding_init(options) {
                     // Kumashocking костыль
                     var tweet = $('#tumblr-' + this.settings.tumblr_post_count).show()[0];
                     var body = $(tweet).find('.body');
-                    console.info('Tumblr', n[1], n[2], json, tweet, body);
+
+                    if (options.is('option_embedding_tumblr_remove_original_link')) {
+                        obj.remove();
+                    }
 
                     $(tweet).find('.head .blog_link').attr({
                         'href': json.response.blog.url,
