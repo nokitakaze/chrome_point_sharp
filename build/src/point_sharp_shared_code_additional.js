@@ -844,7 +844,7 @@ function tumblr_posts_embedding_init(options) {
                     }
 
                     $(tweet).find('.head .blog_link').attr({
-                        'href': json.response.blog.url,
+                        'href': external_url_sanation(json.response.blog.url),
                         'target': '_blank'
                     }).text(json.response.blog.name);
                     $(tweet).find('.head .blog_title').text(json.response.blog.title);
@@ -863,7 +863,8 @@ function tumblr_posts_embedding_init(options) {
                         for (var i = 0; i < post.photos.length; i++) {
                             var photo = post.photos[i];
                             var a = document.createElement('a');
-                            var image_link = photo.original_size.url.replace('http://', 'https://');
+                            var image_link = external_url_sanation(photo.original_size.url)
+                                .replace(new RegExp('^http://'), 'https://');
                             $(a).html('<img>').attr({
                                 'href': image_link,
                                 'data-fancybox-group': 'one_flow_gallery',
@@ -1306,4 +1307,19 @@ function external_links_target_blank() {
             obj.target = '_blank';
         }
     });
+}
+
+/**
+ * Санация урлов перед вставкой
+ *
+ * @param {String} url
+ *
+ * @returns {String}
+ */
+function external_url_sanation(url) {
+    if (!url.match(new RegExp('^(http|https|ftp)://'))) {
+        return '';
+    }
+
+    return url;
 }
