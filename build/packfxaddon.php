@@ -34,7 +34,9 @@
                  'data/js/point_sharp_shared_code_additional.js',
                  'data/js/point_sharp_shared_code_websocket.js',
                  'data/js/point_sharp_options_list.js',
-                 'data/js/point-options.js'
+                 'data/js/point-options.js',
+                 'data/vendor/soundcloud/soundcloud.player.api.js',
+                 'data/vendor/bootstrap-markdown/js/markdown.js'
              ) as $filename) {
         $full_file_name = $root_folder.'/mozilla_firefox_pack/resources/point_sharp/'.$filename;
         $buf = file_get_contents($full_file_name);
