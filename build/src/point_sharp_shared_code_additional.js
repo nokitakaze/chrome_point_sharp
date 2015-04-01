@@ -850,9 +850,9 @@ function tumblr_posts_embedding_init(options) {
                     $(tweet).find('.head .blog_title').text(json.response.blog.title);
 
                     var post = json.response.posts[0];
-                    $(tweet).find('.tumblr-timestamp').text(
-                        (new Date(post.timestamp * 1000)).toLocaleString()
-                    );
+                    $(tweet).find('.tumblr-timestamp').html(
+                        '<a href="" target="_blank"></a>'
+                    ).find('a').attr('href', obj.href).text((new Date(post.timestamp * 1000)).toLocaleString());
 
                     if (post.type == 'quote') {
                         body.append('<div class="quote"></div><div class="quote_source"></div>');
@@ -891,6 +891,8 @@ function tumblr_posts_embedding_init(options) {
                         body.append('<div class="track-name"></div>').find('.track_name').
                             text(post.artist + ' — ' + post.track_name);
                         body.append('<div class="tumblr-player"></div>').find('.tumblr-player').html(post.player);
+                    } else if (post.type == 'text') {
+                        body.append('<div class="tumblr-text"></div>').find('.tumblr-text').html(post.body);
                     }
 
                 }
@@ -1005,20 +1007,6 @@ function visual_editor_init() {
     });
     $('#new-post-form, .post-content .reply-form, #post-edit-form .post-content .text').addClass('bootstrapped');
     $('.post-content .reply-form textarea').css({'height': '15em'});
-
-    /*
-     // Send by CTRL+Enter
-     if (options.is('option_ctrl_enter')) {
-     // New post
-     $('#new-post-form #text-input, .post-content #text-input').on('keydown.point_plus', function(e) {
-     if (e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13)) {
-     e.preventDefault();
-     $(this).parents('#new-post-form,#post-edit-form').submit();
-     }
-     });
-     }
-     */
-
 }
 
 /**

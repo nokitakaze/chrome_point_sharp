@@ -43,7 +43,7 @@
         $lines_count = 0;
         foreach ($lines as &$line) {
             if (preg_match('|^[ \\t]*console\\.|', $line)) {
-                $line = 'if(false)'.$line;
+                $line = 'if(false) '.$line;
                 $lines_count++;
             }
         }

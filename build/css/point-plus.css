@@ -309,6 +309,10 @@ a.postimg.sharp-preblur {
     padding: 5px 5px;
 }
 
+.tumblr-embedded .tumblr-timestamp a {
+    text-decoration: none;
+}
+
 .tumblr-embedded .body a.tumblr-image {
     margin: 5px 3px 5px 0;
     float: none;
