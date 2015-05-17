@@ -45,6 +45,31 @@ function parse_webm(current_options) {
     });
 }
 
+// Webp-изображение. Только для Хромо-господ
+function parse_webp(current_options) {
+    $('.post-content a').each(function(num, obj) {
+        if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
+            return;
+        }
+
+        if (obj.href.match(new RegExp('^https?:\\/\\/([a-z0-9.-]+)\\/[a-z0-9_\\/.%-]+\\.webp(\\?.+)?$', 'i'))) {
+            var img = document.createElement('img');
+            $(img).attr({
+                'src': obj.href
+            }).addClass('point-sharp-added');
+            $(obj).attr({
+                'target': '_blank'
+            }).css({
+                'display': 'block',
+                'clear': 'both',
+                'float': 'none'
+            }).addClass('postimg').html('').append(img).addClass('parsed-webp-link').addClass('point-sharp-processed');
+
+            // @todo Картинки в ряд
+        }
+    });
+}
+
 // Видео
 function parse_all_videos(current_options) {
     $('.post-content a').each(function(num, obj) {

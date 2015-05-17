@@ -729,7 +729,7 @@ OptionsManager.prototype.is = function(optionName, value) {
     if (typeof value !== 'undefined') {
         return this.get(optionName) === value;
     } else {
-        return OptionsManager.canUseOption('optionName') ? Boolean(this.get(optionName)) : false;
+        return OptionsManager.canUseOption(optionName) ? Boolean(this.get(optionName)) : false;
     }
 };
 
@@ -758,6 +758,16 @@ OptionsManager.prototype.version = function() {
 OptionsManager.getType = function(optionName) {
     var ret = OptionsManager.getOptionElement(optionName);
     return (ret === null) ? null : ret.type;
+};
+
+/**
+ * Получаем тип опции по её имени
+ *
+ * @param optionName
+ * @returns {null|string}
+ */
+OptionsManager.prototype.getType = function(optionName) {
+    return OptionsManager.getType(optionName);
 };
 
 /**

@@ -65,6 +65,11 @@ function pimp_my_page(options) {
     // Проставляем теги у постов
     create_tag_system();
 
+    // Parse webp-images. Viva la Google Chrome
+    if (OptionsManager.getPlatform() == 'chrome') {
+        parse_webp(options);
+    }
+
     // Embedding
     if (options.is('option_embedding')) {
         // Load pictures from Booru, Tumblr and some other sites
@@ -262,12 +267,12 @@ function pimp_my_page(options) {
 
     // Hightlight post with new comments
     if (options.is('option_other_hightlight_post_comments')) {
-        mark_unread_post();
+        setTimeout(mark_unread_post, 0);
     }
 
     // Подсвечиваем каменты топик-стартера
     if (options.is('option_other_hightlight_comment_topic_starter')) {
-        comments_mark_topic_starter();
+        setTimeout(comments_mark_topic_starter, 0);
     }
 
     // Show recommendation count and unique commentators count
@@ -282,7 +287,7 @@ function pimp_my_page(options) {
 
     // Система комментариев у пользователей
     if (options.is('option_other_comments_user_system')) {
-        hints_init_user_system();
+        setTimeout(hints_init_user_system, 0);
     }
 
     // Nesting level indicator
