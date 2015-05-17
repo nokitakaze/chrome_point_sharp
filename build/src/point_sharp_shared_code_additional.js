@@ -1032,11 +1032,43 @@ function visual_editor_init() {
     // Init Bootstrap Markdown
     $('#new-post-form #text-input, .post-content .reply-form textarea, #post-edit-form .post-content #text-input').markdown({
         'language': 'ru',
+        'footer': '...',
         'onPreview': function(e) {
-            return e.getContent().split("\n").join('<br/>');
+            return parse_markdown(e.getContent());
         },
         'onChange': function(e) {
-            console.log('on change:', e);
+            var text = 'Длина: ' + e.getContent().length + ' сим';
+
+            // Бурятники
+            var booru_pictures_count = 0;
+            var booru_pictures_repeat_count = 0;
+            var links = [];
+            var strings = e.getContent().split("\n");
+            for (var i = 0; i < strings.length; i++) {
+                for (var key in Booru.services) {
+                    var n = strings[i].replace(new RegExp('^[ \\t]+'), '').match(Booru.services[key].mask);
+                    if (n === null) {continue;}
+
+                    booru_pictures_count++;
+                    var u = true;
+                    for (var j = 0; j < links.length; j++) {
+                        if (links[j] == n[0]) {
+                            booru_pictures_repeat_count++;
+                            u = false;
+                            break;
+                        }
+                    }
+                    if (u) {links.push(n[0]);}
+                }
+            }
+            if (booru_pictures_count > 0) {
+                text += '; Количество booru-картинок: ' + booru_pictures_count;
+                if (booru_pictures_repeat_count > 0) {
+                    text += '; Количество повторов: ' + booru_pictures_repeat_count;
+                }
+            }
+
+            e.$editor.find('.md-footer').text(text);
         }
     });
     $('.post-content .reply-form textarea').css({'height': '15em'});
@@ -1354,4 +1386,20 @@ function external_url_sanation(url) {
     }
 
     return url;
+}
+
+/**
+ * Parse markdown code
+ *
+ * @param text
+ * @returns {string}
+ */
+function parse_markdown(text) {
+    var html = '';
+    var a = text.split("\n");
+    for (var i = 0; i < a.length; i++) {
+        html += window.markdown.toHTML(a[i]);
+    }
+
+    return html;
 }

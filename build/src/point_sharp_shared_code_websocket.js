@@ -313,6 +313,7 @@ function ajax_get_comments_post_comment($post, csRf, options) {
                     postId: $post.data('id'),
                     author: $('#name h1').text(),
                     text: raw_text,
+                    html: parse_markdown(raw_text),
                     options: current_options,
                     commentType: 'comment'
                 },
