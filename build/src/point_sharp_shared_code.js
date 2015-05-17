@@ -255,7 +255,9 @@ function pimp_my_page(options) {
 
     // @ before username
     if (options.is('option_at_before_username')) {
-        $('body').addClass('at_before_username');
+        if (window.location.pathname.match(new RegExp('^/(subscribers|subscriptions)', 'i')) === null) {
+            $('body').addClass('at_before_username');
+        }
     }
 
     // Hightlight post with new comments
