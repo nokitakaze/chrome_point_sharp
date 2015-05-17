@@ -204,3 +204,18 @@ function html5_notification(settings, response) {
     settings.type = 'showNotification';
     chrome.runtime.sendMessage(settings, response);
 }
+
+/**
+ * Записываем текст камента в DOM
+ *
+ * @param {object} commentData
+ * @param {string} commentData.html
+ * @param {jQuery} dom
+ */
+function set_comment_text_to_dom(commentData, dom) {
+    if (typeof(commentData.html) !== 'undefined') {
+        dom.html(commentData.html);
+    } else {
+        safe_saned_text(commentData.text, dom);
+    }
+}

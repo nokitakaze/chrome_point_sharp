@@ -89,6 +89,7 @@ function skobkin_websocket_init(options) {
                                 postId: wsMessage.post_id,
                                 author: wsMessage.author,
                                 text: wsMessage.text,
+                                html: wsMessage.html,
                                 options: options,
                                 fadeOut: options.is('option_ws_comments_color_fadeout'),
                                 commentType: (wsMessage.a == 'comment') ? 'comment' : 'recommendation'
@@ -394,7 +395,9 @@ const ajax_get_comments_comment_template =
     '</div>';
 
 /**
- * Creating new comment elements for dynamic injection into the DOM
+ * Создаём новый камент на странице поста
+ *
+ * Эта функция вызывается из кода вебсоккетов и из Ajax-создания каментов
  *
  * @param {object} commentData Comment data
  * @param {string|number} commentData.id ID of the created comment
@@ -402,6 +405,7 @@ const ajax_get_comments_comment_template =
  * @param {string} commentData.postId ID of the post
  * @param {string} commentData.author Author of the comment
  * @param {string} commentData.text Text of the comment
+ * @param {string} commentData.html Parsed html of the comment
  * @param {string} commentData.options Опции OptionManager
  * @param {function} onCommentCreated Callback which is called when comment is ready.
  * Этот коллбэк добавляет элемент в дом, а потом дёргает коллбэк опять
@@ -483,7 +487,7 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
     $commentTemplate.find('.post-content form.reply-form input[name="csrf_token"]').val(csRfToken);
 
     // И самое главное: Текст комментария
-    safe_saned_text(commentData.text, $commentTemplate.find('.text'));
+    set_comment_text_to_dom(commentData, $commentTemplate.find('.text'));
     // /Filling template
 
     // Fade in

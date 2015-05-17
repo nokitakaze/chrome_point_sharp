@@ -154,3 +154,14 @@ function html5_notification(settings, response) {
         'onclick': onclick
     });
 }
+
+/**
+ * Записываем текст камента в DOM
+ *
+ * @param {object} commentData
+ * @param {string} commentData.text
+ * @param {jQuery} dom
+ */
+function set_comment_text_to_dom(commentData, dom){
+    safe_saned_text(commentData.text, dom);
+}
