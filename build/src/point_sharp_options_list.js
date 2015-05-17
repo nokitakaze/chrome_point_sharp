@@ -4,7 +4,6 @@
  * ПЛАТФОРМОНЕЗАВИСИМЫЙ ФАЙЛ
  */
 
-// @todo Не забыть про платформозависимые опции
 var point_sharp_options_tree = {
     "tree_media": {
         "type": "tree",
@@ -594,7 +593,9 @@ function point_sharp_options_init(callback) {
     var options_plain_list = {};
     for (var index in point_sharp_options_tree) {
         point_sharp_options_branch_view(point_sharp_options_tree[index], function(name, item) {
-            options_plain_list[name] = item;
+            if (OptionsManager.canUseOption(item)) {
+                options_plain_list[name] = item;
+            }
         });
     }
 
@@ -620,8 +621,6 @@ function point_sharp_options_init(callback) {
                     need_save_options = true;
                 }
             }
-
-            // @todo Не забыть про платформозависимые опции
 
             // Если есть хотя бы одно сменённое значение, сохраняем опции
             if (need_save_options) {
@@ -730,7 +729,7 @@ OptionsManager.prototype.is = function(optionName, value) {
     if (typeof value !== 'undefined') {
         return this.get(optionName) === value;
     } else {
-        return Boolean(this.get(optionName));
+        return OptionsManager.canUseOption('optionName') ? Boolean(this.get(optionName)) : false;
     }
 };
 
@@ -756,15 +755,70 @@ OptionsManager.prototype.version = function() {
  * @param optionName
  * @returns {null|string}
  */
-OptionsManager.prototype.getType = function(optionName) {
+OptionsManager.getType = function(optionName) {
+    var ret = OptionsManager.getOptionElement(optionName);
+    return (ret === null) ? null : ret.type;
+};
+
+/**
+ * Получаем опцию по её имени
+ *
+ * @param optionName
+ * @returns {null|string}
+ */
+OptionsManager.getOptionElement = function(optionName) {
     var ret = null;
     for (var index in point_sharp_options_tree) {
         point_sharp_options_branch_view(point_sharp_options_tree[index], function(name, item) {
             if (name == optionName) {
-                ret = item.type;
+                ret = item;
             }
         });
     }
 
     return ret;
+};
+
+/**
+ * Можем ли мы использовать эту опцию на текущей платформе
+ *
+ * @param {string|object} optionName
+ * @returns {bool}
+ */
+OptionsManager.canUseOption = function(optionName) {
+    if (typeof(optionName) == 'string') {
+        var ret = this.getOptionElement(optionName);
+        if (ret === null) {
+            return false;
+        }
+    } else {
+        ret = optionName;
+    }
+
+    if (typeof(ret.platforms) == 'undefined') {
+        return true;
+    }
+
+    for (var i = 0; i < ret.platforms.length; i++) {
+        if (ret[i] == OptionsManager.getPlatform()) {
+            return true;
+        }
+    }
+    return false;
+};
+
+/**
+ * Под каким браузером мы сидим
+ *
+ * @returns string
+ */
+OptionsManager.getPlatform = function() {
+    // Я не буду сюда выставлять паттерн "стратегия", ну его на хер
+    if (navigator.appVersion.match(new RegExp('chrome', 'i'))) {
+        return 'chrome';
+    } else if (navigator.appVersion.match(new RegExp('firefox', 'i'))) {
+        return 'firefox';
+    } else {
+        return '';
+    }
 };
