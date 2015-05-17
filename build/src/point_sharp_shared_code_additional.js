@@ -1024,14 +1024,21 @@ function instagram_posts_embedding_init(current_options) {
 }
 
 /**
- * Инициализация MarkDown Editor
+ * Инициализация Bootstrap Markdown
+ * https://github.com/toopay/bootstrap-markdown
  */
 function visual_editor_init() {
-    // Init MarkItUp
-    $('#new-post-form #text-input, .post-content .reply-form textarea, #post-edit-form .post-content #text-input').markdown({
-        'language': 'ru'
-    });
     $('#new-post-form, .post-content .reply-form, #post-edit-form .post-content .text').addClass('bootstrapped');
+    // Init Bootstrap Markdown
+    $('#new-post-form #text-input, .post-content .reply-form textarea, #post-edit-form .post-content #text-input').markdown({
+        'language': 'ru',
+        'onPreview': function(e) {
+            return e.getContent().split("\n").join('<br/>');
+        },
+        'onChange': function(e) {
+            console.log('on change:', e);
+        }
+    });
     $('.post-content .reply-form textarea').css({'height': '15em'});
 }
 
