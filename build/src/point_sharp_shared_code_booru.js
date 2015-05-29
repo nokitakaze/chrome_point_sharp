@@ -18,7 +18,7 @@ function Booru($links, options) {
  * Откуда тянуть картинки
  * @type {String}
  */
-Booru.baseUrl = 'https://test.g.kanaria.ru/point/get_booru_picture.php';
+Booru.baseUrl = 'https://api.kanaria.ru/point/get_booru_picture.php';
 
 /* jshint maxlen:false */
 Booru.services = {
