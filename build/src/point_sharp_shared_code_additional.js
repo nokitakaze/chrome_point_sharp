@@ -1120,10 +1120,10 @@ function smart_nsfw_init(options) {
         var top_post_selector = '';
         for (var i = 0; i < ar.length; i++) {
             var n;
-            if (n = ar[i].match(new RegExp('^ *(@([a-z0-9_-]+)\\:)?(.+)? *$'))) {
+            if (n = ar[i].match(new RegExp('^ *(@([a-z0-9_-]+):?)?(.+)? *$', 'i'))) {
+                if ((typeof(n[3]) == 'undefined') && (typeof(n[2]) == 'undefined')) {continue;}
                 var author_id = n[2];
                 var tag_id = n[3];
-                if ((typeof(tag_id) == 'undefined') && (typeof(author_id) == 'undefined')) {continue;}
 
                 var inner_selector =
                     ((typeof(tag_id) !== 'undefined') ? '.post-tag-' + tag_id : '') +
