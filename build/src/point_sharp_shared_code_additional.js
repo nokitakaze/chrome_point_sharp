@@ -307,7 +307,7 @@ function create_tag_system() {
         var tags = $(this).find('div.tags a.tag');
         for (var i = 0; i < tags.length; i++) {
             var tag_name = tags.eq(i).html().toLowerCase();
-            $(this).addClass('post-tag-' + tag_name);
+            $(this).addClass('post-tag-' + tag_sanation(tag_name));
         }
 
         // Имена пользователей
@@ -1141,7 +1141,7 @@ function smart_nsfw_init(options) {
                 var tag_id = n[3];
 
                 var inner_selector =
-                    ((typeof(tag_id) !== 'undefined') ? '.post-tag-' + tag_id : '') +
+                    ((typeof(tag_id) !== 'undefined') ? '.post-tag-' + tag_sanation(tag_id) : '') +
                     ((typeof(author_id) !== 'undefined') ? '[data-author-id="' + author_id.toLowerCase() + '"]' : '');
                 tag_selector += ',.content-wrap > div.post' + inner_selector;
                 top_post_selector += ',#top-post' + inner_selector;
@@ -1424,4 +1424,8 @@ function set_left_menu_default_new() {
     // @arts, я ебал тебя в рот. Делать несколько одинаковых id...
     $('#left-menu #menu-recent')[0].href = 'https://' + my_nick + '.point.im/recent/unread';
     $('#left-menu #menu-comments')[0].href = 'https://' + my_nick + '.point.im/comments/unread';
+}
+
+function tag_sanation(tag_name){
+    return tag_name.split(' ').join('_');
 }
