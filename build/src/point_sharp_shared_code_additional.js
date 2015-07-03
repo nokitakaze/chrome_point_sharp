@@ -176,8 +176,8 @@ function set_posts_count_label() {
     $('.content-wrap > div.post .post-id a .cn').addClass('changed_background');
 
     $('.content-wrap > div.post').each(function(num, obj) {
-        var t = $(obj).attr('data-comment-id');
-        if (typeof(t) !== 'undefined') {
+        if ((typeof($(obj).attr('data-comment-id')) !== 'undefined') ||
+            ($(obj).attr('data-inner-comment-id') !== '0')) {
             return;
         }
         var id = $(obj).attr('data-id');
@@ -192,8 +192,8 @@ function set_posts_count_label() {
             $('.content-wrap > div.post').each(function(num, obj) {
                 var id = $(obj).attr('data-id');
                 var postid = $(obj).find('.post-id a')[0];
-                var t = $(obj).attr('data-comment-id');
-                if (typeof(t) !== 'undefined') {
+                if ((typeof($(obj).attr('data-comment-id')) !== 'undefined') ||
+                    ($(obj).attr('data-inner-comment-id') !== '0')) {
                     return;
                 }
 
@@ -311,8 +311,19 @@ function create_tag_system() {
         }
 
         // Имена пользователей
+        var a = $(this).find('.post-id a').attr('href').match(new RegExp('/[a-z0-9]+(#([0-9]+))?$'));
+        var comment_id = 0;
+        if (typeof(a[2]) !== 'undefined') {
+            comment_id = a[2];
+        }
         var nick = $(this).find('.post-content a.user').first().text().toLowerCase();
-        $(this).attr('data-author-id', nick).addClass('post-author-' + nick);
+        $(this).attr({
+            'data-author-id': nick,
+            'data-inner-comment-id': comment_id
+        }).addClass('post-author-' + nick);
+        if ($(this).find('.post-content > .rec').length > 0) {
+            $(this).addClass('is-recommendation');
+        }
 
         // Свои посты
         if (nick == my_nick) {
