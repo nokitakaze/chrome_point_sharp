@@ -318,6 +318,10 @@ function pimp_my_page(options) {
         set_left_menu_default_new();
     }
 
+    if (options.is('option_embedding_youtube')){
+        youtube_video_emedding(options);
+    }
+
     // Выполняем последние платформозависимые функции
     point_loaded_last(options);
 

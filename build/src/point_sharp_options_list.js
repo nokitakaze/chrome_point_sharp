@@ -164,6 +164,11 @@ var point_sharp_options_tree = {
                                 "description": "Удалять ссылку"
                             }
                         }
+                    },
+                    "option_embedding_youtube": {
+                        "type": "boolean",
+                        "default_value": true,
+                        "description": "Встраиваем видео из Youtube"
                     }
                 }
             }

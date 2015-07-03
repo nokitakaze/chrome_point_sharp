@@ -317,3 +317,7 @@ a.postimg.sharp-preblur {
     margin: 5px 3px 5px 0;
     float: none;
 }
+
+.youtube-video-embedded {
+    border: none;
+}

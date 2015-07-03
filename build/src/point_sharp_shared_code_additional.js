@@ -1039,6 +1039,38 @@ function instagram_posts_embedding_init(current_options) {
 }
 
 /**
+ * Парсим все ссылки. Эта функция запускается из page scope
+ */
+function youtube_video_emedding(options) {
+    var youtube_video_count = 0;
+    $('.post-content a').each(function(num, obj) {
+        if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
+            return;
+        }
+
+        var href = obj.href;
+        var n;
+
+        if (n = href.match(new RegExp('^https?://(www\\.)?youtube\\.com/watch\\?v=([0-9a-z-]+)', 'i'))) {
+            var video = document.createElement('iframe');
+            $(video).attr({
+                'id':  'tweet-' + youtube_video_count,
+                'src': 'https://www.youtube.com/embed/' + n[2],
+                'data-youtube-id': n[2],
+                'data-fancybox-type': 'youtube'
+            }).css({
+                'width': 400,
+                'height': 300
+            }).addClass('youtube-video-embedded');
+            obj.parentElement.insertBefore(video, obj);
+            $(this).hide();
+
+            youtube_video_count++;
+        }
+    });
+}
+
+/**
  * Инициализация Bootstrap Markdown
  * https://github.com/toopay/bootstrap-markdown
  */
@@ -1426,6 +1458,6 @@ function set_left_menu_default_new() {
     $('#left-menu #menu-comments')[0].href = 'https://' + my_nick + '.point.im/comments/unread';
 }
 
-function tag_sanation(tag_name){
+function tag_sanation(tag_name) {
     return tag_name.split(' ').join('_');
 }
