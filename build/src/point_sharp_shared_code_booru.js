@@ -68,6 +68,10 @@ Booru.services = {
     derpibooru: {
         mask: new RegExp('^https?\\:\\/\\/derpiboo\\.ru\\/([0-9]+)', 'i'),
         matchNumber: 1
+    },
+    sankakucomplex: {
+        mask: new RegExp('^https?\\:\\/\\/chan\\.sankakucomplex\\.com\\/post\\/show\\/([0-9]+)', 'i'),
+        matchNumber: 1
     }
 };
 /* jshint maxlen:120 */
