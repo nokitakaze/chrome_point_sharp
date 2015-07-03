@@ -58,7 +58,15 @@ Booru.services = {
         matchNumber: 2
     },
     animepicturesnet: {
-        mask: new RegExp('^http\\:\\/\\/anime\\-pictures\\.net\\/pictures\\/view_post\\/([0-9]+)', 'i'),
+        mask: new RegExp('^https?\\:\\/\\/anime\\-pictures\\.net\\/pictures\\/view_post\\/([0-9]+)', 'i'),
+        matchNumber: 1
+    },
+    yandere: {
+        mask: new RegExp('^https?\\:\\/\\/yande\\.re\\/post\\/show\\/([0-9]+)', 'i'),
+        matchNumber: 1
+    },
+    derpibooru: {
+        mask: new RegExp('^https?\\:\\/\\/derpiboo\\.ru\\/([0-9]+)', 'i'),
         matchNumber: 1
     }
 };
