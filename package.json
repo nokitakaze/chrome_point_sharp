@@ -1,6 +1,6 @@
 {
     "name": "Point#",
-    "version": "2.5.1",
+    "version": "2.6.0",
     "description": "Browser extension for point.im",
     "main": "index.js",
     "scripts": {
