@@ -313,6 +313,11 @@ function pimp_my_page(options) {
     // Сохраняем список просмотренных постов
     viewed_post_system_save(options);
 
+    // Левое меню по умолчанию отправляет на новые
+    if (options.is('option_other_left_menu_default_new')){
+        set_left_menu_default_new();
+    }
+
     // Выполняем последние платформозависимые функции
     point_loaded_last(options);
 

@@ -1414,3 +1414,10 @@ function parse_markdown(text) {
 
     return html;
 }
+
+function set_left_menu_default_new() {
+    var my_nick = get_my_nick();
+    // @arts, я ебал тебя в рот. Делать несколько одинаковых id...
+    $('#left-menu #menu-recent')[0].href = 'https://' + my_nick + '.point.im/recent/unread';
+    $('#left-menu #menu-comments')[0].href = 'https://' + my_nick + '.point.im/comments/unread';
+}

@@ -279,6 +279,11 @@ var point_sharp_options_tree = {
                 "type": "boolean",
                 "default_value": true,
                 "description": "Сворачивать огромные простыни"
+            },
+            "option_other_left_menu_default_new": {
+                "type": "boolean",
+                "default_value": true,
+                "description": "По умолчанию левое меню отправляет на новые посты и комментарии"
             }
         }
     },
