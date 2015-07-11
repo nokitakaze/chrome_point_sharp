@@ -149,6 +149,11 @@ function pimp_my_page(options) {
         if (options.is('option_embedding_500px')) {
             parse_500px(options);
         }
+
+        // Фото из 500px
+        if (options.is('option_embedding_gdrive')) {
+            parse_gdrive(options);
+        }
     }
 
     // Fancybox

@@ -71,7 +71,7 @@ function parse_webp(current_options) {
     });
 }
 
-function parse_500px(current_options){
+function parse_500px(current_options) {
     $('.post-content a').each(function(num, obj) {
         if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
             return;
@@ -1486,4 +1486,73 @@ function set_left_menu_default_new() {
 
 function tag_sanation(tag_name) {
     return tag_name.split(' ').join('_');
+}
+
+function parse_gdrive(current_options) {
+    var gdrive_id = 0;
+
+    $('.post-content a').each(function(num, obj) {
+        if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
+            return;
+        }
+
+        if (!obj.href.match(new RegExp('^https?://(docs|drive)\\.google\\.com/', 'i'))) {
+            return;
+        }
+
+        var parent_width = $(obj.parentElement).width();
+
+        var n;
+        if (n = obj.href.match(new RegExp('^https?://(docs|drive)\\.google\\.com/file/d/([a-z0-9_-]+)', 'i'))) {
+            // Просто файлы
+            var iframe = document.createElement('iframe');
+            $(iframe).attr({
+                'src': 'https://drive.google.com/file/d/' + n[2] + '/preview',
+                'allowfullscreen': 'true',
+                'data-drive-id': n[2],
+                'data-drive-type': 'file'
+            }).css({
+                'max-width': '640px',
+                'border': 'none',
+                'width': Math.floor(parent_width * 0.9),
+                'height': Math.ceil(parent_width * 0.9 * 480 / 640)
+            }).addClass('embedded_gdrive').addClass('embedded_gdrive_' + gdrive_id).addClass('point-sharp-added');
+            gdrive_id++;
+
+            obj.parentElement.insertBefore(iframe, obj);
+            $(obj).addClass('point-sharp-processed');
+
+            if (current_options.is('option_embedding_gdrive_remove_original_link', false)) {
+                $(obj).hide();
+            }
+
+            return;
+        }
+
+        if (obj.href.match(new RegExp('^https?://(docs|drive)\\.google\\.com/(folderview|embeddedfolderview)', 'i'))) {
+            iframe = document.createElement('iframe');
+            var parsed_url = Booru.getGetParamsFromUrl(obj.href);
+
+            $(iframe).attr({
+                'src': 'https://drive.google.com/embeddedfolderview?id=' + parsed_url.id + '#grid',
+                'allowfullscreen': 'true',
+                'data-drive-id': parsed_url.id,
+                'data-drive-type': 'folder'
+            }).css({
+                'max-width': '640px',
+                'border': 'none',
+                'width': Math.floor(parent_width * 0.9),
+                'height': Math.ceil(parent_width * 0.9 * 480 / 640)
+            }).addClass('embedded_gdrive').addClass('embedded_gdrive_' + gdrive_id).addClass('point-sharp-added');
+            gdrive_id++;
+
+            obj.parentElement.insertBefore(iframe, obj);
+            $(obj).addClass('point-sharp-processed');
+
+            if (current_options.is('option_embedding_gdrive_remove_original_link', false)) {
+                $(obj).hide();
+            }
+        }
+
+    });
 }

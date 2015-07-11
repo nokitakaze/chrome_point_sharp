@@ -174,6 +174,18 @@ var point_sharp_options_tree = {
                         "type": "boolean",
                         "default_value": true,
                         "description": "Встраиваем фото из 500px"
+                    },
+                    "option_embedding_gdrive": {
+                        "type": "boolean",
+                        "default_value": true,
+                        "description": "Загружать Google Drive",
+                        "children": {
+                            "option_embedding_gdrive_remove_original_link": {
+                                "type": "boolean",
+                                "default_value": false,
+                                "description": "Удалять ссылку"
+                            }
+                        }
                     }
                 }
             }
