@@ -71,6 +71,30 @@ function parse_webp(current_options) {
     });
 }
 
+function parse_500px(current_options){
+    $('.post-content a').each(function(num, obj) {
+        if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
+            return;
+        }
+
+        if (obj.href.match(new RegExp('^(https?://drscdn.500px.org/photo/.+)', 'i'))) {
+            var img = document.createElement('img');
+            $(img).attr({
+                'src': obj.href
+            }).addClass('point-sharp-added');
+            $(obj).attr({
+                'target': '_blank'
+            }).css({
+                'display': 'block',
+                'clear': 'both',
+                'float': 'none'
+            }).addClass('postimg').html('').append(img).addClass('parsed-500px-link').addClass('point-sharp-processed');
+
+            // @todo Картинки в ряд
+        }
+    });
+}
+
 // Видео
 function parse_all_videos(current_options) {
     $('.post-content a').each(function(num, obj) {

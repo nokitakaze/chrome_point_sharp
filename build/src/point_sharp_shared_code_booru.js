@@ -87,6 +87,10 @@ Booru.services = {
         params: {
             'add_domain': 1
         }
+    },
+    '500px': {
+        mask: new RegExp('^https?://500px\\.com/photo/([0-9]+)', 'i'),
+        matchNumber: 1
     }
 };
 /* jshint maxlen:120 */

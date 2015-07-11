@@ -144,6 +144,11 @@ function pimp_my_page(options) {
         if (options.is('option_embedding_instagram_posts')) {
             tumblr_posts_embedding_init(options);
         }
+
+        // Фото из 500px
+        if (options.is('option_embedding_500px')) {
+            parse_500px(options);
+        }
     }
 
     // Fancybox

@@ -169,6 +169,11 @@ var point_sharp_options_tree = {
                         "type": "boolean",
                         "default_value": true,
                         "description": "Встраиваем видео из Youtube"
+                    },
+                    "option_embedding_500px": {
+                        "type": "boolean",
+                        "default_value": true,
+                        "description": "Встраиваем фото из 500px"
                     }
                 }
             }
