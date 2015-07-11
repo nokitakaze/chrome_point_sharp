@@ -5,10 +5,11 @@
  */
 
 console_group('point-sharp');
-console.info("shared_code.js");
+console.info("shared_code.js", new Date());
 
 $(document).ready(function() {
     // Проверяем, был ли уже загружен Point# или Point+
+    console.info('Document ready', new Date());
     var point_plus_debug = $('#point-plus-debug');
     if (point_plus_debug.length > 0) {
         console.info('Point+', point_plus_debug.data('point-plus-version'), 'already loaded');
@@ -51,7 +52,7 @@ $(document).ready(function() {
  * @param options Опции из OptionManager
  */
 function pimp_my_page(options) {
-    console.log("pimp_my_page start");
+    console.log("pimp_my_page start", new Date());
     $('#point-plus-debug').attr({
         'data-point-plus-version': options.version()
     }).text('Point# ' + options.version() + ' loading...');
@@ -314,11 +315,11 @@ function pimp_my_page(options) {
     viewed_post_system_save(options);
 
     // Левое меню по умолчанию отправляет на новые
-    if (options.is('option_other_left_menu_default_new')){
+    if (options.is('option_other_left_menu_default_new')) {
         set_left_menu_default_new();
     }
 
-    if (options.is('option_embedding_youtube')){
+    if (options.is('option_embedding_youtube')) {
         youtube_video_emedding(options);
     }
 

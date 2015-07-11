@@ -24,17 +24,21 @@ function local_storage_get(key, callback) {
         }
     }
 
+    /**
+     * @var {Object} chrome
+     */
     chrome.storage.sync.get(real_keys, function(sync_data_index) {
         var full_values = {};
         var real_keys = [];
+        var max, i;
         if (typeof(key) == 'string') {
             if (typeof(sync_data_index[key + '_index_count']) == 'undefined') {
                 callback(sync_data_index[key]);
                 return;
             }
 
-            var max = sync_data_index[key + '_index_count'];
-            for (var i = 0; i <= max; i++) {
+            max = sync_data_index[key + '_index_count'];
+            for (i = 0; i <= max; i++) {
                 real_keys.push(key + '_index_' + i);
             }
         } else {
@@ -44,8 +48,8 @@ function local_storage_get(key, callback) {
                     continue;
                 }
 
-                var max = sync_data_index[key[real_key] + '_index_count'];
-                for (var i = 0; i <= max; i++) {
+                max = sync_data_index[key[real_key] + '_index_count'];
+                for (i = 0; i <= max; i++) {
                     real_keys.push(key[real_key] + '_index_' + i);
                 }
             }
@@ -57,10 +61,11 @@ function local_storage_get(key, callback) {
         }
 
         chrome.storage.sync.get(real_keys, function(sync_data) {
+            var max, i;
             if (typeof(key) == 'string') {
-                var max = sync_data_index[key + '_index_count'];
+                max = sync_data_index[key + '_index_count'];
                 var str = '';
-                for (var i = 0; i <= max; i++) {
+                for (i = 0; i <= max; i++) {
                     str += sync_data[key + '_index_' + i];
                 }
                 try {
@@ -71,9 +76,9 @@ function local_storage_get(key, callback) {
                 callback(temporary_value);
             } else {
                 for (var real_key in key) {
-                    var max = sync_data_index[key[real_key] + '_index_count'];
+                    max = sync_data_index[key[real_key] + '_index_count'];
                     str = '';
-                    for (var i = 0; i <= max; i++) {
+                    for (i = 0; i <= max; i++) {
                         str += sync_data[key[real_key] + '_index_' + i];
                     }
                     try {
@@ -100,6 +105,10 @@ function local_storage_get(key, callback) {
 function local_storage_set(data, success_callback) {
     console.log("Content code. local_storage_set", data);
     var data_processed = {};
+    /**
+     * @var {Object} chrome.storage.sync
+     * @var {Number} chrome.storage.sync.QUOTA_BYTES_PER_ITEM
+     */
     const max_item_length = chrome.storage.sync.QUOTA_BYTES_PER_ITEM - 10;
     for (var key in data) {
         var value = JSON.stringify(data[key]);

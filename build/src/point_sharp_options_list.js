@@ -597,6 +597,7 @@ function point_sharp_options_branch_view(branch, callback) {
  */
 function point_sharp_options_init(callback) {
     // Перебор всех веток в point_sharp_options_tree, превращаем их в список с default value
+    console.info('point_sharp_options_init', new Date());
     /**
      * @type {object} Неструктурированный сырой список опций
      */
@@ -611,8 +612,9 @@ function point_sharp_options_init(callback) {
 
     // Берём версию и Local Storage
     point_sharp_get_version(function(point_sharp_version) {
+        console.info('point_sharp_get_version', new Date());
         local_storage_get('options', function(raw_options) {
-            console.info("Version: ", point_sharp_version, "Options from storage: ", raw_options);
+            console.info("Version: ", point_sharp_version, "Options from storage: ", raw_options, new Date());
             if (raw_options == null) {
                 // Мы загрузились в первый раз... для чего... для кого
                 console.info('raw_options is null. First loading?');
@@ -644,7 +646,6 @@ function point_sharp_options_init(callback) {
             callback(options);
         });
     });
-
 }
 
 

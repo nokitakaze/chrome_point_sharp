@@ -1051,7 +1051,7 @@ function youtube_video_emedding(options) {
         var href = obj.href;
         var n;
 
-        if (n = href.match(new RegExp('^https?://(www\\.)?youtube\\.com/watch\\?v=([0-9a-z-]+)', 'i'))) {
+        if (n = href.match(new RegExp('^https?://(www\\.)?youtube\\.com/watch\\?v=([0-9a-z_-]+)', 'i'))) {
             var video = document.createElement('iframe');
             $(video).attr({
                 'id':  'tweet-' + youtube_video_count,
