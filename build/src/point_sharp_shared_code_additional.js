@@ -33,7 +33,8 @@ function parse_webm(current_options) {
                 attr('controls', 'controls').css({
                     'display': 'block',
                     'max-width': '95%'
-                }).addClass('parsed-webm-link').addClass('point-sharp-added').find('source').attr('src', obj.href);
+                }).addClass('parsed-webm-link').addClass('point-sharp-added').
+                addClass('embedded_video').find('source').attr('src', obj.href);
 
             obj.parentElement.insertBefore(player, obj);
             $(obj).addClass('point-sharp-processed');
@@ -81,13 +82,14 @@ function parse_all_videos(current_options) {
         var n;
 
         if (n =
-            href.match(new RegExp('^https?:\\/\\/([a-z0-9.-]+)\\/[a-z0-9_\\/.%-]+\\.(webm|avi|mp4|mpg|mpeg)(\\?.+)?$', 'i'))) {
+                href.match(new RegExp('^https?:\\/\\/([a-z0-9.-]+)\\/[a-z0-9_\\/.%-]+\\.(webm|avi|mp4|mpg|mpeg)(\\?.+)?$',
+                    'i'))) {
             var player = document.createElement('video');
             var mime = video_extension_to_mime(n[2]);
             $(player).html('<source src="" type="" />').attr('controls', 'controls').css({
                 'display': 'block',
                 'max-width': '95%'
-            }).addClass('parsed-webm-link').addClass('point-sharp-added').find('source').attr({
+            }).addClass('parsed-webm-link').addClass('point-sharp-added').addClass('embedded_video').find('source').attr({
                 'src': href,
                 'type': mime
             });
@@ -238,7 +240,7 @@ function parse_pleercom_links_nokita() {
             });
 
             var player_div = document.createElement('div');
-            $(player_div).addClass('embeded_audio').addClass('embeded_audio_' + n[1]);
+            $(player_div).addClass('embedded_audio').addClass('embedded_audio_' + n[1]);
             player_div.appendChild(player);
 
             obj.parentElement.insertBefore(player_div, obj);
@@ -253,7 +255,7 @@ function parse_pleercom_links_ajax(current_options) {
 
         if (n = href.match(new RegExp('^https?:\\/\\/pleer\\.com\\/tracks\\/([0-9a-z]+)', 'i'))) {
             var player_div = document.createElement('div');
-            $(player_div).addClass('embeded_audio').addClass('embeded_audio_' + n[1]);
+            $(player_div).addClass('embedded_audio').addClass('embedded_audio_' + n[1]);
             $(obj).addClass('pleercom_original_link_' + n[1]);
             obj.parentElement.insertBefore(player_div, obj);
             create_pleercom_ajax(n[1], current_options);
@@ -277,8 +279,8 @@ function create_pleercom_ajax(id, current_options) {
                 'src': answer.track_link,
                 'controls': 'controls',
                 'preload': 'auto'
-            }).addClass('point-sharp-added');
-            $('.embeded_audio_' + this.settings.pleer_id)[0].appendChild(player);
+            }).addClass('point-sharp-added').addClass('embedded_video');
+            $('.embedded_audio_' + this.settings.pleer_id)[0].appendChild(player);
             $('.pleercom_original_link_' + this.settings.pleer_id).addClass('point-sharp-processed');
 
             if (current_options.is('option_embedding_pleercom_orig_link', false)) {
@@ -463,7 +465,7 @@ function parse_coub_links(current_options) {
                 'border': 'none',
                 'width': Math.floor(parent_width * 0.9),
                 'height': Math.ceil(parent_width * 0.9 * 480 / 640)
-            }).addClass('embeded_video').addClass('embeded_video_' + n[1]);
+            }).addClass('embedded_video').addClass('embedded_coub').addClass('embedded_coub_' + n[1]);
 
             obj.parentElement.insertBefore(player, obj);
 
@@ -1013,7 +1015,7 @@ function instagram_posts_embedding_init(current_options) {
                     var answer = JSON.parse(text);
                     var new_post = document.createElement('a');
                     $(new_post).attr({
-                        'id':   'instagram-' + insagram_post_count,
+                        'id': 'instagram-' + insagram_post_count,
                         'href': 'http://instagram.com/p/' + n[2] + '/media/?size=l',
                         'title': answer.title,
                         'target': '_blank',
@@ -1054,7 +1056,7 @@ function youtube_video_emedding(options) {
         if (n = href.match(new RegExp('^https?://(www\\.)?youtube\\.com/watch\\?v=([0-9a-z_-]+)', 'i'))) {
             var video = document.createElement('iframe');
             $(video).attr({
-                'id':  'tweet-' + youtube_video_count,
+                'id': 'tweet-' + youtube_video_count,
                 'src': 'https://www.youtube.com/embed/' + n[2],
                 'data-youtube-id': n[2],
                 'data-fancybox-type': 'youtube'
