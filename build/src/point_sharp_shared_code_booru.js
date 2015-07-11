@@ -27,12 +27,10 @@ Booru.services = {
         matchNumber: 1
     },
     gelbooru: {
-        mask: new RegExp('^https?\\://(www\\.)?gelbooru\\.com\\/index\\.php\\?page\\=post&s\\=view&id=([0-9]+)', 'i'),
-        matchNumber: 2
+        mask: new RegExp('^https?\\://(www\\.)?gelbooru\\.com\\/index\\.php', 'i')
     },
     safebooru: {
-        mask: new RegExp('^https?\\://(www\\.)?safebooru\\.org\\/index\\.php\\?page\\=post&s\\=view&id=([0-9]+)', 'i'),
-        matchNumber: 2
+        mask: new RegExp('^https?\\://(www\\.)?safebooru\\.org\\/index\\.php', 'i')
     },
     deviantart: {
         mask: new RegExp('^https?\\://(www\\.)?([a-z0-9-]+\\.)?deviantart\\.com\\/art/[0-9a-z-]+?\\-([0-9]+)(\\?.+)?$', 'i'),
@@ -54,8 +52,10 @@ Booru.services = {
         }
     },
     pixiv: {
-        mask: new RegExp('^https?://(www\\.)?pixiv\\.net\\/member_illust\\.php\\?mode\\=medium\\&illust_id\\=([0-9]+)', 'i'),
-        matchNumber: 2
+        mask: new RegExp('^https?://(www\\.)?pixiv\\.net\\/member_illust\\.php', 'i'),
+        get_params: {
+            'id': 'illust_id'
+        }
     },
     animepicturesnet: {
         mask: new RegExp('^https?\\:\\/\\/anime\\-pictures\\.net\\/pictures\\/view_post\\/([0-9]+)', 'i'),
@@ -65,13 +65,28 @@ Booru.services = {
         mask: new RegExp('^https?\\:\\/\\/yande\\.re\\/post\\/show\\/([0-9]+)', 'i'),
         matchNumber: 1
     },
-    derpibooru: {
-        mask: new RegExp('^https?\\:\\/\\/derpiboo\\.ru\\/([0-9]+)', 'i'),
-        matchNumber: 1
-    },
     sankakucomplex: {
         mask: new RegExp('^https?\\:\\/\\/chan\\.sankakucomplex\\.com\\/post\\/show\\/([0-9]+)', 'i'),
         matchNumber: 1
+    },
+    konachan: {
+        mask: new RegExp('https?://konachan\\.(net|com)\\/post\\/show\\/([0-9]+)', 'i'),
+        matchNumber: 2,
+        params: {
+            'add_domain_extension': 1
+        }
+    },
+    rule34: {
+        mask: new RegExp('^https?\\://(www\\.)?rule34\\.xxx\\/index\\.php', 'i')
+    },
+    xbooru: {
+        mask: new RegExp('^https?\\://(www\\.)?xbooru\\.com\\/index\\.php', 'i')
+    },
+    booruorg: {
+        mask: new RegExp('^https?\\://([a-z0-9-]+)\\.booru\\.org\\/index\\.php', 'i'),
+        params: {
+            'add_domain': 1
+        }
     }
 };
 /* jshint maxlen:120 */
@@ -116,43 +131,67 @@ Booru.prototype.loadAllImages = function($links, removeOriginal) {
  * @param {String} href URL картинки (который вставлен в пост)
  */
 Booru.prototype.createImageFromService = function(service, href) {
+    /**
+     * @var {Object} serviceInfo
+     * @var {Object} serviceInfo.get_params
+     * @var {Number} serviceInfo.matchNumber
+     */
     var serviceInfo = this.constructor.services[service];
     var matches = href.match(serviceInfo.mask);
 
     if (matches) {
-        var imageArgs = [service, matches[serviceInfo.matchNumber]];
         var params = {};
 
-        if (serviceInfo.params) {
+        if (typeof(serviceInfo.matchNumber) === 'number') {
+            params.id = matches[serviceInfo.matchNumber];
+        }
+
+        if (typeof(serviceInfo.params) === 'object') {
             for (var key in serviceInfo.params) {
                 if (serviceInfo.params.hasOwnProperty(key)) {
                     params[key] = matches[serviceInfo.params[key]];
                 }
             }
-
-            imageArgs.push(params);
         }
 
-        return this.createImage.apply(this, imageArgs);
+        // Разбираем http get
+        var get_params = Booru.getGetParamsFromUrl(href);
+
+        if (typeof(serviceInfo.get_params) === 'object') {
+            for (key in serviceInfo.get_params) {
+                if (serviceInfo.get_params.hasOwnProperty(key)) {
+                    params[key] = matches[serviceInfo.get_params[key]];
+                }
+            }
+        }
+        if (typeof(params.id) === 'undefined') {
+            params.id = get_params.id;
+        }
+
+
+        return this.createImage(service, params);
     }
 };
 
 /**
  * Создаёт ссылку с картикной
  * @param {String} service Ключевое имя сервиса для Никиты
- * @param {String} id Идентификатор картинки
  * @param {Object} [params] Дополнительные параметры, которые надо добавить в url
- * @returns {jQuery} Элемент ссылки
+ * @returns {jQuery|null} Элемент ссылки
  */
-Booru.prototype.createImage = function(service, id, params) {
+Booru.prototype.createImage = function(service, params) {
+    if (typeof(params.id) === 'undefined') {
+        console.error('Booru set ', service, params, ' does not contain id');
+        return null;
+    }
+
     var link = document.createElement('a');
     var img = document.createElement('img');
-    var title = service + ' image #' + id;
-    params = (typeof(params) == 'undefined') ? [] : params;
+    var title = service + ' image #' + params.id;
 
     $(img).attr({
         alt: title,
-        src: this.getImageLink(service, id, params, 'thumb')
+        src: this.getImageLink(service, params.id, params, 'thumb')
     }).on('error', function() {
         var this_image = $(this);
         var link = this_image.parents('.booru_pic').first();
@@ -184,17 +223,17 @@ Booru.prototype.createImage = function(service, id, params) {
     });
 
     $(link).addClass('booru_pic')
-        .addClass('booru-' + service + '-' + id)
+        .addClass('booru-' + service + '-' + params.id)
         .addClass('postimg')
         .attr({
-            href: this.getImageLink(service, id, params, 'normal'),
+            href: this.getImageLink(service, params.id, params, 'normal'),
             id: 'booru_pic_' + this.count,
             title: title,
             target: '_blank',
             'data-booru-service': service,
-            'data-booru-id': id,
+            'data-booru-id': params.id,
             'data-booru-params': JSON.stringify(params),
-            'data-booru-mime-url': this.getImageLink(service, id, params, 'mime')
+            'data-booru-mime-url': this.getImageLink(service, params.id, params, 'mime')
         }).append(img);
     this.count++;
 
@@ -215,4 +254,26 @@ Booru.prototype.getImageLink = function(service, id, params, mode) {
             domain: service,
             id: id
         }, params)) + '&mode=' + mode;
+};
+
+/**
+ * Парсим URL
+ *
+ * @param {String} href
+ * @returns {Object}
+ */
+Booru.getGetParamsFromUrl = function(href) {
+    var n1 = href.match(new RegExp('\\?(.+?)(#.*)?$'));
+    if ((n1 === null) || (typeof n1[1] !== 'string')) {
+        return {};
+    }
+
+    var get_params = {};
+    var n2 = n1[1].split("&");
+    for (var i = 0; i < n2.length; i++) {
+        var n3 = n2[i].split('=');
+        get_params[n3[0]] = (typeof n3[1] !== 'undefined') ? n3[1] : '';
+    }
+
+    return get_params;
 };
