@@ -45,15 +45,21 @@ div#markItUpText-input {
 /* NSFW-content */
 .blur-nsfw-images a.postimg img,
 #comments.blur-nsfw-images a.postimg img,
-.blur-nsfw-images iframe, .blur-nsfw-images .embedded_video,
-.black-ant iframe, .black-ant .embedded_video {
+.blur-nsfw-images iframe,
+.blur-nsfw-images .embedded_video,
+.black-ant iframe,
+.black-ant .embedded_video {
     margin-top: 5px;
     -webkit-filter: blur(30px);
     filter: blur(30px);
 }
 
 .blur-nsfw-images a.postimg:hover img,
-#comments.blur-nsfw-images a.postimg:hover img {
+#comments.blur-nsfw-images a.postimg:hover img,
+.blur-nsfw-images iframe:hover,
+.blur-nsfw-images .embedded_video:hover,
+.black-ant iframe:hover,
+.black-ant .embedded_video:hover {
     -webkit-filter: none;
     filter: none;
 }
