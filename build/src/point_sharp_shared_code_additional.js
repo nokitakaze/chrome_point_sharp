@@ -1092,6 +1092,21 @@ function youtube_video_emedding(options) {
             $(this).hide();
 
             youtube_video_count++;
+        } else if (n = href.match(new RegExp('^https?://(www\\.)?youtu\\.be/([0-9a-z_-]+)', 'i'))) {
+            video = document.createElement('iframe');
+            $(video).attr({
+                'id': 'tweet-' + youtube_video_count,
+                'src': 'https://www.youtube.com/embed/' + n[2],
+                'data-youtube-id': n[2],
+                'data-fancybox-type': 'youtube'
+            }).css({
+                'width': 400,
+                'height': 300
+            }).addClass('youtube-video-embedded');
+            obj.parentElement.insertBefore(video, obj);
+            $(this).hide();
+
+            youtube_video_count++;
         }
     });
 }
