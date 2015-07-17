@@ -1497,6 +1497,12 @@ function set_left_menu_default_new() {
     // @arts, я ебал тебя в рот. Делать несколько одинаковых id...
     $('#left-menu #menu-recent')[0].href = 'https://' + my_nick + '.point.im/recent/unread';
     $('#left-menu #menu-comments')[0].href = 'https://' + my_nick + '.point.im/comments/unread';
+
+    if (document.location.pathname.toLowerCase() == '/recent/unread') {
+        $('#subheader-wrap #subheader a').first().attr({
+            'href': 'https://' + my_nick + '.point.im/recent'
+        });
+    }
 }
 
 function tag_sanation(tag_name) {
