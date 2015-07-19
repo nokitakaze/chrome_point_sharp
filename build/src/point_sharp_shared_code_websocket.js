@@ -135,7 +135,8 @@ function skobkin_websocket_init(options) {
                         case 'post':
                             console_group_collapsed('ws-post #' + wsMessage.post_id);
 
-                            if (options.is('option_ws_posts_notifications')) {
+                            if (options.is('option_ws_posts_notifications') &&
+                                (wsMessage.author.toLowerCase() != my_nick_lower)) {
                                 var tags_text = '';
                                 for (var i = 0; i < wsMessage.tags.length; i++) {
                                     tags_text += ' ' + wsMessage.tags[i];
