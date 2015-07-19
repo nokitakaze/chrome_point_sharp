@@ -10,6 +10,8 @@
  * @param options Опции, полученные из основной функции
  */
 function skobkin_websocket_init(options) {
+    var my_nick_lower = get_my_nick().toLowerCase();
+
     // SSL or plain
     var ws = new WebSocket(((location.protocol == 'https:') ? 'wss' : 'ws') + '://point.im/ws');
     console.log('WebSocket created: ', ws);
@@ -44,15 +46,16 @@ function skobkin_websocket_init(options) {
                             console_group_collapsed('ws-comment' + wsMessage.post_id + '/' + wsMessage.comment_id);
 
                             // Desktop notifications
-                            if (options.is('option_ws_comments_notifications')) {
+                            if (options.is('option_ws_comments_notifications') &&
+                                (wsMessage.author.toLowerCase() != my_nick_lower)) {
                                 html5_notification({
                                     notificationId: 'comment_' + wsMessage.post_id + '#' + wsMessage.comment_id,
-                                    avatarUrl:      getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
-                                    title:          '@' + wsMessage.author + ' #' + wsMessage.post_id + '/' +
-                                                    wsMessage.comment_id,
+                                    avatarUrl: getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
+                                    title: '@' + wsMessage.author + ' #' + wsMessage.post_id + '/' +
+                                           wsMessage.comment_id,
                                     text: wsMessage.text,
-                                    url:            'https://' + wsMessage.author.toLowerCase() + '.point.im/' +
-                                                    wsMessage.post_id + '#' + wsMessage.comment_id
+                                    url: 'https://' + wsMessage.author.toLowerCase() + '.point.im/' +
+                                         wsMessage.post_id + '#' + wsMessage.comment_id
                                 }, function(response) {});
                             }
 
@@ -143,14 +146,14 @@ function skobkin_websocket_init(options) {
 
                                 html5_notification({
                                     notificationId: 'post_' + wsMessage.post_id,
-                                    avatarUrl:      getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
-                                    title:          'Post by @' + wsMessage.author + ' #' + wsMessage.post_id,
-                                    text:           tags_text + wsMessage.text,
-                                    url:            'https://' + wsMessage.author.toLowerCase() + '.point.im/' + wsMessage.post_id
+                                    avatarUrl: getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
+                                    title: 'Post by @' + wsMessage.author + ' #' + wsMessage.post_id,
+                                    text: tags_text + wsMessage.text,
+                                    url: 'https://' + wsMessage.author.toLowerCase() + '.point.im/' + wsMessage.post_id
                                 }, function(response) {});
                             }
 
-                            var unread_count = parseInt($('#main #left-menu #menu-recent .unread').text(), 10);
+                            unread_count = parseInt($('#main #left-menu #menu-recent .unread').text(), 10);
                             $('#main #left-menu #menu-recent .unread').text(unread_count + 1).show();
 
                             console_group_end();
@@ -164,10 +167,10 @@ function skobkin_websocket_init(options) {
                             if (options.is('option_ws_subscription')) {
                                 html5_notification({
                                     notificationId: 'subscription_' + subscription_user_name,
-                                    avatarUrl:      getProtocol() + '//point.im/avatar/' + subscription_user_name + '/80',
-                                    title:          '@' + wsMessage.from + ' подписался на вас',
+                                    avatarUrl: getProtocol() + '//point.im/avatar/' + subscription_user_name + '/80',
+                                    title: '@' + wsMessage.from + ' подписался на вас',
                                     text: '',
-                                    url:            'https://' + subscription_user_name + '.point.im/'
+                                    url: 'https://' + subscription_user_name + '.point.im/'
                                 }, function(response) {});
                             }
                             break;
@@ -263,11 +266,11 @@ function ajax_get_comments_post_comment($post, csRf, options) {
 
     $ajax({
         type: 'POST',
-        url:      '/api/post/' + $post.data('id'),
+        url: '/api/post/' + $post.data('id'),
         postdata: 'text=' + urlencode(raw_text) + ((comment_id > 0) ? '&comment_id=' + urlencode(comment_id) : ''),
         headers: [['X-CSRF', csRf]],
         error: function() {
-            console.error('AJAX request HTTP error while sending the comment');
+            console.error('AJAX request HTTP error while sending the comment', this);
 
             smart_form_post('/' + $('#top-post').attr('data-id'), {
                 'text': raw_text,
@@ -306,40 +309,42 @@ function ajax_get_comments_post_comment($post, csRf, options) {
                 $('#reply-' + $post.data('id') + '_' + $post.data('comment-id')).prop('checked', false);
             }
 
-            // Creating the comment HTML
-            ajax_get_comments_create_comment_elements({
-                    id: data.comment_id,
-                    toId: $post.data('comment-id') || null,
-                    postId: $post.data('id'),
-                    author: $('#name h1').text(),
-                    text: raw_text,
-                    html: parse_markdown(raw_text),
-                    options: current_options,
-                    commentType: 'comment'
-                },
-                function($comment, callback_again) {
-                    // Эта функция добавляет элемент $comment в DOM
+            if (!options.is('option_ws')) {
+                // Creating the comment HTML
+                ajax_get_comments_create_comment_elements({
+                        id: data.comment_id,
+                        toId: $post.data('comment-id') || null,
+                        postId: $post.data('id'),
+                        author: $('#name h1').text(),
+                        text: raw_text,
+                        html: parse_markdown(raw_text),
+                        options: current_options,
+                        commentType: 'comment'
+                    },
+                    function($comment, callback_again) {
+                        // Эта функция добавляет элемент $comment в DOM
 
-                    // If list mode or not addressed to other comment
-                    if ($('#comments #tree-switch a').eq(0).hasClass('active') ||
-                        ($post.data('comment-id') === undefined)) {
-                        // Adding to the end of the list
-                        $('.content-wrap #comments #post-reply').before($comment);
-                    } else {
-                        // Check for children
-                        var $parentCommentChildren = $post.next('.comments');
-
-                        // If child comment already exist
-                        if ($parentCommentChildren.length) {
-                            $parentCommentChildren.append($comment);
+                        // If list mode or not addressed to other comment
+                        if ($('#comments #tree-switch a').eq(0).hasClass('active') ||
+                            ($post.data('comment-id') === undefined)) {
+                            // Adding to the end of the list
+                            $('.content-wrap #comments #post-reply').before($comment);
                         } else {
-                            $post.after($('<div>').addClass('comments').append($comment));
-                        }
-                    }
+                            // Check for children
+                            var $parentCommentChildren = $post.next('.comments');
 
-                    callback_again();
-                }
-            );
+                            // If child comment already exist
+                            if ($parentCommentChildren.length) {
+                                $parentCommentChildren.append($comment);
+                            } else {
+                                $post.after($('<div>').addClass('comments').append($comment));
+                            }
+                        }
+
+                        callback_again();
+                    }
+                );
+            }
 
             // Cleaning textarea
             textarea.val('');
