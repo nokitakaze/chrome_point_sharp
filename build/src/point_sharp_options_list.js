@@ -188,6 +188,11 @@ var point_sharp_options_tree = {
                         }
                     }
                 }
+            },
+            "option_vimeo_width": {
+                "type": "boolean",
+                "default_value": true,
+                "description": "Vimeo растягивается на всю ширину"
             }
         }
     },

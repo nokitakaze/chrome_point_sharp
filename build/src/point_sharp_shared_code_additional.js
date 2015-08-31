@@ -190,6 +190,10 @@ function remark_entire_page(options) {
         youtube_video_embedding(options);
     }
 
+    if (options.is('option_vimeo_width')) {
+        update_block_vimeo_width();
+    }
+
     // All external links
     external_links_target_blank();
 }
@@ -1745,4 +1749,17 @@ function set_post_comments_read() {
             'url': '//' + window.location.host + window.location.pathname + '?setread' + Math.random()
         });
     }, 60000);
+}
+
+/**
+ * Растягиваем Vimeo на всю ширину
+ */
+function update_block_vimeo_width() {
+    $('.post-content iframe').each(function(num, obj) {
+        if (obj.src.match(new RegExp('^https?://player\\.vimeo\\.com/', 'i'))) {
+            $(obj).css({'width': '95%'}).height(
+                Math.ceil($(obj).width() * 9 / 16)
+            );
+        }
+    });
 }
