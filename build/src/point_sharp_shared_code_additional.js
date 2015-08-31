@@ -1075,7 +1075,8 @@ function tumblr_posts_embedding_init(options) {
 
     var tumblr_post_count = 0;
     $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
+        if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')
+            || ($(obj).parents('.point-sharp-added').length > 0)) {
             return;
         }
 
