@@ -1,5 +1,5 @@
-/*
- * Скрипт, выполняющийся на заднем плане
+/**
+ * Скрипт, выполняющийся на заднем плане в Google Chrome
  */
 
 console.info('Point# background.js loaded');
@@ -22,7 +22,7 @@ function getVersion() {
 chrome.notifications.onClicked.addListener(function(notificationId) {
     // Detecting notification type
     if (notificationId.indexOf('comment_') === 0) {
-        tab_url = 'https://point.im/' + notificationId.replace(/comment_/g, '');
+        var tab_url = 'https://point.im/' + notificationId.replace(/comment_/g, '');
     } else if (notificationId.indexOf('post_') === 0) {
         tab_url = 'https://point.im/' + notificationId.replace(/post_/g, '');
     }
@@ -36,8 +36,9 @@ chrome.notifications.onClicked.addListener(function(notificationId) {
 });
 
 // Message listener
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-    console.log('Received message from tab #%s: %O', (typeof(sender.tab) != 'undefined') ? sender.tab.id : 'undefined', message);
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+    console.log('Received message from tab #%s: %O',
+        (typeof(sender.tab) != 'undefined') ? sender.tab.id : 'undefined', message);
 
     if (message) {
         switch (message.type) {
@@ -46,10 +47,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                 sendResponse(true);
 
                 console.log('Showed pageAction for tab #%s', sender.tab.id);
-
-                // Fuck You, Chrome API documentation!!11
                 return true;
-                break;
 
             case 'hidePageAction':
                 chrome.pageAction.hide(sender.tab.id);
@@ -67,28 +65,24 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                         message: message.text,
                         priority: 0,
                         isClickable: true
-                    }, function (notificationId) {
+                    }, function(notificationId) {
                         console.info('Notification "%s" created', notificationId);
 
                         sendResponse(true);
                     }
                 );
-
-                // Fuck You, Chrome API documentation!!11
                 return true;
-                break;
 
             case 'getManifestVersion':
                 sendResponse({version: getVersion()});
                 return true;
-                break;
 
             case 'listenNotificationClicks':
                 // Adding notification click event listener
-                chrome.notifications.onClicked.addListener(function (notificationId) {
+                chrome.notifications.onClicked.addListener(function(notificationId) {
                     // Detecting notification type
                     if (notificationId.indexOf('comment_') === 0) {
-                        tab_url = message.protocol + '//' + 'point.im/' + notificationId.replace(/comment_/g, '');
+                        var tab_url = message.protocol + '//' + 'point.im/' + notificationId.replace(/comment_/g, '');
                     } else if (notificationId.indexOf('post_') === 0) {
                         tab_url = message.protocol + '//' + 'point.im/' + notificationId.replace(/post_/g, '');
                     }
@@ -102,15 +96,11 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                 });
 
                 sendResponse(true);
-
-                // Fuck You, Chrome API documentation!
                 return true;
-                break;
 
             default:
                 sendResponse(false);
                 return true;
-                break;
         }
     }
 });

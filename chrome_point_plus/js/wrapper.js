@@ -24,9 +24,6 @@ function local_storage_get(key, callback) {
         }
     }
 
-    /**
-     * @var {Object} chrome
-     */
     chrome.storage.sync.get(real_keys, function(sync_data_index) {
         var full_values = {};
         var real_keys = [];
@@ -105,10 +102,6 @@ function local_storage_get(key, callback) {
 function local_storage_set(data, success_callback) {
     console.log("Content code. local_storage_set", data);
     var data_processed = {};
-    /**
-     * @var {Object} chrome.storage.sync
-     * @var {Number} chrome.storage.sync.QUOTA_BYTES_PER_ITEM
-     */
     const max_item_length = chrome.storage.sync.QUOTA_BYTES_PER_ITEM - 10;
     for (var key in data) {
         var value = JSON.stringify(data[key]);

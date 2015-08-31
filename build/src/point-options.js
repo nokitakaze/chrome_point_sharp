@@ -86,7 +86,9 @@ function this_page_change_keyvalue(key, value) {
 /**
  * Создаём ветку опций
  *
- * @param branch Ветка
+ * @param {Object} parent_obj
+ * @param {String} index
+ * @param {Object} branch Ветка
  */
 function draw_option_branch(parent_obj, index, branch) {
     var children_length = 0;
@@ -118,7 +120,7 @@ function draw_option_branch(parent_obj, index, branch) {
         }
 
         // Добавляем детей
-        for (var child_index in branch.children) {
+        for (child_index in branch.children) {
             draw_option_branch(item, child_index, branch.children[child_index]);
         }
     } else if (branch.type == "text") {
@@ -150,7 +152,7 @@ function draw_option_branch(parent_obj, index, branch) {
         }).text(branch.description);
 
         // Добавляем детей
-        for (var child_index in branch.children) {
+        for (child_index in branch.children) {
             draw_option_branch(item, child_index, branch.children[child_index]);
         }
     } else {
@@ -186,7 +188,7 @@ function redraw_current_options_value() {
 
         // Выставляем текстовые поля
         $('.point-options-wrapper .option-node > input[type="text"]').val('');
-        for (var index in raw_options) {
+        for (index in raw_options) {
             if (options.getType(index) != 'text') {
                 continue;
             }
@@ -197,7 +199,7 @@ function redraw_current_options_value() {
 
         // Выставляем радио-батоны
         $('.point-options-wrapper .option-node input[type="radio"]').prop('checked', false);
-        for (var index in raw_options) {
+        for (index in raw_options) {
             if (options.getType(index) != 'enum') {
                 continue;
             }

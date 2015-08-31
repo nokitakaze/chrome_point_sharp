@@ -683,6 +683,7 @@ function local_options_set(data, success_callback) {
         setTimeout(function() {
             local_options_set(data, success_callback);
         }, 50);
+        return;
     }
 
     console.log("Content code. local_options_set", data);
