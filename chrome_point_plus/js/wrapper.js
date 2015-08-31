@@ -6,91 +6,137 @@
 /**
  * Получаем значение из Local Storage
  *
- * @param {String|Array} key Название элемента. Если передаётся строка, до будет возвращено одно значение, иначе array
+ * @param {String|String[]} key Название элемента. Если передаётся строка, до будет возвращено одно значение, иначе array
  * @param {Function} callback Функция, которую дёрнем, когда получим значение
  */
 function local_storage_get(key, callback) {
     console.log("Content code. local_storage_get", key);
     var real_keys = [];
+    var real_keys_list;
     if (typeof(key) == 'string') {
         // Одно значение
         real_keys.push(key + '_index_count');
+        real_keys.push(key + '_index_time');
         real_keys.push(key);
+        real_keys_list = [key];
     } else {
         // Несколько значений
         for (var real_key in key) {
             real_keys.push(key[real_key] + '_index_count');
+            real_keys.push(key[real_key] + '_index_time');
             real_keys.push(key[real_key]);
         }
+        real_keys_list = key;
     }
 
-    chrome.storage.sync.get(real_keys, function(sync_data_index) {
-        var full_values = {};
-        var real_keys = [];
-        var max, i;
-        if (typeof(key) == 'string') {
-            if (typeof(sync_data_index[key + '_index_count']) == 'undefined') {
-                callback(sync_data_index[key]);
-                return;
-            }
-
-            max = sync_data_index[key + '_index_count'];
-            for (i = 0; i <= max; i++) {
-                real_keys.push(key + '_index_' + i);
-            }
-        } else {
-            for (var real_key in key) {
-                if (typeof(sync_data_index[key[real_key] + '_index_count']) == 'undefined') {
-                    full_values[real_key] = sync_data_index[key[real_key]];
-                    continue;
+    local_storage_get_inner(real_keys, real_keys_list, 'local', function(got_data_local, got_time_local, no_keys_local) {
+            if (no_keys_local.length === 0) {
+                // Нет неполученных ключей
+                if (typeof(key) == 'string') {
+                    callback(got_data_local[key]);
+                } else {
+                    callback(got_data_local);
                 }
+            } else {
+                local_storage_get_inner(real_keys, real_keys_list, 'sync', function(got_data_sync, got_time_sync, no_keys_sync) {
+                    for (var real_key in real_keys_list) {
+                        var current_key = real_keys_list[real_key];
+                        if (no_keys_sync.indexOf(current_key) !== -1) {
+                            // Sync не существует
+                            continue;
+                        }
+                        if (no_keys_local.indexOf(current_key) !== -1) {
+                            // Local не существует, Sync существует
+                            got_data_local[current_key] = got_data_sync[current_key];
+                            continue;
+                        }
+                        if (got_time_sync[current_key] == 0) {
+                            continue;
+                        }
 
-                max = sync_data_index[key[real_key] + '_index_count'];
-                for (i = 0; i <= max; i++) {
-                    real_keys.push(key[real_key] + '_index_' + i);
-                }
-            }
+                        if ((got_time_local[current_key] == 0) || (got_time_local[current_key] < got_time_sync[current_key])) {
+                            got_data_local[current_key] = got_data_sync[current_key];
+                        }
+                    }
 
-            if (real_keys.length == 0) {
-                callback(full_values);
-                return;
+                    if (typeof(key) == 'string') {
+                        callback(got_data_local[key]);
+                    } else {
+                        callback(got_data_local);
+                    }
+                });
             }
         }
+    );
+    console.log("Content code. local_storage_get end");
+}
 
-        chrome.storage.sync.get(real_keys, function(sync_data) {
-            var max, i;
-            if (typeof(key) == 'string') {
-                max = sync_data_index[key + '_index_count'];
+/**
+ *
+ * @param {String[]} real_keys Название элементов
+ * @param {String[]} real_keys_list
+ * @param {Function} callback Функция, которую дёрнем, когда получим значение
+ * @param {String} type
+ */
+function local_storage_get_inner(real_keys, real_keys_list, type, callback) {
+    if (type == 'local') {
+        var call = chrome.storage.local;
+    } else {
+        call = chrome.storage.sync;
+    }
+
+    call.get(real_keys, function(sync_data_index) {
+        var full_values = {};
+        var full_times = {};
+        var real_keys = [];
+        var no_keys = [];
+        for (var real_key in real_keys_list) {
+            var current_key = real_keys_list[real_key];
+            if (typeof(sync_data_index[current_key + '_index_count']) == 'undefined') {
+                if (typeof(sync_data_index[current_key]) == 'undefined') {
+                    no_keys.push(current_key);
+                }
+
+                full_values[current_key] = sync_data_index[current_key];
+                full_times[current_key] = 0;
+            } else {
+                var max = sync_data_index[current_key + '_index_count'];
+                for (var i = 0; i <= max; i++) {
+                    real_keys.push(current_key + '_index_' + i);
+                }
+
+                if (typeof(sync_data_index[current_key + '_index_time']) == 'undefined') {
+                    full_times[current_key] = 0;
+                } else {
+                    full_times[current_key] = parseFloat(sync_data_index[current_key + '_index_time']);
+                }
+            }
+        }
+        if (real_keys.length == 0) {
+            // Не нужно ничего дёргать
+            callback(full_values, full_times, no_keys);
+            return;
+        }
+
+        call.get(real_keys, function(sync_data) {
+            for (var real_key in real_keys_list) {
+                var max = sync_data_index[real_keys_list[real_key] + '_index_count'];
                 var str = '';
-                for (i = 0; i <= max; i++) {
-                    str += sync_data[key + '_index_' + i];
+                for (var i = 0; i <= max; i++) {
+                    str += sync_data[real_keys_list[real_key] + '_index_' + i];
                 }
                 try {
                     var temporary_value = JSON.parse(str);
                 } catch (e) {
                     temporary_value = null;
                 }
-                callback(temporary_value);
-            } else {
-                for (var real_key in key) {
-                    max = sync_data_index[key[real_key] + '_index_count'];
-                    str = '';
-                    for (i = 0; i <= max; i++) {
-                        str += sync_data[key[real_key] + '_index_' + i];
-                    }
-                    try {
-                        temporary_value = JSON.parse(str);
-                    } catch (e) {
-                        temporary_value = null;
-                    }
 
-                    full_values[key[real_key]] = temporary_value;
-                }
-                callback(full_values);
+                full_values[real_keys_list[real_key]] = temporary_value;
             }
+
+            callback(full_values, full_times, no_keys);
         });
     });
-    console.log("Content code. local_storage_get end");
 }
 
 /**
@@ -103,8 +149,10 @@ function local_storage_set(data, success_callback) {
     console.log("Content code. local_storage_set", data);
     var data_processed = {};
     const max_item_length = chrome.storage.sync.QUOTA_BYTES_PER_ITEM - 10;
+    var full_length_to_write = 0;
     for (var key in data) {
         var value = JSON.stringify(data[key]);
+        full_length_to_write += value.length;
         var count = 0;
         while (value.length > 0) {
             data_processed[key + '_index_' + count] = value.substr(0, max_item_length);
@@ -112,14 +160,25 @@ function local_storage_set(data, success_callback) {
             count++;
         }
         data_processed[key + '_index_count'] = count - 1;
+        data_processed[key + '_index_time'] = (new Date()).getTime() / 1000;
     }
 
-    chrome.storage.sync.set(data_processed, function() {
+    chrome.storage.local.set(data_processed, function() {
         if (typeof(success_callback) == 'function') {
             success_callback();
         }
     });
-    console.log("Content code. local_storage_set end");
+    setTimeout(function() {
+        var need_remove_keys = [];
+        for (var key in data) {
+            need_remove_keys.push(key);
+        }
+
+        chrome.storage.sync.remove(need_remove_keys, function() {});
+        chrome.storage.sync.set(data_processed, function() {});
+        chrome.storage.local.remove(need_remove_keys, function() {});
+    }, 0);
+    console.log("Content code. local_storage_set end. ", full_length_to_write, " bytes to write");
 }
 
 /**

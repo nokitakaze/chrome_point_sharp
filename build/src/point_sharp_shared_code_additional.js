@@ -1389,40 +1389,6 @@ function wrap_posts_remove_unused_wrap_splitters() {
 
 
 /**
- * Сохраняем знание о постах
- *
- * @param options
- */
-function viewed_post_system_save(options) {
-    var my_nick = get_my_nick();
-
-    local_storage_get('post_viewed_list', function(list) {
-        if ((typeof(list) == 'undefined') || (list === null)) {
-            list = [];
-        }
-
-        var need_update_ids = false;
-        $('.content-wrap > div.post').each(function() {
-            var post_id = $(this).attr('data-id');
-            var author_id = $(this).attr('data-author-id');
-
-            if ((post_id !== '') && (typeof(post_id) !== 'undefined') &&
-                ($.inArray(post_id, list) == -1) && (author_id !== my_nick)) {
-                list.push(post_id);
-                need_update_ids = true;
-                if (options.is('option_other_hightlight_post_unviewed')) {
-                    $(this).addClass('new_post_itself');
-                }
-            }
-        });
-
-        if (need_update_ids) {
-            local_storage_set({'post_viewed_list': list}, function() {});
-        }
-    });
-}
-
-/**
  * Маркируем каменты от топик-стартера
  */
 function comments_mark_topic_starter() {

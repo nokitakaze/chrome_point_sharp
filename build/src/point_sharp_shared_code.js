@@ -321,9 +321,6 @@ function pimp_my_page(options) {
     // Сворачивание постов. Как длинных, так и любых
     wrap_posts_init(options);
 
-    // Сохраняем список просмотренных постов
-    viewed_post_system_save(options);
-
     // Левое меню по умолчанию отправляет на новые
     if (options.is('option_other_left_menu_default_new')) {
         set_left_menu_default_new();

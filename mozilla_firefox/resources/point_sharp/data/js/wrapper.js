@@ -11,7 +11,6 @@
  */
 function local_storage_get(key, callback) {
     // @todo Удалять старые прослушивальщики
-    // console.log("Content code. local_storage_get %s %O", key, callback);
     var callback_rand = Math.random();
     self.port.on('get_storage_value_' + callback_rand, function(value) {
         // console.log("Content code. local_storage_get.callback %s", value);
@@ -21,7 +20,6 @@ function local_storage_get(key, callback) {
         'key': key,
         'callback': callback_rand
     }));
-    // console.log("Content code. local_storage_get end");
 }
 
 /**

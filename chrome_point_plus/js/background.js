@@ -99,8 +99,34 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                 return true;
 
             default:
+                console.warn('No such message type');
                 sendResponse(false);
                 return true;
         }
     }
 });
+
+setInterval(function() {
+    var keys = ['options', 'point_user_hints', 'post_manual_hidden_list'];
+
+
+    /*
+     chrome.storage.sync.get(['time_last_saved'], function(data_sync) {
+     if (typeof(data_sync.time_last_saved) !== 'undefined') {
+     var sync_time_last_saved = data_sync.time_last_saved;
+     } else {
+     sync_time_last_saved = 0;
+     }
+     chrome.storage.local.get(['time_last_saved'], function(data_local) {
+     if (typeof(data_local.time_last_saved) !== 'undefined') {
+     var local_time_last_saved = data_local.time_last_saved;
+     } else {
+     local_time_last_saved = 0;
+     }
+     console.log('Data get sync interval tick', sync_time_last_saved, local_time_last_saved);
+     // @todo Вставить получение set-параметров
+
+     });
+     });
+     */
+}, 15 * 60 * 1000);
