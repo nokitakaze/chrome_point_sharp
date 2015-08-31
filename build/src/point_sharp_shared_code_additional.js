@@ -5,6 +5,196 @@
  */
 
 /**
+ * @param {Object} options Опции из OptionManager
+ */
+function remark_entire_page(options) {
+    // Parse webp-images. Viva la Google Chrome
+    if (OptionsManager.getPlatform() == 'chrome') {
+        parse_webp(options);
+    }
+
+    // Embedding
+    if (options.is('option_embedding')) {
+        // Load pictures from Booru, Tumblr and some other sites
+        if (options.is('option_images_load_booru')) {
+            new Booru($('.post-content .text a:not(.booru_pic)'), options);
+        }
+
+        // Посты из Инстаграма
+        if (options.is('option_embedding_instagram_posts')) {
+            instagram_posts_embedding_init(options);
+        }
+
+        // Parse webm-links and create video instead
+        if (options.is('option_videos_parse_links')) {
+            if (options.is('option_videos_parse_links_type', 'all')) {
+                parse_all_videos(options);
+            } else {
+                parse_webm(options);
+            }
+        }
+
+        // Parse audio links
+        if (options.is('option_audios_parse_links')) {
+            parse_all_audios(options);
+        }
+
+        // Soundcloud
+        if (options.is('option_embedding_soundcloud')) {
+            // Processing links
+            $('div.post .post-content a[href*="\\:\\/\\/soundcloud\\.com\\/"]').each(function(index) {
+                // @todo: переписать это дерьмо на нормальный HTML5 плеер
+                var $player = $('<div class="pp-soundcloud">\
+                                            <object height="81" width="100%" id="pp-soundcloud-' + index + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">\
+                                              <param name="movie" value="//player.soundcloud.com/player.swf?url=' +
+                                encodeURIComponent($(this).prop('href'))
+                                + '&enable_api=true&object_id=pp-soundcloud-' + index + '">\
+                                              <param name="allowscriptaccess" value="always">\
+                                              <embed allowscriptaccess="always" height="81" src="//player.soundcloud.com/player.swf?url='
+                                + encodeURIComponent($(this).prop('href')) + '&enable_api=true&object_id=pp-soundcloud-' + index
+                                + '" type="application/x-shockwave-flash" width="100%" name="pp-soundcloud-' + index + '"></embed>\
+                                            </object>\
+                                        </div>');
+
+                // Replace or prepend
+                if (options.is('option_embedding_soundcloud_orig_link')) {
+                    // Before
+                    $(this).before($player);
+                } else {
+                    // Replace
+                    $(this).replaceWith($player);
+                }
+            });
+        }
+
+        // Parse pleer.com links and create audio instead
+        if (options.is('option_embedding_pleercom')) {
+            parse_pleercom_links(options);
+        }
+
+        // Parse coub.com links and create iframe instead
+        if (options.is('option_embedding_coubcom')) {
+            parse_coub_links(options);
+        }
+
+        // Твиты из Твиттера
+        if (options.is('option_embedding_twitter_tweets')) {
+            twitter_tweet_embedding_init();
+        }
+
+        // Посты из Tumblr
+        if (options.is('option_embedding_instagram_posts')) {
+            tumblr_posts_embedding_init(options);
+        }
+
+        // Фото из 500px
+        if (options.is('option_embedding_500px')) {
+            parse_500px(options);
+        }
+
+        // Фото из 500px
+        if (options.is('option_embedding_gdrive')) {
+            parse_gdrive(options);
+        }
+    }
+
+    // Fancybox
+    if (options.is('option_fancybox')) {
+        if (options.is('option_fancybox_bind_images_to_one_flow')) {
+            // Linking images in posts to the galleries
+            $('.post-content .text a.postimg:not(.youtube),.post-content .files a.postimg:not(.youtube)').
+                attr('data-fancybox-group', 'one_flow_gallery');
+        } else {
+            $('.post-content .text, .post-content .files').each(function() {
+                var post_id = $(this).parent('div.post').attr('data-id');
+                $(this).find('a.postimg:not(.youtube)').attr('data-fancybox-group', 'post' + post_id);
+            });
+        }
+
+        // Images
+        if (options.is('option_fancybox_images')) {
+            // Init fancybox
+            $('.postimg:not(.youtube)').fancybox({
+                type: 'image'
+            });
+        }
+
+        // Правим хинты у фансибокса
+        if (options.is('option_fancybox_smart_hints')) {
+            fancybox_set_smart_hints();
+        } else {
+            $('div.post .postimg').attr('data-fancybox-title', ' ');
+        }
+
+        // Videos
+        if (options.is('option_fancybox_videos')) {
+            $('.postimg.youtube').addClass('fancybox-media').fancybox({
+                helpers: {
+                    media: {
+                        youtube: {
+                            params: {
+                                autoplay: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        // Posts
+        if (options.is('option_fancybox_posts')) {
+            // Excluding some sort of piece-of-shit makeup
+            $('.post-id a').not('#comments .post-id a, #top-post .post-id a').attr('data-fancybox-type', 'iframe').fancybox({
+                maxWidth: 780
+            });
+        }
+
+    }
+
+    // NSFW Filtering
+    $('a.sharp-preblur').removeClass('sharp-preblur');
+    smart_nsfw_init(options);
+
+    // Look and feel
+    // Fluid #main layout
+    if (options.is('option_fluid_layout')) {
+        $('#main, #header, #subheader, #footer').css({
+            'width': '95%',
+            'max-width': '95%'
+        });
+        // TODO: fix #main #left-menu #top-link position
+    }
+
+    // Image resizing
+    if (options.is('option_images_load_original')) {
+        // Setting new image source
+        $('.postimg:not(.youtube) img').each(function() {
+            console.log($(this).parent('.postimg').attr('href'));
+            $(this).attr('src', $(this).parent('.postimg').attr('href'));
+        });
+        // Resizing
+        // @todo WAT?! Это не сделано по умолчанию? Проверить
+        $('.postimg:not(.youtube), .postimg:not(.youtube) img').css({
+            'width': 'auto',
+            'height': 'auto',
+            'max-width': '100%',
+            'max-height': '100%'
+        });
+    }
+
+    // Подсвечиваем каменты топик-стартера
+    if (options.is('option_other_hightlight_comment_topic_starter')) {
+        setTimeout(comments_mark_topic_starter, 0);
+    }
+
+    if (options.is('option_embedding_youtube')) {
+        youtube_video_embedding(options);
+    }
+
+    // All external links
+    external_links_target_blank();
+}
+
+/**
  * Помечаем непрочитанные посты более видимо чем каким-то баджем
  *
  * Первая версия написана @RainbowSpike
@@ -177,6 +367,7 @@ function parse_all_audios(current_options) {
             });
 
             obj.parentElement.insertBefore(player, obj);
+            $(obj).addClass('point-sharp-processed');
 
             if (current_options.is('option_audios_parse_leave_links', false)) {
                 $(obj).hide();
@@ -1006,6 +1197,7 @@ function twitter_tweet_embedding_parse_links() {
                 'data-tweet-id': n[2]
             }).addClass('twitter-tweet-embedded');
             obj.parentElement.insertBefore(tweet, obj);
+            $(obj).addClass('point-sharp-processed');
 
             window.twttr.widgets.createTweet(
                 n[2],
@@ -1067,7 +1259,7 @@ function instagram_posts_embedding_init(current_options) {
 /**
  * Парсим все ссылки. Эта функция запускается из page scope
  */
-function youtube_video_emedding(options) {
+function youtube_video_embedding(options) {
     var youtube_video_count = 0;
     $('.post-content a').each(function(num, obj) {
         if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
@@ -1089,7 +1281,7 @@ function youtube_video_emedding(options) {
                 'height': 300
             }).addClass('youtube-video-embedded');
             obj.parentElement.insertBefore(video, obj);
-            $(this).hide();
+            $(this).addClass('point-sharp-processed').hide();
 
             youtube_video_count++;
         } else if (n = href.match(new RegExp('^https?://(www\\.)?youtu\\.be/([0-9a-z_-]+)', 'i'))) {
@@ -1104,7 +1296,7 @@ function youtube_video_emedding(options) {
                 'height': 300
             }).addClass('youtube-video-embedded');
             obj.parentElement.insertBefore(video, obj);
-            $(this).hide();
+            $(this).addClass('point-sharp-processed').hide();
 
             youtube_video_count++;
         }
@@ -1412,10 +1604,6 @@ function get_my_nick() {
  */
 function external_links_target_blank() {
     $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
-            return;
-        }
-
         var n;
         if (n = obj.href.match(new RegExp('^https?://(.+?)/', 'i'))) {
             if (n[1].match(new RegExp('^(.+?\\.)?point\\.im$'))) {

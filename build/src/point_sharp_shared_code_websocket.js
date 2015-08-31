@@ -504,8 +504,6 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
     onCommentCreated($anchor.add($commentTemplate), function() {
         // Сюда код возвращается вновь, наш элемент уже внутри DOM!
         // Едет callback через callback
-        // @todo Сюда встают все обработчкики post factum, используя options
-        console.log('Callback again ', commentData.options);
-
+        remark_entire_page(commentData.options);
     });
 }
