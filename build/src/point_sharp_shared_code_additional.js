@@ -236,7 +236,11 @@ function parse_webm(current_options) {
     });
 }
 
-// Webp-изображение. Только для Хромо-господ
+/**
+ * Webp-изображение. Только для Хромо-господ
+ *
+ * @param {Object} current_options
+ */
 function parse_webp(current_options) {
     $('.post-content a').each(function(num, obj) {
         if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
@@ -711,7 +715,7 @@ function fancybox_set_smart_hints() {
         var textcontent = $(this).find('.text-content');
         if (textcontent.length > 0) {
             textcontent = textcontent[0];
-            for (var i = 0; i < textcontent.childNodes.length; i++) {
+            for (i = 0; i < textcontent.childNodes.length; i++) {
                 var current_child_node = textcontent.childNodes[i];
                 if ((current_child_node.nodeName !== 'P') && (current_child_node.nodeName !== '#text')) {
                     continue;
@@ -1427,19 +1431,19 @@ function smart_nsfw_init(options) {
             }).length;
             console.log('Hide NSFW posts. ', len, ' hided');
         } else if (options.is('option_nsfw' + set_id + '_black_ant')) {
-            var len = $(tag_selector).each(function() {
+            len = $(tag_selector).each(function() {
                 $(this).addClass('black-ant');
             }).length;
             console.log('Add black ants to posts. ', len, ' anted');
         } else if (options.is('option_nsfw' + set_id + '_blur_posts_entire')) {
             // Размываем посты полностью
-            var len = $(tag_selector).each(function() {
+            len = $(tag_selector).each(function() {
                 $(this).addClass('blur-nsfw-entire');
             }).length;
             console.log('Bluring NSFW posts. ', len, ' blurred');
         } else if (options.is('option_nsfw' + set_id + '_blur_posts_images')) {
             // Размываем изображения
-            var len = $(tag_selector).each(function() {
+            len = $(tag_selector).each(function() {
                 $(this).addClass('blur-nsfw-images');
             }).length;
             console.log('Bluring images in NSFW posts. ', len, ' posts blurred');
@@ -1730,4 +1734,12 @@ function parse_gdrive(current_options) {
         }
 
     });
+}
+
+function set_post_comments_read() {
+    setInterval(function() {
+        $ajax({
+            'url': '//' + window.location.host + window.location.pathname + '?setread' + Math.random()
+        });
+    }, 60000);
 }

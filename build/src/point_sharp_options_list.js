@@ -317,6 +317,12 @@ var point_sharp_options_tree = {
                         "type": "boolean",
                         "default_value": false,
                         "description": "Включить уведомления на рабочем столе"
+                    },
+                    "option_set_post_comments_read": {
+                        "type": "boolean",
+                        "default_value": true,
+                        "description": "Делать прочитанными все новые комментарии в постах, страницы которых открыты",
+                        "children": {}
                     }
                 }
                 /*

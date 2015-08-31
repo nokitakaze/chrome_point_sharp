@@ -151,6 +151,11 @@ function pimp_my_page(options) {
         set_left_menu_default_new();
     }
 
+    // Каменты
+    if (($('#comments').length > 0) && (options.is('option_set_post_comments_read'))) {
+        set_post_comments_read();
+    }
+
     // Выполняем последние платформозависимые функции
     point_loaded_last(options);
 
