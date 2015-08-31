@@ -1114,6 +1114,9 @@ function tumblr_posts_embedding_init(options) {
                     $(tweet).find('.tumblr-timestamp').html(
                         '<a href="" target="_blank"></a>'
                     ).find('a').attr('href', obj.href).text((new Date(post.timestamp * 1000)).toLocaleString());
+                    if (post.title !== '') {
+                        $(tweet).find('.head').append('<h2></h2>').find('h2').text(post.title);
+                    }
 
                     if (post.type == 'quote') {
                         body.append('<div class="quote"></div><div class="quote_source"></div>');
