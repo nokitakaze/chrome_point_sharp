@@ -146,7 +146,8 @@ var point_sharp_options_tree = {
                     "option_embedding_twitter_tweets": {
                         "type": "boolean",
                         "default_value": true,
-                        "description": "Twitter"
+                        "description": "Twitter",
+                        "platforms": ['chrome']
                     },
                     "option_embedding_instagram_posts": {
                         "type": "boolean",
@@ -809,7 +810,12 @@ OptionsManager.prototype.getType = function(optionName) {
  * Получаем опцию по её имени
  *
  * @param optionName
- * @returns {null|string}
+ * @returns {null|Object} ret
+ *
+ * @property {String[]} [platforms]
+ * @property {String} [type]
+ * @property {String|Boolean|Number} [default_value]
+ * @property {String} [description] "Включить Fancybox ▼",
  */
 OptionsManager.getOptionElement = function(optionName) {
     var ret = null;
@@ -845,7 +851,7 @@ OptionsManager.canUseOption = function(optionName) {
     }
 
     for (var i = 0; i < ret.platforms.length; i++) {
-        if (ret[i] == OptionsManager.getPlatform()) {
+        if (ret.platforms[i] == OptionsManager.getPlatform()) {
             return true;
         }
     }
@@ -855,10 +861,10 @@ OptionsManager.canUseOption = function(optionName) {
 /**
  * Под каким браузером мы сидим
  *
- * @returns string
+ * @returns {String}
  */
 OptionsManager.getPlatform = function() {
-    // Я не буду сюда выставлять паттерн "стратегия", ну его на хер
+    // Я не буду сюда выставлять нормальный IoC, ну его на хер
     if (navigator.appVersion.match(new RegExp('chrome', 'i'))) {
         return 'chrome';
     } else if (navigator.appVersion.match(new RegExp('firefox', 'i'))) {

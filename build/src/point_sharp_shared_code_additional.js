@@ -1034,38 +1034,6 @@ function comments_count_refresh_tick(current_options) {
 }
 
 /**
- * Встраиваем твиты из Твиттера
- *
- * Workaround для Google Chrome. В Fx этот workaround ничего не ломает, поэтому оставил так
- */
-function twitter_tweet_embedding_init() {
-    // Чёрная магия. Выбираемся из манямирка, прихватив с собой пару сраных функций
-    // https://developer.chrome.com/extensions/content_scripts Isolated World
-    var e = document.createElement("script");
-    e.appendChild(document.createTextNode(twitter_tweet_embedding_wait_for_ready_injected.toString() +
-                                          twitter_tweet_embedding_parse_links.toString() +
-                                          'twitter_tweet_embedding_wait_for_ready_injected();'));
-    document.head.appendChild(e);
-
-    // Встраиваем скрипт так, как описано в best twitter practice https://dev.twitter.com/web/javascript/loading
-    window.twttr = (function(d, s, id) {
-        var t, js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) {
-            return;
-        }
-        js = d.createElement(s);
-        js.id = id;
-        js.src = "https://platform.twitter.com/widgets.js";
-        fjs.parentNode.insertBefore(js, fjs);
-        return window.twttr || (t = {
-                _e: [], ready: function(f) {
-                    t._e.push(f);
-                }
-            });
-    }(document, "script", "twitter-wjs"));
-}
-
-/**
  * Встраиваем посты из Tumblr
  *
  * @param {Object} options
@@ -1169,56 +1137,6 @@ function tumblr_posts_embedding_init(options) {
             });
 
             tumblr_post_count++;
-        }
-    });
-}
-
-/**
- * Проверяем загрузились ли мы. Эта функция запускается из page scope
- */
-function twitter_tweet_embedding_wait_for_ready_injected() {
-    if (typeof(window.twttr) == 'undefined') {
-        setTimeout(twitter_tweet_embedding_wait_for_ready_injected, 100);
-        return;
-    }
-    if (typeof(window.twttr.widgets) == 'undefined') {
-        setTimeout(twitter_tweet_embedding_wait_for_ready_injected, 100);
-        return;
-    }
-    twitter_tweet_embedding_parse_links();
-}
-
-/**
- * Парсим все ссылки. Эта функция запускается из page scope
- */
-function twitter_tweet_embedding_parse_links() {
-    // Обрабатываем все твиты
-    var twitter_tweet_count = 0;
-    $('.post-content a').each(function(num, obj) {
-        if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
-            return;
-        }
-
-        var href = obj.href;
-        var n;
-
-        if (n = href.match(new RegExp('^https?://(www\\.)?twitter\\.com/[^/]+/status/([0-9]+)', 'i'))) {
-            var tweet = document.createElement('div');
-            $(tweet).attr({
-                'id': 'tweet-' + twitter_tweet_count,
-                'data-tweet-id': n[2]
-            }).addClass('twitter-tweet-embedded');
-            obj.parentElement.insertBefore(tweet, obj);
-            $(obj).addClass('point-sharp-processed');
-
-            window.twttr.widgets.createTweet(
-                n[2],
-                tweet,
-                {
-                    'lang': 'ru'
-                }
-            );
-            twitter_tweet_count++;
         }
     });
 }

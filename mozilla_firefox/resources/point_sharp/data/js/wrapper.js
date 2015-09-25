@@ -163,3 +163,12 @@ function html5_notification(settings, response) {
 function set_comment_text_to_dom(commentData, dom){
     safe_saned_text(commentData.text, dom);
 }
+
+/**
+ * Встраиваем твиты из Твиттера
+ *
+ * Заглушка для Fx
+ */
+function twitter_tweet_embedding_init() {
+    // ... nothing
+}
