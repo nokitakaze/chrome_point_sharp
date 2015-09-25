@@ -540,10 +540,10 @@ function create_tag_system() {
         if (typeof(this_href) == 'undefined') {
             return;
         }
-        var a = this_href.match(new RegExp('/[a-z0-9]+(#([0-9]+))?$'));
+        var a = this_href.match(new RegExp('^(https?://([a-z0-9-]+\\.)?point\\.im)?/[a-z0-9]+(#([0-9]+))?$'));
         var comment_id = 0;
-        if (typeof(a[2]) !== 'undefined') {
-            comment_id = a[2];
+        if ((a !== null) && (typeof(a[4]) !== 'undefined')) {
+            comment_id = a[4];
         }
         var nick = $(this).find('.post-content a.user').first().text().toLowerCase();
         $(this).attr({
