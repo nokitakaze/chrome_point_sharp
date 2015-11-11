@@ -164,7 +164,7 @@ Booru.prototype.createImageFromService = function(service, href) {
         if (typeof(serviceInfo.get_params) === 'object') {
             for (key in serviceInfo.get_params) {
                 if (serviceInfo.get_params.hasOwnProperty(key)) {
-                    params[key] = matches[serviceInfo.get_params[key]];
+                    params[key] = get_params[serviceInfo.get_params[key]];
                 }
             }
         }
