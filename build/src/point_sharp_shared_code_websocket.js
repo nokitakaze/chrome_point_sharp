@@ -263,7 +263,7 @@ function ajax_get_comments_post_comment($post, csRf, options) {
     var current_options = options;
     var textarea = null;
     $post.find('textarea[name="text"]').each(function() {
-        if (!$(this).parents('form').first().attr('action').match(new RegExp('edit\\-comment'))) {
+        if ($(this).parents('form').first().attr('action').match(new RegExp('^/[a-z0-9]+$'))) {
             textarea = $(this);
         }
     });
