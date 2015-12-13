@@ -261,9 +261,22 @@ function comments_reply_form_textarea_ctrl_enter(evt) {
  */
 function ajax_get_comments_post_comment($post, csRf, options) {
     var current_options = options;
-    var textarea = $post.find('textarea[name="text"]');
+    var textarea = null;
+    $post.find('textarea[name="text"]').each(function() {
+        if (!$(this).parents('form').first().attr('action').match(new RegExp('edit\\-comment'))) {
+            textarea = $(this);
+        }
+    });
+    if (textarea === null) {
+        console.error('Can not textarea');
+        return;
+    }
     var raw_text = textarea.val();
     var comment_id = (typeof($post.data('comment-id')) == 'undefined') ? 0 : $post.data('comment-id');
+    if (raw_text == '') {
+        console.error('raw_text is null');
+        return;
+    }
 
     $ajax({
         type: 'POST',
