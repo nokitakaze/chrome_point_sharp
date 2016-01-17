@@ -70,8 +70,8 @@ function skobkin_websocket_init(options) {
                                     var post_id_block = new_comment_post.find('.post-id');
                                     var unread_block = post_id_block.find('.unread');
                                     if (unread_block.length == 0) {
-                                        post_id_block.find('a').first().
-                                            append('<span class="unread" style="margin-left: 3px;">1</span>');
+                                        post_id_block.find('a').first().append(
+                                            '<span class="unread" style="margin-left: 3px;">1</span>');
                                     } else {
                                         unread_block.text(parseInt(unread_block.text(), 10) + 1).show();
                                     }
@@ -218,17 +218,26 @@ function ajax_get_comments_init(options) {
     // Dirty hack for page context
     $('#comments').replaceWith($('#comments').clone());
 
-    // Биндим ивенты
-
     // on submit
+    $('#content')[0].addEventListener('keydown', function(evt) {
+        console.log('#content addEventListener keydown true', evt);
+        var form = $(evt.target).parents('form').first();
+        if (form.length == 0) {
+            return;
+        } else if (!form.hasClass('reply-form')) {
+            return;
+        }
+
+        if ((evt.keyCode === 10 || evt.keyCode === 13) && (evt.ctrlKey || evt.metaKey)) {
+            // Выключаем встроенный Event Listener Point'а
+            evt.stopPropagation();
+            evt.preventDefault();
+            form.submit();
+        }
+    }, true);
     $('#comments form.reply-form, .post-content form.reply-form').on('submit', function(evt) {
         comments_reply_form_submit(evt, options);
-    });
-
-
-    // on Ctrl+Enter
-    $('#comments form.reply-form textarea[name="text"], .post-content form.reply-form textarea[name="text"]').
-        on('keypress.pp', comments_reply_form_textarea_ctrl_enter);
+    }).find('textarea').off('keydown');
 }
 
 function comments_reply_form_submit(evt, options) {
@@ -242,14 +251,6 @@ function comments_reply_form_submit(evt, options) {
         ajax_get_comments_post_comment($post, csRf, options);
     }
 
-}
-
-function comments_reply_form_textarea_ctrl_enter(evt) {
-    if ((evt.keyCode === 10 || evt.keyCode === 13) && (evt.ctrlKey || evt.metaKey)) {
-        evt.stopPropagation();
-        evt.preventDefault();
-        $(evt.target).parents('form').first().submit();
-    }
 }
 
 /**
@@ -440,17 +441,16 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
         'data-id': commentData.postId,
         'data-comment-id': commentData.id,
         'data-to-comment-id': commentData.id || ''
-    }).addClass('unread').
-        html(ajax_get_comments_comment_template).on('mouseover', function() {
-            var current_post = $(this);
-            if (current_post.hasClass('readed')) { return; }
-            // @todo Снимать лисенер
+    }).addClass('unread').html(ajax_get_comments_comment_template).on('mouseover', function() {
+        var current_post = $(this);
+        if (current_post.hasClass('readed')) { return; }
+        // @todo Снимать лисенер
 
-            current_post.addClass('readed');
-            setTimeout(function() {
-                current_post.removeClass('unread');
-            }, 1000);
-        });
+        current_post.addClass('readed');
+        setTimeout(function() {
+            current_post.removeClass('unread');
+        }, 1000);
+    });
 
     if (commentData.commentType == 'recommendation') {
         $commentTemplate.addClass('recommendation');
@@ -497,12 +497,15 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
 
     // Reply form
     $commentTemplate.find('.post-content input.reply-radio').attr('id', 'reply-' + commentData.postId + '_' + commentData.id);
-    $commentTemplate.find('.post-content form.reply-form').attr('action', '/' + commentData.postId).
-        on('submit', function(evt) {
-            comments_reply_form_submit(evt, commentData.options);
-        });
-    $commentTemplate.find('.post-content form.reply-form textarea[name="text"]').
-        text('@' + commentData.author + ', ').on('keypress.pp', comments_reply_form_textarea_ctrl_enter);
+    $commentTemplate.find('.post-content form.reply-form').attr('action', '/' + commentData.postId).on('submit', function(evt) {
+        comments_reply_form_submit(evt, commentData.options);
+    }).find('textarea').off('keydown');
+    $commentTemplate.find('.post-content form.reply-form textarea[name="text"]').text('@' + commentData.author + ', ');
+    if (commentData.options.is('option_visual_editor_post')) {
+        $commentTemplate.find('.post-content form.reply-form').addClass('bootstrapped');
+        $commentTemplate.find('.post-content form.reply-form textarea[name="text"]').markdown(get_markdown_init_settings()).css(
+            {'height': '15em'});
+    }
     $commentTemplate.find('.post-content form.reply-form input[name="comment_id"]').val(commentData.id);
     $commentTemplate.find('.post-content form.reply-form input[name="csrf_token"]').val(csRfToken);
 

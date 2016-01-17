@@ -55,8 +55,8 @@ function draw_option_tree(tree) {
     $('.point-options-wrapper .tabs-content .option-node input[type="radio"]').on('change', function() {
         var name = $(this).prop('name').replace(new RegExp('\\-', 'g'), '_');
         var new_value = null;
-        $('.point-options-wrapper .tabs-content .option-node input[type="radio"][name="' + $(this).prop('name') + '"]').
-            each(function() {
+        $('.point-options-wrapper .tabs-content .option-node input[type="radio"][name="' + $(this).prop('name') + '"]').each(
+            function() {
                 if ((new_value == null) || $(this).prop('checked')) {
                     new_value = $(this).val();
                 }
@@ -108,11 +108,10 @@ function draw_option_branch(parent_obj, index, branch) {
         $(item).addClass('option-node');
         for (var i = 0; i < branch.radio_values.length; i++) {
             var radio_item = document.createElement('label');
-            $(radio_item).html('<input type="radio"><span></span>').
-                find('input').attr({
-                    'name': index.replace(/_/g, '-'),
-                    'value': branch.radio_values[i].value
-                });
+            $(radio_item).html('<input type="radio"><span></span>').find('input').attr({
+                'name': index.replace(/_/g, '-'),
+                'value': branch.radio_values[i].value
+            });
             $(radio_item).find('span').attr({
                 'data-i18n': index
             }).text(branch.radio_values[i].text);
@@ -126,26 +125,22 @@ function draw_option_branch(parent_obj, index, branch) {
     } else if (branch.type == "text") {
         // Text-input
         item = document.createElement('label');
-        $(item).addClass('option-node').
-            html('<span></span><br/><input type="text">').
-            find('input').attr('name', index.replace(/_/g, '-'));
+        $(item).addClass('option-node').html('<span></span><br/><input type="text">').find('input').attr('name',
+            index.replace(/_/g, '-'));
         $(item).find('span').attr('data-i18n', index).text(branch.description);
     } else if ((branch.type == "boolean") && (children_length == 0)) {
         // Одиночная галка
         item = document.createElement('label');
-        $(item).addClass('option-node').
-            html('<input type="checkbox"><span></span>').
-            find('input').attr('name', index.replace(/_/g, '-'));
+        $(item).addClass('option-node').html('<input type="checkbox"><span></span>').find('input').attr('name',
+            index.replace(/_/g, '-'));
         $(item).find('span').attr('data-i18n', index).text(branch.description);
     } else if ((branch.type == "boolean") && (children_length > 0)) {
         // Зависимые опции
         item = document.createElement('div');
-        $(item).addClass('option-node').
-            html('<input type="checkbox"><label></label>').
-            find('input').attr({
-                'name': index.replace(/_/g, '-'),
-                'id': index.replace(/_/g, '-')
-            });
+        $(item).addClass('option-node').html('<input type="checkbox"><label></label>').find('input').attr({
+            'name': index.replace(/_/g, '-'),
+            'id': index.replace(/_/g, '-')
+        });
         $(item).find('label').attr({
             'for': index.replace(/_/g, '-'),
             'data-i18n': index
@@ -181,8 +176,8 @@ function redraw_current_options_value() {
             }
 
             if (options.is(index)) {
-                $('.point-options-wrapper input[type="checkbox"][name="' + (index.replace(/_/g, '-')) + '"]').
-                    first().prop('checked', true);
+                $('.point-options-wrapper input[type="checkbox"][name="' + (index.replace(/_/g, '-')) + '"]').first().prop(
+                    'checked', true);
             }
         }
 
@@ -193,8 +188,8 @@ function redraw_current_options_value() {
                 continue;
             }
 
-            $('.point-options-wrapper input[type="text"][name="' + (index.replace(/_/g, '-')) + '"]').
-                first().val(options.get(index));
+            $('.point-options-wrapper input[type="text"][name="' + (index.replace(/_/g, '-')) + '"]').first().val(
+                options.get(index));
         }
 
         // Выставляем радио-батоны
@@ -204,8 +199,8 @@ function redraw_current_options_value() {
                 continue;
             }
 
-            $('.point-options-wrapper .option-node input[type="radio"][name="' + (index.replace(/_/g, '-')) + '"]').
-                each(function() {
+            $('.point-options-wrapper .option-node input[type="radio"][name="' + (index.replace(/_/g, '-')) + '"]').each(
+                function() {
                     if ($(this).val() == options.get(index)) {
                         $(this).prop('checked', true);
                     }
@@ -225,17 +220,15 @@ $(document).ready(function() {
             return;
         }
 
-        $('.content-wrap').addClass('point-options-wrapper').
-            css({
-                'padding': '20px 0px'
-            }).
-            html('<nav class="tabs-list"></nav><form class="tabs-content"></form>' +
-                 '<p class="saved hidden" data-i18n="options_text_saved"></p><div>' +
-                 '<p>Point# <span id="version"></span> by' +
-                 '<a href="https://skobkin-ru.point.im/" target="_blank">@skobkin-ru</a>,' +
-                 '<a href="https://isqua.point.im/" target="_blank">@isqua</a>,' +
-                 '<a href="https://nokitakaze.point.im/" target="_blank">@NokitaKaze</a>' +
-                 '</p></div>');
+        $('.content-wrap').addClass('point-options-wrapper').css({
+            'padding': '20px 0px'
+        }).html('<nav class="tabs-list"></nav><form class="tabs-content"></form>' +
+                '<p class="saved hidden" data-i18n="options_text_saved"></p><div>' +
+                '<p>Point# <span id="version"></span> by' +
+                '<a href="https://skobkin-ru.point.im/" target="_blank">@skobkin-ru</a>,' +
+                '<a href="https://isqua.point.im/" target="_blank">@isqua</a>,' +
+                '<a href="https://nokitakaze.point.im/" target="_blank">@NokitaKaze</a>' +
+                '</p></div>');
     } else {
         // Google Chrome
         // @todo Узнать что мы не в маленьком окне и удалить класс кастрации

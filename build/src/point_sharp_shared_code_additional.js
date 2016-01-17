@@ -102,8 +102,8 @@ function remark_entire_page(options) {
     if (options.is('option_fancybox')) {
         if (options.is('option_fancybox_bind_images_to_one_flow')) {
             // Linking images in posts to the galleries
-            $('.post-content .text a.postimg:not(.youtube),.post-content .files a.postimg:not(.youtube)').
-                attr('data-fancybox-group', 'one_flow_gallery');
+            $('.post-content .text a.postimg:not(.youtube),.post-content .files a.postimg:not(.youtube)').attr(
+                'data-fancybox-group', 'one_flow_gallery');
         } else {
             $('.post-content .text, .post-content .files').each(function() {
                 var post_id = $(this).parent('div.post').attr('data-id');
@@ -223,12 +223,11 @@ function parse_webm(current_options) {
         if (obj.href.match(new RegExp('^https?:\\/\\/([a-z0-9.-]+)\\/[a-z0-9_\\/.%-]+\\.webm(\\?.+)?$', 'i'))) {
             var player = document.createElement('video');
             // Там может быть не vp8+vorbis, но мы этого никак не узнаем
-            $(player).html('<source src="" type=\'video/webm; codecs="vp8, vorbis"\' />').
-                attr('controls', 'controls').css({
-                    'display': 'block',
-                    'max-width': '95%'
-                }).addClass('parsed-webm-link').addClass('point-sharp-added').
-                addClass('embedded_video').find('source').attr('src', obj.href);
+            $(player).html('<source src="" type=\'video/webm; codecs="vp8, vorbis"\' />').attr('controls', 'controls').css({
+                'display': 'block',
+                'max-width': '95%'
+            }).addClass('parsed-webm-link').addClass('point-sharp-added').addClass('embedded_video').find('source').attr('src',
+                obj.href);
 
             obj.parentElement.insertBefore(player, obj);
             $(obj).addClass('point-sharp-processed');
@@ -791,14 +790,13 @@ function hints_draw_main_user_hint(items) {
     }
 
     var current_user_hint_block = document.createElement('div');
-    $('.aside .aside-content #counters')[0].parentElement.
-        insertBefore(current_user_hint_block, $('.aside .aside-content #counters')[0]);
+    $('.aside .aside-content #counters')[0].parentElement.insertBefore(current_user_hint_block,
+        $('.aside .aside-content #counters')[0]);
     $(current_user_hint_block).addClass('current-user-hint');
 
     // Рисуем кнопки управления
     var buttons_block = document.createElement('div');
-    $(buttons_block).addClass('buttons').
-        html('<a class="edit" href="javascript:" title="Редактировать"></a>');
+    $(buttons_block).addClass('buttons').html('<a class="edit" href="javascript:" title="Редактировать"></a>');
     current_user_hint_block.appendChild(buttons_block);
     $(buttons_block).find('.edit').on('click', function() {
         local_storage_get('point_user_hints', function(point_user_hints) {
@@ -824,9 +822,9 @@ function hints_draw_main_user_hint(items) {
 
     // Рисуем невидимый блок для управления
     var change_hint_block = document.createElement('div');
-    $(change_hint_block).addClass('change_hint_block').hide().
-        html('<textarea></textarea><input class="button_save" type="submit" value="Сохранить">' +
-             '<a href="javascript:" class="button_cancel">Отмена</a>');
+    $(change_hint_block).addClass('change_hint_block').hide().html(
+        '<textarea></textarea><input class="button_save" type="submit" value="Сохранить">' +
+        '<a href="javascript:" class="button_cancel">Отмена</a>');
     $(change_hint_block).find('.button_save').on('click', function() {
         $('.current-user-hint .change_hint_block').slideUp(500);
         var new_text = $('.current-user-hint .change_hint_block textarea').val();
@@ -918,19 +916,17 @@ function set_comments_refresh_tick(current_options) {
 
     // Ставим слежение за позицией мыши
     if (current_options.is('option_other_comments_count_refresh_title')) {
-        $(document).
-            on('mouseenter', function() {
-                set_comments_refresh_clear_title_marks();
-            }).on('mouseleave', function() {
-                window_focused = false;
-            });
+        $(document).on('mouseenter', function() {
+            set_comments_refresh_clear_title_marks();
+        }).on('mouseleave', function() {
+            window_focused = false;
+        });
 
-        $(window).
-            on('focus', function() {
-                set_comments_refresh_clear_title_marks();
-            }).on('blur', function() {
-                window_focused = false;
-            });
+        $(window).on('focus', function() {
+            set_comments_refresh_clear_title_marks();
+        }).on('blur', function() {
+            window_focused = false;
+        });
     }
 }
 
@@ -1126,8 +1122,8 @@ function tumblr_posts_embedding_init(options) {
                             'src': post.album_art,
                             'alt': 'Обложка альбома ' + post.album
                         });
-                        body.append('<div class="track-name"></div>').find('.track_name').
-                            text(post.artist + ' — ' + post.track_name);
+                        body.append('<div class="track-name"></div>').find('.track_name').text(
+                            post.artist + ' — ' + post.track_name);
                         body.append('<div class="tumblr-player"></div>').find('.tumblr-player').html(post.player);
                     } else if (post.type == 'text') {
                         body.append('<div class="tumblr-text"></div>').find('.tumblr-text').html(post.body);
@@ -1240,7 +1236,13 @@ function youtube_video_embedding(options) {
 function visual_editor_init() {
     $('#new-post-form, .post-content .reply-form, #post-edit-form .post-content .text').addClass('bootstrapped');
     // Init Bootstrap Markdown
-    $('#new-post-form #text-input, .post-content .reply-form textarea, #post-edit-form .post-content #text-input').markdown({
+    $('#new-post-form #text-input, .post-content .reply-form textarea, #post-edit-form .post-content #text-input').markdown(
+        get_markdown_init_settings());
+    $('.post-content .reply-form textarea').css({'height': '15em'});
+}
+
+function get_markdown_init_settings() {
+    return {
         'language': 'ru',
         'footer': '...',
         'onPreview': function(e) {
@@ -1280,8 +1282,7 @@ function visual_editor_init() {
 
             e.$editor.find('.md-footer').text(text);
         }
-    });
-    $('.post-content .reply-form textarea').css({'height': '15em'});
+    };
 }
 
 /**
