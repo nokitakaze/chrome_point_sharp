@@ -186,6 +186,18 @@ var point_sharp_options_tree = {
                                 "description": "Удалять ссылку"
                             }
                         }
+                    },
+                    "option_embedding_jsfiddle": {
+                        "type": "boolean",
+                        "default_value": true,
+                        "description": "Загружать JSFiddle",
+                        "children": {
+                            "option_embedding_jsfiddle_remove_original_link": {
+                                "type": "boolean",
+                                "default_value": false,
+                                "description": "Удалять ссылку"
+                            }
+                        }
                     }
                 }
             },

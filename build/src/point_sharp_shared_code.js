@@ -66,7 +66,7 @@ function pimp_my_page(options) {
     // Проставляем теги у постов
     create_tag_system();
 
-    //
+    // Основное встраивание контента
     remark_entire_page(options);
 
     // Visual editor

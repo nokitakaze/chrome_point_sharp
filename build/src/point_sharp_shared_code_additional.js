@@ -5,7 +5,7 @@
  */
 
 /**
- * @param {Object} options Опции из OptionManager
+ * @param {OptionsManager} options Опции из OptionsManager
  */
 function remark_entire_page(options) {
     // Parse webp-images. Viva la Google Chrome
@@ -92,9 +92,15 @@ function remark_entire_page(options) {
             parse_500px(options);
         }
 
-        // Фото из 500px
+        // Google Drive
         if (options.is('option_embedding_gdrive')) {
             parse_gdrive(options);
+        }
+
+        // JSFiddle
+        if (options.is('option_embedding_jsfiddle')) {
+            parse_jsfiddle(options);
+            parse_jsfiddle_set_interval();
         }
     }
 
@@ -672,6 +678,10 @@ function draft_save_check() {
 // Парсим ссылки на coub
 function parse_coub_links(current_options) {
     $('.post-content a').each(function(num, obj) {
+        if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
+            return;
+        }
+
         var href = obj.href;
         var n;
 
@@ -687,9 +697,11 @@ function parse_coub_links(current_options) {
                 'border': 'none',
                 'width': Math.floor(parent_width * 0.9),
                 'height': Math.ceil(parent_width * 0.9 * 480 / 640)
-            }).addClass('embedded_video').addClass('embedded_coub').addClass('embedded_coub_' + n[1]);
+            }).addClass('embedded_video').addClass('embedded_coub').addClass('embedded_coub_' + n[1])
+                .addClass('point-sharp-added');
 
             obj.parentElement.insertBefore(player, obj);
+            $(obj).addClass('point-sharp-processed');
 
             if (current_options.is('option_embedding_coubcom_orig_link', false)) {
                 $(obj).hide();
@@ -1754,6 +1766,67 @@ function twitter_tweet_embedding_parse_links() {
                 }
             );
             twitter_tweet_count++;
+        }
+    });
+}
+
+function parse_jsfiddle_set_interval() {
+    setInterval(function() {
+        $('.content-wrap iframe').each(function(num, obj) {
+            if (!obj.src.match(new RegExp('^https://(www\\.)?jsfiddle\\.net/.+?/embedded/$'))) {
+                return;
+            }
+
+            var new_height = Math.max(Math.min(400, $(obj).height()), 200);
+            $(obj).height(new_height).addClass('point-sharp-added');
+        });
+    }, 100);
+}
+
+/**
+ *
+ * @param {OptionsManager} current_options
+ */
+function parse_jsfiddle(current_options) {
+    var reg = new RegExp('^https?://(www\\.)?jsfiddle\\.net/([a-z0-9]+)/(([0-9]+)/)?', 'i');
+    var used_keys = [];
+    $('script[data-jsfiddle-full-id]').each(function(num, obj) {
+        used_keys.push($(obj).attr('data-jsfiddle-full-id'));
+    });
+
+    $('.post-content a').each(function(num, obj) {
+        if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
+            return;
+        }
+
+        var n = obj.href.match(reg);
+        if (n === null) {
+            return;
+        }
+        var key = n[2] + ((typeof n[4] != 'undefined') ? '/' + n[4] : '');
+        // @hint Мы храним использованные ключи и не вставляем тот же контент второй раз из-за ошибки в JSFiddle
+        for (var i = 0; i < used_keys.length; i++) {
+            if (used_keys[i] == key) {
+                return;
+            }
+        }
+        used_keys.push(key);
+
+        var embedding_script_url = 'https://jsfiddle.net/' + key + '/embed/';
+        var script = document.createElement('script');
+        $(script).attr({
+            'async': 'async',
+            'src': embedding_script_url,
+            'data-jsfiddle-id': n[2],
+            'data-jsfiddle-revision': ((typeof n[4] != 'undefined') ? n[4] : ''),
+            'data-jsfiddle-full-id': key
+        }).addClass('embedded_jsfiddle').addClass('point-sharp-added');
+
+        obj.parentElement.insertBefore(script, obj);
+        $(obj).addClass('point-sharp-processed');
+
+        if (current_options.is('option_embedding_jsfiddle_remove_original_link', false)) {
+            $(obj).hide();
         }
     });
 }
