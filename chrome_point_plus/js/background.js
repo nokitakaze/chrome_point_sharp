@@ -35,6 +35,8 @@ chrome.notifications.onClicked.addListener(function(notificationId) {
     }
 });
 
+var unread_count_status_last_time = 0;
+
 // Message listener
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     console.log('Received message from tab #%s: %O',
@@ -96,6 +98,34 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                 });
 
                 sendResponse(true);
+                return true;
+
+            case 'new_unread_count_status':
+                // проверяем время
+                var this_time = message.date;
+                if (this_time <= unread_count_status_last_time) {
+                    return true;
+                }
+                unread_count_status_last_time = this_time;
+
+                chrome.tabs.query({}, function(tabs) {
+                    var reg = new RegExp('^https?://([a-z0-9-]+\\.)point\\.im/', '');
+                    /**
+                     * @var [Tabs] tabs
+                     */
+                    for (var i = 0; i < tabs.length; i++) {
+                        if ((typeof tabs[i].id == 'undefined') || (typeof tabs[i].url == 'undefined')) {
+                            continue;
+                        } else if (!tabs[i].url.match(reg)) {
+                            continue;
+                        }
+
+                        chrome.tabs.sendMessage(tabs[i].id, {
+                            'type': 'new_unread_count',
+                            'counts': [message.recent_count, message.comments_count, message.messages_count],
+                        });
+                    }
+                });
                 return true;
 
             default:

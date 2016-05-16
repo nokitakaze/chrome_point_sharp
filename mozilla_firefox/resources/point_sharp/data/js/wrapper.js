@@ -163,3 +163,21 @@ function html5_notification(settings, response) {
 function set_comment_text_to_dom(commentData, dom) {
     safe_saned_text(commentData.text, dom);
 }
+
+/**
+ * Выставляем кол-во unread на всех страницах
+ *
+ * @param {Number} recent_count
+ * @param {Number} comments_count
+ * @param {Number} messages_count
+ */
+function set_new_unread_count_status(recent_count, comments_count, messages_count) {
+    // @todo Имплементировать
+}
+
+/**
+ *
+ */
+function set_new_unread_count_listener(){
+    // @todo Имплементировать
+}

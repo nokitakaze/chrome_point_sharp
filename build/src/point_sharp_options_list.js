@@ -833,7 +833,7 @@ OptionsManager.getOptionElement = function(optionName) {
  * Можем ли мы использовать эту опцию на текущей платформе
  *
  * @param {string|object} optionName
- * @returns {bool}
+ * @returns {Boolean}
  */
 OptionsManager.canUseOption = function(optionName) {
     if (typeof(optionName) == 'string') {

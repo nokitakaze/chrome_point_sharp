@@ -894,15 +894,30 @@ function hints_save_new_hint(username, new_hint) {
  * Проверяем, чтобы были баджи в левом меню
  */
 function create_left_menu_badges() {
-    if ($('#main #left-menu #menu-recent .unread').length == 0) {
+    var count_recent, count_comments, count_messages;
+    var a = $('#main #left-menu #menu-recent .unread');
+    var b = $('#main #left-menu #menu-comments .unread');
+    var c = $('#main #left-menu #menu-messages .unread');
+    if (a.length == 0) {
         $('#main #left-menu #menu-recent').append('<span class="unread" style="display: none;">0</span>');
+        count_recent = 0;
+    } else {
+        count_recent = parseInt(a.text(), 10);
     }
-    if ($('#main #left-menu #menu-comments .unread').length == 0) {
+    if (b.length == 0) {
         $('#main #left-menu #menu-comments').append('<span class="unread" style="display: none;">0</span>');
+        count_comments = 0;
+    } else {
+        count_comments = parseInt(b.text(), 10);
     }
-    if ($('#main #left-menu #menu-messages .unread').length == 0) {
+    if (c.length == 0) {
         $('#main #left-menu #menu-messages').append('<span class="unread" style="display: none;">0</span>');
+        count_messages = 0;
+    } else {
+        count_messages = parseInt(c.text(), 10);
     }
+    set_new_unread_count_status(count_recent, count_comments, count_messages);
+    set_new_unread_count_listener();
 }
 
 /**
@@ -954,58 +969,8 @@ function comments_count_refresh_tick(current_options) {
         var count_recent = (a.length == 0) ? 0 : parseInt(a.text(), 10);
         var count_comments = (b.length == 0) ? 0 : parseInt(b.text(), 10);
         var count_messages = (c.length == 0) ? 0 : parseInt(c.text(), 10);
-
-        console.log('Comments: ', count_comments, ', Recent: ', count_recent, ', Messages: ', count_messages);
-        if (count_recent > 0) {
-            if (parseInt($('#main #left-menu #menu-recent .unread').text(), 10) != count_recent) {
-                $('#main #left-menu #menu-recent .unread').text(count_recent).show().css({
-                    'background-color': '#f2ebee',
-                    'color': '#7c3558'
-                });
-                setTimeout(function() {
-                    $('#main #left-menu #menu-recent .unread').css({
-                        'background-color': '',
-                        'color': ''
-                    });
-                }, 15000);
-            }
-        } else {
-            $('#main #left-menu #menu-recent .unread').text('0').hide();
-        }
-
-        if (count_comments > 0) {
-            if (parseInt($('#main #left-menu #menu-comments .unread').text(), 10) != count_comments) {
-                $('#main #left-menu #menu-comments .unread').text(count_comments).show().css({
-                    'background-color': '#f2ebee',
-                    'color': '#7c3558'
-                });
-                setTimeout(function() {
-                    $('#main #left-menu #menu-comments .unread').css({
-                        'background-color': '',
-                        'color': ''
-                    });
-                }, 15000);
-            }
-        } else {
-            $('#main #left-menu #menu-comments .unread').text('0').hide();
-        }
-
-        if (count_messages > 0) {
-            if (parseInt($('#main #left-menu #menu-messages .unread').text(), 10) != count_messages) {
-                $('#main #left-menu #menu-messages .unread').text(count_messages).show().css({
-                    'background-color': '#f2ebee',
-                    'color': '#7c3558'
-                });
-                setTimeout(function() {
-                    $('#main #left-menu #menu-messages .unread').css({
-                        'background-color': '',
-                        'color': ''
-                    });
-                }, 15000);
-            }
-        } else {
-            $('#main #left-menu #menu-messages .unread').text('0').hide();
-        }
+        update_left_menu_unread_budges(count_recent, count_comments, count_messages);
+        set_new_unread_count_status(count_recent, count_comments, count_messages);
 
         if ((current_options.is('option_other_comments_count_refresh_title')) &&
             (!window_focused)) {
@@ -1027,6 +992,66 @@ function comments_count_refresh_tick(current_options) {
         'width': '600px',
         'height': '300px'
     }).hide();
+}
+
+/**
+ *
+ * @param {Number} count_recent
+ * @param {Number} count_comments
+ * @param {Number} count_messages
+ */
+function update_left_menu_unread_budges(count_recent, count_comments, count_messages) {
+    console.log('Comments: ', count_comments, ', Recent: ', count_recent, ', Messages: ', count_messages);
+    if (count_recent > 0) {
+        if (parseInt($('#main #left-menu #menu-recent .unread').text(), 10) != count_recent) {
+            $('#main #left-menu #menu-recent .unread').text(count_recent).show().css({
+                'background-color': '#f2ebee',
+                'color': '#7c3558'
+            });
+            setTimeout(function() {
+                $('#main #left-menu #menu-recent .unread').css({
+                    'background-color': '',
+                    'color': ''
+                });
+            }, 15000);
+        }
+    } else {
+        $('#main #left-menu #menu-recent .unread').text('0').hide();
+    }
+
+    if (count_comments > 0) {
+        if (parseInt($('#main #left-menu #menu-comments .unread').text(), 10) != count_comments) {
+            $('#main #left-menu #menu-comments .unread').text(count_comments).show().css({
+                'background-color': '#f2ebee',
+                'color': '#7c3558'
+            });
+            setTimeout(function() {
+                $('#main #left-menu #menu-comments .unread').css({
+                    'background-color': '',
+                    'color': ''
+                });
+            }, 15000);
+        }
+    } else {
+        $('#main #left-menu #menu-comments .unread').text('0').hide();
+    }
+
+    if (count_messages > 0) {
+        if (parseInt($('#main #left-menu #menu-messages .unread').text(), 10) != count_messages) {
+            $('#main #left-menu #menu-messages .unread').text(count_messages).show().css({
+                'background-color': '#f2ebee',
+                'color': '#7c3558'
+            });
+            setTimeout(function() {
+                $('#main #left-menu #menu-messages .unread').css({
+                    'background-color': '',
+                    'color': ''
+                });
+            }, 15000);
+        }
+    } else {
+        $('#main #left-menu #menu-messages .unread').text('0').hide();
+    }
 }
 
 /**

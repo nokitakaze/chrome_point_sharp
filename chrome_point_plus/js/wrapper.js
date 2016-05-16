@@ -312,3 +312,50 @@ function twitter_tweet_embedding_init() {
             });
     }(document, "script", "twitter-wjs"));
 }
+
+/**
+ * Выставляем кол-во unread на всех страницах
+ *
+ * @param {Number} recent_count
+ * @param {Number} comments_count
+ * @param {Number} messages_count
+ */
+function set_new_unread_count_status(recent_count, comments_count, messages_count) {
+    chrome.runtime.sendMessage({
+        'type': 'new_unread_count_status',
+        'recent_count': recent_count,
+        'comments_count': comments_count,
+        'messages_count': messages_count,
+        'date': (new Date()).getTime()
+    }, function() {
+
+    });
+}
+
+/**
+ * Message Listener
+ */
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+    console.log('Received message',
+        sender.tab ? "from a content script:" + sender.tab.url : "from the extension background");
+    switch (message.type) {
+        case 'new_unread_count':
+            update_left_menu_unread_budges(message.counts[0], message.counts[1], message.counts[2]);
+            return true;
+
+        default:
+            console.warn('No such message type');
+            sendResponse(false);
+            return true;
+    }
+});
+
+
+/**
+ * Выставляем кол-во unread на всех страницах
+ */
+function set_new_unread_count_listener() {
+    // Ничего не нужно
+}
+
+// @todo message listeners
