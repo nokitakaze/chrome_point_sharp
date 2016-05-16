@@ -22,9 +22,14 @@
      */
     $build_version = json_decode(file_get_contents($root_folder.'./build/build_version.json'));
 
+    function addslashes_quote($s) {
+        return str_replace(['\'', '"'], ['\\\'', '\\"'], $s);
+    }
+
     // Копируем папку
-    system('rm -r "'.addslashes($root_folder).'/mozilla_firefox_pack"');
-    system('cp -R "'.addslashes($root_folder).'/mozilla_firefox" "'.addslashes($root_folder).'/mozilla_firefox_pack"');
+    system('rd "'.addslashes_quote($root_folder).'\\mozilla_firefox_pack" /S /Q');
+    system('xcopy "'.addslashes_quote($root_folder).'\\mozilla_firefox" "'.addslashes_quote($root_folder).
+           '\\mozilla_firefox_pack\\" /E /Y');
 
     // Удаляем все debug
     foreach (array(
@@ -77,10 +82,12 @@
     $old_folder = getcwd();
     chdir($root_folder.'/mozilla_firefox_pack/');
     $pack_filename = $root_folder.'/../mozilla_firefox-undebugged-'.$json->version.'.'.$build_version->version.'.xpi';
-    unlink($pack_filename);
-    system('zip -r "'.addslashes($pack_filename).'" ./');
+    if (file_exists($pack_filename)) {
+        unlink($pack_filename);
+    }
+    system('zip -r "'.addslashes_quote($pack_filename).'" ./');
     chdir($old_folder);
-    system('rm -r "'.addslashes($root_folder).'/mozilla_firefox_pack"');
+    system('rd "'.addslashes_quote($root_folder).'/mozilla_firefox_pack" /S /Q');
 
 
     echo "Version ".$json->version.'.'.$build_version->version.' builded at '.gmdate('Y-m-d H:i:sO')."\n";
