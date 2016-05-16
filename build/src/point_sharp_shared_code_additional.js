@@ -1178,20 +1178,32 @@ function tumblr_posts_embedding_init(options) {
  * Посты из Инстаграма
  */
 function instagram_posts_embedding_init(current_options) {
+    // @todo Поправить insagram_post_count с учётом нового контента
     var insagram_post_count = 0;
     $('.post-content a').each(function(num, obj) {
         if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
             return;
         }
 
-        var href = obj.href;
-        var n;
+        var n = obj.href.match(new RegExp('^https?://(www\\.)?instagram\\.com/p/([a-z0-9_-]+)/?', 'i'));
+        if (!n) {
+            return;
+        }
+        $(obj).addClass('embed-instagram-here').attr({
+            'data-instagram-id': n[2]
+        });
 
-        if (n = href.match(new RegExp('^https?://(www\\.)?instagram\\.com/p/([a-z0-9_-]+)', 'i'))) {
-            $ajax({
-                'url': 'https://api.instagram.com/oembed?url=' + urlencode('http://instagram.com/p/' + n[2] + '/'),
-                'success': function(text) {
-                    var answer = JSON.parse(text);
+        $ajax({
+            'url': 'https://api.instagram.com/oembed/?url=' + urlencode('http://instagram.com/p/' + n[2] + '/'),
+            'success': function(text) {
+                var answer = JSON.parse(text);
+                var n = this.settings.n;
+                $('.post-content a.embed-instagram-here[data-instagram-id]').each(function(num, obj) {
+                    var data_instagram_id = $(obj).attr('data-instagram-id');
+                    if (data_instagram_id != n[2]) {
+                        return;
+                    }
+
                     var new_post = document.createElement('a');
                     $(new_post).attr({
                         'id': 'instagram-' + insagram_post_count,
@@ -1201,21 +1213,22 @@ function instagram_posts_embedding_init(current_options) {
                         'data-fancybox-group': (current_options.is('option_fancybox_bind_images_to_one_flow'))
                             ? 'one_flow_gallery' : '',
                         'data-fancybox-title': (current_options.is('option_fancybox_smart_hints'))
-                            ? answer.title : ' '
+                            ? answer.title : ' ',
+                        'data-instagram-id': n[2]
                     }).addClass('instagram-post-embedded').addClass('point-sharp-added').addClass('postimg');
 
                     var image = document.createElement('img');
                     image.alt = new_post.title;
-                    image.src = new_post.href;
+                    image.src = new_post.href.replace(new RegExp('^http'), 'https');
                     new_post.appendChild(image);
 
                     obj.parentElement.insertBefore(new_post, obj);
-                    $(obj).addClass('point-sharp-processed');
+                    $(obj).addClass('point-sharp-processed').removeClass('embed-instagram-here');
                     insagram_post_count++;
-                }
-            });
-
-        }
+                });
+            },
+            'n': n
+        });
     });
 }
 

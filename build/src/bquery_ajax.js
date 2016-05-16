@@ -52,9 +52,9 @@ $ajax_prot.prototype = {
 
         return raw_url;
     }
-}
+};
 
-$ajax = function(settings) {return new $ajax_prot(settings);}
+$ajax = function(settings) {return new $ajax_prot(settings);};
 
 function urlencode(text) {return encodeURIComponent(text);}
 
