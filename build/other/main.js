@@ -43,6 +43,7 @@ exports.main = function() {
             self.data.url("js/bquery_ajax.js"),
             self.data.url("js/date.format.js"),
             self.data.url("js/point_sharp_options_list.js"),
+            self.data.url("js/mozilla_twitter_embedding.js"),
             self.data.url("js/point_sharp_shared_code_booru.js"),
             self.data.url("js/point_sharp_shared_code_additional.js"),
             self.data.url("js/point_sharp_shared_code_websocket.js"),
@@ -96,7 +97,7 @@ exports.main = function() {
 
             // Версия Extension'а
             worker.port.on('get_extension_version', function(callback_rand) {
-                worker.port.emit('set_extension_version' + callback_rand, '2.0.4.150');
+                worker.port.emit('set_extension_version' + callback_rand, '%%VERSION%%');
             });
 
         }

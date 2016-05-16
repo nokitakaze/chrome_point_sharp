@@ -146,8 +146,7 @@ var point_sharp_options_tree = {
                     "option_embedding_twitter_tweets": {
                         "type": "boolean",
                         "default_value": true,
-                        "description": "Twitter",
-                        "platforms": ['chrome']
+                        "description": "Twitter"
                     },
                     "option_embedding_instagram_posts": {
                         "type": "boolean",
