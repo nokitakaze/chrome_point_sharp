@@ -981,17 +981,8 @@ function comments_count_refresh_tick(current_options) {
         var count_recent = (a.length == 0) ? 0 : parseInt(a.text(), 10);
         var count_comments = (b.length == 0) ? 0 : parseInt(b.text(), 10);
         var count_messages = (c.length == 0) ? 0 : parseInt(c.text(), 10);
-        update_left_menu_unread_budges(count_recent, count_comments, count_messages);
+        update_left_menu_unread_budges(count_recent, count_comments, count_messages, current_options);
         set_new_unread_count_status(count_recent, count_comments, count_messages);
-
-        if ((current_options.is('option_other_comments_count_refresh_title')) &&
-            (!window_focused)) {
-            var new_title = document.title.replace(new RegExp('^\\[[0-9]+\\; [0-9]+\\; [0-9]+\\] '), '');
-            if ((count_recent > 0) || (count_comments > 0)) {
-                new_title = '[' + count_recent + '; ' + count_comments + '; ' + count_messages + '] ' + new_title;
-            }
-            document.title = new_title;
-        }
 
         $('#debug_iframe').remove();
     }).attr({
@@ -1011,8 +1002,9 @@ function comments_count_refresh_tick(current_options) {
  * @param {Number} count_recent
  * @param {Number} count_comments
  * @param {Number} count_messages
- */
-function update_left_menu_unread_budges(count_recent, count_comments, count_messages) {
+ * @param {OptionsManager} options
+ **/
+function update_left_menu_unread_budges(count_recent, count_comments, count_messages, options) {
     console.log('Comments: ', count_comments, ', Recent: ', count_recent, ', Messages: ', count_messages);
     if (count_recent > 0) {
         if (parseInt($('#main #left-menu #menu-recent .unread').text(), 10) != count_recent) {
@@ -1063,6 +1055,15 @@ function update_left_menu_unread_budges(count_recent, count_comments, count_mess
         }
     } else {
         $('#main #left-menu #menu-messages .unread').text('0').hide();
+    }
+
+    if ((options.is('option_other_comments_count_refresh_title')) &&
+        (!window_focused)) {
+        var new_title = document.title.replace(new RegExp('^\\[[0-9]+\\; [0-9]+\\; [0-9]+\\] '), '');
+        if ((count_recent > 0) || (count_comments > 0)) {
+            new_title = '[' + count_recent + '; ' + count_comments + '; ' + count_messages + '] ' + new_title;
+        }
+        document.title = new_title;
     }
 }
 

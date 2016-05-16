@@ -79,6 +79,12 @@ function this_page_change_keyvalue(key, value) {
     $('.point-options-wrapper .saved').text('Опции сохраняются...').removeClass('hidden');
     local_options_set(tmp, function() {
         $('.point-options-wrapper .saved').text('Опции сохранены').addClass('hidden');
+        if (navigator.appVersion.match(/.*chrome.*/i) !== null) {
+            // Мы под Google Chrome
+            chrome.runtime.sendMessage({
+                'type': 'update_options'
+            }, function() {});
+        }
         redraw_current_options_value();
     });
 }

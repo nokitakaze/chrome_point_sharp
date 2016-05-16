@@ -49,7 +49,7 @@ $(document).ready(function() {
 /**
  * Основная функция, в неё приходят уже ухоженные несырые опции
  *
- * @param {Object} options Опции из OptionManager
+ * @param {OptionsManager} options Опции из OptionManager
  */
 function pimp_my_page(options) {
     console.log("pimp_my_page start", new Date());
@@ -62,6 +62,9 @@ function pimp_my_page(options) {
 
     // Показываем иконку приложения в адресной строке
     urlbar_icon_show();
+
+    // Set Message Listener
+    set_message_listener(options);
 
     // Проставляем теги у постов
     create_tag_system();
@@ -86,7 +89,7 @@ function pimp_my_page(options) {
 
     // WebSocket
     if (options.is('option_ws')) {
-        skobkin_websocket_init(options);
+        smart_websocket_init(options);
     }
 
     // Отправлять каменты через Ajax

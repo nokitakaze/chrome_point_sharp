@@ -5,78 +5,6 @@
  */
 
 /**
- * Инициализация приёма сообщений через Вебсоккеты
- *
- * @param options Опции, полученные из основной функции
- */
-function skobkin_websocket_init(options) {
-    var my_nick_lower = get_my_nick().toLowerCase();
-
-    // SSL or plain
-    var ws = new WebSocket(((location.protocol == 'https:') ? 'wss' : 'ws') + '://point.im/ws');
-    console.log('WebSocket created: ', ws);
-
-    // Detecting post id if presented
-    var postId = $('#top-post').attr('data-id');
-    console.log('Current post id detected as #', postId);
-    // Detecting view mode
-    var treeSwitch = $('#tree-switch a.active').attr('href');
-    console.log('Comments view mode: ', treeSwitch);
-
-    // Error handler
-    ws.onerror = function(err) {
-        console.error('WebSocket error: ', err);
-    };
-
-    // Message handler
-    ws.onmessage = function(evt) {
-        try {
-            if (evt.data == 'ping') {
-                console.info('ws-ping');
-                return;
-            }
-            /**
-             * @var {Object} wsMessage
-             */
-            var wsMessage = JSON.parse(evt.data);
-            console.log('WS Message: ', evt, wsMessage);
-
-            if (!wsMessage.hasOwnProperty('a') || (wsMessage.a == '')) {
-                if (wsMessage.hasOwnProperty('login')) {
-                    //noinspection JSUnresolvedVariable
-                    my_nick_lower = wsMessage.login.toLowerCase();
-                }
-                return;
-            }
-            switch (wsMessage.a) {
-                // Comments
-                case 'comment':
-                case 'ok':
-                    ws_message_comment(wsMessage, my_nick_lower, postId, options);
-                    break;
-
-                // Posts
-                case 'post':
-                    ws_message_post(wsMessage, my_nick_lower, options);
-                    break;
-
-                // Subscribe
-                case 'sub':
-                    ws_message_sub(wsMessage, options);
-                    break;
-
-                default:
-                    break;
-
-            }
-        } catch (e) {
-            //noinspection JSUnresolvedVariable
-            console.error('WebSocket handler exception: ', e.name, e.message, e.fileName || null, e.lineNumber || null);
-        }
-    };
-}
-
-/**
  *
  * @param {Object} wsMessage
  * @param {String} wsMessage.post_id
@@ -105,7 +33,7 @@ function ws_message_comment(wsMessage, my_nick_lower, postId, options) {
             text: wsMessage.text,
             url: 'https://' + wsMessage.author.toLowerCase() + '.point.im/' +
                  wsMessage.post_id + '#' + wsMessage.comment_id
-        }, function(response) {});
+        }, function(response) {}, true);
     }
 
     // Check we are in the post
@@ -226,7 +154,7 @@ function ws_message_post(wsMessage, my_nick_lower, options) {
             title: 'Post by @' + wsMessage.author + ' #' + wsMessage.post_id,
             text: tags_text + wsMessage.text,
             url: 'https://' + wsMessage.author.toLowerCase() + '.point.im/' + wsMessage.post_id
-        }, function(response) {});
+        }, function(response) {}, true);
     }
 
     var unread_count = parseInt($('#main #left-menu #menu-recent .unread').text(), 10);
@@ -263,7 +191,7 @@ function ws_message_sub(wsMessage, options) {
             title: '@' + wsMessage.from + ' подписался на вас',
             text: '',
             url: 'https://' + subscription_user_name + '.point.im/'
-        }, function(response) {});
+        }, function(response) {}, true);
     }
 }
 

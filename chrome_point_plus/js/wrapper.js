@@ -58,6 +58,7 @@ function local_storage_get(key, callback) {
                             got_data_local[current_key] = got_data_sync[current_key];
                         }
                     }
+                    // @todo Сохранять всё в local
 
                     if (typeof(key) == 'string') {
                         callback(got_data_local[key]);
@@ -252,8 +253,12 @@ function console_group_end() {
  *
  * @param {object} settings
  * @param {function} response
+ * @param {boolean} from_websocket
  */
-function html5_notification(settings, response) {
+function html5_notification(settings, response, from_websocket) {
+    if (from_websocket) {
+        return;
+    }
     if (typeof(settings.url) != 'undefined') {
         settings.onclick = function() {
             window.open(settings.url);
@@ -333,23 +338,65 @@ function set_new_unread_count_status(recent_count, comments_count, messages_coun
 }
 
 /**
- * Message Listener
+ * @param {OptionsManager} options
  */
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-    console.log('Received message',
-        sender.tab ? "from a content script:" + sender.tab.url : "from the extension background");
-    switch (message.type) {
-        case 'new_unread_count':
-            update_left_menu_unread_budges(message.counts[0], message.counts[1], message.counts[2]);
-            return true;
+function set_message_listener(options) {
+    /**
+     * Message Listener
+     */
+    chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+        console.log('Received message',
+            sender.tab ? "from a content script:" + sender.tab.url : "from the extension background");
+        switch (message.type) {
+            case 'new_unread_count':
+                update_left_menu_unread_budges(message.counts[0], message.counts[1], message.counts[2], options);
+                return true;
+            case 'websocket_reaction':
+                //noinspection JSUnresolvedVariable
+                ws_socket_reaction(message.wsMessage, options);
+                return true;
+
+            default:
+                console.warn('No such message type');
+                sendResponse(false);
+                return true;
+        }
+    });
+}
+
+function ws_socket_reaction(wsMessage, options) {
+    // Detecting post id if presented
+    var postId = $('#top-post').attr('data-id');
+
+    var my_nick_lower = get_my_nick().toLowerCase();
+    if (!wsMessage.hasOwnProperty('a') || (wsMessage.a == '')) {
+        if (wsMessage.hasOwnProperty('login')) {
+            //noinspection JSUnresolvedVariable
+            my_nick_lower = wsMessage.login.toLowerCase();
+        }
+        return;
+    }
+    switch (wsMessage.a) {
+        // Comments
+        case 'comment':
+        case 'ok':
+            ws_message_comment(wsMessage, my_nick_lower, postId, options);
+            break;
+
+        // Posts
+        case 'post':
+            ws_message_post(wsMessage, my_nick_lower, options);
+            break;
+
+        // Subscribe
+        case 'sub':
+            ws_message_sub(wsMessage, options);
+            break;
 
         default:
-            console.warn('No such message type');
-            sendResponse(false);
-            return true;
+            break;
     }
-});
-
+}
 
 /**
  * Выставляем кол-во unread на всех страницах
@@ -358,4 +405,11 @@ function set_new_unread_count_listener() {
     // Ничего не нужно
 }
 
-// @todo message listeners
+/**
+ * Инициализация приёма сообщений через Вебсоккеты
+ *
+ * @param {OptionsManager} options Опции, полученные из основной функции
+ */
+function smart_websocket_init(options) {
+    // Ничего не нужно, всё работает на background.js
+}
