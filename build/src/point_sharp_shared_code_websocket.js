@@ -31,171 +31,241 @@ function skobkin_websocket_init(options) {
     // Message handler
     ws.onmessage = function(evt) {
         try {
-            // ping :)
             if (evt.data == 'ping') {
                 console.info('ws-ping');
-            } else {
-                var wsMessage = JSON.parse(evt.data);
-                console.log('WS Message: ', evt, wsMessage);
+                return;
+            }
+            /**
+             * @var {Object} wsMessage
+             */
+            var wsMessage = JSON.parse(evt.data);
+            console.log('WS Message: ', evt, wsMessage);
 
-                if (wsMessage.hasOwnProperty('a') && wsMessage.a != '') {
-                    switch (wsMessage.a) {
-                        // Comments
-                        case 'comment':
-                        case 'ok':
-                            console_group_collapsed('ws-comment' + wsMessage.post_id + '/' + wsMessage.comment_id);
-
-                            // Desktop notifications
-                            if (options.is('option_ws_comments_notifications') &&
-                                (wsMessage.author.toLowerCase() != my_nick_lower)) {
-                                html5_notification({
-                                    notificationId: 'comment_' + wsMessage.post_id + '#' + wsMessage.comment_id,
-                                    avatarUrl: getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
-                                    title: '@' + wsMessage.author + ' #' + wsMessage.post_id + '/' +
-                                           wsMessage.comment_id,
-                                    text: wsMessage.text,
-                                    url: 'https://' + wsMessage.author.toLowerCase() + '.point.im/' +
-                                         wsMessage.post_id + '#' + wsMessage.comment_id
-                                }, function(response) {});
-                            }
-
-                            // Check we are in the post
-                            // Check we are in specified post
-                            if (($('#top-post').length < 1) || (wsMessage.post_id != postId)) {
-                                var unread_count = parseInt($('#main #left-menu #menu-comments .unread').text(), 10);
-                                $('#main #left-menu #menu-comments .unread').text(unread_count + 1).show();
-
-                                var new_comment_post = $('div.post[data-id="' + wsMessage.post_id + '"]');
-                                if (new_comment_post.length > 0) {
-                                    var post_id_block = new_comment_post.find('.post-id');
-                                    var unread_block = post_id_block.find('.unread');
-                                    if (unread_block.length == 0) {
-                                        post_id_block.find('a').first().append(
-                                            '<span class="unread" style="margin-left: 3px;">1</span>');
-                                    } else {
-                                        unread_block.text(parseInt(unread_block.text(), 10) + 1).show();
-                                    }
-
-                                    if (options.is('option_other_hightlight_post_comments')) {
-                                        $(new_comment_post).addClass('new_comments');
-                                    }
-                                }
-
-                                console_group_end();
-                                break;
-                            }
-
-                            // Generating comment from websocket message
-                            ajax_get_comments_create_comment_elements({
-                                id: (wsMessage.a == 'comment') ? wsMessage.comment_id : wsMessage.rcid,
-                                toId: (wsMessage.a == 'comment') ? wsMessage.to_comment_id : wsMessage.comment_id,
-                                postId: wsMessage.post_id,
-                                author: wsMessage.author,
-                                text: wsMessage.text,
-                                html: wsMessage.html,
-                                options: options,
-                                fadeOut: options.is('option_ws_comments_color_fadeout'),
-                                commentType: (wsMessage.a == 'comment') ? 'comment' : 'recommendation'
-                            }, function($comment, again_callback) {
-                                // It's time to DOM
-                                console.info('Inserting comment');
-
-                                // Search for parent comment
-                                var $parentComment =
-                                    (wsMessage.to_comment_id) ? ($('.post[data-comment-id="' + wsMessage.to_comment_id + '"]'))
-                                        : [];
-                                console.log('Parent comment: ', $parentComment || null);
-
-                                // If list mode or not addressed to other comment
-                                if ($('#comments #tree-switch a').eq(0).hasClass('active') ||
-                                    (wsMessage.to_comment_id === null) || (!$parentComment.length)) {
-                                    // Adding to the end of the list
-                                    $('.content-wrap #comments #post-reply').before($comment);
-                                } else {
-                                    // Check for children
-                                    var $parentCommentChildren = $parentComment.next('.comments');
-                                    // If child comment already exist
-                                    if ($parentCommentChildren.length > 0) {
-                                        console.log('Child comments found. Appending...');
-                                        $parentCommentChildren.append($comment);
-                                    } else {
-                                        console.log('No child comments found. Creating...');
-                                        $parentComment.after($('<div>').addClass('comments').append($comment));
-                                    }
-                                }
-
-                                console_group_end();
-                                again_callback();
-                            });
-
-
-                            break;
-
-                        // Posts
-                        case 'post':
-                            console_group_collapsed('ws-post #' + wsMessage.post_id);
-
-                            if (options.is('option_ws_posts_notifications') &&
-                                (wsMessage.author.toLowerCase() != my_nick_lower)) {
-                                var tags_text = '';
-                                for (var i = 0; i < wsMessage.tags.length; i++) {
-                                    tags_text += ' ' + wsMessage.tags[i];
-                                }
-                                if (tags_text != '') {
-                                    tags_text = tags_text.substr(1) + "\r\n";
-                                }
-
-                                html5_notification({
-                                    notificationId: 'post_' + wsMessage.post_id,
-                                    avatarUrl: getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
-                                    title: 'Post by @' + wsMessage.author + ' #' + wsMessage.post_id,
-                                    text: tags_text + wsMessage.text,
-                                    url: 'https://' + wsMessage.author.toLowerCase() + '.point.im/' + wsMessage.post_id
-                                }, function(response) {});
-                            }
-
-                            unread_count = parseInt($('#main #left-menu #menu-recent .unread').text(), 10);
-                            $('#main #left-menu #menu-recent .unread').text(unread_count + 1).show();
-
-                            console_group_end();
-                            break;
-
-                        case 'sub':
-                            console_group_collapsed('ws-subscription ' + wsMessage.from + '/' + wsMessage.comment_id);
-                            var subscription_user_name = wsMessage.from.toLowerCase();
-
-                            // Desktop notifications
-                            if (options.is('option_ws_subscription')) {
-                                html5_notification({
-                                    notificationId: 'subscription_' + subscription_user_name,
-                                    avatarUrl: getProtocol() + '//point.im/avatar/' + subscription_user_name + '/80',
-                                    title: '@' + wsMessage.from + ' подписался на вас',
-                                    text: '',
-                                    url: 'https://' + subscription_user_name + '.point.im/'
-                                }, function(response) {});
-                            }
-                            break;
-
-                        default:
-                            break;
-
-                    }
+            if (!wsMessage.hasOwnProperty('a') || (wsMessage.a == '')) {
+                if (wsMessage.hasOwnProperty('login')) {
+                    //noinspection JSUnresolvedVariable
+                    my_nick_lower = wsMessage.login.toLowerCase();
                 }
+                return;
+            }
+            switch (wsMessage.a) {
+                // Comments
+                case 'comment':
+                case 'ok':
+                    ws_message_comment(wsMessage, my_nick_lower, postId, options);
+                    break;
 
+                // Posts
+                case 'post':
+                    ws_message_post(wsMessage, my_nick_lower, options);
+                    break;
+
+                // Subscribe
+                case 'sub':
+                    ws_message_sub(wsMessage, options);
+                    break;
+
+                default:
+                    break;
 
             }
         } catch (e) {
+            //noinspection JSUnresolvedVariable
             console.error('WebSocket handler exception: ', e.name, e.message, e.fileName || null, e.lineNumber || null);
         }
-
     };
 }
 
-// Monts for Date.getMonth()
-var months = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-];
+/**
+ *
+ * @param {Object} wsMessage
+ * @param {String} wsMessage.post_id
+ * @param {String} wsMessage.comment_id
+ * @param {String} wsMessage.author
+ * @param {String} wsMessage.text
+ * @param {String} wsMessage.a
+ * @param {String} wsMessage.to_comment_id
+ * @param {String} wsMessage.rcid
+ * @param {String} wsMessage.html
+ * @param {String} my_nick_lower
+ * @param {String} postId
+ * @param {OptionsManager} options
+ */
+function ws_message_comment(wsMessage, my_nick_lower, postId, options) {
+    console_group_collapsed('ws-comment' + wsMessage.post_id + '/' + wsMessage.comment_id);
+
+    // Desktop notifications
+    if (options.is('option_ws_comments_notifications') &&
+        (wsMessage.author.toLowerCase() != my_nick_lower)) {
+        html5_notification({
+            notificationId: 'comment_' + wsMessage.post_id + '#' + wsMessage.comment_id,
+            avatarUrl: getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
+            title: '@' + wsMessage.author + ' #' + wsMessage.post_id + '/' +
+                   wsMessage.comment_id,
+            text: wsMessage.text,
+            url: 'https://' + wsMessage.author.toLowerCase() + '.point.im/' +
+                 wsMessage.post_id + '#' + wsMessage.comment_id
+        }, function(response) {});
+    }
+
+    // Check we are in the post
+    // Check we are in specified post
+    if (($('#top-post').length < 1) || (wsMessage.post_id != postId)) {
+        var unread_count = parseInt($('#main #left-menu #menu-comments .unread').text(), 10);
+        // Обновляем баджи
+        $('#main #left-menu #menu-comments .unread').text(unread_count + 1).show();
+
+        // Обновляем кол-во каментов на стене
+        var new_comment_post = $('div.post[data-id="' + wsMessage.post_id + '"]');
+        if (new_comment_post.length > 0) {
+            var post_id_block = new_comment_post.find('.post-id');
+            var unread_block = post_id_block.find('.unread');
+            if (unread_block.length == 0) {
+                post_id_block.find('a').first().append(
+                    '<span class="unread" style="margin-left: 3px;">1</span>');
+            } else {
+                unread_block.text(parseInt(unread_block.text(), 10) + 1).show();
+            }
+
+            if (options.is('option_other_hightlight_post_comments')) {
+                $(new_comment_post).addClass('new_comments');
+            }
+        }
+
+        console_group_end();
+        return;
+    }
+
+    if (my_nick_lower == wsMessage.author.toLowerCase()) {
+        // Это мы сами и есть
+        $('#top-post .action-buttons .subscribe').each(function(num, obj) {
+            var new_href = $(obj).attr('href');
+            new_href = new_href.replace(new RegExp('/s\\?csrf_token='), '/u?csrf_token=');
+            $(obj).text('отписаться').attr({
+                'href': new_href
+            });
+        }).addClass('active');
+    }
+
+    // Generating comment from websocket message
+    ajax_get_comments_create_comment_elements({
+        id: (wsMessage.a == 'comment') ? wsMessage.comment_id : wsMessage.rcid,
+        toId: (wsMessage.a == 'comment') ? wsMessage.to_comment_id : wsMessage.comment_id,
+        postId: wsMessage.post_id,
+        author: wsMessage.author,
+        text: wsMessage.text,
+        html: wsMessage.html,
+        options: options,
+        fadeOut: options.is('option_ws_comments_color_fadeout'),
+        commentType: (wsMessage.a == 'comment') ? 'comment' : 'recommendation'
+    }, function($comment, again_callback) {
+        // It's time to DOM
+        console.info('Inserting comment');
+
+        // Search for parent comment
+        var $parentComment =
+            (wsMessage.to_comment_id) ? ($('.post[data-comment-id="' + wsMessage.to_comment_id + '"]'))
+                : [];
+        console.log('Parent comment: ', $parentComment || null);
+
+        // If list mode or not addressed to other comment
+        if ($('#comments #tree-switch a').eq(0).hasClass('active') ||
+            (wsMessage.to_comment_id === null) || (!$parentComment.length)) {
+            // Adding to the end of the list
+            $('.content-wrap #comments #post-reply').before($comment);
+        } else {
+            // Check for children
+            var $parentCommentChildren = $parentComment.next('.comments');
+            // If child comment already exist
+            if ($parentCommentChildren.length > 0) {
+                console.log('Child comments found. Appending...');
+                $parentCommentChildren.append($comment);
+            } else {
+                console.log('No child comments found. Creating...');
+                $parentComment.after($('<div>').addClass('comments').append($comment));
+            }
+        }
+
+        console_group_end();
+        again_callback();
+    });
+}
+
+/**
+ *
+ * @param {Object} wsMessage
+ * @param {String} wsMessage.post_id
+ * @param {String} wsMessage.comment_id
+ * @param {String} wsMessage.author
+ * @param {String} wsMessage.text
+ * @param {String} wsMessage.a
+ * @param {String} wsMessage.to_comment_id
+ * @param {String} wsMessage.rcid
+ * @param {String} wsMessage.html
+ * @param {String} wsMessage.from
+ * @param {String[]} wsMessage.tags
+ * @param {String} my_nick_lower
+ * @param {OptionsManager} options
+ */
+function ws_message_post(wsMessage, my_nick_lower, options) {
+    console_group_collapsed('ws-post #' + wsMessage.post_id);
+
+    if (options.is('option_ws_posts_notifications') &&
+        (wsMessage.author.toLowerCase() != my_nick_lower)) {
+        var tags_text = '';
+        for (var i = 0; i < wsMessage.tags.length; i++) {
+            tags_text += ' ' + wsMessage.tags[i];
+        }
+        if (tags_text != '') {
+            tags_text = tags_text.substr(1) + "\r\n";
+        }
+
+        html5_notification({
+            notificationId: 'post_' + wsMessage.post_id,
+            avatarUrl: getProtocol() + '//point.im/avatar/' + wsMessage.author + '/80',
+            title: 'Post by @' + wsMessage.author + ' #' + wsMessage.post_id,
+            text: tags_text + wsMessage.text,
+            url: 'https://' + wsMessage.author.toLowerCase() + '.point.im/' + wsMessage.post_id
+        }, function(response) {});
+    }
+
+    var unread_count = parseInt($('#main #left-menu #menu-recent .unread').text(), 10);
+    $('#main #left-menu #menu-recent .unread').text(unread_count + 1).show();
+
+    console_group_end();
+}
+
+
+/**
+ *
+ * @param {Object} wsMessage
+ * @param {String} wsMessage.post_id
+ * @param {String} wsMessage.comment_id
+ * @param {String} wsMessage.author
+ * @param {String} wsMessage.text
+ * @param {String} wsMessage.a
+ * @param {String} wsMessage.to_comment_id
+ * @param {String} wsMessage.rcid
+ * @param {String} wsMessage.html
+ * @param {String} wsMessage.from
+ * @param {String[]} wsMessage.tags
+ * @param {OptionsManager} options
+ */
+function ws_message_sub(wsMessage, options) {
+    console_group_collapsed('ws-subscription ' + wsMessage.from + '/' + wsMessage.comment_id);
+    var subscription_user_name = wsMessage.from.toLowerCase();
+
+    // Desktop notifications
+    if (options.is('option_ws_subscription')) {
+        html5_notification({
+            notificationId: 'subscription_' + subscription_user_name,
+            avatarUrl: getProtocol() + '//point.im/avatar/' + subscription_user_name + '/80',
+            title: '@' + wsMessage.from + ' подписался на вас',
+            text: '',
+            url: 'https://' + subscription_user_name + '.point.im/'
+        }, function(response) {});
+    }
+}
 
 function getProtocol() {
     return ((location.protocol == 'http:') ? 'http:' : 'https:');
@@ -305,7 +375,9 @@ function ajax_get_comments_post_comment($post, csRf, options) {
              */
             var data = JSON.parse(json);
 
+            //noinspection JSUnresolvedVariable
             if (typeof(data.error) !== 'undefined') {
+                //noinspection JSUnresolvedVariable
                 console.error('AJAX request HTTP error while sending the comment', data.error);
 
                 smart_form_post('/' + $('#top-post').attr('data-id'), {
@@ -326,6 +398,7 @@ function ajax_get_comments_post_comment($post, csRf, options) {
 
             if (!options.is('option_ws')) {
                 // Creating the comment HTML
+                //noinspection JSUnresolvedVariable
                 ajax_get_comments_create_comment_elements({
                         id: data.comment_id,
                         toId: $post.data('comment-id') || null,
@@ -422,12 +495,13 @@ const ajax_get_comments_comment_template =
  *
  * @param {object} commentData Comment data
  * @param {string|number} commentData.id ID of the created comment
- * @param {string|number} commentData.toId ID of the comment replying to
+ * @param {string|number|null} commentData.toId ID of the comment replying to
  * @param {string} commentData.postId ID of the post
  * @param {string} commentData.author Author of the comment
  * @param {string} commentData.text Text of the comment
  * @param {string} commentData.html Parsed html of the comment
- * @param {string} commentData.options Опции OptionManager
+ * @param {string} commentData.commentType
+ * @param {OptionsManager} commentData.options Опции OptionManager
  * @param {function} onCommentCreated Callback which is called when comment is ready.
  * Этот коллбэк добавляет элемент в дом, а потом дёргает коллбэк опять
  *
@@ -465,13 +539,11 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
 
     // Filling template
     // Date and time
-    if (true) {
-        $commentTemplate.find('.info .created')
-            .append($('<span>').text(dateFormat(date, 'dd mmm')))
-            .append($('<br>'))
-            .append($('<span>').text(dateFormat(date, 'HH:MM')))
-            .find('span').css('white-space', 'nowrap');
-    }
+    $commentTemplate.find('.info .created')
+        .append($('<span>').text(dateFormat(date, 'dd mmm')))
+        .append($('<br>'))
+        .append($('<span>').text(dateFormat(date, 'HH:MM')))
+        .find('span').css('white-space', 'nowrap');
     // Author
     $commentTemplate.find('.author a.user').attr('href', userLink).text(commentData.author);
     // Avatar and link
@@ -480,7 +552,6 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
     // Post and comment ID's link
     $commentTemplate.find('.clearfix .post-id a').attr('href',
         '//point.im/' + commentData.postId + '#' + commentData.id).text('#' + commentData.postId + '/' + commentData.id)
-        // Adding answer label
         .after((commentData.toId !== null) ? (' в ответ на <a href="#' + commentData.toId + '">/' + commentData.toId + '</a>')
             : (''));
 
