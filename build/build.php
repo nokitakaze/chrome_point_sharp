@@ -46,16 +46,23 @@
         "'+\"\\n\"+'\\\n",
     ], $twitter_embedding_code);
 
+    if (!file_exists("{$root_folder}/mozilla_firefox/lib")) {
+        mkdir("{$root_folder}/mozilla_firefox/lib");
+    }
+    if (!file_exists("{$root_folder}/mozilla_firefox/data/css")) {
+        mkdir("{$root_folder}/mozilla_firefox/data/css");
+    }
+
     // Меняем контент
     foreach (
         array(
-            array('other/main.js', 'mozilla_firefox/resources/point_sharp/lib/main.js'),
+            array('other/main.js', 'mozilla_firefox/lib/main.js'),
             array('other/bower.json', 'bower.json'),
             array('other/install.rdf', 'mozilla_firefox/install.rdf'),
-            array('other/harness-options.json', 'mozilla_firefox/harness-options.json'),
             array('other/manifest.json', 'chrome_point_plus/manifest.json'),
-            array('other/mozilla_twitter_embedding.js',
-                  'mozilla_firefox/resources/point_sharp/data/js/mozilla_twitter_embedding.js'),
+            array('other/mozilla_twitter_embedding.js', 'mozilla_firefox/data/js/mozilla_twitter_embedding.js'),
+            array('other/mozilla_README.md', 'mozilla_firefox/README.md'),
+            array('other/mozilla_package.json', 'mozilla_firefox/package.json'),
         ) as $pair) {
         // Берём контент
         $content = file_get_contents($root_folder.'/build/'.$pair[0]);
@@ -85,7 +92,7 @@
              ) as $filename) {
         copy($root_folder.'/build/src/'.$filename, $root_folder.'/chrome_point_plus/js/'.$filename);
         copy($root_folder.'/build/src/'.$filename,
-            $root_folder.'/mozilla_firefox/resources/point_sharp/data/js/'.$filename);
+            $root_folder.'/mozilla_firefox/data/js/'.$filename);
     }
 
     function addslashes_quote($s) {
@@ -94,8 +101,8 @@
 
     // Копируем Папки
     foreach (array(
-                 array('vendor', 'chrome_point_plus/vendor', 'mozilla_firefox/resources/point_sharp/data/vendor'),
-                 array('css', 'chrome_point_plus/css/additional', 'mozilla_firefox/resources/point_sharp/data/css/additional'),
+                 array('vendor', 'chrome_point_plus/vendor', 'mozilla_firefox/data/vendor'),
+                 array('css', 'chrome_point_plus/css/additional', 'mozilla_firefox/data/css/additional'),
              ) as $pair) {
         if (file_exists($root_folder.'/'.$pair[1])) {
             system('rd "'.addslashes_quote($root_folder.'\\'.str_replace('/', '\\', $pair[1])).'" /S /Q');

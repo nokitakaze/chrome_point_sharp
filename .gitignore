@@ -3,21 +3,26 @@
 /publish
 /build/vendor
 
-/mozilla_firefox/harness-options.json
 /mozilla_firefox/install.rdf
-/mozilla_firefox/resources/point_sharp/data/vendor
-/mozilla_firefox/resources/point_sharp/data/js/point_sharp_shared_code.js
-/mozilla_firefox/resources/point_sharp/data/js/point_sharp_shared_code_additional.js
-/mozilla_firefox/resources/point_sharp/data/js/point_sharp_shared_code_websocket.js
-/mozilla_firefox/resources/point_sharp/data/js/bquery_ajax.js
-/mozilla_firefox/resources/point_sharp/data/js/point_sharp_options_list.js
-/mozilla_firefox/resources/point_sharp/data/js/point-options.js
-/mozilla_firefox/resources/point_sharp/data/css/additional
-/mozilla_firefox/resources/point_sharp/lib/main.js
+/mozilla_firefox/package.json
+/mozilla_firefox/README.md
+/mozilla_firefox/data/vendor
+/mozilla_firefox/data/js/point_sharp_shared_code.js
+/mozilla_firefox/data/js/point_sharp_shared_code_additional.js
+/mozilla_firefox/data/js/point_sharp_shared_code_websocket.js
+/mozilla_firefox/data/js/bquery_ajax.js
+/mozilla_firefox/data/js/point_sharp_options_list.js
+/mozilla_firefox/data/js/point-options.js
+/mozilla_firefox/data/js/date.format.js
+/mozilla_firefox/data/js/point_sharp_shared_code_booru.js
+/mozilla_firefox/data/js/mozilla_twitter_embedding.js
+/mozilla_firefox/data/css/additional
+/mozilla_firefox/lib/main.js
 
 
 /chrome_point_plus/manifest.json
 /chrome_point_plus/vendor
+/chrome_point_plus/js/point_sharp_shared_code_booru.js
 /chrome_point_plus/js/point_sharp_shared_code.js
 /chrome_point_plus/js/point_sharp_shared_code_additional.js
 /chrome_point_plus/js/point_sharp_shared_code_websocket.js
@@ -29,10 +34,5 @@
 
 /chrome_point_plus/js/date.format.js
 
-/mozilla_firefox/resources/point_sharp/data/js/date.format.js
 /mozilla_firefox_pack
 
-/chrome_point_plus/js/point_sharp_shared_code_booru.js
-
-/mozilla_firefox/resources/point_sharp/data/js/point_sharp_shared_code_booru.js
-/mozilla_firefox/resources/point_sharp/data/js/mozilla_twitter_embedding.js

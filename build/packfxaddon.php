@@ -43,7 +43,10 @@
                  'data/vendor/soundcloud/soundcloud.player.api.js',
                  'data/vendor/bootstrap-markdown/js/markdown.js'
              ) as $filename) {
-        $full_file_name = $root_folder.'/mozilla_firefox_pack/resources/point_sharp/'.$filename;
+        if (!file_exists("{$root_folder}/mozilla_firefox_pack/{$filename}")) {
+            die("File {$filename} does not exist\n");
+        }
+        $full_file_name = $root_folder.'/mozilla_firefox_pack/'.$filename;
         $buf = file_get_contents($full_file_name);
 
         $lines = preg_split('|\\r?\\n|', $buf);
@@ -55,28 +58,11 @@
             }
         }
         $buf = implode("\n", $lines);
-        echo "File: {$filename}, all lines ".count($lines).', including with console call: '.$lines_count."\n";
+        echo "File: {$filename}, all lines ".count($lines).", including with `console` call {$lines_count} lines\n";
 
         file_put_contents($full_file_name, $buf);
     }
 
-
-    /**
-     * SHA256-хеш с файла для harness-options.json
-     */
-    $main_js_sha256_hash = null;
-
-    exec('openssl dgst -sha256 -hex "'.$root_folder.'/mozilla_firefox_pack/resources/point_sharp/lib/main.js"', $buf);
-    if (preg_match('|([a-z0-9]{64,64})|', implode("\n", $buf), $a)) {
-        $main_js_sha256_hash = $a[1];
-    } else {
-        echo "Can not get 256 hash for file main.js\n";
-        die();
-    }
-
-    $buf = file_get_contents($root_folder.'/mozilla_firefox_pack/harness-options.json');
-    $buf = str_replace('%%MAINJS_SHA256%%', $main_js_sha256_hash, $buf);
-    file_put_contents($root_folder.'/mozilla_firefox_pack/harness-options.json', $buf);
 
     // Пакуем
     $old_folder = getcwd();
