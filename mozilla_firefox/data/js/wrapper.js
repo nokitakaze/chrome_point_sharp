@@ -261,3 +261,7 @@ function smart_websocket_init(options) {
 function set_message_listener(options) {
     // @todo Имплементировать
 }
+
+function disconnected_status_init() {
+    // Ничего
+}

@@ -341,6 +341,8 @@ function set_new_unread_count_status(recent_count, comments_count, messages_coun
  * @param {OptionsManager} options
  */
 function set_message_listener(options) {
+    var last_connected_status = true;
+
     /**
      * Message Listener
      */
@@ -354,6 +356,18 @@ function set_message_listener(options) {
             case 'websocket_reaction':
                 //noinspection JSUnresolvedVariable
                 ws_socket_reaction(message.wsMessage, options);
+                return true;
+            case 'websocket_connected':
+                if (!last_connected_status) {
+                    disconnected_status_hide();
+                    last_connected_status = true;
+                }
+                return true;
+            case 'websocket_disconnected':
+                if (last_connected_status) {
+                    disconnected_status_show();
+                    last_connected_status = false;
+                }
                 return true;
 
             default:
@@ -412,4 +426,32 @@ function set_new_unread_count_listener() {
  */
 function smart_websocket_init(options) {
     // Ничего не нужно, всё работает на background.js
+}
+
+function disconnected_status_init() {
+    var d = document.createElement('div');
+    $(d).attr({
+        'id': 'disconnected_status'
+    }).on('click', function() {
+        disconnected_status_hide();
+    }).css({
+        'padding': '10px',
+        'position': 'fixed',
+        'bottom': '120px',
+        'right': '20px',
+        'border-radius': '3px',
+        'border': '1px solid #666',
+        'background-color': 'pink',
+        'display': 'none',
+        'cursor': 'pointer'
+    }).text('PointIM отключен');
+    document.body.appendChild(d);
+}
+
+function disconnected_status_show() {
+    $('#disconnected_status').hide().fadeIn(500);
+}
+
+function disconnected_status_hide() {
+    $('#disconnected_status').fadeOut(500);
 }

@@ -162,6 +162,9 @@ function pimp_my_page(options) {
     // Выполняем последние платформозависимые функции
     point_loaded_last(options);
 
+    //
+    disconnected_status_init();
+
     // Закрываем значок
     $('#point-plus-debug').fadeOut(500);
     console.log("pimp_my_page stop");

@@ -287,21 +287,67 @@ var raw_options = null;
  * @var {WebSocket} current_websocket
  */
 var current_websocket = null;
+/**
+ * @var {number} current_websocket_last_ping
+ */
+var current_websocket_last_ping = 0;
 
 /**
  * @var {String|null} current_login
  */
 var current_login = null;
 
-function update_options() {
+function update_options(callback) {
+    if (typeof callback == 'undefined') {
+        callback = function() {};
+    }
     local_storage_get('options', function(raw_options_here) {
         raw_options = raw_options_here;
         console.log('new options: ', raw_options);
-        start_websocket();
+        callback();
     });
 }
 
-update_options();
+update_options(function() {
+    start_websocket();
+    setInterval(function() {
+        if (current_websocket === null) {
+            return;
+        }
+        var d = (new Date()).getTime() / 1000;
+        if (d >= current_websocket_last_ping + 180) {
+            console.error('No ping for %f seconds', d - current_websocket_last_ping);
+            try {
+                current_websocket.close();
+            } catch (e) {}
+            current_websocket = null;
+            setTimeout(start_websocket, 0);
+        }
+    }, 10000);
+});
+
+/*
+ * Ставим уведомлялку о текущем статусе соединения с PointIM
+ */
+setInterval(function() {
+    chrome.tabs.query({}, function(tabs) {
+        var reg = new RegExp('^https?://([a-z0-9-]+\\.)point\\.im/', '');
+        /**
+         * @var [Tabs] tabs
+         */
+        for (var i = 0; i < tabs.length; i++) {
+            if ((typeof tabs[i].id == 'undefined') || (typeof tabs[i].url == 'undefined')) {
+                continue;
+            } else if (!tabs[i].url.match(reg)) {
+                continue;
+            }
+
+            chrome.tabs.sendMessage(tabs[i].id, {
+                'type': (current_websocket === null) ? 'websocket_disconnected' : 'websocket_connected'
+            });
+        }
+    });
+}, 30000);
 
 /**
  * Создаём HTML5 notification
@@ -333,6 +379,10 @@ function html5_notification(settings, response) {
 }
 
 function start_websocket() {
+    if (current_websocket !== null) {
+        return;
+    }
+
     // SSL or plain
     current_websocket = new WebSocket('wss://point.im/ws');
     console.log('WebSocket created: ', current_websocket);
@@ -340,12 +390,30 @@ function start_websocket() {
     // Error handler
     current_websocket.onerror = function(err) {
         console.error('WebSocket error: ', err);
+        try {
+            current_websocket.close();
+        } catch (e) {}
+        current_websocket = null;
+        setTimeout(start_websocket, 0);
     };
+
+    // Error handler
+    //noinspection JSUndefinedPropertyAssignment
+    current_websocket.onclose = function(event) {
+        console.warn('WebSocket close: ', event);
+        //noinspection JSUnresolvedVariable
+        if (!event.wasClean) {
+            setTimeout(start_websocket, 0);
+        }
+    };
+
+    current_websocket_last_ping = (new Date()).getTime() / 1000;
 
     // Message handler
     current_websocket.onmessage = function(evt) {
         try {
             if (evt.data == 'ping') {
+                current_websocket_last_ping = (new Date()).getTime() / 1000;
                 console.info('ws-ping');
                 return;
             }
