@@ -37,7 +37,46 @@ chrome.notifications.onClicked.addListener(function(notificationId) {
     }
 });
 
-var unread_count_status_last_time = 0;
+var unread_count_status_last_state = null;
+var temporary_disabled_notification = false;
+
+function draw_icon_badge() {
+    if (unread_count_status_last_state === null) {
+        // Ещё не инициализировано
+        chrome.browserAction.setBadgeText({'text': temporary_disabled_notification ? 'выкл' : '?'});
+        chrome.browserAction.setBadgeBackgroundColor({
+            'color': [192, 192, 192, 255]
+        });
+
+        return;
+    }
+    if (unread_count_status_last_state.recent_count + unread_count_status_last_state.comments_count +
+        unread_count_status_last_state.messages_count == 0) {
+        chrome.browserAction.setBadgeText({'text': temporary_disabled_notification ? 'выкл' : ''});
+        chrome.browserAction.setBadgeBackgroundColor({
+            'color': [192, 192, 192, 255]
+        });
+        return;
+    }
+
+    var color;
+    if (unread_count_status_last_state.messages_count > 0) {
+        chrome.browserAction.setBadgeText({
+            'text': unread_count_status_last_state.messages_count.toString() + '+' +
+                    unread_count_status_last_state.recent_count.toString()
+        });
+        color = temporary_disabled_notification ? [255, 128, 128, 255] : [255, 0, 0, 255];
+    } else {
+        chrome.browserAction.setBadgeText({
+            'text': unread_count_status_last_state.recent_count.toString() + '+' +
+                    unread_count_status_last_state.comments_count.toString()
+        });
+        color = temporary_disabled_notification ? [152, 251, 152, 255] : [0, 255, 0, 255];
+    }
+    chrome.browserAction.setBadgeBackgroundColor({
+        'color': color
+    });
+}
 
 // Message listener
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
@@ -104,31 +143,39 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
             case 'new_unread_count_status':
                 // проверяем время
-                var this_time = message.date;
-                if (this_time <= unread_count_status_last_time) {
+                if ((unread_count_status_last_state !== null) && (message.date <= unread_count_status_last_state.date)) {
                     return true;
                 }
-                unread_count_status_last_time = this_time;
-
-                chrome.tabs.query({}, function(tabs) {
-                    var reg = new RegExp('^https?://([a-z0-9-]+\\.)point\\.im/', '');
-                    /**
-                     * @var [Tabs] tabs
-                     */
-                    for (var i = 0; i < tabs.length; i++) {
-                        if ((typeof tabs[i].id == 'undefined') || (typeof tabs[i].url == 'undefined')) {
-                            continue;
-                        } else if (!tabs[i].url.match(reg)) {
-                            continue;
-                        }
-
-                        chrome.tabs.sendMessage(tabs[i].id, {
-                            'type': 'new_unread_count',
-                            'counts': [message.recent_count, message.comments_count, message.messages_count]
-                        });
-                    }
-                });
+                unread_count_status_last_state = message;
+                draw_icon_badge();
+                send_message_with_unread_counts(message);
                 return true;
+            case 'get_status':
+                var response = {};
+                for (var index in unread_count_status_last_state) {
+                    response[index] = unread_count_status_last_state[index];
+                }
+                delete response['date'];
+                response.current_login = current_login;
+                response.options = raw_options;
+                response.websocket_status = (current_websocket !== null);
+                response.temporary_disabled_notification = temporary_disabled_notification;
+
+                sendResponse(response);
+                return true;
+
+            case 'notifacation_temporary_disable':
+                temporary_disabled_notification = true;
+                draw_icon_badge();
+                sendResponse(true);
+                return true;
+
+            case 'notifacation_temporary_enable':
+                temporary_disabled_notification = false;
+                draw_icon_badge();
+                sendResponse(true);
+                return true;
+
             case 'update_options':
                 update_options();
                 return true;
@@ -188,7 +235,7 @@ function local_storage_get(key, callback) {
                     callback(got_data_local);
                 }
             } else {
-                local_storage_get_inner(real_keys, [key], 'sync', function(got_data_sync, got_time_sync, no_keys_sync) {
+                local_storage_get_inner(real_keys, [key], 'sync', function(got_data_sync, got_time_sync) {
                     var real_keys_list = [key];
                     for (var real_key in real_keys_list) {
                         var current_key = real_keys_list[real_key];
@@ -326,7 +373,7 @@ update_options(function() {
     }, 10000);
 });
 
-/*
+/**
  * Ставим уведомлялку о текущем статусе соединения с PointIM
  */
 setInterval(function() {
@@ -350,12 +397,63 @@ setInterval(function() {
 }, 30000);
 
 /**
+ * Посылаем во все табы обновлённое кол-во непрочитанных сообщений
+ *
+ * @param {Object} message
+ */
+function send_message_with_unread_counts(message) {
+    chrome.tabs.query({}, function(tabs) {
+        var reg = new RegExp('^https?://([a-z0-9-]+\\.)point\\.im/', '');
+        /**
+         * @var {Tabs[]} tabs
+         */
+        for (var i = 0; i < tabs.length; i++) {
+            if ((typeof tabs[i].id == 'undefined') || (typeof tabs[i].url == 'undefined')) {
+                continue;
+            } else if (!tabs[i].url.match(reg)) {
+                continue;
+            }
+
+            chrome.tabs.sendMessage(tabs[i].id, {
+                'type': 'new_unread_count',
+                'counts': [message.recent_count, message.comments_count, message.messages_count]
+            });
+        }
+    });
+}
+
+/**
+ * Обновляем кол-во каментов
+ */
+setInterval(function() {
+    return; // @todo УБРАТЬ!
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://point.im/api/unkunk');// @todo Поправить
+    xhr.onreadystatechange = function() {
+        if (this.readyState !== 4) {return;}
+        if (this.status != 200) {
+            console.error('Can not get unread counts', this.status);
+            return;
+        }
+
+        var data = JSON.parse(this.responseText);
+        // @todo исправляем  unread_count_status_last_state
+        draw_icon_badge();
+        // send_message_with_unread_counts @todo Поставить
+    };
+    xhr.send(null);
+}, 60000);
+
+/**
  * Создаём HTML5 notification
  *
  * @param {object} settings
  * @param {function} response
  */
 function html5_notification(settings, response) {
+    if (temporary_disabled_notification) {
+        return;
+    }
     if (typeof(settings.url) != 'undefined') {
         settings.onclick = function() {
             window.open(settings.url);
@@ -426,7 +524,7 @@ function start_websocket() {
             chrome.tabs.query({}, function(tabs) {
                 var reg = new RegExp('^https?://([a-z0-9-]+\\.)point\\.im/', '');
                 /**
-                 * @var [Tabs] tabs
+                 * @var {Tabs[]} tabs
                  */
                 for (var i = 0; i < tabs.length; i++) {
                     if ((typeof tabs[i].id == 'undefined') || (typeof tabs[i].url == 'undefined')) {
@@ -460,6 +558,11 @@ function start_websocket() {
                                      wsMessage.post_id + '#' + wsMessage.comment_id
                             }, function(response) {});
                         }
+                        if ((unread_count_status_last_state !== null) &&
+                            (wsMessage.author.toLowerCase() != current_login)) {
+                            unread_count_status_last_state.comments_count++;
+                            draw_icon_badge();
+                        }
                         break;
 
                     // Posts
@@ -481,6 +584,11 @@ function start_websocket() {
                                 text: tags_text + wsMessage.text,
                                 url: 'https://' + wsMessage.author.toLowerCase() + '.point.im/' + wsMessage.post_id
                             }, function(response) {});
+                        }
+                        if ((unread_count_status_last_state !== null) &&
+                            (wsMessage.author.toLowerCase() != current_login)) {
+                            unread_count_status_last_state.recent_count++;
+                            draw_icon_badge();
                         }
                         break;
 

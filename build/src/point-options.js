@@ -31,12 +31,16 @@ function draw_option_tree(tree) {
         $('.point-options-wrapper .tabs-content').append(section);
     }
 
+    set_option_elements_behavior();
+}
+
+function set_option_elements_behavior() {
     // Ставим первые табы выбранными
     $('.point-options-wrapper .tabs-list > .tabs-item').first().addClass('selected');
     $('.point-options-wrapper .tabs-content > .tabs-content-item').first().addClass('selected');
 
     // Переключение табов
-    $('.point-options-wrapper .tabs-list > .tabs-item').on('click', function() {
+    $('.point-options-wrapper .tabs-list > .tabs-item').off('click').on('click', function() {
         $('.point-options-wrapper .tabs-list > .tabs-item').removeClass('selected');
         $('.point-options-wrapper .tabs-content > .tabs-content-item').removeClass('selected');
 
@@ -46,13 +50,13 @@ function draw_option_tree(tree) {
     });
 
     // Нажатие галок на чекбоксах
-    $('.point-options-wrapper .tabs-content .option-node input[type="checkbox"]').on('change', function() {
+    $('.point-options-wrapper .tabs-content .option-node input[type="checkbox"]').off('change').on('change', function() {
         var name = $(this).prop('name').replace(new RegExp('\\-', 'g'), '_');
         this_page_change_keyvalue(name, $(this).prop('checked'));
     });
 
     //  Нажатие галок на радиобатонах
-    $('.point-options-wrapper .tabs-content .option-node input[type="radio"]').on('change', function() {
+    $('.point-options-wrapper .tabs-content .option-node input[type="radio"]').off('change').on('change', function() {
         var name = $(this).prop('name').replace(new RegExp('\\-', 'g'), '_');
         var new_value = null;
         $('.point-options-wrapper .tabs-content .option-node input[type="radio"][name="' + $(this).prop('name') + '"]').each(
@@ -65,11 +69,10 @@ function draw_option_tree(tree) {
     });
 
     // Смена текста в text-боксах
-    $('.point-options-wrapper .tabs-content .option-node input[type="text"]').on('change', function() {
+    $('.point-options-wrapper .tabs-content .option-node input[type="text"]').off('change').on('change', function() {
         var name = $(this).prop('name').replace(new RegExp('\\-', 'g'), '_');
         this_page_change_keyvalue(name, $(this).val());
     });
-
 }
 
 function this_page_change_keyvalue(key, value) {
@@ -235,12 +238,11 @@ $(document).ready(function() {
                 '<a href="https://isqua.point.im/" target="_blank">@isqua</a>,' +
                 '<a href="https://nokitakaze.point.im/" target="_blank">@NokitaKaze</a>' +
                 '</p></div>');
-    } else {
-        // Google Chrome
-        // @todo Узнать что мы не в маленьком окне и удалить класс кастрации
-        // $('body').removeClass('point-options-castrate');
     }
 
     draw_option_tree(point_sharp_options_tree);
     redraw_current_options_value();
+    if (navigator.appVersion.match(/.*chrome.*/i) !== null) {
+        chrome_option_menu_wrapper();
+    }
 });
