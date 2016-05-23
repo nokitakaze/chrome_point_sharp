@@ -425,10 +425,9 @@ function send_message_with_unread_counts(message) {
 /**
  * Обновляем кол-во каментов
  */
-setInterval(function() {
-    return; // @todo УБРАТЬ!
+function update_unread_counters_via_api() {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://point.im/api/unkunk');// @todo Поправить
+    xhr.open('GET', 'https://point.im/api/unread-counters');
     xhr.onreadystatechange = function() {
         if (this.readyState !== 4) {return;}
         if (this.status != 200) {
@@ -437,12 +436,21 @@ setInterval(function() {
         }
 
         var data = JSON.parse(this.responseText);
-        // @todo исправляем  unread_count_status_last_state
+        //noinspection JSUnresolvedVariable
+        unread_count_status_last_state = {
+            'date': (new Date()).getTime(),
+            'recent_count': data.posts,
+            'comments_count': data.comments,
+            'messages_count': data.private_posts
+        };
         draw_icon_badge();
-        // send_message_with_unread_counts @todo Поставить
+        send_message_with_unread_counts(unread_count_status_last_state);
     };
     xhr.send(null);
-}, 60000);
+}
+
+setInterval(update_unread_counters_via_api, 60000);
+update_unread_counters_via_api();
 
 /**
  * Создаём HTML5 notification
