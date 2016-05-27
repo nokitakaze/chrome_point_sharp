@@ -75,6 +75,11 @@ function ws_message_comment(wsMessage, my_nick_lower, postId, options) {
         }).addClass('active');
     }
 
+    if (!options.is('option_ws')) {
+        console_group_end();
+        return;
+    }
+
     // Generating comment from websocket message
     ajax_get_comments_create_comment_elements({
         id: (wsMessage.a == 'comment') ? wsMessage.comment_id : wsMessage.rcid,
