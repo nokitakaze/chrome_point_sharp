@@ -1,13 +1,11 @@
 /**
  * Основной файл для включения в страницу
- *
- * ПЛАТФОРМОНЕЗАВИСИМЫЙ ФАЙЛ
  */
 
 console_group('point-sharp');
 console.info("shared_code.js", new Date());
 
-$(document).ready(function() {
+$(document).on('ready', function() {
     // Проверяем, был ли уже загружен Point# или Point+
     console.info('Document ready', new Date());
     var point_plus_debug = $('#point-plus-debug');

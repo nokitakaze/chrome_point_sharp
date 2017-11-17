@@ -212,25 +212,11 @@ var point_sharp_options_tree = {
         "type": "tree",
         "description": "Другое",
         "children": {
-            /*
-             "option_fluid_layout": {
-             "type": "boolean",
-             "default_value": false,
-             "description": "\"Резиновая\" вёрстка (растянуть сайт по горизонтали)"
-             },
-             */
             "option_visual_editor_post": {
                 "type": "boolean",
                 "default_value": false,
                 "description": "Визуальный редактор постов"
             },
-            /*
-             "option_search_with_google": {
-             "type": "boolean",
-             "default_value": false,
-             "description": "Поиск по сайту с помощью Google"
-             },
-             */
             "option_enlarge_font": {
                 "type": "boolean",
                 "default_value": false,
@@ -327,7 +313,7 @@ var point_sharp_options_tree = {
         "children": {
             "option_ws": {
                 "type": "boolean",
-                "default_value": false,
+                "default_value": true,
                 "description": "Получать комментарии через Вебсокеты",
                 "children": {
                     "option_ws_comments_notifications": {
@@ -342,25 +328,6 @@ var point_sharp_options_tree = {
                         "children": {}
                     }
                 }
-                /*
-                 ,"option_ws_feeds": {
-                 "type": "boolean",
-                 "default_value": false,
-                 "description": "Обрабатывать ленты ▼",
-                 "children": {
-                 "option_ws_feeds_subscriptions": {
-                 "type": "boolean",
-                 "default_value": false,
-                 "description": "Подписки"
-                 },
-                 "option_ws_feeds_blogs": {
-                 "type": "boolean",
-                 "default_value": false,
-                 "description": "Блоги пользователей (только при подписке)"
-                 }
-                 }
-                 }*/
-
             },
             'option_send_comments_ajax': {
                 "type": "boolean",

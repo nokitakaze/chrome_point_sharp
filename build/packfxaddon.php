@@ -10,39 +10,47 @@
     /**
      * Рутовая папка проекта
      */
-    $root_folder = realpath(getcwd().'/'.preg_replace('_/[^/]+$_', '/', $_SERVER['PHP_SELF']).'../');
+    $root_folder = realpath(__DIR__.'/../');
 
     /**
      * Данные о пакете из package.json, будь он неладен
      */
-    $json = json_decode(file_get_contents($root_folder.'./package.json'));
+    $json = json_decode(file_get_contents($root_folder.'/package.json'));
 
     /**
      * Номер билда
      */
-    $build_version = json_decode(file_get_contents($root_folder.'./build/build_version.json'));
+    $build_version = json_decode(file_get_contents($root_folder.'/build/build_version.json'));
 
     function addslashes_quote($s) {
         return str_replace(['\'', '"'], ['\\\'', '\\"'], $s);
     }
 
     // Копируем папку
-    system('rd "'.addslashes_quote($root_folder).'\\mozilla_firefox_pack" /S /Q');
-    system('xcopy "'.addslashes_quote($root_folder).'\\mozilla_firefox" "'.addslashes_quote($root_folder).
-           '\\mozilla_firefox_pack\\" /E /Y');
+    system(sprintf('rd %s /S /Q',
+        escapeshellarg($root_folder.'\\mozilla_firefox_pack')));
+    system(sprintf('xcopy "'.addslashes_quote($root_folder).'\\chrome_point_plus" "'.addslashes_quote($root_folder).
+                   '\\mozilla_firefox_pack\\" /E /Y'));
 
     // Удаляем все debug
-    foreach (array(
-                 'lib/main.js',
-                 'data/js/wrapper.js',
-                 'data/js/point_sharp_shared_code.js',
-                 'data/js/point_sharp_shared_code_additional.js',
-                 'data/js/point_sharp_shared_code_websocket.js',
-                 'data/js/point_sharp_options_list.js',
-                 'data/js/point-options.js',
-                 'data/vendor/soundcloud/soundcloud.player.api.js',
-                 'data/vendor/bootstrap-markdown/js/markdown.js'
-             ) as $filename) {
+    foreach ([
+                 'js/background.js',
+                 'js/options_read.js',
+
+                 'js/page_options_only.js',
+                 'js/page_popup_only.js',
+                 'js/point_sharp_options_list.js',
+                 'js/point_sharp_shared_code.js',
+                 'js/point_sharp_shared_code_additional.js',
+                 'js/point_sharp_shared_code_booru.js',
+                 'js/point_sharp_shared_code_websocket.js',
+
+                 'js/point-options.js',
+                 'js/wrapper.js',
+
+                 'vendor/soundcloud/soundcloud.player.api.js',
+                 'vendor/bootstrap-markdown/js/markdown.js',
+             ] as $filename) {
         if (!file_exists("{$root_folder}/mozilla_firefox_pack/{$filename}")) {
             die("File {$filename} does not exist\n");
         }
@@ -67,14 +75,24 @@
     // Пакуем
     $old_folder = getcwd();
     chdir($root_folder.'/mozilla_firefox_pack/');
-    $pack_filename = $root_folder.'/../mozilla_firefox-undebugged-'.$json->version.'.'.$build_version->version.'.xpi';
-    if (file_exists($pack_filename)) {
-        unlink($pack_filename);
+    {
+        $manifest = json_decode(file_get_contents($root_folder.'/mozilla_firefox_pack/manifest.json'));
+        $manifest->permissions = array_filter($manifest->permissions, function ($permission) {
+            return ($permission !== 'background');
+        });
+        file_put_contents($root_folder.'/mozilla_firefox_pack/manifest.json', json_encode($manifest), LOCK_EX);
     }
-    system('zip -r "'.addslashes_quote($pack_filename).'" ./');
-    chdir($old_folder);
-    system('rd "'.addslashes_quote($root_folder).'/mozilla_firefox_pack" /S /Q');
+    system('web-ext build');
 
+    chdir($old_folder);
+    {
+        foreach (scandir($root_folder.'/mozilla_firefox_pack\web-ext-artifacts') as $f) {
+            if (preg_match('_\\.zip$_', $f)) {
+                rename($root_folder.'/mozilla_firefox_pack/web-ext-artifacts/'.$f, $root_folder.'/'.$f);
+            }
+        }
+    }
+    system('rd "'.addslashes_quote($root_folder).'/mozilla_firefox_pack" /S /Q');
 
     echo "Version ".$json->version.'.'.$build_version->version.' builded at '.gmdate('Y-m-d H:i:sO')."\n";
 ?>
