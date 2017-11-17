@@ -8,7 +8,7 @@
     ],
     "description": "Browser extension for point.im",
     "license": "MIT",
-    "homepage": "https://bitbucket.org/NokitaKaze/chrome_point_plus-nokita-version",
+    "homepage": "https://github.com/nokitakaze/chrome_point_sharp",
     "private": true,
     "ignore": [
         "**/.*",

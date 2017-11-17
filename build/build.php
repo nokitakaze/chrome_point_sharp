@@ -72,7 +72,7 @@
         $content = str_replace('%%DESCRIPTION%%', $json->description, $content);
         $content = str_replace('%%AUTHOR%%', $json->author, $content);
         $content = str_replace('%%NAME%%', $json->name, $content);
-        $content = str_replace('%%HOMEPAGE%%', 'https://bitbucket.org/NokitaKaze/chrome_point_plus-nokita-version', $content);
+        $content = str_replace('%%HOMEPAGE%%', 'https://github.com/nokitakaze/chrome_point_sharp', $content);
         $content = str_replace('%%FX_TWITTER_CODE%%', $twitter_embedding_code, $content);
 
         // Сохраняем контент

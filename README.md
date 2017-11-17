@@ -14,7 +14,7 @@
 
 * Установить расширение для Google Chrome из [Google Web Store](https://chrome.google.com/webstore/detail/point/jebkkkanbjkflnhgnleeecjekccclnak)
 * Установить расширение для Mozilla Firefox из [Mozilla Addons](https://addons.mozilla.org/ru/firefox/addon/point-sharp/)
-* Установить расширение из [раздела Downloads на Bitbucket](https://bitbucket.org/NokitaKaze/chrome_point_plus-nokita-version/downloads)
+* Установить расширение из [раздела Downloads на Github](https://github.com/nokitakaze/chrome_point_sharp/releases)
 
 ### Как настраивать? ###
 
@@ -24,6 +24,6 @@
 
 ### Мне не хватает функций/я нашёл ошибку ###
 
-* Милости прошу к [нашему шалашу](https://bitbucket.org/NokitaKaze/chrome_point_plus-nokita-version/issues?status=new&status=open)
+* Милости прошу к [нашему шалашу](https://github.com/nokitakaze/chrome_point_sharp/issues)
 * Присылать пулл-реквесты с язвительными замечаниями
 * Поставить в магазинах приложений оценку
