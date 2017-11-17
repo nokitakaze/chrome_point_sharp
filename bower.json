@@ -1,6 +1,6 @@
 {
-    "name": "Point#",
-    "version": "2.8.5.544",
+    "name": "PointSharp",
+    "version": "2.9.0.548",
     "authors": [
         "Alexey Skobkin",
         "Nikita Vetrov",
@@ -16,7 +16,7 @@
         "chrome_point_plus/vendors/**"
     ],
     "dependencies": {
-        "jquery": "~2.2.4",
+        "jquery": "~2.2.3",
         "fancybox": "~2.1.5",
         "markitup": "~1.1.14",
         "soundcloud": "git@github.com:soundcloud/Widget-JS-API.git"

@@ -21,38 +21,6 @@
         'version' => $build_version->version
     )));
 
-    /**
-     * Код для вставки Твиттора на сайт. Этот Workaround здесь появился благодаря Jorge Villalobos
-     */
-    $twitter_embedding_code = '';
-    $code = file_get_contents($root_folder.'/build/src/point_sharp_shared_code_additional.js');
-    if (preg_match('|^(function twitter_tweet_embedding_wait_for_ready_injected.+?^}$)|smui', $code, $a)) {
-        $twitter_embedding_code .= $a[1]."\n";
-    } else {
-        echo "function twitter_tweet_embedding_wait_for_ready_injected not found\n";
-    }
-    if (preg_match('|^(function twitter_tweet_embedding_parse_links.+?^}$)|smui', $code, $a)) {
-        $twitter_embedding_code .= $a[1]."\n";
-    } else {
-        echo "function twitter_tweet_embedding_parse_links not found\n";
-    }
-    $twitter_embedding_code = str_replace([
-        '\\',
-        "'",
-        "\n",
-    ], [
-        '\\\\',
-        "\\'",
-        "'+\"\\n\"+'\\\n",
-    ], $twitter_embedding_code);
-
-    if (!file_exists("{$root_folder}/mozilla_firefox/lib")) {
-        mkdir("{$root_folder}/mozilla_firefox/lib");
-    }
-    if (!file_exists("{$root_folder}/mozilla_firefox/data/css")) {
-        mkdir("{$root_folder}/mozilla_firefox/data/css");
-    }
-
     // Меняем контент
     foreach (
         array(
@@ -68,7 +36,6 @@
         $content = str_replace('%%AUTHOR%%', $json->author, $content);
         $content = str_replace('%%NAME%%', $json->name, $content);
         $content = str_replace('%%HOMEPAGE%%', 'https://github.com/nokitakaze/chrome_point_sharp', $content);
-        $content = str_replace('%%FX_TWITTER_CODE%%', $twitter_embedding_code, $content);
 
         // Сохраняем контент
         file_put_contents($root_folder.'/'.$pair[1], $content);

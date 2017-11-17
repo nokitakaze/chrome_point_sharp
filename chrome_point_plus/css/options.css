@@ -22,7 +22,8 @@ body.point-options-castrate {
     height: 345px;
 }
 
-.point-firefox.point-options-wrapper .tabs-content,
-.point-firefox .point-options-wrapper .tabs-content {
+.point-options-castrate.point-firefox.point-options-wrapper .tabs-content,
+.point-options-castrate .point-firefox .point-options-wrapper .tabs-content,
+.point-firefox .point-options-castrate .point-options-wrapper .tabs-content {
     max-width: 425px;
 }
