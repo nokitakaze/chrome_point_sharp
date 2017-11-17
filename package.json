@@ -7,8 +7,8 @@
         "url": "https://github.com/nokitakaze/chrome_point_sharp.git"
     },
     "scripts": {
-        "build": "php build/build.php",
-        "build-fx": "cd chrome_point_plus && web-ext build",
+        "build-chrome": "php build/build.php",
+        "build-fx": "php build/packfxaddon.php",
         "build-all": "npm run build && npm run build-fx",
         "test-fx": "web-ext run"
     },
