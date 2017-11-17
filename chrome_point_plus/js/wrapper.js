@@ -1,6 +1,6 @@
 /**
  * Враппер над браузеро-зависимыми функциями
- * Версия для Google Chrome
+ * Версия для Google Chrome & Mozilla Firefox WebExtensions
  */
 
 /**
@@ -91,6 +91,10 @@ function local_storage_get_inner(real_keys, real_keys_list, type, callback) {
         var full_times = {};
         var real_keys = [];
         var no_keys = [];
+        if (typeof(sync_data_index) == 'undefined') {
+            // Mozilla Firefox behaviour
+            sync_data_index = [];
+        }
         for (var real_key in real_keys_list) {
             var current_key = real_keys_list[real_key];
             if (typeof(sync_data_index[current_key + '_index_count']) == 'undefined') {
@@ -140,6 +144,14 @@ function local_storage_get_inner(real_keys, real_keys_list, type, callback) {
     });
 }
 
+function get_sync_quota_length() {
+    if (typeof chrome.storage.sync.QUOTA_BYTES_PER_ITEM == 'undefined') {
+        return 2038;
+    } else {
+        return chrome.storage.sync.QUOTA_BYTES_PER_ITEM - 10;
+    }
+}
+
 /**
  * Сохраняем значение в Local Storage
  *
@@ -147,9 +159,10 @@ function local_storage_get_inner(real_keys, real_keys_list, type, callback) {
  * @param {Function} success_callback Функция, которую дёрнем, когда сохраним значение
  */
 function local_storage_set(data, success_callback) {
+    debugger;
     console.log("Content code. local_storage_set", data);
     var data_processed = {};
-    const max_item_length = chrome.storage.sync.QUOTA_BYTES_PER_ITEM - 10;
+    const max_item_length = get_sync_quota_length();
     var full_length_to_write = 0;
     for (var key in data) {
         var value = JSON.stringify(data[key]);
@@ -164,7 +177,7 @@ function local_storage_set(data, success_callback) {
         data_processed[key + '_index_time'] = (new Date()).getTime() / 1000;
     }
 
-    chrome.storage.local.set(data_processed, function() {
+    chrome.storage.local.set(data_processed, function() {// @todo поправить, она не запускается
         if (typeof(success_callback) == 'function') {
             success_callback();
         }

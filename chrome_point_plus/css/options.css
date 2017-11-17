@@ -14,9 +14,15 @@ body {
 body.point-options-castrate {
     width: 450px;
     height: 450px;
+    overflow-x: hidden;
 }
 
 .point-options-castrate.point-options-wrapper .tabs-content,
 .point-options-castrate .point-options-wrapper .tabs-content {
     height: 345px;
+}
+
+.point-firefox.point-options-wrapper .tabs-content,
+.point-firefox .point-options-wrapper .tabs-content {
+    max-width: 425px;
 }

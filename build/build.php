@@ -74,20 +74,6 @@
         file_put_contents($root_folder.'/'.$pair[1], $content);
     }
 
-    // Копируем JavaScript исходники
-    foreach (array(
-                 'point_sharp_shared_code.js',
-                 'point_sharp_shared_code_booru.js',
-                 'point_sharp_shared_code_additional.js',
-                 'point_sharp_shared_code_websocket.js',
-                 'point_sharp_options_list.js',
-                 'bquery_ajax.js',
-                 'point-options.js',
-                 'date.format.js'
-             ) as $filename) {
-        copy($root_folder.'/build/src/'.$filename, $root_folder.'/chrome_point_plus/js/'.$filename);
-    }
-
     function addslashes_quote($s) {
         return str_replace(['\'', '"'], ['\\\'', '\\"'], $s);
     }
@@ -100,14 +86,18 @@
         if (file_exists($root_folder.'/'.$pair[1])) {
             system('rd "'.addslashes_quote($root_folder.'\\'.str_replace('/', '\\', $pair[1])).'" /S /Q');
         }
+        /*
         if (file_exists($root_folder.'/'.$pair[2])) {
             system('rd "'.addslashes_quote($root_folder.'\\'.str_replace('/', '\\', $pair[2])).'" /S /Q');
         }
+        */
 
         system('xcopy "'.addslashes_quote($root_folder.'\\build\\'.str_replace('/', '\\', $pair[0])).'" "'.
                addslashes_quote($root_folder.'\\'.str_replace('/', '\\', $pair[1])).'\\" /E /Y');
+        /*
         system('xcopy "'.addslashes_quote($root_folder.'\\build\\'.str_replace('/', '\\', $pair[0])).'" "'.
                addslashes_quote($root_folder.'\\'.str_replace('/', '\\', $pair[2])).'\\" /E /Y');
+        */
     }
 
     echo "Version ".$json->version.'.'.$build_version->version.' builded at '.gmdate('Y-m-d H:i:sO')."\n";
