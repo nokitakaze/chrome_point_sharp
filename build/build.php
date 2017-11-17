@@ -3,19 +3,19 @@
     /**
      * Рутовая папка проекта
      */
-    $root_folder = realpath(getcwd().'/'.preg_replace('_/[^/]+$_', '/', $_SERVER['PHP_SELF']).'../');
+    $root_folder = realpath(__DIR__.'/../');
 
     /**
      * Данные о пакете из package.json, будь он неладен
      */
-    $json = json_decode(file_get_contents($root_folder.'./package.json'));
+    $json = json_decode(file_get_contents($root_folder.'/package.json'));
 
     /**
      * Номер билда
      */
-    $build_version = json_decode(file_get_contents($root_folder.'./build/build_version.json'));
+    $build_version = json_decode(file_get_contents($root_folder.'/build/build_version.json'));
     $build_version->version++;
-    file_put_contents($root_folder.'./build/build_version.json', json_encode(array(
+    file_put_contents($root_folder.'/build/build_version.json', json_encode(array(
         'last_build_time' => time(),
         'last_build_time_str' => gmdate('Y-m-d H:i:sO'),
         'version' => $build_version->version
@@ -56,13 +56,8 @@
     // Меняем контент
     foreach (
         array(
-            array('other/main.js', 'mozilla_firefox/lib/main.js'),
             array('other/bower.json', 'bower.json'),
-            array('other/install.rdf', 'mozilla_firefox/install.rdf'),
             array('other/manifest.json', 'chrome_point_plus/manifest.json'),
-            array('other/mozilla_twitter_embedding.js', 'mozilla_firefox/data/js/mozilla_twitter_embedding.js'),
-            array('other/mozilla_README.md', 'mozilla_firefox/README.md'),
-            array('other/mozilla_package.json', 'mozilla_firefox/package.json'),
         ) as $pair) {
         // Берём контент
         $content = file_get_contents($root_folder.'/build/'.$pair[0]);
@@ -91,8 +86,6 @@
                  'date.format.js'
              ) as $filename) {
         copy($root_folder.'/build/src/'.$filename, $root_folder.'/chrome_point_plus/js/'.$filename);
-        copy($root_folder.'/build/src/'.$filename,
-            $root_folder.'/mozilla_firefox/data/js/'.$filename);
     }
 
     function addslashes_quote($s) {

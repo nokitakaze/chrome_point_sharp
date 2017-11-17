@@ -16,7 +16,7 @@
         "chrome_point_plus/vendors/**"
     ],
     "dependencies": {
-        "jquery": "~2.2.3",
+        "jquery": "~2.2.4",
         "fancybox": "~2.1.5",
         "markitup": "~1.1.14",
         "soundcloud": "git@github.com:soundcloud/Widget-JS-API.git"

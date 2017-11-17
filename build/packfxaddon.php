@@ -10,7 +10,7 @@
     /**
      * Рутовая папка проекта
      */
-    $root_folder = realpath(getcwd().'/'.preg_replace('_/[^/]+$_', '/', $_SERVER['PHP_SELF']).'../');
+    $root_folder = realpath(__DIR__.'/../');
 
     /**
      * Данные о пакете из package.json, будь он неладен
