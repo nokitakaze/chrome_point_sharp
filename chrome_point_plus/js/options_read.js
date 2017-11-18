@@ -6,7 +6,7 @@ var i18n_locale = {
         "message": "Алексей Скобкин"
     },
     "ext_page_action_title": {
-        "message": "Настройки Point+"
+        "message": "Настройки Point#"
     },
 
 
@@ -14,7 +14,7 @@ var i18n_locale = {
         "message": "Для применения изменений перезагрузите страницу."
     },
     "options_text_new_version": {
-        "message": "Point+ только что обновился.\nХотите оценить новые функции?"
+        "message": "Point# только что обновился.\nХотите оценить новые функции?"
     },
 
 
@@ -74,12 +74,13 @@ var i18n_locale = {
     "option_videos_parse_leave_links": {
         "message": "Оставлять ссылку на видео"
     },
-    /* "option_embedding_soundcloud": {
+    /*
+    "option_embedding_soundcloud": {
         "message": "Soundcloud &#9660;"
     },
     "option_embedding_soundcloud_orig_link": {
         "message": "Не убирать ссылку"
-    }, */
+    },
     "option_embedding_pleercom": {
         "message": "Pleer.com &#9660;"
     },
@@ -89,6 +90,7 @@ var i18n_locale = {
     "option_embedding_coubcom": {
         "message": "Coub.com &#9660;"
     },
+    */
     "option_embedding_coubcom_orig_link": {
         "message": "Не убирать ссылку"
     },
@@ -179,11 +181,6 @@ var i18n_locale = {
     },
     "option_other_post_draft_save": {
         "message": "Сохранение и восстановление черновиков постов"
-    },
-
-
-    "options_feedback_text": {
-        "message": "<p>Нашли ошибку? Не стесняйтесь <a href=\"https:\/\/bitbucket.org\/skobkin\/chrome_point_plus\/issues?status=new&status=open\" target=\"_blank\">сообщить о ней<\/a>.<\/p><p>Также вы можете сделать пожертвование автору:<\/p><p><iframe frameborder=\"0\" allowtransparency=\"true\" scrolling=\"no\" src=\"https:\/\/money.yandex.ru\/embed\/small.xml?account=41001539215836&quickpay=small&yamoney-payment-type=on&button-text=04&button-size=s&button-color=black&targets=Point%2B&default-sum=150&successURL=https%3A%2F%2Fbitbucket.org%2Fskobkin%2Fchrome_point_plus\" width=\"158\" height=\"31\"><\/iframe><\/p><p><iframe frameborder=\"0\" allowtransparency=\"true\" scrolling=\"no\" src=\"https:\/\/money.yandex.ru\/embed\/small.xml?account=41001539215836&quickpay=small&any-card-payment-type=on&button-text=04&button-size=s&button-color=black&targets=Point%2B&default-sum=150&successURL=https%3A%2F%2Fbitbucket.org%2Fskobkin%2Fchrome_point_plus\" width=\"158\" height=\"31\"><\/iframe><\/p><p><form action=\"https:\/\/www.paypal.com\/cgi-bin\/webscr\" method=\"post\" target=\"_top\"><input type=\"hidden\" name=\"cmd\" value=\"_s-xclick\"><input type=\"hidden\" name=\"hosted_button_id\" value=\"WW33X5J5WFSP4\"><input type=\"image\" src=\"https:\/\/www.paypalobjects.com\/ru_RU\/RU\/i\/btn\/btn_donateCC_LG.gif\" border=\"0\" name=\"submit\" alt=\"PayPal — более безопасный и легкий способ оплаты через Интернет!\"><img alt=\"\" border=\"0\" src=\"https:\/\/www.paypalobjects.com\/en_US\/i\/scr\/pixel.gif\" width=\"1\" height=\"1\"><\/form><\/p>"
     }
 };
 
@@ -247,11 +244,10 @@ function get_branch_children(obj) {
         }
     });
 
-    console.log(children);
     return children;
 }
 
-$(document).ready(function () {
+$(document).on('ready', function () {
     var tree = {};
     $('.tabs-content-item').each(function () {
         tree['tree_' + $(this).attr('id')] = {

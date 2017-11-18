@@ -70,9 +70,11 @@ function remark_entire_page(options) {
         */
 
         // Parse pleer.com links and create audio instead
+        /*
         if (options.is('option_embedding_pleercom')) {
             parse_pleercom_links(options);
         }
+        */
 
         // Parse coub.com links and create iframe instead
         if (options.is('option_embedding_coubcom')) {
@@ -247,6 +249,7 @@ function parse_webm(current_options) {
     });
 }
 
+// noinspection JSUnusedLocalSymbols
 /**
  * Webp-изображение. Только для Хромо-господ
  *
@@ -276,6 +279,10 @@ function parse_webp(current_options) {
     });
 }
 
+// noinspection JSUnusedLocalSymbols
+/**
+ * @param {Object} current_options
+ */
 function parse_500px(current_options) {
     $('.post-content a').each(function(num, obj) {
         if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
@@ -442,12 +449,16 @@ function set_posts_count_label() {
                     'Количество рекомендаций. Работает криво, спасибо @arts\'у за это');
                 postid.appendChild(e2);
             });
+        },
+        'error': function(a) {
+            console.error('Can not get post info', a);
         }
 
     })
 
 }
 
+/*
 function parse_pleercom_links(current_options) {
     if (current_options.is('option_embedding_pleercom_nokita_server')) {
         parse_pleercom_links_nokita();
@@ -528,6 +539,7 @@ function create_pleercom_ajax(id, current_options) {
     });
 
 }
+*/
 
 /**
  * Проставляем теги и имена пользователей у постов
@@ -1235,8 +1247,11 @@ function instagram_posts_embedding_init(current_options) {
     });
 }
 
+// noinspection JSUnusedLocalSymbols
 /**
  * Парсим все ссылки. Эта функция запускается из page scope
+ *
+ * @param {Object} options
  */
 function youtube_video_embedding(options) {
     var youtube_video_count = 0;

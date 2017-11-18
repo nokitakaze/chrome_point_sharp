@@ -159,7 +159,6 @@ function get_sync_quota_length() {
  * @param {Function} success_callback Функция, которую дёрнем, когда сохраним значение
  */
 function local_storage_set(data, success_callback) {
-    debugger;
     console.log("Content code. local_storage_set", data);
     var data_processed = {};
     const max_item_length = get_sync_quota_length();
@@ -177,7 +176,7 @@ function local_storage_set(data, success_callback) {
         data_processed[key + '_index_time'] = (new Date()).getTime() / 1000;
     }
 
-    chrome.storage.local.set(data_processed, function() {// @todo поправить, она не запускается
+    chrome.storage.local.set(data_processed, function() {
         if (typeof(success_callback) == 'function') {
             success_callback();
         }
@@ -193,24 +192,6 @@ function local_storage_set(data, success_callback) {
         chrome.storage.local.remove(need_remove_keys, function() {});
     }, 0);
     console.log("Content code. local_storage_set end. ", full_length_to_write, " bytes to write");
-}
-
-/**
- * Функция, которая выполняется перед всеми улучшениями
- *
- * @param {Object} options Опции
- */
-function point_loaded_first(options) {
-
-}
-
-/**
- * Функция, которая выполняется после всех улучшений
- *
- * @param {Object} options Опции
- */
-function point_loaded_last(options) {
-
 }
 
 /**

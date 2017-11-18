@@ -1,6 +1,6 @@
 {
     "name": "PointSharp",
-    "version": "2.9.0.549",
+    "version": "2.9.1.550",
     "authors": [
         "Alexey Skobkin",
         "Nikita Vetrov",
@@ -18,7 +18,6 @@
     "dependencies": {
         "jquery": "~2.2.3",
         "fancybox": "~2.1.5",
-        "markitup": "~1.1.14"/* ,
-        "soundcloud": "git@github.com:soundcloud/Widget-JS-API.git" */
+        "markitup": "~1.1.14"
     }
 }

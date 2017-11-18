@@ -55,9 +55,6 @@ function pimp_my_page(options) {
         'data-point-plus-version': options.version()
     }).text('Point# ' + options.version() + ' loading...');
 
-    // Выполняем первые платформозависимые функции
-    point_loaded_first(options);
-
     // Показываем иконку приложения в адресной строке
     urlbar_icon_show();
 
@@ -158,9 +155,6 @@ function pimp_my_page(options) {
     }
 
     // Выполняем последние платформозависимые функции
-    point_loaded_last(options);
-
-    //
     disconnected_status_init();
 
     // Закрываем значок

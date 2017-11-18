@@ -125,9 +125,9 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                 chrome.notifications.onClicked.addListener(function(notificationId) {
                     // Detecting notification type
                     if (notificationId.indexOf('comment_') === 0) {
-                        var tab_url = message.protocol + '//' + 'point.im/' + notificationId.replace(/comment_/g, '');
+                        var tab_url = message.protocol + '//point.im/' + notificationId.replace(/comment_/g, '');
                     } else if (notificationId.indexOf('post_') === 0) {
-                        tab_url = message.protocol + '//' + 'point.im/' + notificationId.replace(/post_/g, '');
+                        tab_url = message.protocol + '//point.im/' + notificationId.replace(/post_/g, '');
                     }
                     console.log('Notification %s clicked! Opening new tab: %s', notificationId, tab_url);
 
@@ -150,6 +150,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                 draw_icon_badge();
                 send_message_with_unread_counts(message);
                 return true;
+
             case 'get_status':
                 var response = {};
                 for (var index in unread_count_status_last_state) {
