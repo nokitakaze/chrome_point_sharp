@@ -10,7 +10,7 @@
         "build-chrome": "php build/build.php",
         "build-fx": "php build/packfxaddon.php",
         "build-all": "npm run build && npm run build-fx",
-        "test-fx": "web-ext run"
+        "test-fx": "cd chrome_point_plus && web-ext run"
     },
     "author": "Nikita Vetrov",
     "license": "MIT",
