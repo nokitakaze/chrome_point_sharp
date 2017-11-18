@@ -48,7 +48,7 @@
                  'js/point-options.js',
                  'js/wrapper.js',
 
-                 'vendor/soundcloud/soundcloud.player.api.js',
+                 //'vendor/soundcloud/soundcloud.player.api.js',
                  'vendor/bootstrap-markdown/js/markdown.js',
              ] as $filename) {
         if (!file_exists("{$root_folder}/mozilla_firefox_pack/{$filename}")) {

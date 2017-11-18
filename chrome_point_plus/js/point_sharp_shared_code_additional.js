@@ -40,6 +40,7 @@ function remark_entire_page(options) {
         }
 
         // Soundcloud
+        /*
         if (options.is('option_embedding_soundcloud')) {
             // Processing links
             $('div.post .post-content a[href*="\\:\\/\\/soundcloud\\.com\\/"]').each(function(index) {
@@ -66,6 +67,7 @@ function remark_entire_page(options) {
                 }
             });
         }
+        */
 
         // Parse pleer.com links and create audio instead
         if (options.is('option_embedding_pleercom')) {

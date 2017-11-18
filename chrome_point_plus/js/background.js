@@ -445,7 +445,7 @@ function update_unread_counters_via_api() {
             'date': (new Date()).getTime(),
             'recent_count': data.posts,
             'comments_count': data.comments,
-            'messages_count': data.private_posts
+            'messages_count': data.private_posts + data.private_comments
         };
         draw_icon_badge();
         send_message_with_unread_counts(unread_count_status_last_state);

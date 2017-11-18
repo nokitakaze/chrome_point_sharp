@@ -40,7 +40,6 @@
                 "js/point_sharp_shared_code_websocket.js",
                 "js/point_sharp_shared_code.js",
 
-                "vendor/soundcloud/soundcloud.player.api.js",
                 "vendor/fancybox/source/jquery.fancybox.pack.js",
                 "vendor/fancybox/source/helpers/jquery.fancybox-media.js"
             ],
@@ -70,8 +69,6 @@
         "http://*.point.im/*",
         "https://*.point.im/*",
         "https://pleer.com/*",
-        "http://player.soundcloud.com/*",
-        "https://player.soundcloud.com/*",
         "https://api.kanaria.ru/point/*",
         "https://api.instagram.com/*",
         "https://*.twitter.com/*",
