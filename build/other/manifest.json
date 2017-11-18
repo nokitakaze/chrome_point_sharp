@@ -68,7 +68,6 @@
     "permissions": [
         "http://*.point.im/*",
         "https://*.point.im/*",
-        "https://pleer.com/*",
         "https://api.kanaria.ru/point/*",
         "https://api.instagram.com/*",
         "https://*.twitter.com/*",
