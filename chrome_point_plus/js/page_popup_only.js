@@ -30,7 +30,6 @@ function draw_current_popup_point_sharp_status() {
     chrome.runtime.sendMessage({
         'type': 'get_status'
     }, function(message) {
-        console.log(message);
         var section = $('#status_page');
         // message.recent_count, message.comments_count, message.messages_count
         section.html(
@@ -59,10 +58,11 @@ function draw_current_popup_point_sharp_status() {
                 'border': '1px solid #d43f3a'
             }).off('click').on('click', function() {
                 chrome.runtime.sendMessage({
-                    'type': 'notifacation_temporary_enable'
+                    'type': 'notification_temporary_enable'
                 }, function() {
                     draw_current_popup_point_sharp_status();
                 });
+                local_storage_set({'temporary_disabled_notification': false}, function() {});
             });
         } else {
             $('.websocket-temporary-disable').text('Включены (временно выключить)').css({
@@ -71,10 +71,11 @@ function draw_current_popup_point_sharp_status() {
                 'border': '1px solid #4cae4c'
             }).off('click').on('click', function() {
                 chrome.runtime.sendMessage({
-                    'type': 'notifacation_temporary_disable'
+                    'type': 'notification_temporary_disable'
                 }, function() {
                     draw_current_popup_point_sharp_status();
                 });
+                local_storage_set({'temporary_disabled_notification': true}, function() {});
             });
         }
     });

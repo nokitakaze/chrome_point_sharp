@@ -165,13 +165,13 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                 sendResponse(response);
                 return true;
 
-            case 'notifacation_temporary_disable':
+            case 'notification_temporary_disable':
                 temporary_disabled_notification = true;
                 draw_icon_badge();
                 sendResponse(true);
                 return true;
 
-            case 'notifacation_temporary_enable':
+            case 'notification_temporary_enable':
                 temporary_disabled_notification = false;
                 draw_icon_badge();
                 sendResponse(true);
@@ -377,6 +377,15 @@ update_options(function() {
         }
     }, 10000);
 });
+
+{
+    local_storage_get('temporary_disabled_notification', function(status) {
+        if (typeof status !== 'undefined') {
+            temporary_disabled_notification = status;
+            draw_icon_badge();
+        }
+    });
+}
 
 /**
  * Ставим уведомлялку о текущем статусе соединения с PointIM
