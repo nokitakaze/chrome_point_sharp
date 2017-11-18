@@ -280,6 +280,10 @@ function local_storage_get_inner(real_keys, real_keys_list, type, callback) {
         var full_times = {};
         var real_keys = [];
         var no_keys = [];
+        if (typeof(sync_data_index) == 'undefined') {
+            // Mozilla Firefox behaviour
+            sync_data_index = [];
+        }
         for (var real_key in real_keys_list) {
             var current_key = real_keys_list[real_key];
             if (typeof(sync_data_index[current_key + '_index_count']) == 'undefined') {
@@ -378,7 +382,7 @@ update_options(function() {
  */
 setInterval(function() {
     chrome.tabs.query({}, function(tabs) {
-        var reg = new RegExp('^https?://([a-z0-9-]+\\.)point\\.im/', '');
+        var reg = new RegExp('^https?://([a-z0-9-]+\\.)?point\\.im/', '');
         /**
          * @var [Tabs] tabs
          */
@@ -403,7 +407,7 @@ setInterval(function() {
  */
 function send_message_with_unread_counts(message) {
     chrome.tabs.query({}, function(tabs) {
-        var reg = new RegExp('^https?://([a-z0-9-]+\\.)point\\.im/', '');
+        var reg = new RegExp('^https?://([a-z0-9-]+\\.)?point\\.im/', '');
         /**
          * @var {Tabs[]} tabs
          */
@@ -530,7 +534,7 @@ function start_websocket() {
             console.log('WS Message: ', evt, wsMessage);
             // месаги во все окна
             chrome.tabs.query({}, function(tabs) {
-                var reg = new RegExp('^https?://([a-z0-9-]+\\.)point\\.im/', '');
+                var reg = new RegExp('^https?://([a-z0-9-]+\\.)?point\\.im/', '');
                 /**
                  * @var {Tabs[]} tabs
                  */

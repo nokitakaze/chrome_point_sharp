@@ -220,24 +220,11 @@ function redraw_current_options_value() {
 }
 
 
-$(document).ready(function() {
-    // Я не буду пользоваться паттерном стратегия. Если наговнокодить на одной странице, плохо не будет
+$(document).on('ready', function() {
     if (navigator.appVersion.match(/.*chrome.*/i) == null) {
         // Mozilla Firefox
 
-        if (document.location.href.match(new RegExp('https?://point\\.im/point\\-sharp\\-settings\\.html(\\?.*)?')) == null) {
-            return;
-        }
-
-        $('.content-wrap').addClass('point-options-wrapper').css({
-            'padding': '20px 0px'
-        }).html('<nav class="tabs-list"></nav><form class="tabs-content"></form>' +
-                '<p class="saved hidden" data-i18n="options_text_saved"></p><div>' +
-                '<p>Point# <span id="version"></span> by' +
-                '<a href="https://skobkin-ru.point.im/" target="_blank">@skobkin-ru</a>,' +
-                '<a href="https://isqua.point.im/" target="_blank">@isqua</a>,' +
-                '<a href="https://nokitakaze.point.im/" target="_blank">@NokitaKaze</a>' +
-                '</p></div>');
+        $('body').addClass('point-firefox');
     }
 
     draw_option_tree(point_sharp_options_tree);
