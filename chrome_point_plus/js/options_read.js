@@ -74,12 +74,12 @@ var i18n_locale = {
     "option_videos_parse_leave_links": {
         "message": "Оставлять ссылку на видео"
     },
-    "option_embedding_soundcloud": {
+    /* "option_embedding_soundcloud": {
         "message": "Soundcloud &#9660;"
     },
     "option_embedding_soundcloud_orig_link": {
         "message": "Не убирать ссылку"
-    },
+    }, */
     "option_embedding_pleercom": {
         "message": "Pleer.com &#9660;"
     },

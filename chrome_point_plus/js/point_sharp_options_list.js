@@ -101,7 +101,7 @@ var point_sharp_options_tree = {
                                 "description": "Оставлять ссылку на аудио"
                             }
                         }
-                    },
+                    },/*
                     "option_embedding_soundcloud": {
                         "type": "boolean",
                         "default_value": true,
@@ -113,7 +113,7 @@ var point_sharp_options_tree = {
                                 "description": "Не убирать ссылку"
                             }
                         }
-                    },
+                    }, */
                     "option_embedding_pleercom": {
                         "type": "boolean",
                         "default_value": true,

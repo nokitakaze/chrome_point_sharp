@@ -18,7 +18,7 @@
     "dependencies": {
         "jquery": "~2.2.3",
         "fancybox": "~2.1.5",
-        "markitup": "~1.1.14",
-        "soundcloud": "git@github.com:soundcloud/Widget-JS-API.git"
+        "markitup": "~1.1.14"/* ,
+        "soundcloud": "git@github.com:soundcloud/Widget-JS-API.git" */
     }
 }
