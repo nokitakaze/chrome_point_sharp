@@ -311,6 +311,16 @@ var point_sharp_options_tree = {
                 "type": "boolean",
                 "default_value": true,
                 "description": "По умолчанию левое меню отправляет на новые посты и комментарии"
+            },
+            "option_https_everywhere_point": {
+                "type": "boolean",
+                "default_value": true,
+                "description": "PointIM HTTPS Everywhere"
+            },
+            "option_https_everywhere_external": {
+                "type": "boolean",
+                "default_value": true,
+                "description": "External HTTPS Everywhere"
             }
         }
     },

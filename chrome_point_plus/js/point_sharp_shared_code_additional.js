@@ -18,6 +18,14 @@ function remark_entire_page(options) {
         fix_meta_schema_in_links(options);
     }
 
+    if (options.is('option_https_everywhere_point')) {
+        links_https_everywhere_point();
+    }
+
+    if (options.is('option_https_everywhere_external')) {
+        links_https_everywhere_external();
+    }
+
     // Embedding
     if (options.is('option_embedding')) {
         // Load pictures from Booru, Tumblr and some other sites
@@ -1998,3 +2006,37 @@ function fix_meta_schema_in_links() {
     });
 }
 
+function links_https_everywhere_point() {
+    $('a').each(function(num, obj) {
+        if ((obj.protocol == 'https:') || !obj.host.match(new RegExp('^([0-9a-z]+\\.)?point\\.im$'))) {
+            return;
+        }
+
+        let postfix = obj.href.substr(obj.href.indexOf('//') + 2);
+        obj.href = 'https://' + postfix;
+    });
+}
+
+function links_https_everywhere_external() {
+    let full_domains = [];
+    {
+        let domains = ['danbooru.donmai.us', 'yandex.ru', 'google.com', 'gelbooru.com', 'e621.net', 'youtube.com',
+                       'chan.sankakucomplex.com', 'safebooru.org'];
+        let r = new RegExp('\\.', 'g');
+        for (let domain of domains) {
+            full_domains.push(domain);
+            if (domain.match(r).length == 1) {
+                full_domains.push('www.' + domain);
+            }
+        }
+    }
+
+    $('a').each(function(num, obj) {
+        if ((obj.protocol == 'https:') || (full_domains.indexOf(obj.host) == -1)) {
+            return;
+        }
+
+        let postfix = obj.href.substr(obj.href.indexOf('//') + 2);
+        obj.href = 'https://' + postfix;
+    });
+}
