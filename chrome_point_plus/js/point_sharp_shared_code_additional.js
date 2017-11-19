@@ -1276,12 +1276,21 @@ function youtube_video_embedding(options) {
         var href = obj.href;
         var n;
 
-        if (n = href.match(new RegExp('^https?://(www\\.)?youtube\\.com/watch\\?v=([0-9a-z_-]+)', 'i'))) {
+        if (href.match(new RegExp('^https?://(www\\.)?youtube\\.com/watch', 'i'))) {
+            let params = Booru.getGetParamsFromUrl(href);
+            let timecode = (typeof params.t !== 'undefined') ? params.t : 0;
+            {
+                let a;
+                if (a = timecode.match('^([0-9]+)m([0-9]+)s$')) {
+                    timecode = parseInt(a[1], 10) * 60 + parseInt(a[2], 10);
+                }
+            }
+
             var video = document.createElement('iframe');
             $(video).attr({
                 'id': 'tweet-' + youtube_video_count,
-                'src': 'https://www.youtube.com/embed/' + n[2],
-                'data-youtube-id': n[2],
+                'src': 'https://www.youtube.com/embed/' + params.v + ((timecode > 0) ? '?start=' + timecode : ''),
+                'data-youtube-id': params.v,
                 'data-fancybox-type': 'youtube'
             }).css({
                 'width': 400,
@@ -1292,10 +1301,19 @@ function youtube_video_embedding(options) {
 
             youtube_video_count++;
         } else if (n = href.match(new RegExp('^https?://(www\\.)?youtu\\.be/([0-9a-z_-]+)', 'i'))) {
+            let params = Booru.getGetParamsFromUrl(href);
+            let timecode = (typeof params.t !== 'undefined') ? params.t : 0;
+            {
+                let a;
+                if (a = timecode.match('^([0-9]+)m([0-9]+)s$')) {
+                    timecode = parseInt(a[1], 10) * 60 + parseInt(a[2], 10);
+                }
+            }
+
             video = document.createElement('iframe');
             $(video).attr({
                 'id': 'tweet-' + youtube_video_count,
-                'src': 'https://www.youtube.com/embed/' + n[2],
+                'src': 'https://www.youtube.com/embed/' + n[2] + ((timecode > 0) ? '?start=' + timecode : ''),
                 'data-youtube-id': n[2],
                 'data-fancybox-type': 'youtube'
             }).css({
