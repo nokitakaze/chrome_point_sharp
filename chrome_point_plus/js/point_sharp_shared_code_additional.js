@@ -2014,7 +2014,7 @@ function fix_meta_schema_in_links() {
             return;
         }
         let protocol = obj.protocol.substr(0, obj.protocol.length - 1);
-        let outer_site_id = obj.pathname.substr(2);
+        let outer_site_id = obj.href.substr(obj.href.indexOf('//') + 2);
         $(obj).attr({
             'data-schema': protocol,
             'data-outer-site-id': outer_site_id,
