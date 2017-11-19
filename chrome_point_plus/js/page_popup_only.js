@@ -1,4 +1,4 @@
-function chrome_option_menu_wrapper() {
+function general_option_menu_wrapper() {
     var index = 'status_page';
 
     // Нав
@@ -24,9 +24,20 @@ function chrome_option_menu_wrapper() {
     set_option_elements_behavior();
     setInterval(draw_current_popup_point_sharp_status, 10000);
     draw_current_popup_point_sharp_status();
+    {
+        setTimeout(function() {
+            let options_block = $('.point-options-wrapper .tabs-content').height(2000);
+            let offset = $(document).height() - window.innerHeight + 30;
+            options_block.height(2000 - offset);
+            if (navigator.appVersion.match(new RegExp('chrome/', 'u')) !== null) {
+                options_block.width(window.innerWidth - 10);
+            }
+        }, 500);
+    }
 }
 
 function draw_current_popup_point_sharp_status() {
+    // noinspection JSUnresolvedVariable
     chrome.runtime.sendMessage({
         'type': 'get_status'
     }, function(message) {
@@ -57,6 +68,7 @@ function draw_current_popup_point_sharp_status() {
                 'background-color': '#d9534f',
                 'border': '1px solid #d43f3a'
             }).off('click').on('click', function() {
+                // noinspection JSUnresolvedVariable
                 chrome.runtime.sendMessage({
                     'type': 'notification_temporary_enable'
                 }, function() {
@@ -70,6 +82,7 @@ function draw_current_popup_point_sharp_status() {
                 'background-color': '#449d44',
                 'border': '1px solid #4cae4c'
             }).off('click').on('click', function() {
+                // noinspection JSUnresolvedVariable
                 chrome.runtime.sendMessage({
                     'type': 'notification_temporary_disable'
                 }, function() {

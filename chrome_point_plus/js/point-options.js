@@ -229,7 +229,5 @@ $(document).on('ready', function() {
 
     draw_option_tree(point_sharp_options_tree);
     redraw_current_options_value();
-    if (navigator.appVersion.match(/.*chrome.*/i) !== null) {
-        chrome_option_menu_wrapper();
-    }
+    general_option_menu_wrapper();
 });

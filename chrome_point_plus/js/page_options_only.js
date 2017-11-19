@@ -1,1 +1,1 @@
-function chrome_option_menu_wrapper() {}
+function general_option_menu_wrapper() {}
