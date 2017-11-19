@@ -207,6 +207,11 @@ var point_sharp_options_tree = {
                 "type": "boolean",
                 "default_value": true,
                 "description": "Vimeo растягивается на всю ширину"
+            },
+            "option_booru_schema_fixes": {
+                "type": "boolean",
+                "default_value": true,
+                "description": "Booru Meta Schema"
             }
         }
     },

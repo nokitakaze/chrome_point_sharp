@@ -24,23 +24,32 @@ Booru.baseUrl = 'https://evidell.xyz/get_booru_picture.php';
 Booru.services = {
     danbooru: {
         mask: new RegExp('^https?://danbooru\\.donmai\\.us/posts/([0-9]+)', 'i'),
+        template: 'https://danbooru.donmai.us/posts/%s',
         matchNumber: 1
     },
     gelbooru: {
-        mask: new RegExp('^https?\\://(www\\.)?gelbooru\\.com\\/index\\.php', 'i')
+        mask: new RegExp('^https?\\://(www\\.)?gelbooru\\.com\\/index\\.php', 'i'),
+        template: 'https://gelbooru.com/index.php?page=post&s=view&id=%s',
     },
     safebooru: {
-        mask: new RegExp('^https?\\://(www\\.)?safebooru\\.org\\/index\\.php', 'i')
+        mask: new RegExp('^https?\\://(www\\.)?safebooru\\.org\\/index\\.php', 'i'),
+        template: 'https://safebooru.org/index.php?page=post&s=view&id=%s',
     },
     deviantart: {
         mask: new RegExp('^https?\\://(www\\.)?([a-z0-9-]+\\.)?deviantart\\.com\\/art/[0-9a-z-]+?\\-([0-9]+)(\\?.+)?$', 'i'),
         matchNumber: 3
     },
     e621: {
-        mask: new RegExp('^https?\\://(www\\.)?e621\\.net\\/post\\/show\\/([0-9]+)\\/', 'i'),
+        mask: new RegExp('^https?\\://(www\\.)?e621\\.net\\/post\\/show\\/([0-9]+)\\/?', 'i'),
+        template: 'https://e621.net/post/show/%s/',
         matchNumber: 2
     },
     derpibooru: {
+        mask: new RegExp('^https?\\://derpibooru\\.org\\/([0-9]+)', 'i'),
+        template: 'https://derpibooru.org/%s',
+        matchNumber: 1
+    },
+    derpibooruOld: {
         mask: new RegExp('^https?\\://derpiboo\\.ru\\/([0-9]+)', 'i'),
         matchNumber: 1
     },
@@ -53,6 +62,7 @@ Booru.services = {
     },
     pixiv: {
         mask: new RegExp('^https?://(www\\.)?pixiv\\.net\\/member_illust\\.php', 'i'),
+        template: 'https://www.pixiv.net/member_illust.php?mode=medium&illust_id=%s',
         get_params: {
             'id': 'illust_id'
         }
@@ -63,14 +73,17 @@ Booru.services = {
     },
     yandere: {
         mask: new RegExp('^https?\\:\\/\\/yande\\.re\\/post\\/show\\/([0-9]+)', 'i'),
+        template: 'https://yande.re/post/show/%s',
         matchNumber: 1
     },
     sankakucomplex: {
         mask: new RegExp('^https?\\:\\/\\/chan\\.sankakucomplex\\.com\\/post\\/show\\/([0-9]+)', 'i'),
+        template: 'https://chan.sankakucomplex.com/post/show/%s',
         matchNumber: 1
     },
     konachan: {
         mask: new RegExp('https?://konachan\\.(net|com)\\/post\\/show\\/([0-9]+)', 'i'),
+        template: 'https://konachan.net/post/show/%s',
         matchNumber: 2,
         params: {
             'add_domain_extension': 1
@@ -136,9 +149,12 @@ Booru.prototype.loadAllImages = function($links, removeOriginal) {
  */
 Booru.prototype.createImageFromService = function(service, href) {
     /**
-     * @var {Object} serviceInfo
-     * @var {Object} serviceInfo.get_params
-     * @var {Number} serviceInfo.matchNumber
+     * @type {Object} serviceInfo.get_params
+     * @type {Number} serviceInfo.matchNumber
+     * @type {String} serviceInfo.mask
+     */
+    /**
+     * @type {Object} serviceInfo
      */
     var serviceInfo = this.constructor.services[service];
     var matches = href.match(serviceInfo.mask);

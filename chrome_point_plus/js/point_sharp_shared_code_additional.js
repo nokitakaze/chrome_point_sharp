@@ -13,6 +13,11 @@ function remark_entire_page(options) {
         parse_webp(options);
     }
 
+    // Schema fixes
+    if (options.is('option_booru_schema_fixes')) {
+        fix_meta_schema_in_links(options);
+    }
+
     // Embedding
     if (options.is('option_embedding')) {
         // Load pictures from Booru, Tumblr and some other sites
@@ -1298,19 +1303,25 @@ function youtube_video_embedding(options) {
 }
 
 /**
+ * @param {OptionsManager} current_options
+ *
  * Инициализация Bootstrap Markdown
  * https://github.com/toopay/bootstrap-markdown
  */
-function visual_editor_init() {
+function visual_editor_init(current_options) {
     $('#new-post-form, .post-content .reply-form, #post-edit-form .post-content .text').addClass('bootstrapped');
     // Init Bootstrap Markdown
     $('#new-post-form #text-input, .post-content .reply-form textarea, #post-edit-form .post-content #text-input').markdown(
-        get_markdown_init_settings());
+        get_markdown_init_settings(current_options));
     $('.post-content .reply-form textarea').css({'height': '15em'});
 }
 
-function get_markdown_init_settings() {
-    return {
+/**
+ * @param {OptionsManager} current_options
+ * @return {{language: string, footer: string, onPreview: onPreview, onChange: onChange}}
+ */
+function get_markdown_init_settings(current_options) {
+    let MarkDownSettings = {
         'language': 'ru',
         'footer': '...',
         'onPreview': function(e) {
@@ -1318,10 +1329,13 @@ function get_markdown_init_settings() {
         },
         'onChange': function(e) {
             var text = 'Длина: ' + e.getContent().length + ' сим';
+            let btn_meta_schemas
+                = e.$editor.find('[data-handler="bootstrap-markdown-cmdSetBooruMetaSchema"]').parents('.btn-group').first();
 
             // Бурятники
             var booru_pictures_count = 0;
             var booru_pictures_repeat_count = 0;
+            let booru_pictures_count_could_be_meta = 0;
             var links = [];
             var strings = e.getContent().split("\n");
             for (var i = 0; i < strings.length; i++) {
@@ -1339,18 +1353,98 @@ function get_markdown_init_settings() {
                         }
                     }
                     if (u) {links.push(n[0]);}
+
+                    if (typeof Booru.services[key].template !== 'undefined') {
+                        booru_pictures_count_could_be_meta++;
+                    }
                 }
             }
             if (booru_pictures_count > 0) {
                 text += '; Количество booru-картинок: ' + booru_pictures_count;
                 if (booru_pictures_repeat_count > 0) {
-                    text += '; Количество повторов: ' + booru_pictures_repeat_count;
+                    text += '; Количество повторов картинок: ' + booru_pictures_repeat_count;
                 }
+            }
+            if (booru_pictures_count_could_be_meta > 0) {
+                btn_meta_schemas.show();
+            } else {
+                btn_meta_schemas.hide();
             }
 
             e.$editor.find('.md-footer').text(text);
         }
     };
+    if (current_options.is('option_booru_schema_fixes')) {
+        //
+        MarkDownSettings.additionalButtons = [{
+            name: "groupCustom",
+            data: [{
+                name: "cmdSetBooruMetaSchema",
+                title: "Меняем прямые ссылки на Booru на мета-схемы",
+                icon: "glyphicon glyphicon-eye-open",
+                callback: function(e) {
+                    let content = e.getContent();
+                    if (content.match(new RegExp('https?://[a-z0-9.]+/\\S+', 'ig')).length == 0) {
+                        return;
+                    }
+
+                    // Replace selection with some drinks
+                    let selected = e.getSelection();
+                    let text_before = '';
+                    let text_in;
+                    let text_after = '';
+                    if (selected.length == 0) {
+                        text_in = content;
+                    } else {
+                        text_before = content.substr(0, selected.start);
+                        text_in = content.substr(selected.start, selected.length);
+                        text_after = content.substr(selected.start + selected.length);
+                    }
+                    // Заменяем ссылки
+                    {
+                        let raw_links = text_in.match(new RegExp('https?://[a-z0-9.]+/\\S+', 'ig'));
+                        if (raw_links.length == 0) {
+                            return;
+                        }
+
+                        for (let original_url of raw_links) {
+                            for (var key in Booru.services) {
+                                if (typeof Booru.services[key].template === 'undefined') {
+                                    continue;
+                                }
+                                let service = Booru.services[key];
+
+                                let n = original_url.match(service.mask);
+                                if (n === null) {continue;}
+
+                                let id;
+                                if (typeof(service.matchNumber) === 'number') {
+                                    id = n[service.matchNumber];
+                                } else {
+                                    let url_params = Booru.getGetParamsFromUrl(original_url);
+                                    if ((typeof service.get_params !== 'undefined') &&
+                                        (typeof service.get_params.id !== 'undefined')) {
+                                        id = url_params[service.get_params.id];
+                                    } else {
+                                        id = url_params.id;
+                                    }
+                                }
+
+                                let new_url = key + '://' + id;
+                                text_in = text_in.replace(original_url, new_url);
+                                break;
+                            }
+                        }
+                    }
+
+                    // Меняем контент
+                    e.setContent(text_before + text_in + text_after);
+                }
+            }]
+        }];
+    }
+
+    return MarkDownSettings;
 }
 
 /**
@@ -1826,6 +1920,7 @@ function parse_jsfiddle_set_interval() {
 }
 
 /**
+ * Встраиваем JSFiddle
  *
  * @param {OptionsManager} current_options
  */
@@ -1872,3 +1967,34 @@ function parse_jsfiddle(current_options) {
         }
     });
 }
+
+/**
+ * Исправляем схему
+ */
+function fix_meta_schema_in_links() {
+    let protocols = [];
+    for (let schema in Booru.services) {
+        if (typeof Booru.services[schema].template !== 'undefined') {
+            protocols.push(schema + ':');
+        }
+    }
+
+    $('.post-content a').each(function(num, obj) {
+        if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
+            return;
+        }
+
+        if (protocols.indexOf(obj.protocol) == -1) {
+            return;
+        }
+        let protocol = obj.protocol.substr(0, obj.protocol.length - 1);
+        let outer_site_id = obj.pathname.substr(2);
+        $(obj).attr({
+            'data-schema': protocol,
+            'data-outer-site-id': outer_site_id,
+        });
+        // noinspection JSUndefinedPropertyAssignment
+        obj.href = Booru.services[protocol].template.replace('%s', outer_site_id);
+    });
+}
+

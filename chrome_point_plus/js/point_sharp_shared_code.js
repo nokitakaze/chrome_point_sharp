@@ -69,7 +69,7 @@ function pimp_my_page(options) {
 
     // Visual editor
     if (options.is('option_visual_editor_post')) {
-        visual_editor_init();
+        visual_editor_init(options);
     }
 
     // Google search
