@@ -1278,11 +1278,13 @@ function youtube_video_embedding(options) {
 
         if (href.match(new RegExp('^https?://(www\\.)?youtube\\.com/watch', 'i'))) {
             let params = Booru.getGetParamsFromUrl(href);
-            let timecode = (typeof params.t !== 'undefined') ? params.t : 0;
+            let timecode = (typeof params.t !== 'undefined') ? params.t : "0";
             {
                 let a;
-                if (a = timecode.match('^([0-9]+)m([0-9]+)s$')) {
+                if (a = timecode.match(new RegExp('^([0-9]+)m([0-9]+)s$'))) {
                     timecode = parseInt(a[1], 10) * 60 + parseInt(a[2], 10);
+                } else {
+                    timecode = parseInt(timecode, 10);
                 }
             }
 
@@ -1302,11 +1304,13 @@ function youtube_video_embedding(options) {
             youtube_video_count++;
         } else if (n = href.match(new RegExp('^https?://(www\\.)?youtu\\.be/([0-9a-z_-]+)', 'i'))) {
             let params = Booru.getGetParamsFromUrl(href);
-            let timecode = (typeof params.t !== 'undefined') ? params.t : 0;
+            let timecode = (typeof params.t !== 'undefined') ? params.t : "0";
             {
                 let a;
-                if (a = timecode.match('^([0-9]+)m([0-9]+)s$')) {
+                if (a = timecode.match(new RegExp('^([0-9]+)m([0-9]+)s$'))) {
                     timecode = parseInt(a[1], 10) * 60 + parseInt(a[2], 10);
+                } else {
+                    timecode = parseInt(timecode, 10);
                 }
             }
 
