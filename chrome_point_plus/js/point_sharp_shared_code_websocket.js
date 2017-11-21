@@ -121,7 +121,7 @@ function ws_message_comment(wsMessage, my_nick_lower, postId, options) {
 
         console_group_end();
         again_callback();
-    });
+    }, options);
 }
 
 /**
@@ -260,11 +260,10 @@ function comments_reply_form_submit(evt, options) {
  * Реакция-обработчик, тут мы как бы посылаем каменты
  *
  * @param $post Родительский элемент
- * @param csRf csrf-токен
- * @param options Опции
+ * @param {String} csRf csrf-токен
+ * @param {OptionsManager} options Опции
  */
 function ajax_get_comments_post_comment($post, csRf, options) {
-    var current_options = options;
     var textarea = null;
     $post.find('textarea[name="text"]').each(function() {
         if ($(this).parents('form').first().attr('action').match(new RegExp('^/[a-z0-9]+$'))) {
@@ -339,7 +338,7 @@ function ajax_get_comments_post_comment($post, csRf, options) {
                         author: $('#name h1').text(),
                         text: raw_text,
                         html: parse_markdown(raw_text),
-                        options: current_options,
+                        options: options,
                         commentType: 'comment'
                     },
                     function($comment, callback_again) {
@@ -363,7 +362,8 @@ function ajax_get_comments_post_comment($post, csRf, options) {
                         }
 
                         callback_again();
-                    }
+                    },
+                    options
                 );
             }
 
@@ -437,9 +437,10 @@ const ajax_get_comments_comment_template =
  * @param {OptionsManager} commentData.options Опции OptionManager
  * @param {function} onCommentCreated Callback which is called when comment is ready.
  * Этот коллбэк добавляет элемент в дом, а потом дёргает коллбэк опять
+ * @param {OptionsManager} options Опции
  *
  */
-function ajax_get_comments_create_comment_elements(commentData, onCommentCreated) {
+function ajax_get_comments_create_comment_elements(commentData, onCommentCreated, options) {
     var $anchor = $('<a>').attr('name', commentData.id);
 
     // Initializing comment element
@@ -507,8 +508,8 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
     $commentTemplate.find('.post-content form.reply-form textarea[name="text"]').text('@' + commentData.author + ', ');
     if (commentData.options.is('option_visual_editor_post')) {
         $commentTemplate.find('.post-content form.reply-form').addClass('bootstrapped');
-        $commentTemplate.find('.post-content form.reply-form textarea[name="text"]').markdown(get_markdown_init_settings()).css(
-            {'height': '15em'});
+        $commentTemplate.find('.post-content form.reply-form textarea[name="text"]')
+            .markdown(get_markdown_init_settings(options)).css({'height': '15em'});
     }
     $commentTemplate.find('.post-content form.reply-form input[name="comment_id"]').val(commentData.id);
     $commentTemplate.find('.post-content form.reply-form input[name="csrf_token"]').val(csRfToken);
