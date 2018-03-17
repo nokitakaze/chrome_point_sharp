@@ -45,15 +45,21 @@ function draw_current_popup_point_sharp_status() {
         // message.recent_count, message.comments_count, message.messages_count
         section.html(
             '<button class="websocket-temporary-disable"></button><hr />' +
-            '<p><a href="https://' + message.current_login +
-            '.point.im/recent/unread?utm_source=pointsharp" class="unread-recent" target="_blank">?</a></p>' +
-            '<p><a href="https://' + message.current_login +
-            '.point.im/comments/unread?utm_source=pointsharp" class="unread-comment" target="_blank">?</a></p>' +
-            '<p><a href="https://' + message.current_login +
-            '.point.im/messages?utm_source=pointsharp" class="unread-messages" target="_blank">?</a></p>');
-        section.find('.unread-recent').text('Записей в ленте: ' + message.recent_count);
-        section.find('.unread-comment').text('Комментариев: ' + message.comments_count);
-        section.find('.unread-messages').text('Личных сообщений: ' + message.messages_count);
+            '<p><a class="unread-recent" target="_blank">?</a></p>' +
+            '<p><a class="unread-comment" target="_blank">?</a></p>' +
+            '<p><a class="unread-messages" target="_blank">?</a></p>');
+        section.find('.unread-recent').text('Записей в ленте: ' + message.recent_count).attr(
+            'href',
+            'https://' + message.current_login + '.point.im/recent/unread?utm_source=pointsharp'
+        );
+        section.find('.unread-comment').text('Комментариев: ' + message.comments_count).attr(
+            'href',
+            'https://' + message.current_login + '.point.im/comments/unread?utm_source=pointsharp'
+        );
+        section.find('.unread-messages').text('Личных сообщений: ' + message.messages_count).attr(
+            'href',
+            'https://' + message.current_login + '.point.im/messages?utm_source=pointsharp'
+        );
         $('.websocket-temporary-disable').css({
             'padding': '10px',
             'width': '100%',

@@ -52,43 +52,6 @@ function remark_entire_page(options) {
             parse_all_audios(options);
         }
 
-        // Soundcloud
-        /*
-        if (options.is('option_embedding_soundcloud')) {
-            // Processing links
-            $('div.post .post-content a[href*="\\:\\/\\/soundcloud\\.com\\/"]').each(function(index) {
-                // @todo: переписать это дерьмо на нормальный HTML5 плеер
-                var $player = $('<div class="pp-soundcloud">\
-                                            <object height="81" width="100%" id="pp-soundcloud-' + index + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">\
-                                              <param name="movie" value="//player.soundcloud.com/player.swf?url=' +
-                                encodeURIComponent($(this).prop('href'))
-                                + '&enable_api=true&object_id=pp-soundcloud-' + index + '">\
-                                              <param name="allowscriptaccess" value="always">\
-                                              <embed allowscriptaccess="always" height="81" src="//player.soundcloud.com/player.swf?url='
-                                + encodeURIComponent($(this).prop('href')) + '&enable_api=true&object_id=pp-soundcloud-' + index
-                                + '" type="application/x-shockwave-flash" width="100%" name="pp-soundcloud-' + index + '"></embed>\
-                                            </object>\
-                                        </div>');
-
-                // Replace or prepend
-                if (options.is('option_embedding_soundcloud_orig_link')) {
-                    // Before
-                    $(this).before($player);
-                } else {
-                    // Replace
-                    $(this).replaceWith($player);
-                }
-            });
-        }
-        */
-
-        // Parse pleer.com links and create audio instead
-        /*
-        if (options.is('option_embedding_pleercom')) {
-            parse_pleercom_links(options);
-        }
-        */
-
         // Parse coub.com links and create iframe instead
         if (options.is('option_embedding_coubcom')) {
             parse_coub_links(options);
@@ -100,7 +63,7 @@ function remark_entire_page(options) {
         }
 
         // Посты из Tumblr
-        if (options.is('option_embedding_instagram_posts')) {
+        if (options.is('option_embedding_tumblr') && !navigator.appVersion.match(new RegExp('firefox', 'i'))) {
             tumblr_posts_embedding_init(options);
         }
 
@@ -115,7 +78,7 @@ function remark_entire_page(options) {
         }
 
         // JSFiddle
-        if (options.is('option_embedding_jsfiddle')) {
+        if (options.is('option_embedding_jsfiddle') && !navigator.appVersion.match(new RegExp('firefox', 'i'))) {
             parse_jsfiddle(options);
             parse_jsfiddle_set_interval();
         }
@@ -473,89 +436,6 @@ function set_posts_count_label() {
     })
 
 }
-
-/*
-function parse_pleercom_links(current_options) {
-    if (current_options.is('option_embedding_pleercom_nokita_server')) {
-        parse_pleercom_links_nokita();
-    } else {
-        parse_pleercom_links_ajax(current_options);
-    }
-}
-
-function parse_pleercom_links_nokita() {
-    $('.post-content a').each(function(num, obj) {
-        var href = obj.href;
-        var n;
-
-        if (n = href.match(new RegExp('^https?:\\/\\/pleer\\.com\\/tracks\\/([0-9a-z]+)', 'i'))) {
-            var player = document.createElement('audio');
-            $(player).attr({
-                'src': 'https://api.kanaria.ru/point/get_pleer_file.php?id=' + n[1],
-                'controls': 'controls',
-                'preload': 'none'
-            });
-
-            var player_div = document.createElement('div');
-            $(player_div).addClass('embedded_audio').addClass('embedded_audio_' + n[1]);
-            player_div.appendChild(player);
-
-            obj.parentElement.insertBefore(player_div, obj);
-        }
-    });
-}
-
-function parse_pleercom_links_ajax(current_options) {
-    $('.post-content a').each(function(num, obj) {
-        var href = obj.href;
-        var n;
-
-        if (n = href.match(new RegExp('^https?:\\/\\/pleer\\.com\\/tracks\\/([0-9a-z]+)', 'i'))) {
-            var player_div = document.createElement('div');
-            $(player_div).addClass('embedded_audio').addClass('embedded_audio_' + n[1]);
-            $(obj).addClass('pleercom_original_link_' + n[1]);
-            obj.parentElement.insertBefore(player_div, obj);
-            create_pleercom_ajax(n[1], current_options);
-        }
-    });
-}
-
-function create_pleercom_ajax(id, current_options) {
-    $ajax({
-        'url': '//pleer.com/site_api/files/get_url',
-        'type': 'post',
-        'postdata': 'action=download&id=' + id,
-        'dont_set_content_type': true,
-        'pleer_id': id,
-        'headers': [['Accept', '*'], ['Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8']],
-        'success': function(a) {
-            var answer = JSON.parse(a);
-            var player = document.createElement('audio');
-            // @todo Проверять существование track_link
-            $(player).attr({
-                'src': answer.track_link,
-                'controls': 'controls',
-                'preload': 'auto'
-            }).addClass('point-sharp-added').addClass('embedded_video');
-            $('.embedded_audio_' + this.settings.pleer_id)[0].appendChild(player);
-            $('.pleercom_original_link_' + this.settings.pleer_id).addClass('point-sharp-processed');
-
-            if (current_options.is('option_embedding_pleercom_orig_link', false)) {
-                $('.pleercom_original_link_' + this.settings.pleer_id).hide();
-            }
-        },
-        'error': function() {
-            console.log('Can not get pleer.com url for ', id);
-            var current_pleer_id = this.settings.pleer_id;
-            setTimeout(function() {
-                create_pleercom_ajax(current_pleer_id, current_options);
-            }, 1000);
-        }
-
-    });
-
-}
-*/
 
 /**
  * Проставляем теги и имена пользователей у постов
@@ -1103,6 +983,9 @@ function update_left_menu_unread_budges(count_recent, count_comments, count_mess
  * @param {Object} options
  */
 function tumblr_posts_embedding_init(options) {
+    if (navigator.appVersion.match(new RegExp('firefox', 'i'))) {
+        return;
+    }
     const open_tumblr_key = 'fuiKNFp9vQFvjLNvx4sUwti4Yb5yGutBN4Xh10LXZhhRKjWlV4';
 
     var tumblr_post_count = 0;
@@ -1958,6 +1841,9 @@ function parse_jsfiddle_set_interval() {
  * @param {OptionsManager} current_options
  */
 function parse_jsfiddle(current_options) {
+    if (navigator.appVersion.match(new RegExp('firefox', 'i'))) {
+        return;
+    }
     var reg = new RegExp('^https?://(www\\.)?jsfiddle\\.net/([a-z0-9]+)/(([0-9]+)/)?', 'i');
     var used_keys = [];
     $('script[data-jsfiddle-full-id]').each(function(num, obj) {
@@ -2074,4 +1960,4 @@ function disable_native_fancybox() {
 
         $(obj).find('.postimg').off('click');
     });
- }
+}

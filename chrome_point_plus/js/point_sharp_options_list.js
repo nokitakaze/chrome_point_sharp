@@ -107,37 +107,6 @@ var point_sharp_options_tree = {
                             }
                         }
                     },
-                    /*
-                    "option_embedding_soundcloud": {
-                        "type": "boolean",
-                        "default_value": true,
-                        "description": "Soundcloud ▼",
-                        "children": {
-                            "option_embedding_soundcloud_orig_link": {
-                                "type": "boolean",
-                                "default_value": false,
-                                "description": "Не убирать ссылку"
-                            }
-                        }
-                    },
-                    "option_embedding_pleercom": {
-                        "type": "boolean",
-                        "default_value": true,
-                        "description": "Pleer.com ▼",
-                        "children": {
-                            "option_embedding_pleercom_nokita_server": {
-                                "type": "boolean",
-                                "default_value": false,
-                                "description": "Использовать сервер @NokitaKaze (deprecated)"
-                            },
-                            "option_embedding_pleercom_orig_link": {
-                                "type": "boolean",
-                                "default_value": false,
-                                "description": "Не убирать ссылку"
-                            }
-                        }
-                    },
-                    */
                     "option_embedding_coubcom": {
                         "type": "boolean",
                         "default_value": true,
@@ -153,7 +122,8 @@ var point_sharp_options_tree = {
                     "option_embedding_twitter_tweets": {
                         "type": "boolean",
                         "default_value": true,
-                        "description": "Twitter"
+                        "platforms": ["chrome"],
+                        "description": "Встраиваем твиты из Twitter"
                     },
                     "option_embedding_instagram_posts": {
                         "type": "boolean",
@@ -164,6 +134,7 @@ var point_sharp_options_tree = {
                         "type": "boolean",
                         "default_value": true,
                         "description": "Встраиваем посты из Tumblr",
+                        "platforms": ["chrome"],
                         "children": {
                             "option_embedding_tumblr_remove_original_link": {
                                 "type": "boolean",
@@ -197,6 +168,7 @@ var point_sharp_options_tree = {
                     "option_embedding_jsfiddle": {
                         "type": "boolean",
                         "default_value": true,
+                        "platforms": ["chrome"],
                         "description": "Загружать JSFiddle",
                         "children": {
                             "option_embedding_jsfiddle_remove_original_link": {

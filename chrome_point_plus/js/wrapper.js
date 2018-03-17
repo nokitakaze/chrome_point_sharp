@@ -273,7 +273,7 @@ function html5_notification(settings, response, from_websocket) {
  * @param {jQuery} dom
  */
 function set_comment_text_to_dom(commentData, dom) {
-    if (typeof(commentData.html) !== 'undefined') {
+    if ((typeof(commentData.html) !== 'undefined') && !navigator.appVersion.match(new RegExp('firefox', 'i'))) {
         dom.html(commentData.html);
     } else {
         safe_saned_text(commentData.text, dom);
@@ -284,8 +284,13 @@ function set_comment_text_to_dom(commentData, dom) {
  * Встраиваем твиты из Твиттера
  *
  * Workaround для Google Chrome
+ * @todo move to .._additional.js
  */
 function twitter_tweet_embedding_init() {
+    if (navigator.appVersion.match(new RegExp('firefox', 'i'))) {
+        return;
+    }
+
     // Чёрная магия. Выбираемся из манямирка, прихватив с собой пару сраных функций
     // https://developer.chrome.com/extensions/content_scripts Isolated World
     var e = document.createElement("script");
