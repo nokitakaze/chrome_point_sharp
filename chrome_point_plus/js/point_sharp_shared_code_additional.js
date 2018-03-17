@@ -1962,3 +1962,34 @@ function disable_native_fancybox() {
         $(obj).find('.postimg').off('click');
     });
 }
+
+/**
+ * Правим супердизайн
+ */
+function design_anti_raptors() {
+    let style = document.createElement('style');
+    $(style).attr('type', 'text/css');
+    style.innerText = ".post {padding: 10px 10px 5px;}\n" +
+                      ".post .text {margin: 1.5em 0 1.5em;}\n" +
+                      ".post-tags .post-tag {\n" +
+                      "    border-bottom: none;\n" +
+                      "    background-color: rgba(35, 94, 216, 0.7);\n" +
+                      "    padding: 3px 5px;\n" +
+                      "    border-radius: 3px;\n" +
+                      "    font-size: 1em;\n" +
+                      "    color: white;\n" +
+                      "}\n" +
+                      ".post-tags .post-tag:hover {\n" +
+                      "    text-decoration: none;\n" +
+                      "    background-color: rgba(35, 94, 216, 0.85);\n" +
+                      "}\n" +
+                      ".post {border-bottom-color: #d1d1d1;}\n";
+    document.head.appendChild(style);
+}
+
+function design_wide_without_limit() {
+    let style = document.createElement('style');
+    $(style).attr('type', 'text/css');
+    style.innerText = "#main {max-width: inherit;}";
+    document.head.appendChild(style);
+}

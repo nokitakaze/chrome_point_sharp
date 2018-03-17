@@ -154,6 +154,14 @@ function pimp_my_page(options) {
         set_post_comments_read();
     }
 
+    if (options.is('option_anti_raptor')) {
+        design_anti_raptors();
+    }
+
+    if (options.is('option_design_wide_without_limit')) {
+        design_wide_without_limit();
+    }
+
     // Выполняем последние платформозависимые функции
     disconnected_status_init();
 

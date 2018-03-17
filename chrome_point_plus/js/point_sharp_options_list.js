@@ -299,6 +299,16 @@ var point_sharp_options_tree = {
                 "type": "boolean",
                 "default_value": true,
                 "description": "External HTTPS Everywhere"
+            },
+            "option_anti_raptor": {
+                "type": "boolean",
+                "default_value": true,
+                "description": "Убиваем раптора (правим супердизайн)"
+            },
+            "option_design_wide_without_limit": {
+                "type": "boolean",
+                "default_value": false,
+                "description": "Резиновый дизайн"
             }
         }
     },
