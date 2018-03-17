@@ -123,6 +123,7 @@ function remark_entire_page(options) {
 
     // Fancybox
     if (options.is('option_fancybox')) {
+        disable_native_fancybox();
         if (options.is('option_fancybox_bind_images_to_one_flow')) {
             // Linking images in posts to the galleries
             $('.post-content .text a.postimg:not(.youtube),.post-content .files a.postimg:not(.youtube)').attr(
@@ -171,6 +172,8 @@ function remark_entire_page(options) {
             });
         }
 
+    } else if (options.is('option_disable_native_fancybox')) {
+        disable_native_fancybox();
     }
 
     // NSFW Filtering
@@ -2062,3 +2065,13 @@ function links_https_everywhere_external() {
         obj.href = 'https://' + postfix;
     });
 }
+
+function disable_native_fancybox() {
+    $('.post-content a').each(function(num, obj) {
+        if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
+            return;
+        }
+
+        $(obj).find('.postimg').off('click');
+    });
+ }

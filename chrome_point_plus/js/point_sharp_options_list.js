@@ -41,6 +41,11 @@ var point_sharp_options_tree = {
                     }
                 }
             },
+            "option_disable_native_fancybox": {
+                "type": "boolean",
+                "default_value": true,
+                "description": "Выключить родной FancyBox Поинта"
+            },
             "option_images_load_original": {
                 "type": "boolean",
                 "default_value": false,
