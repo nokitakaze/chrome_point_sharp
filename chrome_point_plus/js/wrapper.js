@@ -273,7 +273,7 @@ function html5_notification(settings, response, from_websocket) {
  * @param {jQuery} dom
  */
 function set_comment_text_to_dom(commentData, dom) {
-    if ((typeof(commentData.html) !== 'undefined') && !navigator.appVersion.match(new RegExp('firefox', 'i'))) {
+    if ((typeof(commentData.html) !== 'undefined') && !navigator.userAgent.match(new RegExp('firefox', 'i'))) {
         dom.html(commentData.html);
     } else {
         safe_saned_text(commentData.text, dom);
@@ -287,7 +287,7 @@ function set_comment_text_to_dom(commentData, dom) {
  * @todo move to .._additional.js
  */
 function twitter_tweet_embedding_init() {
-    if (navigator.appVersion.match(new RegExp('firefox', 'i'))) {
+    if (navigator.userAgent.match(new RegExp('firefox', 'i'))) {
         return;
     }
 

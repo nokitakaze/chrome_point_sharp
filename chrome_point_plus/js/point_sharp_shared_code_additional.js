@@ -63,7 +63,7 @@ function remark_entire_page(options) {
         }
 
         // Посты из Tumblr
-        if (options.is('option_embedding_tumblr') && !navigator.appVersion.match(new RegExp('firefox', 'i'))) {
+        if (options.is('option_embedding_tumblr') && !navigator.userAgent.match(new RegExp('firefox', 'i'))) {
             tumblr_posts_embedding_init(options);
         }
 
@@ -78,7 +78,7 @@ function remark_entire_page(options) {
         }
 
         // JSFiddle
-        if (options.is('option_embedding_jsfiddle') && !navigator.appVersion.match(new RegExp('firefox', 'i'))) {
+        if (options.is('option_embedding_jsfiddle') && !navigator.userAgent.match(new RegExp('firefox', 'i'))) {
             parse_jsfiddle(options);
             parse_jsfiddle_set_interval();
         }
@@ -983,7 +983,7 @@ function update_left_menu_unread_budges(count_recent, count_comments, count_mess
  * @param {Object} options
  */
 function tumblr_posts_embedding_init(options) {
-    if (navigator.appVersion.match(new RegExp('firefox', 'i'))) {
+    if (navigator.userAgent.match(new RegExp('firefox', 'i'))) {
         return;
     }
     const open_tumblr_key = 'fuiKNFp9vQFvjLNvx4sUwti4Yb5yGutBN4Xh10LXZhhRKjWlV4';
@@ -1841,7 +1841,7 @@ function parse_jsfiddle_set_interval() {
  * @param {OptionsManager} current_options
  */
 function parse_jsfiddle(current_options) {
-    if (navigator.appVersion.match(new RegExp('firefox', 'i'))) {
+    if (navigator.userAgent.match(new RegExp('firefox', 'i'))) {
         return;
     }
     var reg = new RegExp('^https?://(www\\.)?jsfiddle\\.net/([a-z0-9]+)/(([0-9]+)/)?', 'i');
@@ -1953,6 +1953,7 @@ function links_https_everywhere_external() {
 }
 
 function disable_native_fancybox() {
+    // @hint Это не работает в Fx, там другая система
     $('.post-content a').each(function(num, obj) {
         if ($(obj).hasClass('point-sharp-processed') || $(obj).hasClass('point-sharp-added')) {
             return;

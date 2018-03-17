@@ -44,6 +44,7 @@ var point_sharp_options_tree = {
             "option_disable_native_fancybox": {
                 "type": "boolean",
                 "default_value": true,
+                "platforms": ["chrome"],
                 "description": "Выключить родной FancyBox Поинта"
             },
             "option_images_load_original": {
@@ -822,8 +823,9 @@ OptionsManager.canUseOption = function(optionName) {
         return true;
     }
 
-    for (var i = 0; i < ret.platforms.length; i++) {
-        if (ret.platforms[i] == OptionsManager.getPlatform()) {
+    let thisPlatform = OptionsManager.getPlatform();
+    for (let platform of ret.platforms) {
+        if (platform == thisPlatform) {
             return true;
         }
     }
@@ -839,7 +841,7 @@ OptionsManager.getPlatform = function() {
     // Я не буду сюда выставлять нормальный IoC, ну его на хер
     if (navigator.appVersion.match(new RegExp('chrome', 'i'))) {
         return 'chrome';
-    } else if (navigator.appVersion.match(new RegExp('firefox', 'i'))) {
+    } else if (navigator.userAgent.match(new RegExp('firefox', 'i'))) {
         return 'firefox';
     } else {
         return '';

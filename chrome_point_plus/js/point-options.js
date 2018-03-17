@@ -108,7 +108,7 @@ function draw_option_branch(parent_obj, index, branch) {
             children_length++;
         }
     }
-    // @todo Сделать платформо-зависимые опции
+    let canUseOptions = OptionsManager.canUseOption(index);
 
     var item;
     if (branch.type == 'enum') {
@@ -161,6 +161,9 @@ function draw_option_branch(parent_obj, index, branch) {
         }
     } else {
         console.error('option ', index, ' is not defined');
+    }
+    if (!canUseOptions) {
+        $(item).find('input').attr('disabled', 'disabled');
     }
 
     // Добавляем в parent object
