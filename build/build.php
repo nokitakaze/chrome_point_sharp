@@ -47,24 +47,15 @@
 
     // Копируем Папки
     foreach (array(
-                 array('vendor', 'chrome_point_plus/vendor', 'mozilla_firefox/data/vendor'),
-                 array('css', 'chrome_point_plus/css/additional', 'mozilla_firefox/data/css/additional'),
+                 array('vendor', 'chrome_point_plus/vendor'),
+                 array('css', 'chrome_point_plus/css/additional'),
              ) as $pair) {
         if (file_exists($root_folder.'/'.$pair[1])) {
             system('rd "'.addslashes_quote($root_folder.'\\'.str_replace('/', '\\', $pair[1])).'" /S /Q');
         }
-        /*
-        if (file_exists($root_folder.'/'.$pair[2])) {
-            system('rd "'.addslashes_quote($root_folder.'\\'.str_replace('/', '\\', $pair[2])).'" /S /Q');
-        }
-        */
 
         system('xcopy "'.addslashes_quote($root_folder.'\\build\\'.str_replace('/', '\\', $pair[0])).'" "'.
                addslashes_quote($root_folder.'\\'.str_replace('/', '\\', $pair[1])).'\\" /E /Y');
-        /*
-        system('xcopy "'.addslashes_quote($root_folder.'\\build\\'.str_replace('/', '\\', $pair[0])).'" "'.
-               addslashes_quote($root_folder.'\\'.str_replace('/', '\\', $pair[2])).'\\" /E /Y');
-        */
     }
 
     echo "Version ".$json->version.'.'.$build_version->version.' builded at '.gmdate('Y-m-d H:i:sO')."\n";

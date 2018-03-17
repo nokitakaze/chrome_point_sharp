@@ -378,34 +378,60 @@ function ajax_get_comments_post_comment($post, csRf, options) {
  * @type {string} Шаблон комментария
  */
 const ajax_get_comments_comment_template =
-    '<div class="info">' + "\n" +
-    '    <a href="#"><img class="avatar" src="#author-avatar" alt=""/></a>' + "\n" +
-    '    <div class="created">' + "\n\n" +
+    '<header class="post-header">' + "\n" +
+    '    <a href="#" class="user-ava"><img class="post-avatar"></a>' + "\n" +
+    '    <a href="#" class="post-author user"></a>' + "\n" +
+    '    <div class="post-created">' + "\n" +
     '    </div>' + "\n" +
-    '</div>' + "\n" +
+    '</header>' + "\n" +
     '<div class="post-content">' + "\n" +
-    '    <div class="author">' + "\n" +
-    '        <a href="#" class="user"><!-- %author% --></a>' + "\n" +
-    '    </div>' + "\n" +
     '    <div class="text">' + "\n" +
+    '        <p>' + "\n" +
     '        <!-- <p>Comment text</p> -->' + "\n" +
+    '        </p>' + "\n" +
     '    </div>' + "\n" +
     '    <div class="clearfix">' + "\n" +
     '        <div class="post-id">' + "\n" +
-    '            <a href="#"><!-- #%post-id%/%comment-id% --></a>' + "\n" +
+    '            <a href="#"></a>' + "\n" +
     '        </div>' + "\n" +
     '        <div class="action-labels">' + "\n" +
     '            <label class="reply-label">ответить</label>' + "\n" +
+    /*'            <label class="reply-label edit-label"></label>' + "\n" +*/
     '            <label class="more-label">ещё &#9662;</label>' + "\n" +
     '        </div>' + "\n" +
     '    </div>' + "\n" +
-    '    <input type="checkbox" class="action-cb" name="action-radio"/>' + "\n" +
-    '    <div class="action-buttons">' + "\n" +
-    '        <a class="bookmark" href="#">в закладки</a>' + "\n" +
+    "\n" +
+    '    ' + "\n" +
+    '    <div class="edit-buttons">' + "\n" +
+    '        <a class="del" title="Удалить комментарий"></a>' +
+    "\n" +
     '    </div>' + "\n" +
-    '    <!-- Reply form -->' + "\n" +
-    '    <input type="radio" class="reply-radio" name="reply-radio"/>' + "\n" +
-    '    <form class="reply-form" action="#" method="post">' + "\n" +
+    '    ' + "\n" +
+    "\n" +
+    '    <input type="checkbox" class="action-cb" name="action-radio">' + "\n" +
+    '    <!--' + "\n" +
+    '    <div class="action-buttons">' + "\n" +
+    '        <a class="bookmark" href="">в закладки</a>' + "\n" +
+    '    </div>' + "\n" +
+    '    -->' + "\n" +
+    "\n" +
+    '    <input type="radio" class="reply-radio" name="reply-radio">' + "\n" +
+    /*
+    '    <form class="reply-form edit-form bootstrapped" method="post"' + "\n" +
+    '          enctype="multipart/form-data" autocomplete="off">' + "\n" +
+    '        <textarea name="text"></textarea>' + "\n" +
+    '        <input type="hidden" name="csrf_token" value="">' + "\n" +
+    '        <div class="clearfix">' + "\n" +
+    '            <div class="buttons">' + "\n" +
+    '                <input type="submit" value="Сохранить">' + "\n" +
+    '            </div>' + "\n" +
+    '        </div>' + "\n" +
+    '    </form>' + "\n" +
+    "\n" +
+    '    <input type="radio" class="reply-radio" name="reply-radio">' + "\n" +
+    */
+    '    <form class="reply-form" action="" method="post" enctype="multipart/form-data" autocomplete="off">' +
+    "\n" +
     '        <textarea name="text"></textarea>' + "\n" +
     '        <input type="hidden" name="comment_id" value="">' + "\n" +
     '        <input type="hidden" name="csrf_token" value="">' + "\n" +
@@ -444,7 +470,7 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
     var $anchor = $('<a>').attr('name', commentData.id);
 
     // Initializing comment element
-    var $commentTemplate = $('<div>').attr({
+    var $commentTemplate = $('<article>').attr({
         'class': 'post',
         'data-id': commentData.postId,
         'data-comment-id': commentData.id,
@@ -469,20 +495,23 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
 
     // Data for template
     var userLink = '//' + commentData.author + '.point.im/';
+    var avatarLink = '//point.im/avatar/' + commentData.author + '/24';
     var csRfToken = $('.reply-form input[name="csrf_token"]').first().val();
 
     // Filling template
     // Date and time
-    $commentTemplate.find('.info .created')
+    $commentTemplate.find('.post-header .post-created')
         .append($('<span>').text(dateFormat(date, 'dd mmm')))
-        .append($('<br>'))
+        .append("\n")
         .append($('<span>').text(dateFormat(date, 'HH:MM')))
         .find('span').css('white-space', 'nowrap');
     // Author
-    $commentTemplate.find('.author a.user').attr('href', userLink).text(commentData.author);
+    $commentTemplate.find('.post-author').attr('href', userLink).text(commentData.author);
     // Avatar and link
-    $commentTemplate.find('.info a').attr('href', userLink).children('img.avatar').attr('src',
-        '//point.im/avatar/' + commentData.author + '/24');
+    $commentTemplate.find('.user-ava').attr('href', userLink).children('img.post-avatar').attr({
+        'src': avatarLink,
+        'alt': commentData.author + '\' avatar',
+    });
     // Post and comment ID's link
     $commentTemplate.find('.clearfix .post-id a').attr('href',
         '//point.im/' + commentData.postId + '#' + commentData.id).text('#' + commentData.postId + '/' + commentData.id)
@@ -491,6 +520,7 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
 
     // Setting action labels and other attributes
     $commentTemplate.find('.action-labels .reply-label').attr('for', 'reply-' + commentData.postId + '_' + commentData.id);
+    $commentTemplate.find('.action-labels .edit-label').attr('for', 'edit-' + commentData.postId + '_' + commentData.id);
     $commentTemplate.find('.action-labels .more-label').attr('for', 'action-' + commentData.postId + '_' + commentData.id);
     $commentTemplate.find('.post-content input[name="action-radio"]').attr('id',
         'action-' + commentData.postId + '_' + commentData.id);
@@ -513,6 +543,19 @@ function ajax_get_comments_create_comment_elements(commentData, onCommentCreated
     }
     $commentTemplate.find('.post-content form.reply-form input[name="comment_id"]').val(commentData.id);
     $commentTemplate.find('.post-content form.reply-form input[name="csrf_token"]').val(csRfToken);
+
+    /*
+    // Edit form
+    // @todo починить edit form
+    $commentTemplate.find('.post-content form.edit-form').attr('action',
+        '/' + commentData.postId + '/edit-comment/' + commentData.id);
+    */
+
+    // Кнопка удаления
+    $commentTemplate.find('.edit-buttons .del').attr({
+        'href': '//point.im/' + commentData.postId + '/d?comment_id=' + commentData.id + '&csrf_token=' + csRfToken,
+        'data-confirm': 'Вы действительно хотите удалить комментарий #' + commentData.id + '?',
+    });
 
     // И самое главное: Текст комментария
     set_comment_text_to_dom(commentData, $commentTemplate.find('.text'));
