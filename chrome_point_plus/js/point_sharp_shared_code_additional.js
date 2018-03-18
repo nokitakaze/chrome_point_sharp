@@ -460,7 +460,7 @@ function create_tag_system() {
         if ((a !== null) && (typeof(a[4]) !== 'undefined')) {
             comment_id = a[4];
         }
-        var nick = $(this).find('.post-content a.user').first().text().toLowerCase();
+        var nick = $(this).find('.post-header a.user').first().text().toLowerCase();
         $(this).attr({
             'data-author-id': nick,
             'data-inner-comment-id': comment_id
@@ -1508,10 +1508,7 @@ function wrap_posts_init(options) {
                 }
             });
 
-            var tags_element = $(this).find('.tags')[0];
-            if (typeof(tags_element) == 'undefined') {
-                tags_element = $(this).find('.clearfix')[0];
-            }
+            let tags_element = $(this).find('.post-content > .clearfix')[0];
             try {
                 tags_element.parentElement.insertBefore(div, tags_element);
             } catch (e) {
@@ -1989,6 +1986,9 @@ function design_anti_raptors() {
                       ".post.new_comments .post-tags .post-tag:hover {\n" +
                       "    background-color: rgba(35, 216, 94, 0.85);\n" +
                       "}\n" +
+                      ".post.is-recommendation .post-content .rec {margin-left: 1.5em;}\n" +
+                      ".post.is-recommendation .post-content .text {margin-left: 1.5em;}\n" +
+                      ".post.is-recommendation .post-content .rtext {color: #777;margin-bottom: 2.5em;}\n" +
                       ".post {border-bottom-color: #d1d1d1;}\n";
     document.head.appendChild(style);
 }
