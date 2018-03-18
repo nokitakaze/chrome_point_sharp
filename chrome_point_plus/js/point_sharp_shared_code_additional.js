@@ -195,7 +195,7 @@ function remark_entire_page(options) {
 function mark_unread_post() {
     if ($('#comments').length > 0) {return;}
 
-    $(".content-wrap > div.post").css({'padding-left': '2px'}).each(function() {
+    $(".content-wrap > div.post").each(function() {
         if ($(this).find(".unread").length > 0) {
             $(this).addClass('new_comments');
         }
@@ -1982,6 +1982,12 @@ function design_anti_raptors() {
                       ".post-tags .post-tag:hover {\n" +
                       "    text-decoration: none;\n" +
                       "    background-color: rgba(35, 94, 216, 0.85);\n" +
+                      "}\n" +
+                      ".post.new_comments .post-tags .post-tag {\n" +
+                      "    background-color: rgba(35, 216, 94, 0.7);\n" +
+                      "}\n" +
+                      ".post.new_comments .post-tags .post-tag:hover {\n" +
+                      "    background-color: rgba(35, 216, 94, 0.85);\n" +
                       "}\n" +
                       ".post {border-bottom-color: #d1d1d1;}\n";
     document.head.appendChild(style);
