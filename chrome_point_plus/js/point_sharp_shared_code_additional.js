@@ -1556,7 +1556,7 @@ function wrap_posts_init(options) {
         }).attr({'href': 'javascript:'});
 
         // Добавляем кнопку
-        $(this).find('.post-content a.user').first().after(hide_button);
+        $(this).find('.post-header .post-author.user').first().after(hide_button);
     });
 
     // Скрываем посты, список коих взят из Локал Сторожа
@@ -1987,6 +1987,7 @@ function design_anti_raptors() {
                       "    background-color: rgba(35, 216, 94, 0.85);\n" +
                       "}\n" +
                       ".post.is-recommendation .post-content .rec {margin-left: 1.5em;}\n" +
+                      ".post.is-recommendation .post-content .post-tags {margin: 10px 0 0 1.5em;}\n" +
                       ".post.is-recommendation .post-content .text {margin-left: 1.5em;}\n" +
                       ".post.is-recommendation .post-content .rtext {color: #777;margin-bottom: 2.5em;}\n" +
                       ".post {border-bottom-color: #d1d1d1;}\n";
