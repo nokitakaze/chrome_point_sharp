@@ -329,3 +329,7 @@ a.postimg.sharp-preblur {
 .youtube-video-embedded {
     border: none;
 }
+
+.md-editor > textarea {
+    padding: .4em !important;
+}
