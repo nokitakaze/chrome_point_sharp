@@ -111,6 +111,24 @@ a.postimg.sharp-preblur {
     height: 30em !important;
 }
 
+@media (max-height: 850px) {
+    #new-post-form #text-input, #post-edit-form .post-content #text-input {
+        max-height: 250px;
+    }
+}
+
+@media (max-height: 700px) {
+    #new-post-form #text-input, #post-edit-form .post-content #text-input {
+        max-height: 150px;
+    }
+}
+
+@media (max-height: 650px) {
+    #new-post-form #text-input, #post-edit-form .post-content #text-input {
+        max-height: 50px;
+    }
+}
+
 /* point-plus-debug */
 #point-plus-debug {
     float: right;
