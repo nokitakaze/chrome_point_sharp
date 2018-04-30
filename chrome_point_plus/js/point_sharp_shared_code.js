@@ -67,6 +67,9 @@ function pimp_my_page(options) {
     // Основное встраивание контента
     remark_entire_page(options);
 
+    //
+    fix_prefix_in_answer_textarea();
+
     // Visual editor
     if (options.is('option_visual_editor_post')) {
         visual_editor_init(options);

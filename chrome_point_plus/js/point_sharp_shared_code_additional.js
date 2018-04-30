@@ -297,8 +297,8 @@ function parse_all_videos(current_options) {
         var n;
 
         if (n =
-                href.match(new RegExp('^https?:\\/\\/([a-z0-9.-]+)\\/[a-z0-9_\\/.%-]+\\.(webm|avi|mp4|mpg|mpeg)(\\?.+)?$',
-                    'i'))) {
+            href.match(new RegExp('^https?:\\/\\/([a-z0-9.-]+)\\/[a-z0-9_\\/.%-]+\\.(webm|avi|mp4|mpg|mpeg)(\\?.+)?$',
+                'i'))) {
             var player = document.createElement('video');
             var mime = video_extension_to_mime(n[2]);
             $(player).html('<source src="" type="" />').attr('controls', 'controls').css({
@@ -1125,9 +1125,9 @@ function instagram_posts_embedding_init(current_options) {
                         'title': answer.title,
                         'target': '_blank',
                         'data-fancybox-group': (current_options.is('option_fancybox_bind_images_to_one_flow'))
-                            ? 'one_flow_gallery' : '',
+                                               ? 'one_flow_gallery' : '',
                         'data-fancybox-title': (current_options.is('option_fancybox_smart_hints'))
-                            ? answer.title : ' ',
+                                               ? answer.title : ' ',
                         'data-instagram-id': n[2]
                     }).addClass('instagram-post-embedded').addClass('point-sharp-added').addClass('postimg');
 
@@ -1999,4 +1999,16 @@ function design_wide_without_limit() {
     $(style).attr('type', 'text/css');
     style.innerText = "#main {max-width: inherit;}";
     document.head.appendChild(style);
+}
+
+function fix_prefix_in_answer_textarea() {
+    var my_nick = get_my_nick().toLowerCase();
+    $('.post').each(function() {
+        let author = $(this).find('.post-author').text();
+        $(this).attr('data-author', author);
+
+        if (author.toLowerCase() == my_nick) {
+            $(this).find('.reply-form textarea[name="text"]').text('');
+        }
+    });
 }
