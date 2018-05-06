@@ -186,6 +186,8 @@ function remark_entire_page(options) {
         update_block_vimeo_width();
     }
 
+    fix_textarea_height_on_resize_set_handler(options);
+
     // Make all external links SSLed
     external_links_target_blank();
 }
@@ -1990,4 +1992,42 @@ function fix_point_local() {
         temporaryHref.hostname = newDomain;
         this.href = temporaryHref.href;
     });
+}
+
+/**
+ * @param {OptionsManager} options Опции из OptionsManager
+ * @todo По хорошему, это должно работать через CSS calculation: отнимать от высоты N пикселей
+ */
+function fix_textarea_height_on_resize_set_handler(options) {
+    fix_textarea_height_on_resize(options);
+    $(window).on('resize', function() {
+        fix_textarea_height_on_resize(options);
+    });
+}
+
+/**
+ * @param {OptionsManager} options Опции из OptionsManager
+ */
+function fix_textarea_height_on_resize(options) {
+    let height = $(window).innerHeight();
+    let width = $(window).innerWidth();
+
+    let heightMdEditor;
+    if (!options.is('option_visual_editor_post')) {
+        heightMdEditor = 0;
+    } else if (width > 560) {
+        heightMdEditor = 84;
+    } else if (width > 406) {
+        heightMdEditor = 118;
+    } else {
+        heightMdEditor = 175;
+    }
+
+    // console.log('Resize. Window:', width, 'x', height, 'md editor h:', heightMdEditor);
+
+    let new_post_block_height = Math.max(50, height - (280 + 58 - 50 + heightMdEditor));
+    $('#new-post-form #text-input').css('max-height', new_post_block_height);
+
+    let edit_post_block_height = Math.max(100, height - (410 + 58 - 220 - 50 + heightMdEditor));
+    $('#post-edit-form .post-content #text-input').css('max-height', edit_post_block_height);
 }
