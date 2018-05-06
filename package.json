@@ -7,9 +7,10 @@
         "url": "https://github.com/nokitakaze/chrome_point_sharp.git"
     },
     "scripts": {
-        "build-chrome": "php build/build.php",
-        "build-fx": "php build/packfxaddon.php",
-        "build-all": "npm run build && npm run build-fx",
+        "build": "php build/build.php",
+        "pack-chrome": "php build/pack_chrome_addons.php",
+        "pack-fx": "php build/packfxaddon.php",
+        "build-all": "npm run build && npm run pack-chrome && npm run pack-fx",
         "test-fx": "cd chrome_point_plus && web-ext run"
     },
     "author": "Nikita Vetrov",
