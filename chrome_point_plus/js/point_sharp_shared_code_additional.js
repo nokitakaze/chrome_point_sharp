@@ -13,6 +13,9 @@ function remark_entire_page(options) {
         parse_webp(options);
     }
 
+    // Fix PointLocal
+    fix_point_local();
+
     // Schema fixes
     if (options.is('option_booru_schema_fixes')) {
         fix_meta_schema_in_links(options);
@@ -183,7 +186,7 @@ function remark_entire_page(options) {
         update_block_vimeo_width();
     }
 
-    // All external links
+    // Make all external links SSLed
     external_links_target_blank();
 }
 
@@ -1938,5 +1941,46 @@ function fix_prefix_in_answer_textarea() {
         if (author.toLowerCase() == my_nick) {
             $(this).find('.reply-form textarea[name="text"]').text('');
         }
+    });
+}
+
+/**
+ * Fix point.local
+ */
+function fix_point_local() {
+    var temporaryHref = document.createElement("a");
+    $('img').each(function() {
+        temporaryHref.href = this.src;
+        let newDomain;
+        switch (temporaryHref.hostname.toLowerCase()) {
+            case 'point.local':
+                newDomain = 'point.im';
+                break;
+            case 'i.point.local':
+                newDomain = 'i.point.im';
+                break;
+            default:
+                return;
+        }
+
+        temporaryHref.hostname = newDomain;
+        this.src = temporaryHref.href;
+    });
+    $('a').each(function() {
+        temporaryHref.href = this.href;
+        let newDomain;
+        switch (temporaryHref.hostname.toLowerCase()) {
+            case 'point.local':
+                newDomain = 'point.im';
+                break;
+            case 'i.point.local':
+                newDomain = 'i.point.im';
+                break;
+            default:
+                return;
+        }
+
+        temporaryHref.hostname = newDomain;
+        this.href = temporaryHref.href;
     });
 }
