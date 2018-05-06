@@ -275,11 +275,6 @@ var point_sharp_options_tree = {
                 "default_value": true,
                 "description": "Заметки о пользователях на полях"
             },
-            "option_other_post_draft_save": {
-                "type": "boolean",
-                "default_value": true,
-                "description": "Сохранение и восстановление черновиков постов"
-            },
             "option_wrap_long_posts": {
                 "type": "boolean",
                 "default_value": true,

@@ -138,12 +138,6 @@ function pimp_my_page(options) {
         set_comments_refresh_tick(options);
     }
 
-    // Черновики. Ставим хандлер и восстанавливаем предыдущее состояние
-    if (options.is('option_other_post_draft_save')) {
-        draft_set_save_handler();
-        draft_restore();
-    }
-
     // Сворачивание постов. Как длинных, так и любых
     wrap_posts_init(options);
 
