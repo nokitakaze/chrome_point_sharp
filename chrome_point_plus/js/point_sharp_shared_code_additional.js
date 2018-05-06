@@ -1933,13 +1933,20 @@ function design_wide_without_limit() {
 }
 
 function fix_prefix_in_answer_textarea() {
-    var my_nick = get_my_nick().toLowerCase();
+    let my_nick = get_my_nick().toLowerCase();
+    // noinspection RegExpRedundantEscape
+    let r = new RegExp('/[a-z0-9]+?/edit\\-comment/[0-9]+$');
     $('.post').each(function() {
         let author = $(this).find('.post-author').text();
         $(this).attr('data-author', author);
 
         if (author.toLowerCase() == my_nick) {
-            $(this).find('.reply-form textarea[name="text"]').text('');
+            $(this).find('.reply-form textarea[name="text"]').each(function() {
+                let form = $(this).parents('.reply-form').first();
+                if (!form[0].action.match(r)) {
+                    this.textContent = '';
+                }
+            });
         }
     });
 }
