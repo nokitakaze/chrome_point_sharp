@@ -41,6 +41,15 @@ var unread_count_status_last_state = null;
 var temporary_disabled_notification = false;
 
 function draw_icon_badge() {
+    if (!is_websocket_alive()) {
+        // WebSocket отвалился
+        chrome.browserAction.setBadgeText({'text': 'WS!'});
+        chrome.browserAction.setBadgeBackgroundColor({
+            'color': [255, 0, 0, 255],
+        });
+
+        return;
+    }
     if (unread_count_status_last_state === null) {
         // Ещё не инициализировано
         chrome.browserAction.setBadgeText({'text': temporary_disabled_notification ? 'выкл' : '?'});
@@ -336,16 +345,26 @@ function local_storage_get_inner(real_keys, real_keys_list, type, callback) {
 
 var raw_options = null;
 /**
- * @var {WebSocket} current_websocket
+ * @type {WebSocket} current_websocket
  */
 var current_websocket = null;
 /**
- * @var {number} current_websocket_last_ping
+ * @type {number}
  */
 var current_websocket_last_ping = 0;
 
 /**
- * @var {String|null} current_login
+ * @type {number}
+ */
+var current_websocket_last_create = 0;
+
+/**
+ * @type {number}
+ */
+var shart_start_time = (new Date()).getTime() / 1000;
+
+/**
+ * @type {String|null} current_login
  */
 var current_login = null;
 
@@ -367,7 +386,7 @@ update_options(function() {
             return;
         }
         var d = (new Date()).getTime() / 1000;
-        if (d >= current_websocket_last_ping + 180) {
+        if ((d >= current_websocket_last_ping + 180) && (d >= current_websocket_last_create + 180)) {
             console.error('No ping for %f seconds', d - current_websocket_last_ping);
             try {
                 current_websocket.close();
@@ -387,12 +406,32 @@ update_options(function() {
     });
 }
 
+function is_websocket_alive() {
+    var timeAfterStart = (new Date()).getTime() / 1000 - shart_start_time;
+    if (timeAfterStart < 60) {
+        return true;
+    }
+    if (current_websocket === null) {
+        return false;
+    }
+    var timeoutPing = (new Date()).getTime() / 1000 - current_websocket_last_ping;
+    if (timeoutPing > 180) {
+        return false;
+    }
+    var timeoutCreation = (new Date()).getTime() / 1000 - current_websocket_last_create;
+
+    return ((timeoutPing < 60) || (timeoutCreation < 60));
+}
+
 /**
  * Ставим уведомлялку о текущем статусе соединения с PointIM
  */
 setInterval(function() {
+    var reg = new RegExp('^https?://([a-z0-9-]+\\.)?point\\.im/', '');
+    let typeMessage = is_websocket_alive() ? 'websocket_connected' : 'websocket_disconnected';
+    draw_icon_badge();
+
     chrome.tabs.query({}, function(tabs) {
-        var reg = new RegExp('^https?://([a-z0-9-]+\\.)?point\\.im/', '');
         /**
          * @var [Tabs] tabs
          */
@@ -404,7 +443,7 @@ setInterval(function() {
             }
 
             chrome.tabs.sendMessage(tabs[i].id, {
-                'type': (current_websocket === null) ? 'websocket_disconnected' : 'websocket_connected'
+                'type': typeMessage
             });
         }
     });
@@ -514,7 +553,9 @@ function start_websocket() {
             current_websocket.close();
         } catch (e) {}
         current_websocket = null;
+        current_websocket_last_ping = 0;
         setTimeout(start_websocket, 0);
+        draw_icon_badge();
     };
 
     // Error handler
@@ -527,7 +568,7 @@ function start_websocket() {
         }
     };
 
-    current_websocket_last_ping = (new Date()).getTime() / 1000;
+    current_websocket_last_create = (new Date()).getTime() / 1000;
 
     // Message handler
     current_websocket.onmessage = function(evt) {

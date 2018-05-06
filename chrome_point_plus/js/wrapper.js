@@ -347,7 +347,9 @@ function set_message_listener(options) {
      */
     chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         console.log('Received message',
-            sender.tab ? "from a content script:" + sender.tab.url : "from the extension background");
+            sender.tab ? "from a content script:" + sender.tab.url : "from the extension background",
+            message
+        );
         switch (message.type) {
             case 'new_unread_count':
                 update_left_menu_unread_budges(message.counts[0], message.counts[1], message.counts[2], options);
