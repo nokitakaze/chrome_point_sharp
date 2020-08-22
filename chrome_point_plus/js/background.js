@@ -39,6 +39,7 @@ chrome.notifications.onClicked.addListener(function(notificationId) {
 
 var unread_count_status_last_state = null;
 var temporary_disabled_notification = false;
+var main_user_cookie = null;
 
 function draw_icon_badge() {
     if (!is_websocket_alive()) {
@@ -94,6 +95,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
     if (message) {
         switch (message.type) {
+            /*
             case 'showPageAction':
                 chrome.pageAction.show(sender.tab.id);
                 sendResponse(true);
@@ -107,6 +109,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
                 console.log('Hide pageAction for tab #%s', sender.tab.id);
                 return true;
+             */
 
             case 'showNotification':
                 chrome.notifications.create(
@@ -542,7 +545,13 @@ function start_websocket() {
         return;
     }
 
-    // SSL or plain
+    if (main_user_cookie == null) {
+        // Куки с ключом ещё не получен, ждём и заново
+        setTimeout(start_websocket, 1000);
+        return;
+    }
+
+    // SSL only connection to Point WebSocket server
     current_websocket = new WebSocket('wss://point.im/ws');
     console.log('WebSocket created: ', current_websocket);
 
@@ -569,6 +578,11 @@ function start_websocket() {
     };
 
     current_websocket_last_create = (new Date()).getTime() / 1000;
+
+    current_websocket.onopen = function() {
+        // https://point.im/help/api#websocket
+        current_websocket.send('Authorization: ' + main_user_cookie);
+    }
 
     // Message handler
     current_websocket.onmessage = function(evt) {
@@ -684,3 +698,10 @@ function start_websocket() {
         }
     };
 }
+
+chrome.cookies.getAll({
+    'domain': 'point.im',
+    'name': 'user',
+}, function(answer) {
+    main_user_cookie = answer[0].value;
+});
